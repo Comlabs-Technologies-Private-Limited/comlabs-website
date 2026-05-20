@@ -1,0 +1,11 @@
+You are working on the Comlabs codebase. Follow COMLABS_BLUEPRINT.md for product and visual direction.
+
+Implementation rules:
+- Strict TypeScript; explicit types for props and public APIs.
+- Prefer named exports; kebab-case for filenames and directories.
+- Use `"use client"` only at the lowest interactive leaf.
+- Spacing: 4px base — only multiples of 4 (gap-4, p-6, etc.).
+- Typography: Inter; tracking-tight globally; display uses font-medium only — never font-semibold or font-bold.
+- Color: monochromatic tokens from CSS variables (--bg-*, --fg-*, --border*). No purple/blue accents on backgrounds; gradients only on primary CTAs per blueprint.
+- Motion: Framer Motion with ease [0.25, 0.1, 0, 1]; motion communicates state, not decoration.
+- Default theme is light; dark mode via `dark` class on documentElement (ThemeProvider).
