@@ -1,15 +1,14 @@
 "use client";
 
+import { ArrowRight } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
 
-import { TextFade } from "@/components/motion/text-fade";
 import { HeroVantaBackground } from "@/components/hero/hero-vanta-background";
+import { TextFade } from "@/components/motion/text-fade";
+import { navPrimaryCtaClass, navPrimaryCtaIconClass } from "@/lib/nav-cta";
 
 const ease = [0.25, 0.1, 0, 1] as const;
-
-const primaryCta =
-  "inline-flex items-center justify-center rounded-full bg-gradient-to-b from-neutral-800 to-neutral-950 px-5 py-2 text-[13px] font-normal tracking-tight text-white shadow-[0px_3.5px_1px_0px_var(--color-neutral-700)_inset,0px_1px_4px_0px_var(--color-neutral-900)] transition-all duration-150 [text-shadow:0_1px_2px_rgba(0,0,0,0.4)] hover:from-neutral-700 hover:to-neutral-900 hover:shadow-[0px_3.5px_3px_0px_var(--color-neutral-600)_inset,0px_1px_6px_0px_var(--color-neutral-900)] active:scale-[0.97]";
 
 const ghostCta =
   "inline-flex items-center justify-center rounded-full border border-neutral-100 px-5 py-2 text-[13px] font-normal tracking-tight text-neutral-700 shadow-sm shadow-black/20 backdrop-blur-sm transition-all duration-150 hover:border-neutral-300 hover:bg-white active:scale-[0.97]";
@@ -34,16 +33,19 @@ export function HeroSection() {
           </span>
           
           <h1 className=" mt-6 max-w-[22ch] text-4xl md:text-7xl font-medium leading-[1.05] tracking-tighter text-[var(--fg-primary)] text-wrap">
-            We build Websites that look {" "} Credible and Convert.
+            We build Websites that look {" "} <span className="text-blue-950">Credible</span> and <span className="text-blue-950">Convert</span>
           </h1>
           <p className="mt-6 max-w-2xl text-sm md:text-md font-normal leading-relaxed text-[var(--fg-secondary)]">
             Comlabs has helped 12+ founders achieve clean, fast, conversion-focused digital experiences with end-to-end product design, development, and automation.
        
           </p>
         </TextFade>
-        <div className="mt-10 flex flex-wrap justify-center gap-3">
-          <Link href="/#contact" className={primaryCta}>
-            Book a strategy call
+        <div className="mt-10 flex flex-wrap items-center gap-3">
+          <Link href="/#contact" className={navPrimaryCtaClass}>
+            <span>Book a strategy call</span>
+            <span className={navPrimaryCtaIconClass} aria-hidden>
+              <ArrowRight className="size-4 -rotate-45 text-black" strokeWidth={2} />
+            </span>
           </Link>
           <Link href="/case-studies" className={ghostCta}>
             See what we ship

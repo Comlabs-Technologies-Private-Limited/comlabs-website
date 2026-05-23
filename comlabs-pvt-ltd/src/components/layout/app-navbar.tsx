@@ -8,18 +8,9 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { cn } from "@/lib/utils";
+import { navPrimaryCtaClass, navPrimaryCtaIconClass } from "@/lib/nav-cta";
 
 const ease = [0.25, 0.1, 0, 1] as const;
-
-const navPrimaryCta = cn(
-  "group inline-flex items-center gap-3 rounded-full bg-black py-1 pl-5 pr-1.5",
-  "text-[13px] font-medium tracking-tight text-white",
-  "shadow-[0_4px_14px_rgba(37,99,235,0.32)]",
-  "transition-[background-color,box-shadow,transform] duration-150",
-  "hover:bg-gray-900 hover:shadow-[0_6px_18px_rgba(37,99,235,0.38)]",
-  "active:scale-[0.98]",
-  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600/60",
-);
 
 const navItems: { href: string; label: string; isActive: (path: string) => boolean }[] = [
   { href: "/", label: "Home", isActive: (p) => p === "/" },
@@ -130,13 +121,10 @@ export function AppNavbar() {
           </LayoutGroup>
 
           <div className="flex shrink-0 items-center gap-1 md:gap-2">
-            <Link href="/#contact" className={cn(navPrimaryCta, "hidden md:inline-flex")}>
+            <Link href="/#contact" className={cn(navPrimaryCtaClass, "hidden md:inline-flex")}>
               <span>Start a project</span>
-              <span
-                className="flex size-8 shrink-0 items-center justify-center rounded-full bg-white transition-transform duration-150 group-hover:translate-x-0.5"
-                aria-hidden
-              >
-                <ArrowRight className="size-4 text-black" strokeWidth={2} />
+              <span className={navPrimaryCtaIconClass} aria-hidden>
+                <ArrowRight className="size-4 -rotate-45 text-black" strokeWidth={2} />
               </span>
             </Link>
             <button
@@ -182,15 +170,12 @@ export function AppNavbar() {
                 </Link>
                 <Link
                   href="/#contact"
-                  className={cn(navPrimaryCta, "mt-2 w-full justify-between")}
+                  className={cn(navPrimaryCtaClass, "mt-2 w-full justify-between")}
                   onClick={() => setMobileOpen(false)}
                 >
                   <span>Start a project</span>
-                  <span
-                    className="flex size-8 shrink-0 items-center justify-center rounded-full bg-white"
-                    aria-hidden
-                  >
-                    <ArrowRight className="size-4 text-blue-600" strokeWidth={2} />
+                  <span className={navPrimaryCtaIconClass} aria-hidden>
+                    <ArrowRight className="size-4 -rotate-45 text-black" strokeWidth={2} />
                   </span>
                 </Link>
               </nav>

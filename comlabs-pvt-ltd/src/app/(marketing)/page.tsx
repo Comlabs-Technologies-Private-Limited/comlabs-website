@@ -13,7 +13,7 @@ import { HomeJsonLd } from "@/components/seo/home-json-ld";
 
 export function MarketingHomePage() {
   return (
-    <>
+    <div className="divide-y divide-gray-200">
       <HomeJsonLd />
       <HeroSection />
       <FounderProblemSection />
@@ -26,7 +26,7 @@ export function MarketingHomePage() {
       <PricingSection />
       <FaqSection />
       <ContactSection />
-    </>
+    </div>
   );
 }
 
