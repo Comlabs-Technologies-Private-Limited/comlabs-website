@@ -1,8 +1,5 @@
 @import "tailwindcss";
 
-/* Class on <html>; utilities like dark:bg-* match when .dark is an ancestor */
-@custom-variant dark (.dark &);
-
 :root {
   --bg-primary: #f5f5f5;
   --bg-surface: #ffffff;
@@ -19,23 +16,6 @@
   --hero-rain-overlay-blur: 1em;
   --hero-rain-overlay-brightness: 1;
   --hero-rain-duration: 120s;
-}
-
-.dark {
-  --bg-primary: #0a0a0a;
-  --bg-surface: #111111;
-  --bg-overlay: rgba(17, 17, 17, 0.8);
-  --fg-primary: #f5f5f5;
-  --fg-secondary: oklch(65% 0.006 285.885);
-  --fg-tertiary: oklch(40% 0.006 285.885);
-  --border: oklch(20% 0.004 285.885);
-  --border-strong: oklch(28% 0.004 285.885);
-  --accent: oklch(21% 0.006 285.885);
-  --hero-rain-c: rgb(37 99 235);
-  --hero-rain-dot: hsl(0 0% 6%);
-  --hero-rain-overlay-blur: 1em;
-  --hero-rain-overlay-brightness: 1.5;
-  --hero-rain-duration: 150s;
 }
 
 @theme inline {

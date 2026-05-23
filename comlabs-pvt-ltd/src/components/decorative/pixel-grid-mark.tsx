@@ -2,8 +2,8 @@ import { cn } from "@/lib/utils";
 
 export type PixelGridMarkProps = {
   className?: string;
-  /** `dark` = footer / dark surfaces; `light` = page sections */
-  surface?: "light" | "dark";
+  /** `footer` = mark on dark footer bar; `light` = page sections */
+  surface?: "light" | "footer";
 };
 
 const ROWS = 8;
@@ -21,7 +21,7 @@ export function PixelGridMark({ className, surface = "light" }: PixelGridMarkPro
     }
   }
 
-  const isDarkSurface = surface === "dark";
+  const isFooterSurface = surface === "footer";
 
   return (
     <div
@@ -34,12 +34,12 @@ export function PixelGridMark({ className, surface = "light" }: PixelGridMarkPro
           className={cn(
             "aspect-square rounded-[1px]",
             on
-              ? isDarkSurface
+              ? isFooterSurface
                 ? "bg-violet-500 shadow-[0_0_12px_rgba(139,92,246,0.35)]"
-                : "bg-violet-600/95 shadow-[0_0_14px_rgba(124,58,237,0.24)] dark:bg-violet-500 dark:shadow-[0_0_16px_rgba(167,139,250,0.28)]"
-              : isDarkSurface
+                : "bg-violet-600/95 shadow-[0_0_14px_rgba(124,58,237,0.24)]"
+              : isFooterSurface
                 ? "bg-zinc-100/[0.12]"
-                : "bg-neutral-300/50 dark:bg-[#111111]",
+                : "bg-neutral-300/50",
           )}
         />
       ))}

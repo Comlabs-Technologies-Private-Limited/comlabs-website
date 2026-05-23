@@ -32,12 +32,8 @@ const rows = [
   },
 ];
 
-const pricingCtaClass = cn(
-  "mt-8 inline-flex items-center justify-center rounded-full bg-gradient-to-b from-neutral-800 to-neutral-950 px-6 py-2.5 text-[13px] font-normal tracking-tight text-white shadow-[0px_3.5px_1px_0px_var(--color-neutral-700)_inset,0px_1px_4px_0px_var(--color-neutral-900)] transition-all duration-150 hover:from-neutral-700 hover:to-neutral-900 active:scale-[0.97]",
-  "dark:from-zinc-100 dark:to-zinc-200 dark:text-zinc-950 dark:[text-shadow:none]",
-  "dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.75),0_1px_2px_rgba(0,0,0,0.18)]",
-  "dark:hover:from-white dark:hover:to-zinc-100 dark:hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_2px_8px_rgba(0,0,0,0.2)]",
-);
+const pricingCtaClass =
+  "mt-8 inline-flex items-center justify-center rounded-full bg-gradient-to-b from-neutral-800 to-neutral-950 px-6 py-2.5 text-[13px] font-normal tracking-tight text-white shadow-[0px_3.5px_1px_0px_var(--color-neutral-700)_inset,0px_1px_4px_0px_var(--color-neutral-900)] transition-all duration-150 hover:from-neutral-700 hover:to-neutral-900 active:scale-[0.97]";
 
 export function PricingSection() {
   return (
@@ -46,7 +42,7 @@ export function PricingSection() {
         <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:gap-8 lg:gap-10">
           <div className="pointer-events-none relative shrink-0 select-none sm:pt-1">
             <div
-              className="absolute -inset-6 rounded-full bg-violet-500/[0.14] blur-2xl dark:bg-violet-400/[0.12]"
+              className="absolute -inset-6 rounded-full bg-violet-500/[0.14] blur-2xl"
               aria-hidden
             />
             <div className="relative scale-[0.92] opacity-[0.92] sm:scale-100 sm:opacity-100">
@@ -66,7 +62,7 @@ export function PricingSection() {
           </div>
         </div>
 
-        <div className="mt-10 overflow-x-auto rounded-2xl border border-[var(--border)] bg-[var(--bg-surface)] shadow-sm shadow-black/[0.04] dark:shadow-black/30">
+        <div className="mt-10 overflow-x-auto rounded-2xl border border-[var(--border)] bg-[var(--bg-surface)] shadow-sm shadow-black/[0.04]">
           <table className="w-full min-w-[520px] border-collapse text-left text-[13px]">
             <thead>
               <tr className="border-b border-[var(--border)] text-[11px] font-normal uppercase tracking-widest text-[var(--fg-tertiary)]">

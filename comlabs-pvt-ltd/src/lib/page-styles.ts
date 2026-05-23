@@ -3,7 +3,7 @@ export const pageMain =
   "mx-auto w-full max-w-6xl px-4 pb-16 pt-[68px] md:px-8 md:pb-24 md:pt-[72px]";
 
 export const cardSurface =
-  "rounded-2xl bg-[var(--bg-surface)] p-6 shadow-sm shadow-black/[0.04] ring-1 ring-black/[0.06] dark:ring-white/[0.06]";
+  "rounded-2xl bg-[var(--bg-surface)] p-6 shadow-sm shadow-black/[0.04] ring-1 ring-black/[0.06]";
 
 export const eyebrow =
   "border-l border-[var(--border-strong)] pl-3 text-[12px] font-normal uppercase leading-none tracking-widest text-[var(--fg-tertiary)]";

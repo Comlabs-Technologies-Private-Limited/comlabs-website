@@ -43,7 +43,7 @@ export function WorkSection() {
           <h2 className={sectionTitle}>Work that ships.</h2>
           <Link
             href="/case-studies"
-            className="shrink-0 text-[13px] font-normal text-blue-600 underline-offset-4 hover:underline dark:text-blue-400"
+            className="shrink-0 text-[13px] font-normal text-blue-600 underline-offset-4 hover:underline"
           >
             View work →
           </Link>

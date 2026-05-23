@@ -8,4 +8,4 @@ Implementation rules:
 - Typography: Inter; tracking-tight globally; display uses font-medium only — never font-semibold or font-bold.
 - Color: monochromatic tokens from CSS variables (--bg-*, --fg-*, --border*). No purple/blue accents on backgrounds; gradients only on primary CTAs per blueprint.
 - Motion: Framer Motion with ease [0.25, 0.1, 0, 1]; motion communicates state, not decoration.
-- Default theme is light; dark mode via `dark` class on documentElement (ThemeProvider).
+- Light theme only; use CSS variables (--bg-*, --fg-*, --border*).

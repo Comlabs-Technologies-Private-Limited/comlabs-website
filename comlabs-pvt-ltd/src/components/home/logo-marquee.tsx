@@ -43,7 +43,7 @@ function BrandMark({ icon }: { icon: SimpleIcon }) {
       viewBox="0 0 24 24"
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden
-      className="h-[22px] w-[22px] shrink-0 text-[var(--fg-primary)] opacity-[0.38] transition-opacity duration-300 dark:opacity-[0.45]"
+      className="h-[22px] w-[22px] shrink-0 text-[var(--fg-primary)] opacity-[0.38] transition-opacity duration-300"
     >
       <path fill="currentColor" d={icon.path} />
     </svg>
@@ -55,7 +55,7 @@ function BrandItem({ icon }: { icon: SimpleIcon }) {
 
   return (
     <div
-      className="flex shrink-0 items-center gap-3 rounded-full border border-[var(--border)] bg-[var(--bg-surface)]/60 px-4 py-2.5 shadow-[0_1px_0_rgba(255,255,255,0.06)_inset] backdrop-blur-sm dark:border-white/[0.08] dark:bg-[var(--bg-surface)]/25 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
+      className="flex shrink-0 items-center gap-3 rounded-full border border-[var(--border)] bg-[var(--bg-surface)]/60 px-4 py-2.5 shadow-[0_1px_0_rgba(255,255,255,0.06)_inset] backdrop-blur-sm"
       aria-label={name}
     >
       <BrandMark icon={icon} />

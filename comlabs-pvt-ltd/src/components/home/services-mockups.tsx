@@ -1,205 +1,619 @@
+"use client";
+
+import { motion, useReducedMotion } from "framer-motion";
+import type { ReactNode, SVGProps } from "react";
+
 import { cn } from "@/lib/utils";
 
+/** Design tokens — SF Pro stack, premium mockup palette */
+const mock = {
+  subtle: "#7F7F7F",
+  default: "#5D5D5D",
+  strong: "#292929",
+  bgSelected: "#F5F5F5",
+  border: "#F2F2F2",
+} as const;
+
+const mockFont =
+  "font-[system-ui,-apple-system,'SF_Pro_Text','SF_Pro_Display',BlinkMacSystemFont,sans-serif]";
+
+const ease = [0.25, 0.1, 0, 1] as const;
+
+/** Shared viewport trigger — passed from services-section when card enters view */
+export type MockupProps = { active?: boolean };
+
+const MOCK_VIEWPORT = { once: true, amount: 0.35 } as const;
+
 const frame = cn(
-  "rounded-lg border border-neutral-200/95 bg-white p-3",
-  "dark:border-white/[0.12] dark:bg-neutral-950",
+  mockFont,
+  "overflow-hidden rounded-xl bg-white p-3.5",
+  "shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_-6px_rgba(0,0,0,0.06)]",
 );
 
-const labelMuted = "text-[10px] font-normal text-neutral-500 dark:text-neutral-500";
-const labelStrong = "text-[11px] font-medium text-neutral-900 dark:text-neutral-100";
-
-function Avatar({ initials }: { initials: string }) {
+function MockFrame({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <span
-      className={cn(
-        "flex h-6 w-6 shrink-0 items-center justify-center rounded-full",
-        "bg-neutral-200 text-[9px] font-medium text-neutral-700",
-        "dark:bg-neutral-800 dark:text-neutral-300",
-      )}
-      aria-hidden
-    >
-      {initials}
-    </span>
+    <div className={cn(frame, className)} aria-hidden>
+      {children}
+    </div>
   );
 }
 
-/** SaaS: dashboard revenue + activity — primary: KPI, secondary: activity rows, tertiary: timestamp */
-export function SaaSMockup() {
+function WindowDots() {
   return (
-    <div className={frame} aria-hidden>
-      <div className="flex items-start justify-between gap-2">
-        <div className="min-w-0">
-          <p className={labelMuted}>Revenue (rolling 30d)</p>
-          <p className="mt-0.5 font-mono text-[15px] font-semibold tabular-nums tracking-tight text-neutral-950 dark:text-neutral-50">
-            $48,920
-          </p>
-          <p className="mt-0.5 text-[10px] font-normal text-emerald-600 dark:text-emerald-400">
-            +12.4% vs prior month
-          </p>
-        </div>
-        <span className="shrink-0 rounded border border-neutral-200/90 bg-neutral-50 px-1.5 py-0.5 text-[9px] font-medium uppercase tracking-wide text-neutral-500 dark:border-white/10 dark:bg-neutral-900 dark:text-neutral-400">
-          Production
-        </span>
-      </div>
-      <div className="mt-3 border-t border-neutral-100 pt-3 dark:border-white/[0.08]">
-        <div className="flex items-center gap-2">
-          <Avatar initials="MC" />
-          <div className="min-w-0 flex-1">
-            <p className={cn(labelStrong, "truncate")}>New seat · Atlas Freight</p>
-            <p className={labelMuted}>Stripe invoice paid · $2,400/yr</p>
+    <div className="flex items-center gap-1.5">
+      <span className="size-2 rounded-full bg-[#FF5F57]" />
+      <span className="size-2 rounded-full bg-[#FEBC2E]" />
+      <span className="size-2 rounded-full bg-[#28C840]" />
+    </div>
+  );
+}
+
+type NucleoProps = SVGProps<SVGSVGElement> & { size?: number };
+
+function nucleoBase(size: number, props: NucleoProps) {
+  return {
+    width: size,
+    height: size,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 1,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+    ...props,
+  };
+}
+
+function IconNode({ size = 14, ...props }: NucleoProps) {
+  return (
+    <svg {...nucleoBase(size, props)}>
+      <circle cx="12" cy="12" r="2.5" />
+      <path d="M12 9.5V5M12 19v-4.5M9.5 12H5M19 12h-4.5" />
+    </svg>
+  );
+}
+
+function IconTerminal({ size = 14, ...props }: NucleoProps) {
+  return (
+    <svg {...nucleoBase(size, props)}>
+      <rect x="4" y="5" width="16" height="14" rx="2" />
+      <path d="M8 10l2 2-2 2M12 14h4" />
+    </svg>
+  );
+}
+
+function IconCompass({ size = 14, ...props }: NucleoProps) {
+  return (
+    <svg {...nucleoBase(size, props)}>
+      <circle cx="12" cy="12" r="8" />
+      <path d="M12 8v4l3 2" />
+    </svg>
+  );
+}
+
+function IconGlobe({ size = 14, ...props }: NucleoProps) {
+  return (
+    <svg {...nucleoBase(size, props)}>
+      <circle cx="12" cy="12" r="8" />
+      <path d="M4 12h16M12 4c2.5 2.5 2.5 13.5 0 16M12 4c-2.5 2.5-2.5 13.5 0 16" />
+    </svg>
+  );
+}
+
+function IconSend({ size = 14, ...props }: NucleoProps) {
+  return (
+    <svg {...nucleoBase(size, props)}>
+      <path d="M4 12l16-7-7 16-2-7-7-2z" />
+    </svg>
+  );
+}
+
+function IconSearch({ size = 14, ...props }: NucleoProps) {
+  return (
+    <svg {...nucleoBase(size, props)}>
+      <circle cx="11" cy="11" r="6" />
+      <path d="M16 16l4 4" />
+    </svg>
+  );
+}
+
+function IconPlus({ size = 14, ...props }: NucleoProps) {
+  return (
+    <svg {...nucleoBase(size, props)}>
+      <path d="M12 6v12M6 12h12" />
+    </svg>
+  );
+}
+
+function IconCheck({ size = 14, ...props }: NucleoProps) {
+  return (
+    <svg {...nucleoBase(size, props)}>
+      <path d="M6 12.5l3.5 3.5L18 8" />
+    </svg>
+  );
+}
+
+function IconChart({ size = 14, ...props }: NucleoProps) {
+  return (
+    <svg {...nucleoBase(size, props)}>
+      <path d="M5 19V9M10 19V5M15 19v-7M20 19V11" />
+    </svg>
+  );
+}
+
+function IconVerified({ size = 14, ...props }: NucleoProps) {
+  return (
+    <svg {...nucleoBase(size, props)} fill="currentColor" stroke="none">
+      <path d="M12 2l2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 14.8 7.2 17l.9-5.4L4.2 7.7l5.4-.8L12 2z" />
+    </svg>
+  );
+}
+
+function useMockMotion(active: boolean) {
+  const reduce = !!useReducedMotion();
+  const playing = active || reduce;
+
+  return {
+    reduce,
+    playing,
+    reveal: {
+      initial: "hidden" as const,
+      animate: playing ? ("show" as const) : ("hidden" as const),
+    },
+    container: {
+      hidden: {},
+      show: {
+        transition: {
+          staggerChildren: reduce ? 0 : 0.07,
+          delayChildren: reduce ? 0 : 0.12,
+        },
+      },
+    },
+    item: {
+      hidden: { opacity: reduce ? 1 : 0, y: reduce ? 0 : 5 },
+      show: {
+        opacity: 1,
+        y: 0,
+        transition: { duration: reduce ? 0 : 0.32, ease },
+      },
+    },
+    fade: {
+      initial: { opacity: reduce ? 1 : 0 },
+      animate: { opacity: playing ? 1 : reduce ? 1 : 0 },
+      transition: { duration: reduce ? 0 : 0.4, ease },
+    },
+  };
+}
+
+export { MOCK_VIEWPORT };
+
+/** website-rebuild — investor profile card */
+export function SaaSMockup({ active = false }: MockupProps) {
+  const { container, item, reduce, reveal } = useMockMotion(active);
+
+  return (
+    <MockFrame className="mt-28">
+      <p className="text-[12px] font-medium" style={{ color: mock.subtle }}>
+        Investor profile
+      </p>
+
+      <motion.div
+        className="mt-3 flex items-center gap-2.5"
+        variants={container}
+        {...reveal}
+      >
+        <motion.div
+          variants={item}
+          className="flex size-9 shrink-0 items-center justify-center rounded-full"
+          style={{ background: "linear-gradient(135deg, #6ee7b7 0%, #3b82f6 100%)" }}
+        />
+        <motion.div variants={item} className="min-w-0">
+          <div className="flex items-center gap-1">
+            <span className="text-[16px] font-medium tracking-tight" style={{ color: mock.strong }}>
+              Sam Altman
+            </span>
+            <IconVerified size={12} className="text-blue-500" />
           </div>
+          <p className="text-[12px] font-normal" style={{ color: mock.default }}>
+            CEO & Co-Founder · OpenAI
+          </p>
+        </motion.div>
+      </motion.div>
+
+      <motion.div
+        className="mt-3 rounded-lg p-2.5"
+        style={{ backgroundColor: mock.bgSelected, border: `1px solid ${mock.border}` }}
+        variants={container}
+        {...reveal}
+      >
+        <div className="grid grid-cols-2 gap-2">
+          {[
+            { label: "Past company", value: "Y Combinator" },
+            { label: "School", value: "Stanford" },
+          ].map((row) => (
+            <motion.div key={row.label} variants={item}>
+              <p className="text-[12px] font-normal" style={{ color: mock.subtle }}>
+                {row.label}
+              </p>
+              <p className="mt-0.5 text-[13px] font-medium" style={{ color: mock.strong }}>
+                {row.value}
+              </p>
+            </motion.div>
+          ))}
         </div>
-      </div>
-      <p className="mt-2.5 text-[9px] font-normal tabular-nums text-neutral-400 dark:text-neutral-500">
-        Refreshed Today at 2:34 PM
-      </p>
-    </div>
+        <motion.div className="mt-2.5 border-t pt-2.5" style={{ borderColor: mock.border }} variants={item}>
+          <p className="text-[12px] font-normal" style={{ color: mock.subtle }}>
+            AI summary
+          </p>
+          <p className="mt-1 text-[13px] font-normal leading-relaxed" style={{ color: mock.default }}>
+            Visionary entrepreneur advancing AI. Former Y Combinator president…
+          </p>
+        </motion.div>
+      </motion.div>
+
+      <motion.div
+        className="mt-3 flex gap-2"
+        variants={container}
+        {...reveal}
+      >
+        <motion.button
+          type="button"
+          variants={item}
+          whileHover={reduce ? undefined : { scale: 1.02 }}
+          whileTap={reduce ? undefined : { scale: 0.98 }}
+          className="flex-1 rounded-full px-3 py-1.5 text-[12px] font-medium text-white"
+          style={{ backgroundColor: mock.strong }}
+        >
+          Explore profile
+        </motion.button>
+        <motion.button
+          type="button"
+          variants={item}
+          whileHover={reduce ? undefined : { scale: 1.02 }}
+          whileTap={reduce ? undefined : { scale: 0.98 }}
+          className="flex-1 rounded-full border px-3 py-1.5 text-[12px] font-medium"
+          style={{ borderColor: mock.border, color: mock.default }}
+        >
+          Get email
+        </motion.button>
+      </motion.div>
+    </MockFrame>
   );
 }
 
-/** SAP: integration status — primary: connection, secondary: last job, tertiary: system id */
-export function SapMockup() {
+/** ai-automation — setup pipeline terminal */
+export function SapMockup({ active = false }: MockupProps) {
+  const { container, item, reduce, playing, reveal } = useMockMotion(active);
+
+  const steps = [
+    { icon: IconNode, label: "alpaca launch openclaw", done: true },
+    { icon: IconTerminal, label: "installing openclaw…", active: true },
+    { icon: IconCompass, label: "configuring model…", pending: true },
+    { icon: IconGlobe, label: "adding web tools…", pending: true },
+    { icon: IconSend, label: "openclaw is running", pending: true },
+  ] as const;
+
   return (
-    <div className={frame} aria-hidden>
-      <div className="flex items-center justify-between gap-2">
-        <div className="min-w-0">
-          <p className={labelMuted}>SAP ECC · RFC destination</p>
-          <p className={cn(labelStrong, "mt-0.5 truncate")}>COM_PROD_GATEWAY</p>
-        </div>
-        <span className="flex shrink-0 items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[9px] font-medium text-emerald-700 dark:text-emerald-400">
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-          Live
-        </span>
-      </div>
-      <div className="mt-3 rounded-md border border-neutral-100 bg-neutral-50 px-2.5 py-2 dark:border-white/[0.08] dark:bg-neutral-900/80">
-        <p className={labelMuted}>Last IDoc batch</p>
-        <p className={cn(labelStrong, "mt-0.5")}>ORDERS05 · 214 postings</p>
-        <p className="mt-1 text-[10px] font-normal text-neutral-500 dark:text-neutral-500">
-          Finished Today at 1:07 PM · 2.4 MB
-        </p>
-      </div>
-      <p className="mt-2.5 text-[9px] font-normal text-neutral-400 dark:text-neutral-500">
-        Client · NB_UTIL · session 88421-s4
-      </p>
-    </div>
+    <MockFrame className="p-3">
+      <WindowDots />
+
+      <motion.ul
+        className="mt-3 space-y-2.5"
+        variants={container}
+        {...reveal}
+      >
+        {steps.map((step) => {
+          const Icon = step.icon;
+          const isActive = "active" in step && step.active;
+          const isDone = "done" in step && step.done;
+
+          return (
+            <motion.li key={step.label} variants={item} className="flex items-center gap-2.5">
+              <span
+                className="flex size-4 shrink-0 items-center justify-center"
+                style={{ color: isDone || isActive ? mock.strong : mock.subtle }}
+              >
+                {isDone ? (
+                  <motion.span
+                    initial={reduce ? false : { scale: 0.6, opacity: 0 }}
+                    animate={playing ? { scale: 1, opacity: 1 } : { scale: 0.6, opacity: 0 }}
+                    transition={{ duration: 0.25, ease }}
+                  >
+                    <IconCheck size={13} />
+                  </motion.span>
+                ) : (
+                  <Icon size={13} />
+                )}
+              </span>
+              <span
+                className="text-[13px] font-normal"
+                style={{ color: isActive || isDone ? mock.strong : mock.subtle }}
+              >
+                {step.label}
+                {isActive ? (
+                  <motion.span
+                    className="inline-flex w-4"
+                    animate={playing && !reduce ? { opacity: [0.2, 1, 0.2] } : { opacity: 1 }}
+                    transition={{ duration: 1.4, repeat: playing && !reduce ? Infinity : 0, ease: "easeInOut" }}
+                  >
+                    …
+                  </motion.span>
+                ) : null}
+              </span>
+              {isActive ? (
+                <motion.span
+                  className="ml-auto size-1.5 rounded-full bg-emerald-500"
+                  animate={
+                    playing && !reduce
+                      ? { opacity: [0.35, 1, 0.35], scale: [0.9, 1.1, 0.9] }
+                      : { opacity: 1, scale: 1 }
+                  }
+                  transition={{ duration: 1.6, repeat: playing && !reduce ? Infinity : 0, ease: "easeInOut" }}
+                />
+              ) : null}
+            </motion.li>
+          );
+        })}
+      </motion.ul>
+    </MockFrame>
   );
 }
 
-/** MVP: launch scope — primary: product name + phase, secondary: checklist, tertiary: teammate */
-export function MvpMockup() {
-  return (
-    <div className={frame} aria-hidden>
-      <div className="flex items-start justify-between gap-2">
-        <div className="min-w-0">
-          <p className={labelMuted}>Build scope</p>
-          <p className={cn(labelStrong, "text-[12px]")}>FieldNotes</p>
-          <p className="mt-0.5 text-[10px] font-normal text-neutral-500">v0.3 · invite-only beta</p>
-        </div>
-        <span className="shrink-0 rounded bg-blue-600/10 px-1.5 py-0.5 text-[9px] font-medium text-blue-700 dark:text-blue-400">
-          Week 6
-        </span>
-      </div>
-      <ul className="mt-3 space-y-1">
-        <li className="flex items-center gap-2 text-[10px] text-neutral-700 dark:text-neutral-300">
-          <span className="text-emerald-600 dark:text-emerald-400">✓</span>
-          Magic-link auth
-        </li>
-        <li className="flex items-center gap-2 text-[10px] text-neutral-400 dark:text-neutral-500">
-          <span className="text-neutral-400">○</span>
-          Billing · Stripe Checkout
-        </li>
-      </ul>
-      <div className="mt-2.5 flex items-center gap-2 border-t border-neutral-100 pt-2.5 dark:border-white/[0.08]">
-        <Avatar initials="EB" />
-        <p className="text-[9px] font-normal text-neutral-500 dark:text-neutral-500">
-          Elena Byrne pushed build #184 · 38 min ago
-        </p>
-      </div>
-    </div>
-  );
-}
+/** product-ui — models & capability bars */
+export function MvpMockup({ active = false }: MockupProps) {
+  const { container, item, reduce, playing, reveal } = useMockMotion(active);
 
-/** Landing: experiment result — primary: lift metric, secondary: period, tertiary: page */
-export function LandingMockup() {
+  const models = [
+    { name: "Opus 4.7", bars: 6, color: "#F97316" },
+    { name: "GPT 5.5", bars: 8, color: mock.strong },
+    { name: "Meta", bars: 4, color: "#3B82F6" },
+    { name: "BrainMAX", bars: 5, color: "#EC4899" },
+  ];
+
   return (
-    <div className={frame} aria-hidden>
-      <p className={labelMuted}>Experiment · Hero headline</p>
-      <div className="mt-1 flex items-baseline gap-2">
-        <p className="font-mono text-[18px] font-semibold tabular-nums tracking-tight text-neutral-950 dark:text-neutral-50">
-          +4.2%
-        </p>
-        <span className="text-[10px] font-normal text-emerald-600 dark:text-emerald-400">lift</span>
-      </div>
-      <p className="mt-2 text-[10px] font-normal leading-snug text-neutral-600 dark:text-neutral-400">
-        Signup CTA clicks vs. control · last 9 days
+    <MockFrame>
+      <p className="text-[12px] font-normal" style={{ color: mock.subtle }}>
+        Models
       </p>
-      <div className="mt-3 flex h-7 items-end gap-0.5 rounded border border-neutral-100 bg-neutral-50 px-1.5 py-1 dark:border-white/[0.08] dark:bg-neutral-900/80">
-        {[40, 55, 48, 72, 65, 88, 92].map((h, i) => (
-          <div
-            key={i}
-            className="flex-1 rounded-sm bg-blue-600/35 dark:bg-blue-500/40"
-            style={{ height: `${h}%` }}
-          />
+
+      <motion.ul
+        className="mt-3 space-y-2.5"
+        variants={container}
+        {...reveal}
+      >
+        {models.map((model, rowIndex) => (
+          <motion.li key={model.name} variants={item} className="flex items-center gap-2">
+            <span
+              className="flex size-5 shrink-0 items-center justify-center rounded-md text-[10px] font-medium"
+              style={{ backgroundColor: mock.bgSelected, color: model.color }}
+            >
+              {model.name.charAt(0)}
+            </span>
+            <span className="w-14 shrink-0 text-[13px] font-medium" style={{ color: mock.strong }}>
+              {model.name}
+            </span>
+            <div className="flex flex-1 items-end gap-0.5">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <motion.div
+                  key={i}
+                  className="h-3.5 flex-1 rounded-sm"
+                  style={{
+                    backgroundColor: i < model.bars ? model.color : mock.border,
+                    opacity: i < model.bars ? 1 : 0.55,
+                    transformOrigin: "bottom",
+                  }}
+                  initial={reduce ? false : { scaleY: 0 }}
+                  animate={playing ? { scaleY: 1 } : { scaleY: 0 }}
+                  transition={{
+                    duration: 0.35,
+                    delay: playing ? rowIndex * 0.08 + i * 0.03 : 0,
+                    ease,
+                  }}
+                />
+              ))}
+            </div>
+          </motion.li>
         ))}
-      </div>
-      <p className="mt-2.5 text-[9px] font-normal tabular-nums text-neutral-400 dark:text-neutral-500">
-        /launch/northwind-q2 · 6.8k sessions
-      </p>
-    </div>
+      </motion.ul>
+    </MockFrame>
   );
 }
 
-/** Mobile: payment push — primary: title, secondary: amount + merchant, tertiary: time */
-export function MobileMockup() {
+/** landing-sprint — composer prompt bar */
+export function LandingMockup({ active = false }: MockupProps) {
+  const { fade, container, item, reduce, reveal } = useMockMotion(active);
+
   return (
-    <div className={cn(frame, "px-2.5 py-3")} aria-hidden>
-      <div className="mx-auto max-w-[200px] rounded-[14px] border border-neutral-200 bg-neutral-50 p-2.5 dark:border-white/10 dark:bg-neutral-900">
-        <div className="rounded-lg bg-white p-2.5 shadow-sm dark:bg-neutral-950">
-          <div className="flex items-start gap-2">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-neutral-900 text-[10px] font-semibold text-white dark:bg-neutral-100 dark:text-neutral-900">
-              CL
-            </div>
-            <div className="min-w-0">
-              <p className={cn(labelStrong, "text-[10px]")}>Careline</p>
-              <p className="mt-0.5 text-[10px] font-normal leading-snug text-neutral-600 dark:text-neutral-400">
-                Payment received · Invoice #INV-4418
-              </p>
-              <p className="mt-1 font-mono text-[13px] font-semibold tabular-nums text-neutral-950 dark:text-neutral-50">
-                $1,240.00
-              </p>
-            </div>
-          </div>
-        </div>
-        <p className="mt-2 text-center text-[9px] font-normal tabular-nums text-neutral-400 dark:text-neutral-500">
-          Today at 9:41 AM
-        </p>
-      </div>
-    </div>
+    <MockFrame className="p-4">
+      <motion.p
+        className="text-[16px] font-normal tracking-tight"
+        style={{ color: mock.subtle }}
+        {...fade}
+      >
+        What should we work on next?
+      </motion.p>
+
+      <motion.div
+        className="mt-4 flex flex-wrap items-center gap-2"
+        variants={container}
+        {...reveal}
+      >
+        <motion.button
+          type="button"
+          variants={item}
+          whileHover={reduce ? undefined : { y: -1 }}
+          className="flex size-7 items-center justify-center rounded-lg border"
+          style={{ borderColor: mock.border, color: mock.default }}
+        >
+          <IconPlus size={13} />
+        </motion.button>
+
+        <motion.span
+          variants={item}
+          className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-medium"
+          style={{ backgroundColor: "#EFF6FF", color: "#2563EB" }}
+        >
+          <IconSearch size={12} />
+          Search
+        </motion.span>
+
+        <motion.span
+          variants={item}
+          className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[12px] font-medium"
+          style={{ borderColor: mock.border, color: mock.default }}
+        >
+          <IconTerminal size={12} />
+          Computer
+          <span
+            className="rounded px-1 py-0.5 text-[10px] font-medium"
+            style={{ backgroundColor: "#DBEAFE", color: "#2563EB" }}
+          >
+            New
+          </span>
+        </motion.span>
+      </motion.div>
+    </MockFrame>
   );
 }
 
-export function ServiceMockup({ id }: { id: string }) {
+/** maintenance — JSON task completion */
+export function MobileMockup({ active = false }: MockupProps) {
+  const { container, item, reduce, playing, reveal } = useMockMotion(active);
+
+  return (
+    <MockFrame>
+      <p className="text-[12px] font-normal" style={{ color: mock.subtle }}>
+        JSON
+      </p>
+
+      <motion.pre
+        className="mt-2 text-[13px] font-normal leading-relaxed"
+        style={{ color: mock.default }}
+        variants={container}
+        {...reveal}
+      >
+        <motion.code variants={item}>
+          {"{"}
+          {"\n"}
+          {'  "taskId": '}
+          <span style={{ color: "#059669" }}>&quot;11&quot;</span>,{"\n"}
+          {'  "status": '}
+          <motion.span
+            style={{ color: "#059669" }}
+            initial={reduce ? false : { opacity: 0 }}
+            animate={{ opacity: playing ? 1 : 0 }}
+            transition={{ delay: playing ? 0.45 : 0, duration: 0.3, ease }}
+          >
+            &quot;completed&quot;
+          </motion.span>
+          {"\n"}
+          {"}"}
+        </motion.code>
+      </motion.pre>
+
+      <motion.div
+        className="mt-3 flex items-center gap-1.5 border-t pt-3"
+        style={{ borderColor: mock.border }}
+        variants={item}
+        initial="hidden"
+        animate={playing ? "show" : "hidden"}
+      >
+        <motion.span
+          className="flex size-4 items-center justify-center rounded-full"
+          style={{ backgroundColor: mock.bgSelected, color: mock.strong }}
+          initial={reduce ? false : { scale: 0.8 }}
+          animate={playing ? { scale: 1 } : { scale: 0.8 }}
+          transition={{ delay: playing ? 0.55 : 0, type: "spring", stiffness: 420, damping: 22 }}
+        >
+          <IconCheck size={10} />
+        </motion.span>
+        <span className="text-[13px] font-medium" style={{ color: mock.strong }}>
+          Done
+        </span>
+      </motion.div>
+    </MockFrame>
+  );
+}
+
+/** growth-cro — experiment lift + animated bars */
+export function GrowthCroMockup({ active = false }: MockupProps) {
+  const { container, item, reduce, playing, reveal } = useMockMotion(active);
+  const bars = [38, 52, 46, 68, 61, 84, 92];
+
+  return (
+    <MockFrame>
+      <motion.div variants={container} {...reveal}>
+        <motion.div variants={item} className="flex items-center gap-1.5">
+          <IconChart size={13} style={{ color: mock.subtle }} />
+          <p className="text-[12px] font-normal" style={{ color: mock.subtle }}>
+            Experiment · Hero headline
+          </p>
+        </motion.div>
+
+        <motion.div variants={item} className="mt-2 flex items-baseline gap-2">
+          <motion.span
+            className="text-[24px] font-medium tabular-nums tracking-tight"
+            style={{ color: mock.strong }}
+            initial={reduce ? false : { opacity: 0, y: 6 }}
+            animate={playing ? { opacity: 1, y: 0 } : { opacity: 0, y: 6 }}
+            transition={{ delay: playing ? 0.25 : 0, duration: 0.4, ease }}
+          >
+            +4.2%
+          </motion.span>
+          <span className="text-[12px] font-medium" style={{ color: "#059669" }}>
+            lift
+          </span>
+        </motion.div>
+
+        <motion.p variants={item} className="mt-1.5 text-[13px] font-normal" style={{ color: mock.default }}>
+          Signup CTA clicks vs. control · last 9 days
+        </motion.p>
+
+        <motion.div
+          variants={item}
+          className="mt-3 flex h-8 items-end gap-0.5 rounded-lg border px-1.5 py-1"
+          style={{ borderColor: mock.border, backgroundColor: mock.bgSelected }}
+        >
+          {bars.map((h, i) => (
+            <motion.div
+              key={i}
+              className="flex-1 rounded-sm bg-blue-500/45"
+              initial={reduce ? false : { scaleY: 0 }}
+              animate={playing ? { scaleY: 1 } : { scaleY: 0 }}
+              transition={{ duration: 0.38, delay: playing ? 0.35 + i * 0.05 : 0, ease }}
+              style={{ height: `${h}%`, transformOrigin: "bottom" }}
+            />
+          ))}
+        </motion.div>
+      </motion.div>
+    </MockFrame>
+  );
+}
+
+export function ServiceMockup({ id, active = false }: { id: string; active?: boolean }) {
   switch (id) {
     case "website-rebuild":
-      return <SaaSMockup />;
+      return <SaaSMockup active={active} />;
     case "landing-sprint":
-      return <LandingMockup />;
+      return <LandingMockup active={active} />;
     case "product-ui":
-      return <MvpMockup />;
+      return <MvpMockup active={active} />;
     case "ai-automation":
-      return <SapMockup />;
+      return <SapMockup active={active} />;
     case "maintenance":
-      return <MobileMockup />;
+      return <MobileMockup active={active} />;
+    case "growth-cro":
+      return <GrowthCroMockup active={active} />;
     case "saas":
-      return <SaaSMockup />;
+      return <SaaSMockup active={active} />;
     case "sap":
-      return <SapMockup />;
+      return <SapMockup active={active} />;
     case "mvp":
-      return <MvpMockup />;
+      return <MvpMockup active={active} />;
     case "landing":
-      return <LandingMockup />;
+      return <LandingMockup active={active} />;
     case "mobile":
-      return <MobileMockup />;
+      return <MobileMockup active={active} />;
     default:
       return null;
   }

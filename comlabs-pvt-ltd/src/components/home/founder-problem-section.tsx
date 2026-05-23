@@ -37,13 +37,13 @@ function FounderProblemCard({
 }: (typeof cards)[number]) {
   return (
     <article className="flex flex-col rounded-2xl border border-zinc-200 bg-white p-4 shadow-none md:p-4">
-      <div className="relative aspect-[6/4] overflow-hidden rounded-lg border border-zinc-100 p-2.5 md:p-3 ">
+      <div className="relative aspect-[6/4] overflow-hidden rounded-lg p-2.5 md:p-3 ">
         <Image
           src={background}
           alt=""
           fill
           sizes="(max-width: 768px) 100vw, 33vw"
-          className="object-cover object-center"
+          className="object-cover object-center mask-t-from-95% mask-b-from-95%"
           aria-hidden
         />
         <div className="absolute right-0 aspect-[6/4] w-full rounded-lg px-4 py-2 md:px-5 mask-t-from-95% mask-b-from-60%">
@@ -85,7 +85,7 @@ export function FounderProblemSection() {
           </p>
         </TextFade>
 
-        <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-5">
+        <div className="mt-10  grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-5">
           {cards.map((card) => (
             <FounderProblemCard key={card.title} {...card} />
           ))}

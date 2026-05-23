@@ -88,7 +88,7 @@ export function FooterBar() {
       <div className="mx-auto max-w-7xl px-4 py-16 md:px-8 md:py-20">
         <div className="flex flex-col gap-12 lg:flex-row lg:gap-10 xl:gap-14">
           <div className="flex items-start gap-4 lg:max-w-[5.5rem] lg:flex-col lg:gap-6">
-            <PixelGridMark surface="dark" className="opacity-90" />
+            <PixelGridMark surface="footer" className="opacity-90" />
             <div className="min-w-0 flex-1 lg:flex-initial">
               <p className="text-[13px] font-medium text-zinc-200">ComLabs</p>
               <p className="mt-2 text-[12px] font-normal leading-relaxed text-zinc-500">

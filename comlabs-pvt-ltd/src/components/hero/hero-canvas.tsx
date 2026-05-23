@@ -2,10 +2,8 @@
 
 import { useEffect, useRef } from "react";
 
-import { useTheme } from "@/context/theme-context";
-
-/** Tailwind `blue-600` → rgb(37, 99, 235) */
-const BLUE_600_RGB = "37,99,235";
+/** Tailwind `blue-600` → rgb(2, 81, 249) */
+const BLUE_600_RGB = "2,81,249";
 
 type Line = {
   y: number;
@@ -28,9 +26,7 @@ function createLines(): Line[] {
 
 export function HeroCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { dark } = useTheme();
   const linesRef = useRef<Line[]>(createLines());
-  const currentOpacityRef = useRef(dark ? 0.2 : 0.12);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -63,14 +59,10 @@ export function HeroCanvas() {
     const tick = () => {
       const w = canvas.clientWidth;
       const h = canvas.clientHeight;
-      const targetOpacity = dark ? 0.1 : 0.1;
-      currentOpacityRef.current +=
-        (targetOpacity - currentOpacityRef.current) * 0.08;
+      const alpha = 0.1;
 
       ctx.clearRect(0, 0, w, h);
       drift -= 0.15;
-
-      const alpha = currentOpacityRef.current;
 
       for (const line of linesRef.current) {
         ctx.beginPath();
@@ -95,7 +87,7 @@ export function HeroCanvas() {
       cancelAnimationFrame(frame);
       ro.disconnect();
     };
-  }, [dark]);
+  }, []);
 
   return (
     <canvas
