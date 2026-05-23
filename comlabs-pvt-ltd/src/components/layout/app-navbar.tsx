@@ -72,12 +72,12 @@ export function AppNavbar() {
   );
 
   return (
-    <header className="pointer-events-none fixed left-0 right-0 top-0 z-50 flex justify-center">
-      <div className="pointer-events-auto flex w-full flex-col gap-2">
+    <header className="pointer-events-none fixed inset-x-0 top-0 z-50 w-full overflow-x-clip">
+      <div className="pointer-events-auto flex w-full min-w-0 flex-col">
         <div
           className={cn(
             glassPill,
-            "flex min-h-[48px] items-center justify-start gap-2 pl-2 pr-2 py-1.5 md:min-h-[52px] md:gap-3 md:pl-5 md:pr-3 md:py-2",
+            "flex min-h-[48px] w-full min-w-0 items-center justify-between gap-2 py-1.5 pl-4 pr-4 md:min-h-[52px] md:gap-3 md:pl-8 md:pr-8 md:py-2",
           )}
           style={glassStyle}
         >
@@ -95,7 +95,7 @@ export function AppNavbar() {
             />
           </Link>
           <LayoutGroup>
-            <nav className="relative hidden flex-1 ml-12 items-center justify-start gap-0.5 md:flex">
+            <nav className="relative mx-auto hidden flex-1 ml-12 items-center justify-start gap-0.5 md:flex">
               {navItems.map((item) => {
                 const active = item.isActive(pathname);
                 return (
@@ -158,7 +158,7 @@ export function AppNavbar() {
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.2, ease }}
               className={cn(
-                "overflow-hidden rounded-2xl border px-4 py-4 md:hidden",
+                "overflow-hidden border-x-0 border-t-0 px-4 py-4 md:hidden",
                 "border-black/[0.06] bg-white/[0.52] shadow-[0_8px_32px_rgba(0,0,0,0.08)] backdrop-blur-2xl backdrop-saturate-[1.35]",
               )}
             >

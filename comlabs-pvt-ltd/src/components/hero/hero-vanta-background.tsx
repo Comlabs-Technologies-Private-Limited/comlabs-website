@@ -5,7 +5,7 @@ import { useEffect, useRef } from "react";
 
 const vantaFogOptions = {
   mouseControls: true,
-  touchControls: true,
+  touchControls: false,
   gyroControls: false,
   minHeight: 200,
   minWidth: 200,
@@ -25,8 +25,17 @@ export function HeroVantaBackground() {
   useEffect(() => {
     if (reduceMotion || !containerRef.current) return;
 
-    let effect: { destroy: () => void } | null = null;
+    let effect: { destroy: () => void; resize?: () => void } | null = null;
     let cancelled = false;
+
+    const clampCanvas = () => {
+      const canvas = containerRef.current?.querySelector("canvas");
+      if (!canvas) return;
+      canvas.style.width = "100%";
+      canvas.style.maxWidth = "100%";
+      canvas.style.height = "100%";
+      canvas.style.display = "block";
+    };
 
     void (async () => {
       const THREE = await import("three");
@@ -39,10 +48,21 @@ export function HeroVantaBackground() {
         THREE,
         ...vantaFogOptions,
       });
+
+      clampCanvas();
+      effect?.resize?.();
     })();
+
+    const onResize = () => {
+      clampCanvas();
+      effect?.resize?.();
+    };
+
+    window.addEventListener("resize", onResize);
 
     return () => {
       cancelled = true;
+      window.removeEventListener("resize", onResize);
       effect?.destroy();
     };
   }, [reduceMotion]);
@@ -50,7 +70,7 @@ export function HeroVantaBackground() {
   return (
     <div
       ref={containerRef}
-      className="absolute inset-0 z-0 bg-white"
+      className="hero-vanta absolute inset-0 z-0 touch-pan-y overflow-hidden bg-white"
       aria-hidden
     />
   );

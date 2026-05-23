@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Allow HMR when opening the dev server from a LAN IP (e.g. phone/tablet on same Wi‑Fi).
+  allowedDevOrigins: ["192.168.1.4"],
 };
 
 export default nextConfig;

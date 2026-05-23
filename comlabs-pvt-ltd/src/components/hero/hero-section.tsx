@@ -20,17 +20,20 @@ export function HeroSection() {
   const heroOpacity = useTransform(scrollY, [100, 300], [1, 0.5]);
 
   return (
-    <section className="relative flex min-h-[100svh] flex-col items-start justify-end overflow-hidden bg-white px-4 md:px-8">
+    <section className="relative flex min-h-[100svh] w-full flex-col mx-auto items-start justify-end overflow-hidden bg-white px-4 md:px-8">
       <HeroVantaBackground />
       <motion.div
         className="relative z-10 mx-auto flex w-full max-w-6xl flex-col items-start justify-center py-24"
         style={{ y: heroY, opacity: heroOpacity }}
       >
         <TextFade mode="inview" staggerChildren={0.11} viewport={{ amount: 0.5 }}>
-          <p className="border-l border-[var(--border-strong)] pl-3 text-[12px] font-normal uppercase leading-none tracking-widest text-[var(--fg-tertiary)]">
+          <span className="inline-flex border border-neutral-200 py-2 items-center gap-2 bg-transparent rounded-full px-3 py-1">
+          <p className="text-[8px] font-normal uppercase leading-none tracking-widest text-black">
             Websites · Product UI · Automation
           </p>
-          <h1 className=" mt-6 max-w-[22ch] text-3xl md:text-7xl font-medium leading-[1.05] tracking-tighter text-[var(--fg-primary)] text-wrap">
+          </span>
+          
+          <h1 className=" mt-6 max-w-[22ch] text-4xl md:text-7xl font-medium leading-[1.05] tracking-tighter text-[var(--fg-primary)] text-wrap">
             We build Websites that look {" "} Credible and Convert.
           </h1>
           <p className="mt-6 max-w-2xl text-sm md:text-md font-normal leading-relaxed text-[var(--fg-secondary)]">
@@ -47,7 +50,7 @@ export function HeroSection() {
           </Link>
         </div>
       </motion.div>
-
+{/* 
       <motion.div
         drag
         dragConstraints={{ top: 0, right: 0, bottom: 0, left: 0 }}
@@ -65,7 +68,7 @@ export function HeroSection() {
           />
           Available for selected projects
         </span>
-      </motion.div>
+      </motion.div> */}
 
       <motion.div
         className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2 text-[var(--fg-tertiary)]"

@@ -12,10 +12,10 @@ type RootShellProps = {
 export function RootShell({ interClassName, children }: RootShellProps) {
   return (
     <html lang="en" className={`${interClassName} h-full antialiased`} suppressHydrationWarning>
-      <body className="flex min-h-full flex-col bg-[var(--bg-primary)] text-[var(--fg-primary)]">
+      <body className="flex min-h-full max-w-full flex-col overflow-x-clip bg-[var(--bg-primary)] text-[var(--fg-primary)]">
         <ScrollProgress />
         <AppNavbar />
-        <div className="relative flex flex-1 flex-col">{children}</div>
+        <div className="relative flex min-w-0 flex-1 flex-col overflow-x-clip">{children}</div>
         <div
           aria-hidden
           className="pointer-events-none fixed inset-x-0 bottom-0 z-[28] h-[min(20vh,180px)]"
