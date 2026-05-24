@@ -20,9 +20,8 @@ const columns: {
       { href: "/#services", label: "Startup websites" },
       { href: "/#services", label: "Product UI/UX" },
       { href: "/#services", label: "AI automation" },
-      { href: "/case-studies", label: "Work" },
+      { href: "/#work", label: "Work" },
       { href: "/#pricing", label: "Pricing" },
-      { href: "/about", label: "About" },
       { href: "/#contact", label: "Contact" },
     ],
   },
@@ -40,9 +39,9 @@ const columns: {
   {
     title: "Legal",
     links: [
-      { href: "/about", label: "Privacy policy" },
-      { href: "/about", label: "Terms of use" },
-      { href: "/about", label: "Security" },
+      { href: "/#contact", label: "Privacy policy" },
+      { href: "/#contact", label: "Terms of use" },
+      { href: "/#contact", label: "Security" },
     ],
   },
   {
@@ -50,18 +49,16 @@ const columns: {
     links: [
       { href: "/#pricing", label: "Pricing" },
       { href: "/#faq", label: "FAQ" },
-      { href: "/blog", label: "Blog" },
-      { href: "/case-studies", label: "Case studies" },
+      { href: "/#work", label: "Case studies" },
       { href: "/#contact", label: "Contact" },
     ],
   },
   {
     title: "Company",
     links: [
-      { href: "/about", label: "About" },
-      { href: "/case-studies", label: "Work" },
       { href: "/#services", label: "Services" },
-      { href: "/blog", label: "Writing" },
+      { href: "/#work", label: "Work" },
+      { href: "/#faq", label: "Writing" },
     ],
   },
 ];
@@ -160,10 +157,10 @@ export function FooterBar() {
         <div className="mt-16 flex flex-col gap-4 border-t border-zinc-800/80 pt-8 text-[12px] font-normal text-zinc-500 sm:flex-row sm:items-center sm:justify-between">
           <p>© {new Date().getFullYear()} ComLabs Technology Pvt. Ltd. · Nashik, India</p>
           <div className="flex flex-wrap gap-x-6 gap-y-2">
-            <Link href="/about" className="text-zinc-500 transition-colors hover:text-zinc-200">
+            <Link href="/#contact" className="text-zinc-500 transition-colors hover:text-zinc-200">
               Privacy
             </Link>
-            <Link href="/about" className="text-zinc-500 transition-colors hover:text-zinc-200">
+            <Link href="/#contact" className="text-zinc-500 transition-colors hover:text-zinc-200">
               Terms
             </Link>
             <Link href="/#contact" className="text-zinc-500 transition-colors hover:text-zinc-200">

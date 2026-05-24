@@ -8,15 +8,11 @@ const base = siteUrl.replace(/\/$/, "");
 
 function priorityForPath(path: string): number {
   if (path === "/") return 1;
-  if (path.startsWith("/case-studies/")) return 0.75;
-  if (path === "/case-studies") return 0.9;
-  if (path.startsWith("/services/")) return 0.85;
   return 0.8;
 }
 
 function changeFrequencyForPath(path: string): MetadataRoute.Sitemap[0]["changeFrequency"] {
-  if (path === "/" || path === "/blog") return "weekly";
-  if (path.startsWith("/case-studies")) return "monthly";
+  if (path === "/") return "weekly";
   return "monthly";
 }
 

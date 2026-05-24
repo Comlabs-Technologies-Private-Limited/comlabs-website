@@ -36,13 +36,13 @@ const stories = [
 
 export function WorkSection() {
   return (
-    <section className="bg-[var(--bg-primary)] px-4 py-24 md:px-8">
+    <section id="work" className="bg-[var(--bg-primary)] px-4 py-24 md:px-8">
       <div className="mx-auto max-w-6xl">
         <p className={eyebrow}>Work</p>
         <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <h2 className={sectionTitle}>Work that ships.</h2>
           <Link
-            href="/case-studies"
+            href="/#work"
             className="shrink-0 text-[13px] font-normal text-blue-600 underline-offset-4 hover:underline"
           >
             View work →

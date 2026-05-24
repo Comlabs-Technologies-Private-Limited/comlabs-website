@@ -49,7 +49,7 @@ function isExcludedPublicPath(segments: string[]): boolean {
 }
 
 /**
- * From `src/app/(marketing)/about/page.tsx` → URL path segments `["about"]`.
+ * From `src/app/about/page.tsx` → URL path segments `["about"]`.
  */
 function filePathToRouteSegments(appRoot: string, pageFile: string): string[] {
   const dir = relative(appRoot, join(pageFile, ".."));

@@ -11,21 +11,77 @@ import { cn } from "@/lib/utils";
 import { navPrimaryCtaClass, navPrimaryCtaIconClass } from "@/lib/nav-cta";
 
 const ease = [0.25, 0.1, 0, 1] as const;
+const pillSpring = { type: "spring" as const, stiffness: 420, damping: 34 };
 
-const navItems: { href: string; label: string; isActive: (path: string) => boolean }[] = [
-  { href: "/", label: "Home", isActive: (p) => p === "/" },
-  { href: "/#services", label: "Services", isActive: () => false },
-  {
-    href: "/case-studies",
-    label: "Case Studies",
-    isActive: (p) => p.startsWith("/case-studies"),
-  },
-  { href: "/blog", label: "Resources", isActive: (p) => p.startsWith("/blog") },
-  { href: "/about", label: "About", isActive: (p) => p.startsWith("/about") },
+const navItems: {
+  href: string;
+  label: string;
+  id: string;
+  sectionId?: string;
+}[] = [
+  { href: "/", label: "Home", id: "home" },
+  { href: "/#services", label: "Services", id: "services", sectionId: "services" },
+  { href: "/#work", label: "Work", id: "work", sectionId: "work" },
+  { href: "/#pricing", label: "Pricing", id: "pricing", sectionId: "pricing" },
 ];
+
+function useActiveNavItem(pathname: string) {
+  const [activeSection, setActiveSection] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (pathname !== "/") return;
+
+    const sectionIds = navItems.map((item) => item.sectionId).filter(Boolean) as string[];
+    const sections = sectionIds
+      .map((id) => document.getElementById(id))
+      .filter((node): node is HTMLElement => node !== null);
+
+    const syncHome = () => {
+      if (window.scrollY < 96) {
+        setActiveSection(null);
+      }
+    };
+
+    syncHome();
+    window.addEventListener("scroll", syncHome, { passive: true });
+
+    if (sections.length === 0) {
+      return () => window.removeEventListener("scroll", syncHome);
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (window.scrollY < 96) return;
+
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+
+        if (visible[0]?.target.id) {
+          setActiveSection(visible[0].target.id);
+        }
+      },
+      { rootMargin: "-32% 0px -52% 0px", threshold: [0, 0.15, 0.35, 0.6] },
+    );
+
+    sections.forEach((section) => observer.observe(section));
+
+    return () => {
+      window.removeEventListener("scroll", syncHome);
+      observer.disconnect();
+    };
+  }, [pathname]);
+
+  return (item: (typeof navItems)[number]) => {
+    if (pathname !== "/") return false;
+    if (item.id === "home") return activeSection === null;
+    return item.sectionId === activeSection;
+  };
+}
 
 export function AppNavbar() {
   const pathname = usePathname();
+  const isActive = useActiveNavItem(pathname);
   const { scrollY } = useScroll();
   const [borderOpacity, setBorderOpacity] = useState(0);
   const [glassProgress, setGlassProgress] = useState(0);
@@ -68,13 +124,13 @@ export function AppNavbar() {
         <div
           className={cn(
             glassPill,
-            "flex min-h-[48px] w-full min-w-0 items-center justify-between gap-2 py-1.5 pl-4 pr-4 md:min-h-[52px] md:gap-3 md:pl-8 md:pr-8 md:py-2",
+            "grid min-h-[48px] w-full min-w-0 grid-cols-[1fr_auto_1fr] items-center gap-2 py-1.5 pl-4 pr-4 md:min-h-[52px] md:gap-3 md:pl-8 md:pr-8 md:py-2",
           )}
           style={glassStyle}
         >
           <Link
             href="/"
-            className="relative inline-flex shrink-0 items-center outline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-600/60"
+            className="relative inline-flex shrink-0 items-center justify-self-start outline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-600/60"
           >
             <Image
               src="/logos/comlabslogo.png"
@@ -85,13 +141,14 @@ export function AppNavbar() {
               className="h-7 w-auto md:h-12"
             />
           </Link>
-          <LayoutGroup>
-            <nav className="relative mx-auto hidden flex-1 ml-12 items-center justify-start gap-0.5 md:flex">
+
+          <LayoutGroup id="main-nav">
+            <nav className="relative hidden items-center justify-center gap-0.5 md:flex">
               {navItems.map((item) => {
-                const active = item.isActive(pathname);
+                const active = isActive(item);
                 return (
                   <Link
-                    key={item.href}
+                    key={item.id}
                     href={item.href}
                     className={cn(
                       "relative z-0 rounded-full px-3 py-1.5 text-[13px] font-normal transition-colors duration-100",
@@ -103,24 +160,24 @@ export function AppNavbar() {
                     {active ? (
                       <motion.span
                         layoutId="nav-pill"
-                        className="absolute inset-0 -z-10 rounded-full bg-black/[0.06]"
-                        transition={{ type: "tween", duration: 0.25, ease }}
+                        className="absolute inset-0 rounded-full bg-black/[0.06]"
+                        transition={{ layout: pillSpring }}
                       />
                     ) : null}
-                    {item.label}
+                    <span className="relative z-10">{item.label}</span>
                   </Link>
                 );
               })}
               <Link
                 href="/#contact"
-                className="rounded-full px-3 py-1.5 text-[13px] font-normal text-[var(--fg-secondary)] transition-colors duration-100 hover:text-[var(--fg-primary)]"
+                className="relative z-0 rounded-full px-3 py-1.5 text-[13px] font-normal text-[var(--fg-secondary)] transition-colors duration-100 hover:text-[var(--fg-primary)]"
               >
                 Contact
               </Link>
             </nav>
           </LayoutGroup>
 
-          <div className="flex shrink-0 items-center gap-1 md:gap-2">
+          <div className="flex shrink-0 items-center justify-self-end gap-1 md:gap-2">
             <Link href="/#contact" className={cn(navPrimaryCtaClass, "hidden md:inline-flex")}>
               <span>Start a project</span>
               <span className={navPrimaryCtaIconClass} aria-hidden>
@@ -153,7 +210,7 @@ export function AppNavbar() {
               <nav className="flex flex-col gap-1">
                 {navItems.map((item) => (
                   <Link
-                    key={item.href}
+                    key={item.id}
                     href={item.href}
                     className="rounded-lg px-3 py-2 text-[13px] font-normal text-[var(--fg-secondary)]"
                     onClick={() => setMobileOpen(false)}
