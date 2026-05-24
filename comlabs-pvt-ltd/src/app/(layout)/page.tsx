@@ -18,9 +18,10 @@ export function MarketingHomePage() {
       <HeroSection />
       <FounderProblemSection />
       <ServicesSection />
+      <ProcessSection />
       <WorkSection />
       <WhyComlabsSection />
-      <ProcessSection />
+      
       <ToolsTechSection />
       <MetricsSection />
       <PricingSection />

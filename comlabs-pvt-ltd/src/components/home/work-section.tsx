@@ -1,76 +1,53 @@
-import Link from "next/link";
-
-import { bodyText, cardSurface, eyebrow, sectionTitle } from "@/lib/page-styles";
+import { bodyText, eyebrow, sectionTitle } from "@/lib/page-styles";
 import { cn } from "@/lib/utils";
 
-const stories = [
+const principles = [
   {
-    tag: "90+ performance target · SEO-ready structure",
-    title: "Rebuilding a SaaS homepage for trust and conversion",
-    before: "The story was buried below the fold and the primary action competed with three other links.",
-    improved: "A single narrative arc, one primary CTA, and pricing signals where buyers expect them.",
-    shipped: "Mobile-first rebuild, clearer CTA flow, analytics-ready launch.",
+    number: "01",
+    title: "Strategy before screens",
+    body: "We start with the message, the audience, and the conversion goal — so the design solves the right problem.",
   },
   {
-    tag: "Clearer CTA flow · Analytics-ready launch",
-    title: "Turning a generic agency site into a premium conversion system",
-    before: "Copy read like a capabilities list — visitors could not tell who it was for or what to do next.",
-    improved: "Tighter positioning, section order built around decisions, and proof placed next to claims.",
-    shipped: "Structured for conversion-focused website goals without a full rebrand.",
+    number: "02",
+    title: "Real content from day one",
+    body: "No lorem ipsum, no fake structure. Every page is shaped around actual offers, proof, and decision-making context.",
   },
   {
-    tag: "Mobile-first rebuild · Clearer CTA flow",
-    title: "Designing a product dashboard for faster user decisions",
-    before: "Key metrics were scattered across tabs; onboarding dropped after the first session.",
-    improved: "A default view that answers “what changed?” and guided next steps on one screen.",
-    shipped: "Product UI adjustments shipped behind the same auth and API layer.",
+    number: "03",
+    title: "Tight scopes. Faster decisions.",
+    body: "Work moves in focused slices so feedback stays clear, momentum stays high, and nothing gets buried in noise.",
   },
   {
-    tag: "SEO-ready structure · 90+ performance target",
-    title: "Building a launch page for early-stage customer validation",
-    before: "The team had a deck and a waitlist form, but no credible URL to send cold outreach.",
-    improved: "A tight launch narrative, waitlist capture, and social proof placeholders ready to fill in.",
-    shipped: "Landing page sprint with event tracking for sign-up and scroll depth.",
+    number: "04",
+    title: "Built to be launch-ready",
+    body: "From responsive behavior to interaction polish, the work is designed to feel complete — not just concept-level good.",
   },
-];
+] as const;
 
 export function WorkSection() {
   return (
     <section id="work" className="bg-[var(--bg-primary)] px-4 py-24 md:px-8">
       <div className="mx-auto max-w-6xl">
-        <p className={eyebrow}>Work</p>
-        <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <h2 className={sectionTitle}>Work that ships.</h2>
-          <Link
-            href="/#work"
-            className="shrink-0 text-[13px] font-normal text-blue-600 underline-offset-4 hover:underline"
-          >
-            View work →
-          </Link>
-        </div>
-        <p className={cn(bodyText, "mt-4 max-w-2xl")}>
-          Selected builds, rebuilds, and product interfaces focused on clarity, credibility, and
-          speed.
+        <p className={eyebrow}>How we work</p>
+        <h2 className={cn(sectionTitle, "mt-4")}>Work that ships.</h2>
+        <p className={cn(bodyText, "mt-4 max-w-xl")}>
+          Structured for clarity, built for momentum, and refined to go live without unnecessary
+          drag.
         </p>
 
-        <div className="mt-10 grid gap-4 md:grid-cols-3">
-          {stories.map((s) => (
-            <article key={s.title} className={cn(cardSurface, "flex flex-col")}>
-              <p className="text-[11px] font-normal uppercase tracking-widest text-[var(--fg-tertiary)]">
-                {s.tag}
+        <div className="mt-12 grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-5">
+          {principles.map((principle) => (
+            <article
+              key={principle.number}
+              className="flex flex-col rounded-2xl border border-zinc-200 bg-[var(--bg-surface)] p-6 transition-colors duration-150 hover:border-zinc-300 hover:bg-zinc-50/80"
+            >
+              <p className="text-[11px] font-normal tabular-nums tracking-[0.14em] text-[var(--fg-tertiary)]">
+                {principle.number}
               </p>
-              <h3 className="mt-3 text-[15px] font-medium text-[var(--fg-primary)]">{s.title}</h3>
-              <p className={cn(bodyText, "mt-2 text-[13px]")}>
-                <span className="font-medium text-[var(--fg-primary)]">Before: </span>
-                {s.before}
-              </p>
-              <p className={cn(bodyText, "mt-2 text-[13px]")}>
-                <span className="font-medium text-[var(--fg-primary)]">Improved: </span>
-                {s.improved}
-              </p>
-              <p className={cn(bodyText, "mt-2 text-[13px] font-medium text-[var(--fg-primary)]")}>
-                Shipped: {s.shipped}
-              </p>
+              <h3 className="mt-3 text-[15px] font-medium leading-snug text-[var(--fg-primary)] md:text-base">
+                {principle.title}
+              </h3>
+              <p className={cn(bodyText, "mt-2")}>{principle.body}</p>
             </article>
           ))}
         </div>
