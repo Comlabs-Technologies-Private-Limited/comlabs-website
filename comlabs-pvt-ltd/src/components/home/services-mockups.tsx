@@ -1,6 +1,8 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
+import Link from "next/link";
 import type { ReactNode, SVGProps } from "react";
 
 import { cn } from "@/lib/utils";
@@ -30,13 +32,39 @@ const frame = cn(
   "shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_-6px_rgba(0,0,0,0.06)]",
 );
 
-function MockFrame({ children, className }: { children: ReactNode; className?: string }) {
+function MockFrame({
+  children,
+  className,
+  interactive = false,
+}: {
+  children: ReactNode;
+  className?: string;
+  interactive?: boolean;
+}) {
   return (
-    <div className={cn(frame, className)} aria-hidden>
+    <div className={cn(frame, className)} {...(interactive ? {} : { "aria-hidden": true })}>
       {children}
     </div>
   );
 }
+
+const miniPrimaryCtaClass = cn(
+  "group relative z-10 inline-flex items-center gap-1 rounded-full border border-gray-400/20 py-0 pl-2 pr-0.5",
+  "text-[6px] font-medium leading-none tracking-tight text-black",
+  "bg-gray-100/90 shadow-[0_1px_2px_rgba(37,99,235,0.35)]",
+  "transition-[background-color,box-shadow,transform] duration-150",
+  "hover:bg-gray-100 active:scale-[0.98]",
+);
+
+const miniPrimaryCtaIconClass =
+  "flex size-3.5 shrink-0 items-center justify-center rounded-full bg-white transition-transform duration-150 group-hover:translate-x-px";
+
+const miniGhostCtaClass = cn(
+  "relative z-10 inline-flex items-center justify-center rounded-full border border-neutral-200/90 px-2 py-0.5",
+  "text-[7px] font-normal leading-none tracking-tight text-neutral-700",
+  "bg-white/80 shadow-sm shadow-black/5 backdrop-blur-sm",
+  "transition-all duration-150 hover:border-neutral-300 hover:bg-white active:scale-[0.98]",
+);
 
 function WindowDots() {
   return (
@@ -187,7 +215,8 @@ function useMockMotion(active: boolean) {
 
 export { MOCK_VIEWPORT };
 
-/** website-rebuild — investor profile card */
+/** website-rebuild — investor profile card (commented out — using mockup_before.png in services-section) */
+/*
 export function SaaSMockup({ active = false }: MockupProps) {
   const { container, item, reduce, reveal } = useMockMotion(active);
 
@@ -280,6 +309,7 @@ export function SaaSMockup({ active = false }: MockupProps) {
     </MockFrame>
   );
 }
+*/
 
 /** ai-automation — setup pipeline terminal */
 export function SapMockup({ active = false }: MockupProps) {
@@ -419,59 +449,159 @@ export function MvpMockup({ active = false }: MockupProps) {
   );
 }
 
-/** landing-sprint — composer prompt bar */
+/** landing-sprint — mini ComLabs hero landing page (Aceternity-style viewport) */
 export function LandingMockup({ active = false }: MockupProps) {
-  const { fade, container, item, reduce, reveal } = useMockMotion(active);
+  const { container, item, reduce, reveal } = useMockMotion(active);
+
+  const navLinks = ["Services", "Case Studies", "About"] as const;
 
   return (
-    <MockFrame className="p-4">
-      <motion.p
-        className="text-[16px] font-normal tracking-tight"
-        style={{ color: mock.subtle }}
-        {...fade}
-      >
-        What should we work on next?
-      </motion.p>
+    <MockFrame className="relative overflow-hidden p-0" interactive>
+      <div
+        className="pointer-events-none absolute inset-0 bg-gradient-to-br from-zinc-50/90 via-white to-blue-50/50"
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute inset-0 opacity-40"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle at 20% 30%, rgba(148,163,184,0.18) 0%, transparent 42%), radial-gradient(circle at 80% 70%, rgba(59,130,246,0.1) 0%, transparent 38%)",
+        }}
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute inset-y-0 left-[10%] border-l border-dashed border-zinc-200/70"
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute inset-y-0 right-[10%] border-r border-dashed border-zinc-200/70"
+        aria-hidden
+      />
 
-      <motion.div
-        className="mt-4 flex flex-wrap items-center gap-2"
-        variants={container}
-        {...reveal}
-      >
-        <motion.button
-          type="button"
-          variants={item}
-          whileHover={reduce ? undefined : { y: -1 }}
-          className="flex size-7 items-center justify-center rounded-lg border"
-          style={{ borderColor: mock.border, color: mock.default }}
+      <div className="relative z-[1]">
+        <motion.nav
+          className="flex items-center justify-between gap-2 border-b px-2.5 py-1"
+          style={{ borderColor: mock.border }}
+          variants={container}
+          {...reveal}
         >
-          <IconPlus size={13} />
-        </motion.button>
-
-        <motion.span
-          variants={item}
-          className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-medium"
-          style={{ backgroundColor: "#EFF6FF", color: "#2563EB" }}
-        >
-          <IconSearch size={12} />
-          Search
-        </motion.span>
-
-        <motion.span
-          variants={item}
-          className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[12px] font-medium"
-          style={{ borderColor: mock.border, color: mock.default }}
-        >
-          <IconTerminal size={12} />
-          Computer
-          <span
-            className="rounded px-1 py-0.5 text-[10px] font-medium"
-            style={{ backgroundColor: "#DBEAFE", color: "#2563EB" }}
+          <motion.span
+            variants={item}
+            className="shrink-0 text-[9px] font-medium tracking-tighter"
+            style={{ color: mock.strong }}
           >
-            New
-          </span>
-        </motion.span>
-      </motion.div>
+            Comlabs
+          </motion.span>
+
+          <motion.div variants={item} className="hidden min-w-0 items-center gap-1 sm:flex">
+            {navLinks.map((link, index) => (
+              <span key={link} className="flex items-center gap-1">
+                {index > 0 ? (
+                  <span className="size-0.5 rounded-full bg-blue-600/70" aria-hidden />
+                ) : null}
+                <span className="text-[6.5px] font-normal" style={{ color: mock.default }}>
+                  {link}
+                </span>
+              </span>
+            ))}
+          </motion.div>
+
+          <motion.div variants={item} className="-mt-2">
+            <Link href="/#contact" className={miniPrimaryCtaClass}>
+              <span className="text-[6px] font-medium leading-none tracking-tight text-black">Book call</span>
+              <span className={miniPrimaryCtaIconClass} aria-hidden>
+                <ArrowRight className="size-2 -rotate-45 text-black" strokeWidth={2.5} />
+              </span>
+            </Link>
+          </motion.div>
+        </motion.nav>
+
+        <motion.div className="px-2.5 pt-2 pb-1.5" variants={container} {...reveal}>
+          <motion.span
+            variants={item}
+            className="inline-flex items-center rounded-full border border-neutral-200/90 px-1.5 py-0.5"
+          >
+            <span
+              className="text-[5.5px] font-normal uppercase leading-none tracking-[0.12em]"
+              style={{ color: mock.strong }}
+            >
+              Websites · Product UI · Automation
+            </span>
+          </motion.span>
+
+          <motion.h3
+            variants={item}
+            className="mt-1.5 max-w-[26ch] text-[9px] font-medium leading-[1.15] tracking-tighter"
+            style={{ color: mock.strong }}
+          >
+            We build Websites that look{" "}
+            <span className="text-blue-950">Credible</span> and{" "}
+            <span className="text-blue-950">Convert</span>
+          </motion.h3>
+
+          <motion.p
+            variants={item}
+            className="mt-1 max-w-[34ch] text-[6.5px] font-normal leading-relaxed"
+            style={{ color: mock.default }}
+          >
+            Clean, fast, conversion-focused digital experiences with end-to-end product design,
+            development, and automation.
+          </motion.p>
+
+          <motion.div variants={item} className="mt-2 flex flex-wrap items-center gap-1">
+            <Link href="/#contact" className={miniPrimaryCtaClass}>
+              <span>Book a strategy call</span>
+              <span className={miniPrimaryCtaIconClass} aria-hidden>
+                <ArrowRight className="size-2 -rotate-45 text-black" strokeWidth={2.5} />
+              </span>
+            </Link>
+            <Link href="/case-studies" className={miniGhostCtaClass}>
+              See what we ship
+            </Link>
+          </motion.div>
+        </motion.div>
+
+        <motion.div
+          className="grid grid-cols-3 gap-1 px-2 pb-2"
+          variants={container}
+          {...reveal}
+        >
+          {[
+            { bars: 2, accent: "#3B82F6" },
+            { bars: 3, accent: mock.strong },
+            { bars: 2, accent: "#6366F1" },
+          ].map((card, index) => (
+            <motion.div
+              key={index}
+              variants={item}
+              whileHover={reduce ? undefined : { y: -1 }}
+              className="overflow-hidden rounded-md border p-1"
+              style={{ borderColor: mock.border, backgroundColor: "rgba(255,255,255,0.72)" }}
+            >
+              <div
+                className="h-1 rounded-sm"
+                style={{ backgroundColor: mock.border }}
+              />
+              <div className="mt-1 space-y-0.5">
+                {Array.from({ length: card.bars }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="h-0.5 rounded-full"
+                    style={{
+                      backgroundColor: mock.border,
+                      width: i === card.bars - 1 ? "55%" : "80%",
+                    }}
+                  />
+                ))}
+              </div>
+              <div
+                className="mt-1 h-1.5 rounded-sm"
+                style={{ backgroundColor: card.accent, opacity: 0.85 }}
+              />
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
     </MockFrame>
   );
 }
@@ -593,7 +723,8 @@ export function GrowthCroMockup({ active = false }: MockupProps) {
 export function ServiceMockup({ id, active = false }: { id: string; active?: boolean }) {
   switch (id) {
     case "website-rebuild":
-      return <SaaSMockup active={active} />;
+      // return <SaaSMockup active={active} />;
+      return null;
     case "landing-sprint":
       return <LandingMockup active={active} />;
     case "product-ui":
@@ -605,7 +736,8 @@ export function ServiceMockup({ id, active = false }: { id: string; active?: boo
     case "growth-cro":
       return <GrowthCroMockup active={active} />;
     case "saas":
-      return <SaaSMockup active={active} />;
+      // return <SaaSMockup active={active} />;
+      return null;
     case "sap":
       return <SapMockup active={active} />;
     case "mvp":

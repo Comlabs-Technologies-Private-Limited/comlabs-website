@@ -6,6 +6,7 @@ import { useRef } from "react";
 
 import { TextFade } from "@/components/motion/text-fade";
 import { MOCK_VIEWPORT, ServiceMockup } from "@/components/home/services-mockups";
+import { cn } from "@/lib/utils";
 
 const ease = [0.25, 0.1, 0, 1] as const;
 
@@ -22,6 +23,7 @@ const services = [
     description:
       "For startups with outdated, unclear, or underperforming websites that need to look more credible and convert better.",
     background: serviceBackgrounds[0],
+    mockupImage: "/card-bg/mockup_before.png",
   },
   {
     id: "landing-sprint",
@@ -66,7 +68,9 @@ function ServiceCard({
   description,
   background,
   index,
+  ...rest
 }: (typeof services)[number] & { index: number }) {
+  const mockupImage = "mockupImage" in rest ? rest.mockupImage : undefined;
   const cardRef = useRef<HTMLElement>(null);
   const reduceMotion = useReducedMotion();
   const inView = useInView(cardRef, MOCK_VIEWPORT);
@@ -81,19 +85,59 @@ function ServiceCard({
       transition={{ duration: reduceMotion ? 0 : 0.45, delay: reduceMotion ? 0 : index * 0.06, ease }}
     >
       <div className="relative mask-t-from-95% mask-b-from-95% aspect-[6/4] overflow-hidden rounded-lg border border-zinc-100 p-2.5 md:p-3">
-        <Image
-          src={background}
-          alt=""
-          fill
-          sizes="(max-width: 768px) 100vw, 33vw"
-          className="object-cover object-center"
-          aria-hidden
-        />
-        <div className="absolute top-20 right-2 bottom-2 left-2 flex items-center justify-center px-3 py-2 md:px-4">
-          <div className="w-full  max-w-[92%] [&>*]:shadow-[0_8px_24px_rgba(0,0,0,0.08)]">
-            <ServiceMockup id={id} active={visible} />
-          </div>
-        </div>
+        {mockupImage ? (
+          <>
+            <Image
+              src={background}
+              alt=""
+              fill
+              sizes="(max-width: 768px) 100vw, 33vw"
+              className="object-cover object-center"
+              aria-hidden
+            />
+            <motion.div
+              className="absolute inset-2.5 flex items-center justify-center md:inset-3"
+              initial={reduceMotion ? false : { opacity: 0, y: 10, scale: 0.98 }}
+              animate={
+                visible
+                  ? { opacity: 1, y: 0, scale: 1 }
+                  : { opacity: 0, y: 10, scale: 0.98 }
+              }
+              transition={{ duration: reduceMotion ? 0 : 0.5, ease }}
+            >
+              <div className="relative h-full w-full max-w-[92%] mt-20 ">
+                <Image
+                  src={mockupImage}
+                  alt="Before and after website rebuild comparison"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  className="object-contain object-center scale-120 pl-1"
+                />
+              </div>
+            </motion.div>
+          </>
+        ) : (
+          <>
+            <Image
+              src={background}
+              alt=""
+              fill
+              sizes="(max-width: 768px) 100vw, 33vw"
+              className="object-cover object-center"
+              aria-hidden
+            />
+            <div
+              className={cn(
+                "absolute right-2 bottom-2 left-2 flex justify-center px-3 py-2 md:px-4",
+                id === "landing-sprint" ? "top-8 items-start" : "top-20 items-center",
+              )}
+            >
+              <div className="w-full  max-w-[92%] [&>*]:shadow-[0_8px_24px_rgba(0,0,0,0.08)]">
+                <ServiceMockup id={id} active={visible} />
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
       <h3 className="mt-4 text-[15px] font-medium leading-snug tracking-tight text-zinc-900 md:mt-5 md:text-base">
