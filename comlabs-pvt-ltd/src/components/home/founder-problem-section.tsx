@@ -4,11 +4,11 @@ import { AnimatePresence, motion, useInView, useReducedMotion } from "framer-mot
 import Image from "next/image";
 import { useEffect, useRef, useState, type RefObject } from "react";
 
+import { SectionHeader } from "@/components/home/section-header";
 import { cn } from "@/lib/utils";
 
 const ease = [0.25, 0.1, 0, 1] as const;
 
-const HEADER_VIEWPORT = { once: true, amount: 0.28 } as const;
 const VISUAL_VIEWPORT = { once: true, amount: 0.18 } as const;
 
 const GRAIN_TEXTURE = `url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E")`;
@@ -255,14 +255,6 @@ function useTeardownLayout(containerRef: RefObject<HTMLDivElement | null>) {
   }, [containerRef]);
 
   return { innerRef, isCompact, height };
-}
-
-function stepTransition(delay: number, reduceMotion: boolean) {
-  return {
-    duration: reduceMotion ? 0 : 0.44,
-    delay: reduceMotion ? 0 : delay,
-    ease,
-  };
 }
 
 function DiagnosticMarker({
@@ -609,9 +601,7 @@ export function FounderProblemSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const visualRef = useRef<HTMLDivElement>(null);
   const reduceMotion = !!useReducedMotion();
-  const headerInView = useInView(sectionRef, HEADER_VIEWPORT);
   const visualInView = useInView(visualRef, VISUAL_VIEWPORT);
-  const headerVisible = reduceMotion || headerInView;
   const visualVisible = reduceMotion || visualInView;
   const { innerRef, isCompact, height } = useTeardownLayout(visualRef);
   const { phases, markerPhases, titleTexts, bodyTexts, activeIndex } = useAnnotationSequence(
@@ -619,39 +609,22 @@ export function FounderProblemSection() {
     reduceMotion,
   );
 
-  const hidden = reduceMotion ? false : { opacity: 0, y: 14 };
-  const shown = { opacity: 1, y: 0 };
-
   return (
     <section ref={sectionRef} className="overflow-x-clip bg-white px-3 py-14 md:px-8 md:py-24">
       <div className="mx-auto max-w-6xl">
-        <motion.p
-          className="text-[10px] font-medium uppercase tracking-[0.14em] text-zinc-400 md:text-[11px]"
-          initial={hidden}
-          animate={headerVisible ? shown : hidden}
-          transition={stepTransition(0, reduceMotion)}
-        >
-          Website leak points
-        </motion.p>
-
-        <motion.h2
-          className="mt-2.5 max-w-[760px] text-[clamp(1.5rem,3.2vw,2.375rem)] font-medium leading-[1.14] tracking-tighter text-[var(--fg-primary)] md:mt-3 md:leading-[1.12]"
-          initial={hidden}
-          animate={headerVisible ? shown : hidden}
-          transition={stepTransition(0.1, reduceMotion)}
-        >
-          Your Website may leak Trust <br/> before Buyers ever  <br/>talk to you.
-        </motion.h2>
-
-        <motion.p
-          className="mt-3 max-w-[620px] text-[0.875rem] font-normal leading-relaxed text-[var(--fg-secondary)] md:mt-4 md:text-[0.9375rem]"
-          initial={hidden}
-          animate={headerVisible ? shown : hidden}
-          transition={stepTransition(0.2, reduceMotion)}
-        >
-          Weak websites rarely fail in one obvious place. They lose people through unclear messaging,
-          low credibility, and broken conversion paths.
-        </motion.p>
+        <SectionHeader>
+          <p className="text-[10px] font-medium uppercase tracking-[0.14em] text-zinc-400 md:text-[11px]">
+            Website leak points
+          </p>
+          <h2 className="mt-2.5 max-w-[760px] text-[clamp(1.5rem,3.2vw,2.375rem)] font-medium leading-[1.14] tracking-tighter text-[var(--fg-primary)] md:mt-3 md:leading-[1.12]">
+            Your Website may leak Trust <br /> before Buyers ever <br />
+            talk to you.
+          </h2>
+          <p className="mt-3 max-w-[620px] text-[0.875rem] font-normal leading-relaxed text-[var(--fg-secondary)] md:mt-4 md:text-[0.9375rem]">
+            Weak websites rarely fail in one obvious place. They lose people through unclear
+            messaging, low credibility, and broken conversion paths.
+          </p>
+        </SectionHeader>
 
         <div
           ref={visualRef}

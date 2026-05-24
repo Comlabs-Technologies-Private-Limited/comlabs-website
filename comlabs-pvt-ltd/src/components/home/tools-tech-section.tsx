@@ -22,7 +22,7 @@ import {
   siVuedotjs,
 } from "simple-icons";
 
-import { TextFade } from "@/components/motion/text-fade";
+import { SectionHeader } from "@/components/home/section-header";
 import { bodyText, sectionTitle } from "@/lib/page-styles";
 import { cn } from "@/lib/utils";
 
@@ -115,20 +115,19 @@ export function ToolsTechSection() {
   return (
     <section id="tools" className="bg-[var(--bg-primary)] px-4 py-24 md:px-8">
       <div className="mx-auto max-w-6xl">
-        <TextFade mode="inview" staggerChildren={0.08} viewport={{ amount: 0.25, once: true }}>
+        <SectionHeader>
           <p className="flex items-center gap-2 text-[12px] font-normal uppercase leading-none tracking-widest text-neutral-500">
             <span className="h-3 w-px rounded-full bg-blue-600/70" aria-hidden />
             <span className="text-blue-600">Tools & stack</span>
           </p>
           <h2 className={cn(sectionTitle, "mt-4 max-w-[22ch] text-neutral-950")}>
-            The stack behind{" "}
-            <span className="text-blue-600">fast, reliable launches</span>.
+            The stack behind <span className="text-blue-600">fast, reliable launches</span>.
           </h2>
           <p className={cn(bodyText, "mt-4 max-w-2xl text-[var(--fg-secondary)]")}>
             We use a focused modern stack to design, build, launch, and iterate quickly — without
             slowing your team down.
           </p>
-        </TextFade>
+        </SectionHeader>
 
         <div
           className={cn(

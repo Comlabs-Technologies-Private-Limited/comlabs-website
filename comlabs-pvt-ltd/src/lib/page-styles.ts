@@ -13,3 +13,13 @@ export const sectionTitle =
 
 export const bodyText =
   "text-[0.9375rem] font-normal leading-relaxed text-[var(--fg-secondary)]";
+
+/** Section headers — matches Services section typography. */
+export const servicesEyebrow =
+  "text-[11px] font-medium uppercase tracking-[0.14em] text-zinc-400";
+
+export const servicesTitle =
+  "mt-3 max-w-[22ch] text-[clamp(1.625rem,3.2vw,2.375rem)] font-medium leading-[1.12] tracking-tighter text-[var(--fg-primary)]";
+
+export const servicesSubtitle =
+  "mt-4 max-w-[42rem] text-[0.9375rem] font-normal leading-relaxed text-[var(--fg-secondary)]";

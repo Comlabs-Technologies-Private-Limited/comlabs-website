@@ -1,3 +1,4 @@
+import { SectionHeader } from "@/components/home/section-header";
 import { homeFaqs } from "@/lib/faq-data";
 import { bodyText, eyebrow, sectionTitle } from "@/lib/page-styles";
 import { cn } from "@/lib/utils";
@@ -6,11 +7,11 @@ export function FaqSection() {
   return (
     <section id="faq" className="bg-[var(--bg-primary)] px-4 py-24 md:px-8">
       <div className="mx-auto max-w-3xl">
-        <p className={eyebrow}>FAQ</p>
-        <h2 className={cn(sectionTitle, "mt-4")}>Straight answers.</h2>
-        <p className={cn(bodyText, "mt-4")}>
-          Common questions before we work together.
-        </p>
+        <SectionHeader>
+          <p className={eyebrow}>FAQ</p>
+          <h2 className={cn(sectionTitle, "mt-4")}>Straight answers.</h2>
+          <p className={cn(bodyText, "mt-4")}>Common questions before we work together.</p>
+        </SectionHeader>
 
         <div className="mt-10 divide-y divide-[var(--border)] border-t border-[var(--border)]">
           {homeFaqs.map((item) => (

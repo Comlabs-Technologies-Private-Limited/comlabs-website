@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 
+import { SectionHeader } from "@/components/home/section-header";
 import { PixelGridMark } from "@/components/decorative/pixel-grid-mark";
-import { TextFade } from "@/components/motion/text-fade";
 import { bodyText, eyebrow, sectionTitle } from "@/lib/page-styles";
 import { cn } from "@/lib/utils";
 
@@ -51,14 +51,14 @@ export function PricingSection() {
           </div>
 
           <div className="min-w-0 flex-1">
-            <TextFade mode="scroll">
+            <SectionHeader>
               <p className={eyebrow}>Pricing</p>
               <h2 className={cn(sectionTitle, "mt-4")}>Transparent from the start.</h2>
               <p className={cn(bodyText, "mt-4 max-w-2xl")}>
                 Clear starting points for focused website, product UI, and automation work. Final
                 pricing depends on scope, integrations, animation depth, and delivery timeline.
               </p>
-            </TextFade>
+            </SectionHeader>
           </div>
         </div>
 

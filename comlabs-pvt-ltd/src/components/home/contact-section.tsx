@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 
-import { TextFade } from "@/components/motion/text-fade";
+import { SectionHeader } from "@/components/home/section-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -17,7 +17,7 @@ export function ContactSection() {
     <section id="contact" className="bg-[var(--bg-primary)] px-4 py-24 md:px-8">
       <div className="mx-auto grid max-w-6xl gap-12 md:grid-cols-2 md:gap-8">
         <div>
-          <TextFade mode="scroll">
+          <SectionHeader>
             <p className={eyebrow}>Contact</p>
             <h2 className="mt-4 text-[clamp(1.75rem,3vw,2.5rem)] font-medium leading-tight tracking-[-0.025em] text-[var(--fg-primary)]">
               Let&apos;s make your startup look ready to scale.
@@ -26,7 +26,7 @@ export function ContactSection() {
               Share your website, product, or launch goal. I&apos;ll review where you are, what needs
               to change, and how we can ship it with clarity.
             </p>
-          </TextFade>
+          </SectionHeader>
           <div className="mt-8 flex gap-6 text-[var(--fg-tertiary)]">
             <Link
               href="https://github.com"

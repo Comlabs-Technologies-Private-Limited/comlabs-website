@@ -17,7 +17,8 @@ import {
 import Image from "next/image";
 import { useRef } from "react";
 
-import { TextFade } from "@/components/motion/text-fade";
+import { SectionHeader } from "@/components/home/section-header";
+import { servicesEyebrow, servicesSubtitle, servicesTitle } from "@/lib/page-styles";
 import { cn } from "@/lib/utils";
 
 const ease = [0.25, 0.1, 0, 1] as const;
@@ -145,17 +146,13 @@ export function ProcessSection() {
   return (
     <section className="flex min-h-screen flex-col justify-center bg-[#161718] px-4 py-20 md:px-8 md:py-24">
       <div className="mx-auto w-full max-w-6xl">
-        <TextFade mode="scroll">
-          <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-zinc-500">
-            Process
-          </p>
-          <h2 className="mt-3 max-w-[22ch] text-[clamp(1.625rem,3.2vw,2.375rem)] font-medium leading-[1.12] tracking-tighter text-zinc-50">
-            How we work.
-          </h2>
-          <p className="mt-4 max-w-[42rem] text-[0.9375rem] font-normal leading-relaxed text-zinc-400">
+        <SectionHeader>
+          <p className={cn(servicesEyebrow, "text-zinc-500")}>Process</p>
+          <h2 className={cn(servicesTitle, "text-zinc-50")}>How we work.</h2>
+          <p className={cn(servicesSubtitle, "text-zinc-400")}>
             Clear steps from first audit to launch, without a bloated agency process.
           </p>
-        </TextFade>
+        </SectionHeader>
 
         <div
           ref={stepsRef}

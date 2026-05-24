@@ -1,4 +1,5 @@
-import { bodyText, eyebrow, sectionTitle } from "@/lib/page-styles";
+import { SectionHeader } from "@/components/home/section-header";
+import { bodyText, servicesEyebrow, servicesSubtitle, servicesTitle } from "@/lib/page-styles";
 import { cn } from "@/lib/utils";
 
 const principles = [
@@ -28,14 +29,16 @@ export function WorkSection() {
   return (
     <section id="work" className="bg-[var(--bg-primary)] px-4 py-24 md:px-8">
       <div className="mx-auto max-w-6xl">
-        <p className={eyebrow}>How we work</p>
-        <h2 className={cn(sectionTitle, "mt-4")}>Work that ships.</h2>
-        <p className={cn(bodyText, "mt-4 max-w-xl")}>
-          Structured for clarity, built for momentum, and refined to go live without unnecessary
-          drag.
-        </p>
+        <SectionHeader>
+          <p className={servicesEyebrow}>How we work</p>
+          <h2 className={servicesTitle}>Work that ships.</h2>
+          <p className={servicesSubtitle}>
+            Structured for clarity, built for momentum, and refined to go live without unnecessary
+            drag.
+          </p>
+        </SectionHeader>
 
-        <div className="mt-12 grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-5">
+        <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-5">
           {principles.map((principle) => (
             <article
               key={principle.number}

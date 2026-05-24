@@ -1,6 +1,6 @@
 "use client";
 
-import { TextFade } from "@/components/motion/text-fade";
+import { SectionHeader } from "@/components/home/section-header";
 import { bodyText, cardSurface, eyebrow, sectionTitle } from "@/lib/page-styles";
 import { cn } from "@/lib/utils";
 
@@ -27,7 +27,7 @@ export function WhyComlabsSection() {
   return (
     <section className="bg-[var(--bg-primary)] px-4 py-24 md:px-8">
       <div className="mx-auto max-w-6xl">
-        <TextFade mode="scroll">
+        <SectionHeader>
           <p className={eyebrow}>Why Comlabs</p>
           <h2 className={cn(sectionTitle, "mt-4 max-w-[28ch]")}>
             Senior execution without agency overhead.
@@ -36,7 +36,7 @@ export function WhyComlabsSection() {
             You work directly with the person designing, building, and shipping the work. No
             handoffs. No bloated team. No slow communication.
           </p>
-        </TextFade>
+        </SectionHeader>
 
         <div className="mt-12 grid gap-4 sm:grid-cols-2">
           {pillars.map((p) => (

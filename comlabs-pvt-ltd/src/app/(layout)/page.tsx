@@ -8,6 +8,7 @@ import { ServicesSection } from "@/components/home/services-section";
 import { ToolsTechSection } from "@/components/home/tools-tech-section";
 import { WhyComlabsSection } from "@/components/home/why-comlabs-section";
 import { WorkSection } from "@/components/home/work-section";
+import { DesignsBuiltSection } from "@/components/home/designs-built-section";
 import { HeroSection } from "@/components/hero/hero-section";
 import { HomeJsonLd } from "@/components/seo/home-json-ld";
 
@@ -20,6 +21,7 @@ export function MarketingHomePage() {
       <ServicesSection />
       <ProcessSection />
       <WorkSection />
+      <DesignsBuiltSection />
       <WhyComlabsSection />
       
       <ToolsTechSection />
