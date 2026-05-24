@@ -1,6 +1,8 @@
+import type { ReactNode } from "react";
+
 export function MarketingLayout({
   children,
-}: Readonly<{ children: React.ReactNode }>) {
+}: Readonly<{ children: ReactNode }>) {
   return <>{children}</>;
 }
 

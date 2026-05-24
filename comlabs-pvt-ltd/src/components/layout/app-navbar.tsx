@@ -124,7 +124,7 @@ export function AppNavbar() {
         <div
           className={cn(
             glassPill,
-            "grid min-h-[48px] w-full min-w-0 grid-cols-[1fr_auto_1fr] items-center gap-2 py-1.5 pl-4 pr-4 md:min-h-[52px] md:gap-3 md:pl-8 md:pr-8 md:py-2",
+            "grid min-h-[48px] w-full min-w-0 grid-cols-[1fr_auto] items-center gap-2 py-1.5 pl-4 pr-4 md:min-h-[52px] md:grid-cols-[1fr_auto_1fr] md:gap-3 md:pl-8 md:pr-8 md:py-2",
           )}
           style={glassStyle}
         >
