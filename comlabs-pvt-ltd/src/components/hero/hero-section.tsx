@@ -33,7 +33,7 @@ export function HeroSection() {
           </span>
           
           <h1 className=" mt-6 max-w-[22ch] text-4xl md:text-7xl font-medium leading-[1.05] tracking-tighter text-[var(--fg-primary)] text-wrap">
-            We build Websites that look {" "} <span className="text-blue-950">Credible</span> and <span className="text-blue-950">Convert</span>
+            We build Websites that <br/>look <span className="text-blue-950">Credible</span> and <br/><span className="text-blue-950">Convert</span>
           </h1>
           <p className="mt-6 max-w-2xl text-sm md:text-md font-normal leading-relaxed text-[var(--fg-secondary)]">
             Comlabs has helped 12+ founders achieve clean, fast, conversion-focused digital experiences with end-to-end product design, development, and automation.
@@ -42,7 +42,7 @@ export function HeroSection() {
         </TextFade>
         <div className="mt-10 flex flex-wrap items-center gap-3">
           <Link href="/#contact" className={navPrimaryCtaClass}>
-            <span>Book a strategy call</span>
+            <span>Get a website audit for free</span>
             <span className={navPrimaryCtaIconClass} aria-hidden>
               <ArrowRight className="size-4 -rotate-45 text-black" strokeWidth={2} />
             </span>

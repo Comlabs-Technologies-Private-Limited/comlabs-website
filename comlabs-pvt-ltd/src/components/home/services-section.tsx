@@ -33,10 +33,10 @@ const services = [
     id: "landing-sprint",
     title: "Launch-ready landing pages",
     description:
-      "For product launches, waitlists, campaigns, and high-intent traffic that needs speed without sacrificing quality.",
+      "Built with the right sections, proof, and CTA flow so visitors can understand, trust, and act.",
     background: serviceBackgrounds[1],
     mockupAlt: "",
-    mockupOverlayClassName: "top-6 bottom-2 items-stretch",
+    mockupOverlayClassName: "md:top-6 top-2 bottom-2 items-stretch",
     mockupWrapperClassName: "mt-6 flex h-full flex-col",
     mockupClassName: "",
   },
@@ -47,8 +47,8 @@ const services = [
       "For lead capture, onboarding, support workflows, and repeatable processes where automation removes friction.",
     background: serviceBackgrounds[1],
     mockupAlt: "",
-    mockupOverlayClassName: "top-20 items-center",
-    mockupWrapperClassName: "mt-4",
+    mockupOverlayClassName: "inset-2.5 top-8 bottom-2.5 items-stretch md:inset-3 md:top-10",
+    mockupWrapperClassName: "flex h-full w-full max-w-[94%] flex-col",
     mockupClassName: "",
   },
   {
@@ -59,8 +59,21 @@ const services = [
     background: serviceBackgrounds[0],
     mockupImage: "/card-bg/product-ui-mockup.png",
     mockupAlt: "Pulse SaaS dashboard and mobile UI design mockup",
-    mockupOverlayClassName: "mt-8 md:mt-12",
+    mockupOverlayClassName: "mt-5 md:mt-6 scale-112",
     mockupWrapperClassName: "",
+    mockupClassName: "",
+  },
+
+  {
+    id: "growth-cro",
+    title: "Consultation and Strategy",
+    description:
+      "We help you with your existing landing page on design, strategy and optimizations.",
+    background: serviceBackgrounds[0],
+    mockupImage: "/card-bg/consultation_strategy_card_only.png",
+    mockupAlt: "Live consultation call with strategy board, live notes, and focus areas",
+    mockupOverlayClassName: "",
+    mockupWrapperClassName: "md:mt-20 mt-12",
     mockupClassName: "",
   },
   {
@@ -68,22 +81,10 @@ const services = [
     title: "Copywriting and SEO",
     description:
       "We make sure that you're found on Google and platforms like ChatGPT and Perplexity. We also write the copy for your website to make it more engaging.",
-    background: serviceBackgrounds[0],
-    mockupAlt: "",
-    mockupOverlayClassName: "md:top-12 top-8 items-start",
-    mockupWrapperClassName: "",
-    mockupClassName: "",
-  },
-  {
-    id: "growth-cro",
-    title: "Consultation and Strategy",
-    description:
-      "We help you with your existing landing page on design, strategy and optimizations.",
     background: serviceBackgrounds[1],
-    mockupImage: "/card-bg/consultation_strategy_card_only.png",
-    mockupAlt: "Live consultation call with strategy board, live notes, and focus areas",
-    mockupOverlayClassName: "",
-    mockupWrapperClassName: "md:mt-20 mt-12",
+    mockupAlt: "",
+    mockupOverlayClassName: "md:top-16 top-8 items-",
+    mockupWrapperClassName: "top-16",
     mockupClassName: "",
   },
 ] as const;
@@ -120,6 +121,7 @@ function ServiceCard({
               src={background}
               alt=""
               fill
+              priority={index === 0}
               sizes="(max-width: 768px) 100vw, 33vw"
               className="object-cover object-center"
               aria-hidden
@@ -163,6 +165,7 @@ function ServiceCard({
               src={background}
               alt=""
               fill
+              priority={index === 0}
               sizes="(max-width: 768px) 100vw, 33vw"
               className="object-cover object-center"
               aria-hidden
@@ -206,7 +209,7 @@ export function ServicesSection() {
             Services
           </p>
           <h2 className="mt-3 max-w-[22ch] text-[clamp(1.625rem,3.2vw,2.375rem)] font-medium leading-[1.12] tracking-tighter text-[var(--fg-primary)]">
-            What we ship for startups that need to move faster.
+            What we ship for startups <br/>that need to move <br/>faster.
           </h2>
           <p className="mt-4 max-w-[42rem] text-[0.9375rem] font-normal leading-relaxed text-[var(--fg-secondary)]">
             Focused services for sharper websites, stronger product experience, and systems that
