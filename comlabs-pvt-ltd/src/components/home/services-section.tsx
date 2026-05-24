@@ -24,6 +24,10 @@ const services = [
       "For startups with outdated, unclear, or underperforming websites that need to look more credible and convert better.",
     background: serviceBackgrounds[0],
     mockupImage: "/card-bg/mockup_before.png",
+    mockupAlt: "Before and after website rebuild comparison",
+    mockupOverlayClassName: "",
+    mockupWrapperClassName: "mt-12 md:mt-22",
+    mockupClassName: "scale-107 pl-1",
   },
   {
     id: "landing-sprint",
@@ -31,13 +35,10 @@ const services = [
     description:
       "For product launches, waitlists, campaigns, and high-intent traffic that needs speed without sacrificing quality.",
     background: serviceBackgrounds[1],
-  },
-  {
-    id: "product-ui",
-    title: "Product UI and frontend",
-    description:
-      "For dashboards, SaaS interfaces, portals, and customer-facing product flows that should feel like one system.",
-    background: serviceBackgrounds[0],
+    mockupAlt: "",
+    mockupOverlayClassName: "top-6 bottom-2 items-stretch",
+    mockupWrapperClassName: "mt-6 flex h-full flex-col",
+    mockupClassName: "",
   },
   {
     id: "ai-automation",
@@ -45,32 +46,60 @@ const services = [
     description:
       "For lead capture, onboarding, support workflows, and repeatable processes where automation removes friction.",
     background: serviceBackgrounds[1],
+    mockupAlt: "",
+    mockupOverlayClassName: "top-20 items-center",
+    mockupWrapperClassName: "mt-4",
+    mockupClassName: "",
+  },
+  {
+    id: "product-ui",
+    title: "Product UI and frontend",
+    description:
+      "For dashboards, SaaS interfaces, portals, and customer-facing product flows that should feel like one system.",
+    background: serviceBackgrounds[0],
+    mockupImage: "/card-bg/product-ui-mockup.png",
+    mockupAlt: "Pulse SaaS dashboard and mobile UI design mockup",
+    mockupOverlayClassName: "mt-8 md:mt-12",
+    mockupWrapperClassName: "",
+    mockupClassName: "",
   },
   {
     id: "maintenance",
-    title: "Maintenance and iteration",
+    title: "Copywriting and SEO",
     description:
-      "For teams that want the site to keep improving after launch with updates, analytics, and conversion refinements.",
+      "We make sure that you're found on Google and platforms like ChatGPT and Perplexity. We also write the copy for your website to make it more engaging.",
     background: serviceBackgrounds[0],
+    mockupAlt: "",
+    mockupOverlayClassName: "md:top-12 top-8 items-start",
+    mockupWrapperClassName: "",
+    mockupClassName: "",
   },
   {
     id: "growth-cro",
-    title: "Conversion optimization",
+    title: "Consultation and Strategy",
     description:
-      "For teams with traffic but weak signups who need clearer offers, proof, and CTA paths that convert.",
+      "We help you with your existing landing page on design, strategy and optimizations.",
     background: serviceBackgrounds[1],
+    mockupImage: "/card-bg/consultation_strategy_card_only.png",
+    mockupAlt: "Live consultation call with strategy board, live notes, and focus areas",
+    mockupOverlayClassName: "",
+    mockupWrapperClassName: "md:mt-20 mt-12",
+    mockupClassName: "",
   },
 ] as const;
 
 function ServiceCard({
-  id,
   title,
   description,
   background,
   index,
-  ...rest
-}: (typeof services)[number] & { index: number }) {
-  const mockupImage = "mockupImage" in rest ? rest.mockupImage : undefined;
+  mockupImage,
+  mockupAlt,
+  mockupOverlayClassName,
+  mockupWrapperClassName,
+  mockupClassName,
+  id,
+}: (typeof services)[number] & { index: number; mockupImage?: string }) {
   const cardRef = useRef<HTMLElement>(null);
   const reduceMotion = useReducedMotion();
   const inView = useInView(cardRef, MOCK_VIEWPORT);
@@ -96,7 +125,10 @@ function ServiceCard({
               aria-hidden
             />
             <motion.div
-              className="absolute inset-2.5 flex items-center justify-center md:inset-3"
+              className={cn(
+                "absolute inset-2.5 flex items-center justify-center md:inset-3",
+                mockupOverlayClassName,
+              )}
               initial={reduceMotion ? false : { opacity: 0, y: 10, scale: 0.98 }}
               animate={
                 visible
@@ -105,13 +137,22 @@ function ServiceCard({
               }
               transition={{ duration: reduceMotion ? 0 : 0.5, ease }}
             >
-              <div className="relative h-full w-full max-w-[92%] mt-20 ">
+              <div
+                className={cn(
+                  "relative h-full w-full max-w-[92%]",
+                  mockupWrapperClassName,
+                )}
+              >
                 <Image
                   src={mockupImage}
-                  alt="Before and after website rebuild comparison"
-                  fill
+                  alt={mockupAlt || "Service preview mockup"}
+                  width={500}
+                  height={500}
                   sizes="(max-width: 768px) 100vw, 33vw"
-                  className="object-contain object-center scale-120 pl-1"
+                  className={cn(
+                    "pointer-events-none rounded-lg object-contain object-center",
+                    mockupClassName,
+                  )}
                 />
               </div>
             </motion.div>
@@ -129,10 +170,16 @@ function ServiceCard({
             <div
               className={cn(
                 "absolute right-2 bottom-2 left-2 flex justify-center px-3 py-2 md:px-4",
-                id === "landing-sprint" ? "top-8 items-start" : "top-20 items-center",
+                mockupOverlayClassName,
               )}
             >
-              <div className="w-full  max-w-[92%] [&>*]:shadow-[0_8px_24px_rgba(0,0,0,0.08)]">
+              <div
+                className={cn(
+                  "w-full max-w-[92%] [&>*]:shadow-[0_8px_24px_rgba(0,0,0,0.08)]",
+                  mockupWrapperClassName,
+                  mockupClassName,
+                )}
+              >
                 <ServiceMockup id={id} active={visible} />
               </div>
             </div>
@@ -167,7 +214,7 @@ export function ServicesSection() {
           </p>
         </TextFade>
 
-        <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-5">
+        <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-5">
           {services.map((service, index) => (
             <ServiceCard key={service.id} {...service} index={index} />
           ))}
