@@ -20,9 +20,9 @@ const serviceBackgrounds = [
 const services = [
   {
     id: "website-rebuild",
-    title: "Startup website rebuilds",
+    title: "Website rebuilds",
     description:
-      "For startups with outdated, unclear, or underperforming websites that need to look more credible and convert better.",
+      "Turn an outdated website into a sharper, faster site that builds trust and brings more inquiries.",
     background: serviceBackgrounds[0],
     mockupImage: "/card-bg/mockup_before.png",
     mockupAlt: "Before and after website rebuild comparison",
@@ -32,9 +32,9 @@ const services = [
   },
   {
     id: "landing-sprint",
-    title: "Launch-ready landing pages",
+    title: "Launch pages",
     description:
-      "Built with the right sections, proof, and CTA flow so visitors can understand, trust, and act.",
+      "Clear landing pages for launches, waitlists, and campaigns — built to explain fast and convert visitors.",
     background: serviceBackgrounds[1],
     mockupAlt: "",
     mockupOverlayClassName: "md:top-6 top-2 bottom-2 items-stretch",
@@ -43,9 +43,9 @@ const services = [
   },
   {
     id: "ai-automation",
-    title: "AI automation layers",
+    title: "AI automations",
     description:
-      "For lead capture, onboarding, support workflows, and repeatable processes where automation removes friction.",
+      "Automate lead capture, follow-ups, onboarding, and support so your team saves time every week.",
     background: serviceBackgrounds[1],
     mockupAlt: "",
     mockupOverlayClassName: "inset-2.5 top-8 bottom-2.5 items-stretch md:inset-3 md:top-10",
@@ -54,9 +54,9 @@ const services = [
   },
   {
     id: "product-ui",
-    title: "Product UI and frontend",
+    title: "Product UI & frontend",
     description:
-      "For dashboards, SaaS interfaces, portals, and customer-facing product flows that should feel like one system.",
+      "Clean dashboards, portals, and product interfaces that feel polished, usable, and ready to scale.",
     background: serviceBackgrounds[0],
     mockupImage: "/card-bg/product-ui-mockup.png",
     mockupAlt: "Pulse SaaS dashboard and mobile UI design mockup",
@@ -67,9 +67,9 @@ const services = [
 
   {
     id: "growth-cro",
-    title: "Consultation and Strategy",
+    title: "Strategy calls",
     description:
-      "We help you with your existing landing page on design, strategy and optimizations.",
+      "Get clear direction on your website, positioning, page structure, and next best improvements.",
     background: serviceBackgrounds[0],
     mockupImage: "/card-bg/consultation_strategy_card_only.png",
     mockupAlt: "Live consultation call with strategy board, live notes, and focus areas",
@@ -79,9 +79,9 @@ const services = [
   },
   {
     id: "maintenance",
-    title: "Copywriting and SEO",
+    title: "Copywriting & SEO",
     description:
-      "We make sure that you're found on Google and platforms like ChatGPT and Perplexity. We also write the copy for your website to make it more engaging.",
+      "Get found on Google, ChatGPT, and Perplexity — with clear copy that turns visitors into customers.",
     background: serviceBackgrounds[1],
     mockupAlt: "",
     mockupOverlayClassName: "md:top-16 top-8 items-",
@@ -212,8 +212,7 @@ export function ServicesSection() {
             faster.
           </h2>
           <p className={servicesSubtitle}>
-            Focused services for sharper websites, stronger product experience, and systems that
-            save time — scoped tightly and shipped in focused slices.
+          Focused website, product, and automation work designed to remove friction <br/> and help your business grow.
           </p>
         </SectionHeader>
 
