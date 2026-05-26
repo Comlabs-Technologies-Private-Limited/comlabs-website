@@ -27,26 +27,31 @@ const steps: {
   icon: LucideIcon;
   title: string;
   body: string;
+  background: string;
 }[] = [
   {
     icon: ScanSearch,
     title: "Diagnose",
     body: "We review your current website, positioning, product, competitors, and conversion gaps.",
+    background: "/card-bg/process-card-1.png",
   },
   {
     icon: LayoutGrid,
     title: "Structure",
     body: "We define the pages, user flow, and sections needed to make the site clear and conversion-focused.",
+    background: "/card-bg/process-card-2.png",
   },
   {
     icon: Layers,
     title: "Design",
     body: "We create a clean, premium interface that makes your startup feel credible and differentiated.",
+    background: "/card-bg/process-card-3.png",
   },
   {
     icon: Rocket,
-    title: "Build and launch",
+    title: "Build & launch",
     body: "We develop, test, optimize, and launch with performance, SEO, CMS, analytics, and integrations in place.",
+    background: "/card-bg/process-card-4.png",
   },
 ];
 
@@ -92,12 +97,47 @@ function ProcessStepItem({
   title,
   body,
   bordered = false,
+  background,
 }: {
   icon: LucideIcon;
   title: string;
   body: string;
   bordered?: boolean;
+  background?: string;
 }) {
+  if (!bordered && background) {
+    return (
+      <article className="group relative aspect-[4/5] w-full overflow-hidden rounded-sm p-3">
+        <Image
+          src={background}
+          alt=""
+          fill
+          quality={100}
+          sizes="(max-width: 768px) 100vw, 280px"
+          className="object-cover object-center saturate-180"
+          aria-hidden
+        />
+
+        <div className="absolute inset-[8px] border border-white/30 flex flex-col rounded-sm bg-white/40 backdrop-blur-[2px] p-3">
+          <Icon
+            className="h-6 w-6 shrink-0 text-neutral-900"
+            strokeWidth={1.5}
+            aria-hidden
+          />
+
+          <div className="mt-auto">
+            <h3 className="text-xl font-normal leading-snug tracking-tight text-neutral-900">
+              {title}
+            </h3>
+            <p className=" overflow-hidden text-[12px] font-normal leading-snug text-neutral-700 opacity-100 transition-all duration-300 ease-out mt-2.5 max-h-32 group-hover:opacity-100">
+              {body}
+            </p>
+          </div>
+        </div>
+      </article>
+    );
+  }
+
   return (
     <article
       className={cn(
@@ -117,7 +157,7 @@ function ProcessStepItem({
         className={cn(
           "font-medium leading-snug tracking-tight",
           bordered
-            ? "mt-3 text-[14px] text-zinc-900 md:mt-4 md:text-[15px] lg:text-base"
+            ? "mt-3 text-[12px] text-zinc-900 md:mt-4 md:text-[14px]"
             : "mt-4 text-[15px] text-zinc-50 md:text-base",
         )}
       >
@@ -127,7 +167,7 @@ function ProcessStepItem({
         className={cn(
           "font-normal leading-relaxed",
           bordered
-            ? "mt-2 text-[12px] text-zinc-700 md:text-[13px] lg:text-[14px]"
+            ? "mt-2 text-[12px] text-zinc-700 md:text-[10px] lg:text-[14px]"
             : "mt-2 text-[13px] text-zinc-400 md:text-[14px]",
         )}
       >
@@ -144,19 +184,18 @@ export function ProcessSection() {
   const extrasInView = useInView(extrasRef, { once: true, margin: "-80px" });
 
   return (
-    <section className="flex min-h-screen flex-col justify-center bg-[#161718] px-4 py-20 md:px-8 md:py-24">
+    <section className="flex min-h-screen flex-col justify-center bg-white  px-4 py-20 md:px-8 md:py-24">
       <div className="mx-auto w-full max-w-6xl">
         <SectionHeader>
           <p className={cn(servicesEyebrow, "text-zinc-500")}>Process</p>
-          <h2 className={cn(servicesTitle, "text-zinc-50")}>How we work.</h2>
-          <p className={cn(servicesSubtitle, "text-zinc-400")}>
-            Clear steps from first audit to launch, without a bloated agency process.
-          </p>
+          <h2 className={cn(servicesTitle, "text-zinc-900")}>How we work.</h2>
+          <p className={cn(servicesSubtitle, "text-zinc-600")}>
+          A clear process from audit to launch  built to move fast,<br/> reduce confusion, and ship work that improves the business.          </p>
         </SectionHeader>
 
         <div
           ref={stepsRef}
-          className="mt-12 grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8"
+          className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4"
         >
           {steps.map((step, i) => (
             <motion.div
@@ -170,15 +209,15 @@ export function ProcessSection() {
           ))}
         </div>
 
-        <div className="relative mt-12 overflow-hidden rounded-xl md:mt-16 md:rounded-2xl">
-          <Image
+        <div className="relative mt-12 overflow-hidden rounded-xl md:mt-12 md:rounded-2xl">
+          {/* <Image
             src="/card-bg/process-extras-bg.png"
             alt=""
             fill
             sizes="(max-width: 768px) 100vw, 1152px"
             className="object-cover object-center"
             aria-hidden
-          />
+          /> */}
 
           <div
             ref={extrasRef}

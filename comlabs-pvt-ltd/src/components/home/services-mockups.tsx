@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Loader2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -162,6 +162,58 @@ function IconCheck({ size = 14, ...props }: NucleoProps) {
     </svg>
   );
 }
+
+function SpinLoader({ size = 10, className }: { size?: number; className?: string }) {
+  return (
+    <Loader2
+      className={cn("animate-spin text-blue-500", className)}
+      size={size}
+      strokeWidth={2.25}
+      aria-hidden
+    />
+  );
+}
+
+function ReadinessStatusIcon({
+  checked,
+  scanning,
+  reduce,
+  size = 9,
+}: {
+  checked: boolean;
+  scanning: boolean;
+  reduce: boolean;
+  size?: number;
+}) {
+  return (
+    <AnimatePresence mode="wait">
+      {checked ? (
+        <motion.span
+          key="checked"
+          initial={reduce ? false : { opacity: 0, scale: 0.72 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.72 }}
+          transition={{ type: "spring", stiffness: 380, damping: 24 }}
+        >
+          <IconCheck size={size} strokeWidth={2.5} />
+        </motion.span>
+      ) : scanning ? (
+        <motion.span
+          key="loading"
+          initial={reduce ? false : { opacity: 0, scale: 0.85 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.85 }}
+          transition={{ duration: 0.22, ease }}
+        >
+          <SpinLoader size={size + 1} />
+        </motion.span>
+      ) : null}
+    </AnimatePresence>
+  );
+}
+
+const landingFooterBtn =
+  "flex w-full items-center justify-center gap-2.5 rounded-xl border px-4 py-2.5 text-[10px] font-medium lg:text-[11px]";
 
 function IconChart({ size = 14, ...props }: NucleoProps) {
   return (
@@ -1477,10 +1529,10 @@ const LANDING_READINESS_ITEMS = [
   "Form connected",
 ] as const;
 
-const LANDING_START_MS = 180;
-const READINESS_SCAN_MS = 340;
-const LANDING_STEP_GAP_MS = 70;
-const SCANNED_HOLD_MS = 520;
+const LANDING_START_MS = 520;
+const READINESS_SCAN_MS = 1050;
+const LANDING_STEP_GAP_MS = 380;
+const SCANNED_HOLD_MS = 900;
 
 type ReadinessFooterPhase = "idle" | "scanning" | "scanned" | "ready";
 
@@ -1571,7 +1623,7 @@ function TypingCaret({
 export function LandingMockup({ active = false }: MockupProps) {
   const reduce = !!useReducedMotion();
   const playing = active || reduce;
-  const { activeSection, checkedCount, scanningIndex, footerPhase } = useLandingBlueprintSequence(
+  const { checkedCount, scanningIndex, footerPhase } = useLandingBlueprintSequence(
     active,
     reduce,
   );
@@ -1580,24 +1632,42 @@ export function LandingMockup({ active = false }: MockupProps) {
   const itemCount = LANDING_READINESS_ITEMS.length;
 
   return (
-    <MockFrame className="flex h-full flex-col overflow-hidden bg-zinc-50/40 p-3" interactive>
+    <MockFrame
+      className="flex h-full flex-col overflow-hidden bg-zinc-50/40 p-3 lg:rounded-2xl lg:border lg:border-zinc-200/80 lg:bg-white lg:p-4 lg:shadow-[0_0_0_1px_rgba(0,0,0,0.02),0_20px_48px_-20px_rgba(0,0,0,0.12)]"
+      interactive
+    >
       {/* Browser chrome */}
-      <div className="flex shrink-0 items-center gap-2 border-b border-zinc-200/80 pb-2">
+      <div className="flex shrink-0 items-center gap-2 border-b border-zinc-200/80 pb-2 lg:gap-3 lg:pb-2.5">
         <WindowDots />
-        <div className="flex min-w-0 flex-1 items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-2.5 py-1">
-          <span className="size-1.5 shrink-0 rounded-full bg-zinc-300" aria-hidden />
-          <span className="truncate text-[10px] font-normal text-zinc-500">
+        <div className="flex min-w-0 flex-1 items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-2.5 py-1 lg:gap-2 lg:px-3 lg:py-1.5 lg:shadow-[inset_0_1px_2px_rgba(0,0,0,0.03)]">
+          <span className="size-1.5 shrink-0 rounded-full bg-zinc-300 lg:hidden" aria-hidden />
+          <svg
+            className="hidden shrink-0 text-zinc-300 lg:block"
+            width="10"
+            height="10"
+            viewBox="0 0 10 10"
+            aria-hidden
+          >
+            <path
+              d="M5 1a3.5 3.5 0 0 0-1.4 6.7V8h2.8v-.3A3.5 3.5 0 0 0 5 1Z"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.1"
+            />
+          </svg>
+          <span className="truncate text-[10px] font-normal text-zinc-500 lg:text-[11px]">
             launch.yourstartup.com
           </span>
           <AnimatePresence>
             {showLive ? (
               <motion.span
                 key="live"
-                initial={reduce ? false : { opacity: 0, scale: 0.9 }}
+                initial={reduce ? false : { opacity: 0, scale: 0.92 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="ml-auto inline-flex items-center gap-1 rounded-full bg-emerald-50 px-1.5 py-0.5 text-[9px] font-medium text-emerald-700"
+                transition={{ duration: 0.35, ease }}
+                className="ml-auto inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2 py-0.5 text-[9px] font-medium text-emerald-700 lg:px-2.5 lg:py-1 lg:text-[10px]"
               >
-                <span className="size-1 rounded-full bg-emerald-500" aria-hidden />
+                <span className="size-1 rounded-full bg-emerald-500 lg:size-1.5" aria-hidden />
                 Live
               </motion.span>
             ) : null}
@@ -1608,61 +1678,64 @@ export function LandingMockup({ active = false }: MockupProps) {
       <motion.div
         initial={reduce ? false : { opacity: 0 }}
         animate={playing ? { opacity: 1 } : { opacity: 0 }}
-        transition={{ duration: reduce ? 0 : 0.3, ease }}
-        className="mt-2.5 flex min-h-0 flex-1 flex-col gap-3 md:flex-row md:gap-0"
+        transition={{ duration: reduce ? 0 : 0.45, ease }}
+        className="mt-2.5 flex min-h-0 flex-1 flex-col gap-3 md:flex-row md:gap-0 lg:mt-3"
       >
         {/* Blueprint — stacked page sections */}
-        <div className="min-w-0 flex-1 md:pr-3">
-          <p className="text-[10px] font-medium uppercase tracking-[0.1em] text-zinc-400">
+        <div className="min-w-0 flex-1 md:pr-3 lg:pr-4">
+          <p className="text-[10px] font-medium uppercase tracking-[0.1em] text-zinc-400 lg:text-[11px] lg:tracking-[0.12em]">
             Page structure
           </p>
 
-          <div className="mt-1.5 space-y-1">
+          <div className="mt-1.5 space-y-1 lg:mt-2 lg:space-y-1.5">
             {LANDING_BLUEPRINT_SECTIONS.map((section, index) => {
-              const isActive = index === activeSection;
-              const isDone = index < activeSection;
-              const isPending = index > activeSection;
+              const isActive = index === scanningIndex;
+              const isDone = index < checkedCount;
+              const isPending = !isDone && !isActive;
 
               return (
                 <motion.div
                   key={section.title}
-                  initial={reduce ? false : { opacity: 0, y: 3 }}
+                  initial={reduce ? false : { opacity: 0, y: 4 }}
                   animate={{
                     opacity: playing ? 1 : 0,
-                    y: playing ? 0 : 3,
+                    y: playing ? 0 : 4,
                     borderColor: isActive ? "#BFDBFE" : isDone ? "#E4E4E7" : "#F4F4F5",
                     backgroundColor: isActive ? "#F8FAFC" : isDone ? "#FAFAFA" : "#FFFFFF",
                   }}
                   transition={{
-                    opacity: { duration: reduce ? 0 : 0.22, delay: reduce ? 0 : index * 0.03 },
-                    y: { duration: reduce ? 0 : 0.22, delay: reduce ? 0 : index * 0.03 },
-                    default: { duration: 0.18, ease },
+                    opacity: { duration: reduce ? 0 : 0.32, delay: reduce ? 0 : index * 0.04 },
+                    y: { duration: reduce ? 0 : 0.32, delay: reduce ? 0 : index * 0.04 },
+                    default: { duration: 0.32, ease },
                   }}
-                  className="rounded-lg border px-2 py-1.5"
+                  className="rounded-lg border px-2 py-1.5 lg:rounded-xl lg:px-3 lg:py-2 lg:shadow-[0_1px_2px_rgba(0,0,0,0.02)]"
                 >
                   <div className="flex items-center justify-between gap-2">
                     <span
                       className={cn(
-                        "text-[10px] font-medium leading-none",
+                        "text-[10px] font-medium leading-none lg:text-[11px]",
                         isPending ? "text-zinc-400" : "text-zinc-900",
                       )}
                     >
                       {section.title}
                     </span>
                     {isDone ? (
-                      <IconCheck size={10} className="shrink-0 text-blue-600" strokeWidth={2.25} />
-                    ) : isActive ? (
                       <motion.span
-                        className="size-1.5 shrink-0 rounded-full bg-blue-500"
-                        animate={!reduce ? { opacity: [0.4, 1, 0.4] } : { opacity: 1 }}
-                        transition={{ duration: 0.8, repeat: Infinity, ease: "easeInOut" }}
-                        aria-hidden
-                      />
+                        initial={reduce ? false : { opacity: 0, scale: 0.75 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ type: "spring", stiffness: 380, damping: 24 }}
+                      >
+                        <IconCheck size={10} className="shrink-0 text-blue-600" strokeWidth={2.25} />
+                      </motion.span>
+                    ) : isActive ? (
+                      <SpinLoader size={11} />
                     ) : (
-                      <span className="size-1.5 shrink-0 rounded-full bg-zinc-200" aria-hidden />
+                      <span className="size-1.5 shrink-0 rounded-full bg-zinc-200 lg:size-2" aria-hidden />
                     )}
                   </div>
-                  <p className="mt-0.5 truncate text-[9px] leading-snug text-zinc-500">{section.label}</p>
+                  <p className="mt-0.5 truncate text-[9px] leading-snug text-zinc-500 lg:mt-1 lg:text-[10px]">
+                    {section.label}
+                  </p>
                 </motion.div>
               );
             })}
@@ -1670,28 +1743,29 @@ export function LandingMockup({ active = false }: MockupProps) {
         </div>
 
         {/* Readiness — clean checklist */}
-        <div className="flex min-w-0 flex-col border-zinc-200/80 md:w-[44%] md:border-l md:pl-3">
+        <div className="flex min-w-0 flex-col border-zinc-200/80 md:w-[44%] md:border-l md:pl-3 lg:pl-4">
           <div className="flex items-baseline justify-between gap-2">
-            <p className="text-[11px] font-medium text-zinc-900">Launch readiness</p>
+            <p className="text-[11px] font-medium text-zinc-900 lg:text-[12px]">Launch readiness</p>
             <motion.span
               key={checkedCount}
-              initial={reduce ? false : { opacity: 0.5 }}
-              animate={{ opacity: 1 }}
-              className="text-[10px] font-medium tabular-nums text-zinc-500"
+              initial={reduce ? false : { opacity: 0.6, y: 2 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35, ease }}
+              className="text-[10px] font-medium tabular-nums text-zinc-500 lg:text-[11px]"
             >
               {checkedCount}/{itemCount}
             </motion.span>
           </div>
 
-          <div className="mt-2 h-0.5 overflow-hidden rounded-full bg-zinc-100">
+          <div className="mt-2 h-0.5 overflow-hidden rounded-full bg-zinc-100 lg:mt-2.5 lg:h-1">
             <motion.div
               className="h-full rounded-full bg-blue-600"
               animate={{ width: `${(checkedCount / itemCount) * 100}%` }}
-              transition={{ duration: reduce ? 0 : 0.3, ease }}
+              transition={{ duration: reduce ? 0 : 0.55, ease }}
             />
           </div>
 
-          <ul className="mt-2.5 flex-1 space-y-1">
+          <ul className="mt-2.5 flex-1 space-y-1 lg:mt-3 lg:space-y-1.5">
             {LANDING_READINESS_ITEMS.map((item, index) => {
               const checked = index < checkedCount;
               const scanning = index === scanningIndex;
@@ -1699,42 +1773,28 @@ export function LandingMockup({ active = false }: MockupProps) {
               return (
                 <motion.li
                   key={item}
-                  animate={{ opacity: checked || scanning ? 1 : 0.35 }}
-                  transition={{ duration: 0.2, ease }}
-                  className="flex items-center gap-2 py-0.5"
+                  animate={{ opacity: checked || scanning ? 1 : 0.38 }}
+                  transition={{ duration: 0.35, ease }}
+                  className="flex items-center gap-2 py-0.5 lg:gap-2.5 lg:py-1"
                 >
                   <span
                     className={cn(
-                      "flex size-3.5 shrink-0 items-center justify-center rounded-full border",
+                      "flex size-3.5 shrink-0 items-center justify-center rounded-full border lg:size-4",
                       checked && "border-blue-200 bg-blue-50 text-blue-600",
-                      scanning && "border-blue-400 bg-white",
+                      scanning && "border-blue-300 bg-white",
                       !checked && !scanning && "border-zinc-200 bg-white",
                     )}
                   >
-                    <AnimatePresence mode="wait">
-                      {checked ? (
-                        <motion.span
-                          key="ok"
-                          initial={reduce ? false : { scale: 0 }}
-                          animate={{ scale: 1 }}
-                          transition={{ type: "spring", stiffness: 500, damping: 22 }}
-                        >
-                          <IconCheck size={9} strokeWidth={2.5} />
-                        </motion.span>
-                      ) : scanning ? (
-                        <motion.span
-                          key="scan"
-                          className="size-1.5 rounded-full bg-blue-500"
-                          animate={!reduce ? { scale: [0.85, 1.1, 0.85] } : { scale: 1 }}
-                          transition={{ duration: 0.6, repeat: Infinity, ease: "easeInOut" }}
-                          aria-hidden
-                        />
-                      ) : null}
-                    </AnimatePresence>
+                    <ReadinessStatusIcon
+                      checked={checked}
+                      scanning={scanning}
+                      reduce={reduce}
+                      size={9}
+                    />
                   </span>
                   <span
                     className={cn(
-                      "text-[10px] leading-tight",
+                      "text-[10px] leading-tight lg:text-[11px]",
                       checked ? "font-medium text-zinc-800" : scanning ? "text-blue-700" : "text-zinc-400",
                     )}
                   >
@@ -1749,49 +1809,51 @@ export function LandingMockup({ active = false }: MockupProps) {
             {footerPhase === "ready" ? (
               <motion.div
                 key="ready"
-                initial={reduce ? false : { opacity: 0, y: 4 }}
+                initial={reduce ? false : { opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.22, ease }}
-                className="mt-0 flex items-center justify-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50 py-1.5 text-[10px] font-medium text-blue-700"
+                exit={{ opacity: 0, y: 4 }}
+                transition={{ duration: 0.38, ease }}
+                className={cn(landingFooterBtn, "mt-2 border-blue-200 bg-blue-50 text-blue-700 lg:mt-3")}
               >
-                <IconCheck size={10} strokeWidth={2.5} />
-                Ready to publish
+                <IconCheck size={11} strokeWidth={2.5} className="shrink-0" />
+                <span>Ready to publish</span>
               </motion.div>
             ) : footerPhase === "scanned" ? (
               <motion.div
                 key="scanned"
-                initial={reduce ? false : { opacity: 0, y: 4 }}
+                initial={reduce ? false : { opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.22, ease }}
-                className="mt-2 flex items-center justify-center gap-1.5 rounded-lg border border-emerald-200 bg-emerald-50 py-1.5 text-[10px] font-medium text-emerald-700"
+                exit={{ opacity: 0, y: 4 }}
+                transition={{ duration: 0.38, ease }}
+                className={cn(
+                  landingFooterBtn,
+                  "mt-2 border-emerald-200 bg-emerald-50 text-emerald-700 lg:mt-3",
+                )}
               >
-                <IconCheck size={10} strokeWidth={2.5} />
-                Scanned
+                <IconCheck size={11} strokeWidth={2.5} className="shrink-0" />
+                <span>Scanned</span>
               </motion.div>
             ) : footerPhase === "scanning" ? (
               <motion.div
                 key="scanning"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="mt-2 flex items-center justify-center gap-1.5 rounded-lg border border-zinc-200 bg-white py-1.5 text-[10px] text-zinc-500"
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 4 }}
+                transition={{ duration: 0.32, ease }}
+                className={cn(
+                  landingFooterBtn,
+                  "mt-2 border-zinc-200 bg-white text-zinc-500 lg:mt-3",
+                )}
               >
-                <motion.span
-                  className="size-1.5 rounded-full bg-blue-500"
-                  animate={!reduce ? { opacity: [0.3, 1, 0.3] } : { opacity: 1 }}
-                  transition={{ duration: 0.8, repeat: Infinity, ease: "easeInOut" }}
-                  aria-hidden
-                />
-                Scanning structure…
+                <SpinLoader size={11} className="text-blue-500" />
+                <span>Scanning structure…</span>
               </motion.div>
             ) : (
               <motion.div
                 key="idle"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 0.45 }}
-                className="mt-2 rounded-lg border border-dashed border-zinc-200 py-1.5 text-center text-[10px] text-zinc-400"
+                className="mt-2 rounded-xl border border-dashed border-zinc-200 px-4 py-2.5 text-center text-[10px] text-zinc-400 lg:mt-3 lg:text-[11px]"
               >
                 Awaiting scan
               </motion.div>

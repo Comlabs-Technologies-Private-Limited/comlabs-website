@@ -16,7 +16,7 @@ const ghostCta =
   "inline-flex items-center justify-center rounded-full border border-neutral-100 px-5 py-2 text-[13px] font-normal tracking-tight text-neutral-700 shadow-sm shadow-black/20 backdrop-blur-sm transition-all duration-150 hover:border-neutral-300 hover:bg-white active:scale-[0.97]";
 
 const HERO_SUBTITLE =
-  "Comlabs has helped 12+ founders achieve clean, fast, conversion-focused digital experiences with end-to-end product design, development, and automation.";
+  "We have helped 12+ founders achieve clean, fast, conversion-focused digital experiences with end-to-end product design, development, and automation.";
 
 type TitleSegment = {
   text: string;
@@ -70,7 +70,7 @@ function HeroAnimatedTitle({
   reduceMotion: boolean;
 }) {
   return (
-    <h1 className="mt-6 max-w-[22ch] text-4xl font-medium leading-[1.05] tracking-[-0.02em] text-[var(--fg-primary)] text-wrap md:text-7xl md:tracking-[0.0em]">
+    <h1 className="mt-6 max-w-[22ch] text-4xl font-medium leading-[1.05] tracking-[-0.02em] text-[var(--fg-primary)] text-wrap md:text-6xl md:tracking-[0.0em]">
       {HERO_TITLE_CHARS.map((item, index) => {
         const visible = index < visibleCount;
 
@@ -196,7 +196,7 @@ export function HeroSection() {
           animate={showEyebrow ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
           transition={{ duration: reduceMotion ? 0 : 0.55, ease }}
         >
-          <p className="text-[8px] font-normal uppercase leading-none tracking-widest text-black">
+          <p className="text-[8px] md:text-[10px] font-normal uppercase leading-none tracking-widest text-black">
             Websites · Product UI · Automation
           </p>
         </motion.span>
@@ -204,7 +204,7 @@ export function HeroSection() {
         <HeroAnimatedTitle visibleCount={titleVisibleCount} reduceMotion={reduceMotion} />
 
         <motion.p
-          className="mt-6 max-w-2xl text-sm font-normal leading-relaxed text-[var(--fg-secondary)] md:text-md"
+          className="mt-6 max-w-2xl text-sm font-normal leading-relaxed text-[var(--fg-secondary)] md:text-lg"
           initial={reduceMotion ? false : { opacity: 0, y: -10 }}
           animate={showSubtitle ? { opacity: 1, y: 0 } : { opacity: 0, y: -10 }}
           transition={reduceMotion ? { duration: 0 } : charSpring}

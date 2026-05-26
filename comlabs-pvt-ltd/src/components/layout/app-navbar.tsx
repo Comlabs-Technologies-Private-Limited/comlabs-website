@@ -138,7 +138,7 @@ export function AppNavbar() {
               width={720}
               height={280}
               priority
-              className="h-7 w-auto md:h-12"
+              className="h-17 w-auto"
             />
           </Link>
 

@@ -388,78 +388,115 @@ function AnnotationCard({
   return (
     <motion.article
       className={cn(
-        "relative overflow-hidden rounded-xl border bg-white/95 p-2 backdrop-blur-[2px] max-md:rounded-lg md:p-3 lg:p-4",
-        "shadow-[0_1px_1px_rgba(0,0,0,0.03),0_10px_28px_-14px_rgba(0,0,0,0.08)]",
-        isActive ? "border-zinc-300/90" : "border-zinc-200/90",
+        "relative overflow-hidden rounded-2xl border p-3 max-md:rounded-xl max-md:p-2.5 md:p-3.5 lg:p-4",
+        "border-white/55 bg-white/45 backdrop-blur-xl backdrop-saturate-150",
+        "shadow-[0_8px_32px_-12px_rgba(0,0,0,0.12),inset_0_1px_0_rgba(255,255,255,0.85)]",
+        isActive &&
+        "border-amber-200/50 bg-white/55 ring-1 ring-amber-300/25 shadow-[0_16px_48px_-14px_rgba(251,191,36,0.22),inset_0_1px_0_rgba(255,255,255,0.95)]",
+        isDone &&
+        !isActive &&
+        "border-white/60 bg-white/50 shadow-[0_10px_36px_-14px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.9)]",
+        !isActive && !isDone && isVisible && "border-white/50",
         className,
       )}
       initial={false}
       animate={{
         opacity: isVisible ? 1 : 0,
-        y: isVisible ? 0 : 14,
-        scale: isVisible ? 1 : 0.98,
+        y: isVisible ? 0 : 16,
+        scale: isVisible ? 1 : 0.97,
       }}
-      transition={{ duration: reduceMotion ? 0 : 0.42, ease }}
+      transition={{ duration: reduceMotion ? 0 : 0.48, ease }}
     >
-      <motion.span
-        className="absolute bottom-3 left-0 top-3 w-0.5 origin-top rounded-full bg-amber-500 md:bottom-4 md:top-4"
-        initial={false}
-        animate={{
-          scaleY: isVisible ? 1 : 0,
-          opacity: isActive ? 1 : isDone ? 0.55 : 0.2,
-        }}
-        transition={{ duration: reduceMotion ? 0 : 0.35, ease }}
+      <div
         aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/95 to-transparent"
+      />
+      <div
+        aria-hidden
+        className={cn(
+          "pointer-events-none absolute -right-8 -top-8 size-24 rounded-full blur-2xl transition-opacity duration-500",
+          isActive ? "bg-amber-200/35 opacity-100" : "opacity-0",
+        )}
       />
 
       {(["mobile", "desktop"] as const).map((variant) => {
         const type = variant === "mobile" ? connector : (connectorLg ?? connector);
         if (type === "none") return null;
 
+        const lineWidth =
+          variant === "desktop" ? (type === "right-down" ? 52 : 44) : type === "right-down" ? 40 : 32;
+
         return (
           <motion.span
             key={variant}
             className={cn(
-              "absolute h-px bg-zinc-300/80",
+              "absolute z-0 h-px",
               variant === "mobile" ? "lg:hidden" : "max-lg:hidden",
               type === "right" && "left-full top-1/2 -translate-y-1/2 origin-left",
               type === "left" && "right-full top-1/2 -translate-y-1/2 origin-right",
-              type === "right-down" && "left-full top-8 origin-left",
+              type === "right-down" && "left-full top-9 origin-left",
             )}
             initial={reduceMotion ? false : { width: 0, opacity: 0 }}
             animate={
-              isVisible ? { width: type === "right-down" ? 40 : 32, opacity: 1 } : { width: 0, opacity: 0 }
+              isVisible
+                ? {
+                  width: lineWidth,
+                  opacity: isActive ? 1 : isDone ? 0.7 : 0.45,
+                }
+                : { width: 0, opacity: 0 }
             }
-            transition={{ duration: reduceMotion ? 0 : 0.45, ease, delay: reduceMotion ? 0 : 0.12 }}
+            transition={{ duration: reduceMotion ? 0 : 0.5, ease, delay: reduceMotion ? 0 : 0.14 }}
             aria-hidden
-          />
+          >
+            <span
+              className={cn(
+                "block h-full w-full",
+                type === "left"
+                  ? "bg-gradient-to-l from-white/90 via-zinc-300/70 to-zinc-400/30"
+                  : "bg-gradient-to-r from-white/90 via-zinc-300/70 to-zinc-400/30",
+              )}
+            />
+            <span
+              className={cn(
+                "absolute top-1/2 size-1 -translate-y-1/2 rounded-full bg-zinc-400/80",
+                type === "left" ? "-left-0.5" : "-right-0.5",
+              )}
+            />
+          </motion.span>
         );
       })}
 
-      <div className="flex items-center justify-between gap-1.5 pl-2 md:gap-2 md:pl-2.5">
-        <span className="text-[9px] font-medium uppercase tracking-[0.12em] text-zinc-400 md:text-[10px] md:tracking-[0.14em]">
-          Leak {id}
+      <div className="relative z-10 flex items-center justify-between gap-2">
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-white/60 bg-white/40 px-1 py-0.5 backdrop-blur-sm md:gap-2 md:px-2 md:py-0.5">
+          <span className="flex size-4 shrink-0 items-center justify-center rounded-full bg-zinc-900/90 text-[5px] font-medium tabular-nums text-white md:size-[18px] md:text-[7px]">
+            {id}
+          </span>
+          <span className="text-[5px] font-normal uppercase tracking-[0.14em] text-zinc-500 md:text-[7px]">
+            Leak point
+          </span>
         </span>
+
         {isActive ? (
           <motion.span
-            className="inline-flex items-center gap-1 rounded-full border border-amber-200/80 bg-amber-50 px-1 py-px text-[8px] font-medium text-amber-800 md:px-1.5 md:py-0.5 md:text-[9px]"
+            className="inline-flex items-center gap-1.5 rounded-full border border-amber-200/70 bg-amber-50/80 px-2 py-0.5 text-[8px] font-normal text-amber-900 backdrop-blur-sm md:px-2.5 md:py-1 md:text-[9px]"
             initial={reduceMotion ? false : { opacity: 0, scale: 0.92 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.28, ease }}
+            transition={{ duration: 0.32, ease }}
           >
             <motion.span
-              className="size-1 rounded-full bg-amber-500"
-              animate={reduceMotion ? {} : { opacity: [0.4, 1, 0.4] }}
-              transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+              className="size-1.5 rounded-full border border-amber-400/80 border-t-amber-600"
+              animate={reduceMotion ? {} : { rotate: 360 }}
+              transition={{ duration: 0.85, repeat: Infinity, ease: "linear" }}
+              aria-hidden
             />
             Scanning
           </motion.span>
         ) : isDone ? (
           <motion.span
-            className="inline-flex size-3.5 items-center justify-center rounded-full bg-zinc-100 text-zinc-600 md:size-4"
-            initial={reduceMotion ? false : { scale: 0.6, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: "spring", stiffness: 520, damping: 24 }}
+            className="inline-flex items-center gap-1 rounded-full border border-white/60 bg-white/50 px-2 py-0.5 text-[8px] font-normal text-zinc-600 backdrop-blur-sm md:px-2.5 md:py-1 md:text-[9px]"
+            initial={reduceMotion ? false : { opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ type: "spring", stiffness: 420, damping: 26 }}
           >
             <svg width="9" height="9" viewBox="0 0 10 10" aria-hidden>
               <path
@@ -471,16 +508,17 @@ function AnnotationCard({
                 strokeLinejoin="round"
               />
             </svg>
+            Mapped
           </motion.span>
         ) : null}
       </div>
 
-      <h3 className="mt-2 min-h-[2.25rem] pl-2 text-[12px] font-medium leading-snug tracking-tight text-zinc-900 md:mt-2.5 md:min-h-[2.75rem] md:pl-2.5 md:text-[15px]">
+      <h3 className="relative z-10 mt-3 min-h-[2.25rem] text-[12px] font-medium leading-snug tracking-tight text-zinc-900 md:mt-3.5 md:min-h-[2.75rem] md:text-[15px] lg:text-[16px] lg:leading-[1.35]">
         {titleText}
         {isTypingTitle && !titleComplete ? <TypingCaret visible /> : null}
       </h3>
 
-      <p className="mt-1.5 min-h-[3.5rem] pl-2 text-[11px] font-normal leading-relaxed text-zinc-500 md:mt-2 md:min-h-[4.25rem] md:pl-2.5 md:text-[14px]">
+      <p className="relative z-10 mt-2 min-h-[3.5rem] text-[11px] font-normal leading-[1.55] text-zinc-600 md:min-h-[4.25rem] md:text-[13px] md:leading-[1.6] lg:text-[14px]">
         {bodyText}
         {isTypingBody && !bodyComplete ? <TypingCaret visible /> : null}
       </p>
@@ -488,7 +526,59 @@ function AnnotationCard({
   );
 }
 
-function WebsiteLeakMockup({
+const DESKTOP_NAV = ["Product", "Pricing", "Customers"] as const;
+
+const DESKTOP_LOGOS = ["N", "V", "R", "S", "K"] as const;
+
+const DESKTOP_STATS = [
+  { value: "10K+", label: "Active users" },
+  { value: "99.9%", label: "Uptime SLA" },
+  { value: "2x", label: "Faster workflows" },
+] as const;
+
+function MockupLeakGlow({
+  markerPhases,
+  reduceMotion,
+}: {
+  markerPhases: MarkerPhase[];
+  reduceMotion: boolean;
+}) {
+  return (
+    <>
+      {annotations.map((item, index) => {
+        const scanning = markerPhases[index] === "scanning";
+        const done = markerPhases[index] === "done";
+        const showGlow = markerPhases[index] !== "hidden";
+
+        if (!showGlow) return null;
+
+        return (
+          <motion.span
+            key={item.id}
+            aria-hidden
+            className="pointer-events-none absolute z-[5] size-20 -translate-x-1/2 -translate-y-1/2 rounded-full"
+            style={{ top: item.markerTop, left: item.markerLeft }}
+            initial={reduceMotion ? false : { opacity: 0, scale: 0.6 }}
+            animate={{
+              opacity: scanning ? [0.28, 0.48, 0.28] : done ? 0.16 : 0.24,
+              scale: scanning && !reduceMotion ? [1, 1.12, 1] : 1,
+            }}
+            transition={{
+              duration: scanning && !reduceMotion ? 1.6 : 0.4,
+              repeat: scanning && !reduceMotion ? Infinity : 0,
+              ease: "easeInOut",
+            }}
+          >
+            <span className="absolute inset-0 rounded-full bg-amber-400/20 blur-xl" />
+            <span className="absolute inset-3 rounded-full bg-amber-300/15 blur-md" />
+          </motion.span>
+        );
+      })}
+    </>
+  );
+}
+
+function MobileLeakMockup({
   visible,
   markerPhases,
   reduceMotion,
@@ -516,7 +606,6 @@ function WebsiteLeakMockup({
       </div>
 
       <div className="relative px-4 py-5 md:px-7 md:py-8">
-        {/* Hero — intentionally vague / weak */}
         <div className="border-b border-dashed border-amber-200/60 pb-6 md:pb-7">
           <p className="text-[9px] font-medium uppercase tracking-[0.14em] text-zinc-400">
             Welcome to our platform
@@ -537,7 +626,6 @@ function WebsiteLeakMockup({
           </div>
         </div>
 
-        {/* Proof area */}
         <div className="border-b border-dashed border-amber-200/40 py-5 md:py-6">
           <p className="text-[9px] font-medium uppercase tracking-[0.12em] text-zinc-400">
             Trusted by teams worldwide
@@ -561,7 +649,6 @@ function WebsiteLeakMockup({
           </div>
         </div>
 
-        {/* CTA / lead capture */}
         <div className="pt-5 md:pt-6">
           <p className="text-[9px] font-medium uppercase tracking-[0.12em] text-zinc-400">
             Get started today
@@ -594,6 +681,264 @@ function WebsiteLeakMockup({
         ))}
       </div>
     </motion.div>
+  );
+}
+
+function DesktopLeakMockup({
+  visible,
+  markerPhases,
+  reduceMotion,
+}: {
+  visible: boolean;
+  markerPhases: MarkerPhase[];
+  reduceMotion: boolean;
+}) {
+  return (
+    <motion.div
+      className="relative overflow-hidden rounded-[20px] border border-zinc-200/90 bg-white shadow-[0_0_0_1px_rgba(0,0,0,0.02),0_2px_4px_rgba(0,0,0,0.02),0_24px_64px_-24px_rgba(0,0,0,0.14)]"
+      initial={reduceMotion ? false : { opacity: 0, y: 24 }}
+      animate={visible ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
+      transition={{ duration: reduceMotion ? 0 : 0.58, ease }}
+    >
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -inset-8 rounded-[28px] bg-gradient-to-b from-zinc-200/20 via-transparent to-transparent blur-3xl"
+      />
+
+      <div className="relative flex items-center gap-3 border-b border-zinc-100/90 bg-gradient-to-b from-zinc-50 to-white px-5 py-3">
+        <div className="flex items-center gap-1.5">
+          <span className="size-2.5 rounded-full bg-[#FF5F57] shadow-[inset_0_-1px_0_rgba(0,0,0,0.08)]" aria-hidden />
+          <span className="size-2.5 rounded-full bg-[#FEBC2E] shadow-[inset_0_-1px_0_rgba(0,0,0,0.08)]" aria-hidden />
+          <span className="size-2.5 rounded-full bg-[#28C840] shadow-[inset_0_-1px_0_rgba(0,0,0,0.08)]" aria-hidden />
+        </div>
+        <div className="flex min-w-0 flex-1 items-center gap-2 rounded-lg border border-zinc-200/80 bg-white px-3.5 py-1.5 shadow-[inset_0_1px_2px_rgba(0,0,0,0.03)]">
+          <svg className="shrink-0 text-zinc-300" width="11" height="11" viewBox="0 0 10 10" aria-hidden>
+            <path
+              d="M5 1a3.5 3.5 0 0 0-1.4 6.7V8h2.8v-.3A3.5 3.5 0 0 0 5 1Z"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.1"
+            />
+          </svg>
+          <p className="truncate text-[11px] font-normal tracking-wide text-zinc-500">acme-startup.com</p>
+        </div>
+      </div>
+
+      <div className="relative bg-white">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 opacity-[0.28] mix-blend-multiply"
+          style={{
+            backgroundImage: GRAIN_TEXTURE,
+            backgroundRepeat: "repeat",
+            backgroundSize: "140px 140px",
+          }}
+        />
+
+        {!reduceMotion ? (
+          <motion.div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-5 z-10 h-px bg-gradient-to-r from-transparent via-amber-400/45 to-transparent"
+            animate={visible ? { top: ["12%", "88%"] } : { top: "12%" }}
+            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", repeatDelay: 1 }}
+          />
+        ) : null}
+
+        <nav className="relative flex items-center justify-between border-b border-zinc-100 px-6 py-3.5">
+          <div className="flex items-center gap-2.5">
+            <span
+              className="flex size-7 items-center justify-center rounded-lg bg-gradient-to-br from-zinc-200 to-zinc-300/90 text-[11px] font-medium text-zinc-600"
+              aria-hidden
+            >
+              A
+            </span>
+            <span className="text-[13px] font-medium tracking-tight text-zinc-700">Acme</span>
+          </div>
+          <div className="flex items-center gap-5">
+            {DESKTOP_NAV.map((item) => (
+              <span key={item} className="text-[11px] font-normal text-zinc-400">
+                {item}
+              </span>
+            ))}
+            <span className="rounded-full bg-zinc-900 px-3.5 py-1.5 text-[11px] font-normal text-white">
+              Sign up
+            </span>
+          </div>
+        </nav>
+
+        <div className="relative grid grid-cols-[1fr_188px] gap-5 border-b border-zinc-100 px-6 py-7">
+          <div>
+            <span className="inline-flex rounded-full border border-zinc-200 px-2.5 py-0.5 text-[10px] font-normal uppercase tracking-[0.14em] text-zinc-400">
+              Platform 2.0
+            </span>
+            <h4 className="mt-3 max-w-[22ch] text-[1.375rem] font-medium leading-[1.14] tracking-tight text-zinc-700">
+              Transform your business with next-generation solutions
+            </h4>
+            <p className="mt-2.5 max-w-[34ch] text-[13px] font-normal leading-[1.6] text-zinc-400">
+              We help companies innovate, scale, and unlock growth through modern digital experiences.
+            </p>
+            <div className="mt-5 flex items-center gap-2">
+              <span className="rounded-full bg-zinc-900 px-4 py-2 text-[11px] font-normal text-white shadow-[0_1px_2px_rgba(0,0,0,0.12)]">
+                Get started
+              </span>
+              <span className="rounded-full border border-zinc-200 px-4 py-2 text-[11px] font-normal text-zinc-500">
+                Learn more
+              </span>
+            </div>
+          </div>
+
+          <div
+            className="relative overflow-hidden rounded-xl border border-zinc-100 bg-gradient-to-br from-zinc-50 via-zinc-100/70 to-zinc-200/50 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]"
+            aria-hidden
+          >
+            <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.03)_1px,transparent_1px)] bg-[size:14px_14px]" />
+            <div className="relative space-y-2.5 p-3.5">
+              <div className="flex items-center gap-2">
+                <span className="size-2 rounded-full bg-zinc-300/80" />
+                <span className="h-2 w-16 rounded-full bg-zinc-300/70" />
+              </div>
+              <div className="rounded-lg border border-white/80 bg-white/70 p-2.5 shadow-sm">
+                <div className="h-2 w-3/4 rounded bg-zinc-200/80" />
+                <div className="mt-2 h-10 rounded-md bg-gradient-to-r from-zinc-100 to-zinc-200/60" />
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div className="h-8 rounded-md border border-white/70 bg-white/60" />
+                <div className="h-8 rounded-md border border-white/70 bg-white/60" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="border-b border-zinc-100 px-6 py-6">
+          <div className="flex items-end justify-between gap-6">
+            <div>
+              <p className="text-[10px] font-normal uppercase tracking-[0.14em] text-zinc-400">
+                Trusted by teams worldwide
+              </p>
+              <div className="mt-3.5 flex items-center gap-2">
+                {DESKTOP_LOGOS.map((letter) => (
+                  <span
+                    key={letter}
+                    className="flex size-9 items-center justify-center rounded-lg border border-zinc-100 bg-gradient-to-b from-white to-zinc-50 text-[11px] font-medium text-zinc-400 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]"
+                    aria-hidden
+                  >
+                    {letter}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <div className="flex gap-5">
+              {DESKTOP_STATS.map((stat) => (
+                <div key={stat.label} className="text-right">
+                  <p className="text-[15px] font-medium tracking-tight text-zinc-600">{stat.value}</p>
+                  <p className="mt-0.5 text-[10px] font-normal text-zinc-400">{stat.label}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-5 grid grid-cols-2 gap-3">
+            <div className="rounded-xl border border-zinc-100 bg-zinc-50/50 p-4">
+              <div className="flex items-center gap-0.5" aria-hidden>
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <span key={i} className="size-2 rounded-[2px] bg-amber-200/75" />
+                ))}
+              </div>
+              <p className="mt-2.5 text-[12px] font-normal italic leading-[1.55] text-zinc-400">
+                &ldquo;Great product. Would recommend.&rdquo;
+              </p>
+              <div className="mt-3 flex items-center gap-2">
+                <span
+                  className="size-6 shrink-0 rounded-full bg-gradient-to-br from-zinc-200 to-zinc-300"
+                  aria-hidden
+                />
+                <div>
+                  <p className="text-[11px] font-normal text-zinc-500">Customer Name</p>
+                  <p className="text-[10px] font-normal text-zinc-400">Company</p>
+                </div>
+              </div>
+            </div>
+            <div className="rounded-xl border border-zinc-100 bg-white p-4">
+              <p className="text-[10px] font-normal uppercase tracking-[0.12em] text-zinc-400">
+                Why teams choose us
+              </p>
+              <ul className="mt-3 space-y-2.5">
+                {["Easy to use", "Scales with you", "Enterprise ready"].map((item) => (
+                  <li key={item} className="flex items-center gap-2 text-[11px] font-normal text-zinc-500">
+                    <span className="size-1.5 rounded-full bg-zinc-300" aria-hidden />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div className="relative px-6 py-7">
+          <div className="rounded-2xl border border-zinc-100 bg-gradient-to-br from-zinc-50/80 via-white to-zinc-50/40 p-5">
+            <p className="text-[10px] font-normal uppercase tracking-[0.14em] text-zinc-400">
+              Get started today
+            </p>
+            <p className="mt-2 text-[15px] font-medium tracking-tight text-zinc-600">
+              Ready to take the next step?
+            </p>
+            <div className="mt-4 flex max-w-sm gap-2.5">
+              <span className="h-9 flex-1 rounded-full border border-zinc-200 bg-white px-4 text-[11px] leading-9 text-zinc-400 shadow-[inset_0_1px_2px_rgba(0,0,0,0.03)]">
+                you@company.com
+              </span>
+              <span className="inline-flex h-9 items-center justify-center rounded-full bg-zinc-900 px-5 text-[11px] font-normal text-white shadow-[0_1px_2px_rgba(0,0,0,0.12)]">
+                Submit
+              </span>
+            </div>
+            <p className="mt-2.5 text-[10px] font-normal text-zinc-400">
+              We&apos;ll get back to you soon.
+            </p>
+          </div>
+        </div>
+
+        <MockupLeakGlow markerPhases={markerPhases} reduceMotion={reduceMotion} />
+
+        {annotations.map((item, index) => (
+          <DiagnosticMarker
+            key={item.id}
+            id={item.id}
+            top={item.markerTop}
+            left={item.markerLeft}
+            markerPhase={markerPhases[index] ?? "hidden"}
+            reduceMotion={reduceMotion}
+          />
+        ))}
+      </div>
+    </motion.div>
+  );
+}
+
+function WebsiteLeakMockup({
+  visible,
+  markerPhases,
+  reduceMotion,
+}: {
+  visible: boolean;
+  markerPhases: MarkerPhase[];
+  reduceMotion: boolean;
+}) {
+  return (
+    <>
+      <div className="lg:hidden">
+        <MobileLeakMockup
+          visible={visible}
+          markerPhases={markerPhases}
+          reduceMotion={reduceMotion}
+        />
+      </div>
+      <div className="hidden lg:block">
+        <DesktopLeakMockup
+          visible={visible}
+          markerPhases={markerPhases}
+          reduceMotion={reduceMotion}
+        />
+      </div>
+    </>
   );
 }
 
@@ -656,53 +1001,53 @@ export function FounderProblemSection() {
             <div
               ref={innerRef}
               className={cn(
-                "grid grid-cols-[minmax(0,1fr)_minmax(0,480px)_minmax(0,1fr)] grid-rows-[auto_auto_auto] items-center gap-x-3 gap-y-4 max-lg:px-2 lg:grid-rows-[auto_auto] lg:gap-x-6 lg:gap-y-8 lg:px-0",
+                "grid grid-cols-[minmax(0,1fr)_minmax(0,480px)_minmax(0,1fr)] grid-rows-[auto_auto_auto] items-center gap-x-3 gap-y-4 max-lg:px-2 lg:grid-cols-[minmax(0,1fr)_minmax(0,520px)_minmax(0,1fr)] lg:grid-rows-[auto_auto] lg:gap-x-6 lg:gap-y-8 lg:px-0",
                 isCompact &&
-                  "absolute left-0 w-[980px] max-lg:origin-top-left max-lg:will-change-transform max-lg:translate-y-[6%]",
+                "absolute left-0 w-[980px] max-lg:origin-top-left max-lg:will-change-transform max-lg:translate-y-[6%]",
                 !isCompact && "lg:relative lg:w-full",
               )}
             >
-            <AnnotationCard
-              {...annotations[0]}
-              titleText={titleTexts[0]}
-              bodyText={bodyTexts[0]}
-              phase={phases[0]}
-              isActive={activeIndex === 0}
-              connector="right"
-              reduceMotion={reduceMotion}
-              className="col-start-1 row-start-1 mt-2 self-start lg:mt-6"
-            />
-
-            <div className="col-start-2 row-start-1 row-span-3 lg:row-span-2">
-              <WebsiteLeakMockup
-                visible={visualVisible}
-                markerPhases={markerPhases}
+              <AnnotationCard
+                {...annotations[0]}
+                titleText={titleTexts[0]}
+                bodyText={bodyTexts[0]}
+                phase={phases[0]}
+                isActive={activeIndex === 0}
+                connector="right"
                 reduceMotion={reduceMotion}
+                className="col-start-1 row-start-1 mt-12 self-start lg:mt-6"
               />
-            </div>
 
-            <AnnotationCard
-              {...annotations[1]}
-              titleText={titleTexts[1]}
-              bodyText={bodyTexts[1]}
-              phase={phases[1]}
-              isActive={activeIndex === 1}
-              connector="right"
-              connectorLg="left"
-              reduceMotion={reduceMotion}
-              className="col-start-1 row-start-2 self-start max-lg:mt-1 lg:col-start-3 lg:row-start-2 lg:self-center lg:bottom-40"
-            />
+              <div className="col-start-2 row-start-1 row-span-3 lg:row-span-2">
+                <WebsiteLeakMockup
+                  visible={visualVisible}
+                  markerPhases={markerPhases}
+                  reduceMotion={reduceMotion}
+                />
+              </div>
 
-            <AnnotationCard
-              {...annotations[2]}
-              titleText={titleTexts[2]}
-              bodyText={bodyTexts[2]}
-              phase={phases[2]}
-              isActive={activeIndex === 2}
-              connector="right-down"
-              reduceMotion={reduceMotion}
-              className="col-start-1 mb-24 row-start-3 self-end max-lg:mt-1 lg:row-start-2 lg:mt-2"
-            />
+              <AnnotationCard
+                {...annotations[1]}
+                titleText={titleTexts[1]}
+                bodyText={bodyTexts[1]}
+                phase={phases[1]}
+                isActive={activeIndex === 1}
+                connector="right"
+                connectorLg="left"
+                reduceMotion={reduceMotion}
+                className="col-start-1 row-start-2 self-start max-lg:mt-1 lg:col-start-3 lg:row-start-2 lg:self-center lg:bottom-60"
+              />
+
+              <AnnotationCard
+                {...annotations[2]}
+                titleText={titleTexts[2]}
+                bodyText={bodyTexts[2]}
+                phase={phases[2]}
+                isActive={activeIndex === 2}
+                connector="right-down"
+                reduceMotion={reduceMotion}
+                className="col-start-1 mb-24 row-start-3 self-end max-lg:mt-1 lg:row-start-2 lg:mt-2"
+              />
             </div>
           </div>
         </div>

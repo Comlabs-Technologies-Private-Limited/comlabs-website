@@ -12,15 +12,15 @@ import { cn } from "@/lib/utils";
 const ease = [0.25, 0.1, 0, 1] as const;
 
 const serviceBackgrounds = [
-  "/card-bg/service-bg-1.png",
-  "/card-bg/service-bg-2.png",
-  "/card-bg/service-bg-3.png",
+  "/card-bg/process-card-1.png",
+  "/card-bg/process-card-3.png",
+  "/card-bg/process-card-3.png",
 ] as const;
 
 const services = [
   {
     id: "website-rebuild",
-    title: "Website rebuilds",
+    title: "Website Rebuilds",
     description:
       "Turn an outdated website into a sharper, faster site that builds trust and brings more inquiries.",
     background: serviceBackgrounds[0],
@@ -32,7 +32,7 @@ const services = [
   },
   {
     id: "landing-sprint",
-    title: "Launch pages",
+    title: "Launch Landing Page",
     description:
       "Clear landing pages for launches, waitlists, and campaigns — built to explain fast and convert visitors.",
     background: serviceBackgrounds[1],
@@ -43,7 +43,7 @@ const services = [
   },
   {
     id: "ai-automation",
-    title: "AI automations",
+    title: "AI Automations",
     description:
       "Automate lead capture, follow-ups, onboarding, and support so your team saves time every week.",
     background: serviceBackgrounds[1],
@@ -54,7 +54,7 @@ const services = [
   },
   {
     id: "product-ui",
-    title: "Product UI & frontend",
+    title: "Product UI & Frontend",
     description:
       "Clean dashboards, portals, and product interfaces that feel polished, usable, and ready to scale.",
     background: serviceBackgrounds[0],
@@ -67,7 +67,7 @@ const services = [
 
   {
     id: "growth-cro",
-    title: "Strategy calls",
+    title: "Strategy Calls",
     description:
       "Get clear direction on your website, positioning, page structure, and next best improvements.",
     background: serviceBackgrounds[0],
@@ -110,7 +110,7 @@ function ServiceCard({
   return (
     <motion.article
       ref={cardRef}
-      className="flex flex-col rounded-2xl border border-zinc-200 bg-white p-4 shadow-none md:p-4"
+      className="flex flex-col rounded-sm border border-zinc-200 bg-white p-4 shadow-none md:p-4"
       initial={reduceMotion ? false : { opacity: 0, y: 14 }}
       animate={visible ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
       transition={{ duration: reduceMotion ? 0 : 0.45, delay: reduceMotion ? 0 : index * 0.06, ease }}
@@ -124,7 +124,7 @@ function ServiceCard({
               fill
               priority={index === 0}
               sizes="(max-width: 768px) 100vw, 33vw"
-              className="object-cover object-center"
+              className="object-cover object-center saturate-200"
               aria-hidden
             />
             <motion.div
@@ -168,7 +168,7 @@ function ServiceCard({
               fill
               priority={index === 0}
               sizes="(max-width: 768px) 100vw, 33vw"
-              className="object-cover object-center"
+              className="object-cover object-center saturate-180"
               aria-hidden
             />
             <div
