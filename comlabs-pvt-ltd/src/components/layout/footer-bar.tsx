@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { PixelGridMark } from "@/components/decorative/pixel-grid-mark";
+import { SectionContainer } from "@/components/layout/section-container";
 import { cn } from "@/lib/utils";
 
 const linkClass =
@@ -82,7 +83,7 @@ const socialLinks: { href: string; label: string; external?: boolean }[] = [
 export function FooterBar() {
   return (
     <footer className="relative z-40 border-t border-zinc-800/80 bg-[#111111] text-zinc-400">
-      <div className="mx-auto max-w-7xl px-4 py-16 md:px-8 md:py-20">
+      <SectionContainer className="px-4 py-16 md:px-8 md:py-20">
         <div className="flex flex-col gap-12 lg:flex-row lg:gap-10 xl:gap-14">
           <div className="flex items-start gap-4 lg:max-w-[5.5rem] lg:flex-col lg:gap-6">
             <PixelGridMark surface="footer" className="opacity-90" />
@@ -155,7 +156,7 @@ export function FooterBar() {
         </div>
 
         <div className="mt-16 flex flex-col gap-4 border-t border-zinc-800/80 pt-8 text-[12px] font-normal text-zinc-500 sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} ComLabs Technology Pvt. Ltd. · Nashik, India</p>
+          <p>© {new Date().getFullYear()} ComLabs Technology Pvt. Ltd. · Pune, India</p>
           <div className="flex flex-wrap gap-x-6 gap-y-2">
             <Link href="/#contact" className="text-zinc-500 transition-colors hover:text-zinc-200">
               Privacy
@@ -168,7 +169,7 @@ export function FooterBar() {
             </Link>
           </div>
         </div>
-      </div>
+      </SectionContainer>
     </footer>
   );
 }

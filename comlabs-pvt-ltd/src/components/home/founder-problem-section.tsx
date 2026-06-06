@@ -5,9 +5,9 @@ import Image from "next/image";
 import { useEffect, useRef, useState, type RefObject } from "react";
 
 import { SectionHeader } from "@/components/home/section-header";
+import { SectionContainer } from "@/components/layout/section-container";
+import { easeOut, GPU, motionFor } from "@/lib/product-motion";
 import { cn } from "@/lib/utils";
-
-const ease = [0.25, 0.1, 0, 1] as const;
 
 const VISUAL_VIEWPORT = { once: true, amount: 0.18 } as const;
 
@@ -43,14 +43,18 @@ type MarkerPhase = "hidden" | "scanning" | "done";
 const MARKER_LEAD_MS = 520;
 const BETWEEN_STEPS_MS = 480;
 
-function TypingCaret({ visible }: { visible: boolean }) {
+function TypingCaret({ visible, reduce }: { visible: boolean; reduce?: boolean }) {
   if (!visible) return null;
 
   return (
     <motion.span
-      className="ml-px inline-block h-3 w-px align-middle bg-zinc-400"
-      animate={{ opacity: [1, 0.2, 1] }}
-      transition={{ duration: 0.85, repeat: Infinity, ease: "easeInOut" }}
+      className={cn("ml-px inline-block h-3 w-px align-middle bg-zinc-400", GPU)}
+      animate={reduce ? { opacity: 1 } : { opacity: [1, 0.2, 1] }}
+      transition={
+        reduce
+          ? { duration: 0 }
+          : { duration: 0.85, repeat: Infinity, ease: "easeInOut" }
+      }
       aria-hidden
     />
   );
@@ -273,25 +277,29 @@ function DiagnosticMarker({
   const visible = markerPhase !== "hidden";
   const scanning = markerPhase === "scanning";
   const done = markerPhase === "done";
+  const t = motionFor(reduceMotion);
 
   return (
     <AnimatePresence>
       {visible ? (
         <motion.div
           key={id}
-          className="absolute z-20 flex items-center gap-1 max-md:gap-0.5 md:gap-1.5"
+          className={cn(
+            "absolute z-20 flex items-center gap-1 max-md:gap-0.5 md:gap-1.5",
+            GPU,
+          )}
           style={{ top, left }}
-          initial={reduceMotion ? false : { opacity: 0, scale: 0.35 }}
+          initial={reduceMotion ? false : { opacity: 0, scale: 0.96 }}
           animate={{
-            opacity: 1,
-            scale: scanning && !reduceMotion ? [1, 1.07, 1] : 1,
+            opacity: scanning && !reduceMotion ? [0.55, 1, 0.55] : 1,
+            scale: 1,
           }}
-          exit={{ opacity: 0, scale: 0.85 }}
+          exit={reduceMotion ? undefined : { opacity: 0, scale: 0.98 }}
           transition={{
-            opacity: { duration: reduceMotion ? 0 : 0.32, ease },
-            scale: scanning && !reduceMotion
-              ? { duration: 1.35, repeat: Infinity, ease: "easeInOut" }
-              : { type: "spring", stiffness: 520, damping: 24 },
+            opacity: scanning && !reduceMotion
+              ? { duration: 1.4, repeat: Infinity, ease: "easeInOut" }
+              : t.feedback,
+            default: t.feedback,
           }}
         >
           <span
@@ -322,11 +330,11 @@ function DiagnosticMarker({
           </span>
           <span className="relative flex size-2 shrink-0 items-center justify-center md:size-2.5">
             <motion.span
-              className="absolute inset-0 rounded-full bg-amber-500/25"
+              className={cn("absolute inset-0 rounded-full bg-amber-500/25", GPU)}
               animate={
                 scanning && !reduceMotion
-                  ? { scale: [1, 1.55, 1], opacity: [0.4, 0.1, 0.4] }
-                  : { scale: 1, opacity: done ? 0.12 : 0.2 }
+                  ? { opacity: [0.35, 0.12, 0.35] }
+                  : { opacity: done ? 0.12 : 0.2 }
               }
               transition={{
                 duration: 1.5,
@@ -384,11 +392,13 @@ function AnnotationCard({
   const isTypingBody = phase === "body";
   const titleComplete = titleText.length >= title.length;
   const bodyComplete = bodyText.length >= body.length;
+  const t = motionFor(reduceMotion);
 
   return (
     <motion.article
       className={cn(
         "relative overflow-hidden rounded-2xl border p-3 max-md:rounded-xl max-md:p-2.5 md:p-3.5 lg:p-4",
+        GPU,
         "border-white/55 bg-white/45 backdrop-blur-xl backdrop-saturate-150",
         "shadow-[0_8px_32px_-12px_rgba(0,0,0,0.12),inset_0_1px_0_rgba(255,255,255,0.85)]",
         isActive &&
@@ -402,10 +412,10 @@ function AnnotationCard({
       initial={false}
       animate={{
         opacity: isVisible ? 1 : 0,
-        y: isVisible ? 0 : 16,
-        scale: isVisible ? 1 : 0.97,
+        y: isVisible ? 0 : reduceMotion ? 0 : 4,
+        scale: isVisible ? 1 : reduceMotion ? 1 : 0.98,
       }}
-      transition={{ duration: reduceMotion ? 0 : 0.48, ease }}
+      transition={t.enter}
     >
       <div
         aria-hidden
@@ -445,7 +455,7 @@ function AnnotationCard({
                 }
                 : { width: 0, opacity: 0 }
             }
-            transition={{ duration: reduceMotion ? 0 : 0.5, ease, delay: reduceMotion ? 0 : 0.14 }}
+            transition={{ ...t.expand, delay: reduceMotion ? 0 : 0.1 }}
             aria-hidden
           >
             <span
@@ -478,10 +488,13 @@ function AnnotationCard({
 
         {isActive ? (
           <motion.span
-            className="inline-flex items-center gap-1.5 rounded-full border border-amber-200/70 bg-amber-50/80 px-2 py-0.5 text-[8px] font-normal text-amber-900 backdrop-blur-sm md:px-2.5 md:py-1 md:text-[9px]"
-            initial={reduceMotion ? false : { opacity: 0, scale: 0.92 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.32, ease }}
+            className={cn(
+              "inline-flex items-center gap-1.5 rounded-full border border-amber-200/70 bg-amber-50/80 px-2 py-0.5 text-[8px] font-normal text-amber-900 backdrop-blur-sm md:px-2.5 md:py-1 md:text-[9px]",
+              GPU,
+            )}
+            initial={reduceMotion ? false : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={t.feedback}
           >
             <motion.span
               className="size-1.5 rounded-full border border-amber-400/80 border-t-amber-600"
@@ -493,10 +506,13 @@ function AnnotationCard({
           </motion.span>
         ) : isDone ? (
           <motion.span
-            className="inline-flex items-center gap-1 rounded-full border border-white/60 bg-white/50 px-2 py-0.5 text-[8px] font-normal text-zinc-600 backdrop-blur-sm md:px-2.5 md:py-1 md:text-[9px]"
-            initial={reduceMotion ? false : { opacity: 0, scale: 0.9 }}
+            className={cn(
+              "inline-flex items-center gap-1 rounded-full border border-white/60 bg-white/50 px-2 py-0.5 text-[8px] font-normal text-zinc-600 backdrop-blur-sm md:px-2.5 md:py-1 md:text-[9px]",
+              GPU,
+            )}
+            initial={reduceMotion ? false : { opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ type: "spring", stiffness: 420, damping: 26 }}
+            transition={t.feedback}
           >
             <svg width="9" height="9" viewBox="0 0 10 10" aria-hidden>
               <path
@@ -515,12 +531,12 @@ function AnnotationCard({
 
       <h3 className="relative z-10 mt-3 min-h-[2.25rem] text-[12px] font-medium leading-snug tracking-tight text-zinc-900 md:mt-3.5 md:min-h-[2.75rem] md:text-[15px] lg:text-[16px] lg:leading-[1.35]">
         {titleText}
-        {isTypingTitle && !titleComplete ? <TypingCaret visible /> : null}
+        {isTypingTitle && !titleComplete ? <TypingCaret visible reduce={reduceMotion} /> : null}
       </h3>
 
       <p className="relative z-10 mt-2 min-h-[3.5rem] text-[11px] font-normal leading-[1.55] text-zinc-600 md:min-h-[4.25rem] md:text-[13px] md:leading-[1.6] lg:text-[14px]">
         {bodyText}
-        {isTypingBody && !bodyComplete ? <TypingCaret visible /> : null}
+        {isTypingBody && !bodyComplete ? <TypingCaret visible reduce={reduceMotion} /> : null}
       </p>
     </motion.article>
   );
@@ -543,6 +559,8 @@ function MockupLeakGlow({
   markerPhases: MarkerPhase[];
   reduceMotion: boolean;
 }) {
+  const t = motionFor(reduceMotion);
+
   return (
     <>
       {annotations.map((item, index) => {
@@ -556,17 +574,23 @@ function MockupLeakGlow({
           <motion.span
             key={item.id}
             aria-hidden
-            className="pointer-events-none absolute z-[5] size-20 -translate-x-1/2 -translate-y-1/2 rounded-full"
+            className={cn(
+              "pointer-events-none absolute z-[5] size-20 -translate-x-1/2 -translate-y-1/2 rounded-full",
+              GPU,
+            )}
             style={{ top: item.markerTop, left: item.markerLeft }}
-            initial={reduceMotion ? false : { opacity: 0, scale: 0.6 }}
+            initial={reduceMotion ? false : { opacity: 0, scale: 0.96 }}
             animate={{
-              opacity: scanning ? [0.28, 0.48, 0.28] : done ? 0.16 : 0.24,
-              scale: scanning && !reduceMotion ? [1, 1.12, 1] : 1,
+              opacity: scanning && !reduceMotion ? [0.28, 0.48, 0.28] : done ? 0.16 : 0.24,
+              scale: 1,
             }}
             transition={{
-              duration: scanning && !reduceMotion ? 1.6 : 0.4,
-              repeat: scanning && !reduceMotion ? Infinity : 0,
-              ease: "easeInOut",
+              opacity: {
+                duration: scanning && !reduceMotion ? 1.6 : 0.38,
+                repeat: scanning && !reduceMotion ? Infinity : 0,
+                ease: easeOut,
+              },
+              default: t.feedback,
             }}
           >
             <span className="absolute inset-0 rounded-full bg-amber-400/20 blur-xl" />
@@ -587,12 +611,17 @@ function MobileLeakMockup({
   markerPhases: MarkerPhase[];
   reduceMotion: boolean;
 }) {
+  const t = motionFor(reduceMotion);
+
   return (
     <motion.div
-      className="relative overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04),0_16px_48px_-16px_rgba(0,0,0,0.07)]"
-      initial={reduceMotion ? false : { opacity: 0, y: 20 }}
-      animate={visible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-      transition={{ duration: reduceMotion ? 0 : 0.52, ease }}
+      className={cn(
+        "relative overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04),0_16px_48px_-16px_rgba(0,0,0,0.07)]",
+        GPU,
+      )}
+      initial={reduceMotion ? false : { opacity: 0, y: 4 }}
+      animate={visible ? { opacity: 1, y: 0 } : { opacity: 0, y: 4 }}
+      transition={t.enter}
     >
       <div className="flex items-center gap-3 border-b border-zinc-100 bg-zinc-50/90 px-4 py-2.5">
         <div className="flex items-center gap-1.5">
@@ -693,12 +722,17 @@ function DesktopLeakMockup({
   markerPhases: MarkerPhase[];
   reduceMotion: boolean;
 }) {
+  const t = motionFor(reduceMotion);
+
   return (
     <motion.div
-      className="relative overflow-hidden rounded-[20px] border border-zinc-200/90 bg-white shadow-[0_0_0_1px_rgba(0,0,0,0.02),0_2px_4px_rgba(0,0,0,0.02),0_24px_64px_-24px_rgba(0,0,0,0.14)]"
-      initial={reduceMotion ? false : { opacity: 0, y: 24 }}
-      animate={visible ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
-      transition={{ duration: reduceMotion ? 0 : 0.58, ease }}
+      className={cn(
+        "relative overflow-hidden rounded-[20px] border border-zinc-200/90 bg-white shadow-[0_0_0_1px_rgba(0,0,0,0.02),0_2px_4px_rgba(0,0,0,0.02),0_24px_64px_-24px_rgba(0,0,0,0.14)]",
+        GPU,
+      )}
+      initial={reduceMotion ? false : { opacity: 0, y: 4 }}
+      animate={visible ? { opacity: 1, y: 0 } : { opacity: 0, y: 4 }}
+      transition={t.enter}
     >
       <div
         aria-hidden
@@ -956,16 +990,16 @@ export function FounderProblemSection() {
 
   return (
     <section ref={sectionRef} className="overflow-x-clip bg-white px-3 py-14 md:px-8 md:py-24">
-      <div className="mx-auto max-w-6xl">
+      <SectionContainer>
         <SectionHeader>
           <p className="text-[10px] font-medium uppercase tracking-[0.14em] text-zinc-400 md:text-[11px]">
             Website leak points
           </p>
-          <h2 className="mt-2.5 max-w-[760px] text-[clamp(1.5rem,3.2vw,2.375rem)] font-medium leading-[1.14] tracking-tighter text-[var(--fg-primary)] md:mt-3 md:leading-[1.12]">
+          <h2 className="mt-2.5 text-[clamp(1.5rem,3.2vw,2.375rem)] font-medium leading-[1.14] tracking-tighter text-[var(--fg-primary)] md:mt-3 md:leading-[1.12]">
             Your Website may leak Trust <br /> before Buyers ever <br />
             talk to you.
           </h2>
-          <p className="mt-3 max-w-[620px] text-[0.875rem] font-normal leading-relaxed text-[var(--fg-secondary)] md:mt-4 md:text-[0.9375rem]">
+          <p className="mt-3 text-[0.875rem] font-normal leading-relaxed text-[var(--fg-secondary)] md:mt-4 md:text-[0.9375rem]">
             Weak websites rarely fail in one obvious place. They lose people through unclear
             messaging, low credibility, and broken conversion paths.
           </p>
@@ -973,14 +1007,14 @@ export function FounderProblemSection() {
 
         <div
           ref={visualRef}
-          className="relative mt-8 w-full overflow-hidden rounded-2xl border border-zinc-100 px-3.5 py-2 md:mt-16 md:p-6 lg:p-8"
+          className="relative mt-8 w-full overflow-hidden rounded-lg p-2.5 md:mt-16 md:p-3 lg:p-3.5 "
         >
           <Image
             src="/card-bg/leak-points-bg.png"
             alt=""
             fill
             sizes="(max-width: 1024px) 100vw, 1152px"
-            className="object-cover object-center mask-b-from-98% mask-t-from-98% mask-l-from-99% md:mask-r-from-99%"
+            className="object-cover object-center saturate-180 mask-b-from-95% "
             aria-hidden
           />
 
@@ -995,13 +1029,13 @@ export function FounderProblemSection() {
           />
 
           <div
-            className="relative z-10 w-full"
+            className="relative z-10 w-full overflow-hidden rounded-xl border border-white/30 bg-white/40 backdrop-blur-[2px] md:rounded-lg"
             style={isCompact ? { height } : undefined}
           >
             <div
               ref={innerRef}
               className={cn(
-                "grid grid-cols-[minmax(0,1fr)_minmax(0,480px)_minmax(0,1fr)] grid-rows-[auto_auto_auto] items-center gap-x-3 gap-y-4 max-lg:px-2 lg:grid-cols-[minmax(0,1fr)_minmax(0,520px)_minmax(0,1fr)] lg:grid-rows-[auto_auto] lg:gap-x-6 lg:gap-y-8 lg:px-0",
+                "grid grid-cols-[minmax(0,1fr)_minmax(0,480px)_minmax(0,1fr)] grid-rows-[auto_auto_auto] items-center gap-x-3 gap-y-4 px-2 py-2 max-lg:px-2 md:px-4 md:py-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,520px)_minmax(0,1fr)] lg:grid-rows-[auto_auto] lg:gap-x-6 lg:gap-y-8 lg:px-5 lg:py-4",
                 isCompact &&
                 "absolute left-0 w-[980px] max-lg:origin-top-left max-lg:will-change-transform max-lg:translate-y-[6%]",
                 !isCompact && "lg:relative lg:w-full",
@@ -1051,7 +1085,7 @@ export function FounderProblemSection() {
             </div>
           </div>
         </div>
-      </div>
+      </SectionContainer>
     </section>
   );
 }

@@ -1,6 +1,9 @@
 "use client";
 
+import { motion, useInView, useReducedMotion } from "framer-motion";
+import Image from "next/image";
 import Link from "next/link";
+import { useRef } from "react";
 import type { SimpleIcon } from "simple-icons";
 import {
   siAngular,
@@ -23,10 +26,11 @@ import {
 } from "simple-icons";
 
 import { SectionHeader } from "@/components/home/section-header";
-import { bodyText, sectionTitle } from "@/lib/page-styles";
+import { SectionContainer } from "@/components/layout/section-container";
 import { cn } from "@/lib/utils";
 
-/** Fixed scatter (Render-style): `top` / `left` match the original layout; one icon per slot. */
+const ease = [0.25, 0.1, 0, 1] as const;
+
 const scatterTiles: {
   icon: SimpleIcon;
   position: string;
@@ -74,12 +78,6 @@ function iconFgClass(icon: SimpleIcon): string {
   return fg[icon.slug] ?? "text-neutral-700";
 }
 
-const primaryCta =
-  "inline-flex items-center justify-center rounded-full bg-gradient-to-b from-neutral-800 to-neutral-950 px-6 py-2.5 text-[13px] font-normal tracking-tight text-white shadow-[0px_3.5px_1px_0px_var(--color-neutral-700)_inset,0px_1px_4px_0px_var(--color-neutral-900)] transition-all duration-150 [text-shadow:0_1px_2px_rgba(0,0,0,0.4)] hover:from-neutral-700 hover:to-neutral-900 hover:shadow-[0px_3.5px_3px_0px_var(--color-neutral-600)_inset,0px_1px_6px_0px_var(--color-neutral-900)] active:scale-[0.97]";
-
-const blueprintLines =
-  "bg-[repeating-linear-gradient(90deg,transparent_0px,transparent_31px,rgb(0_0_0/0.06)_31px,rgb(0_0_0/0.06)_32px)]";
-
 function ScatterIconTile({
   icon,
   position,
@@ -94,91 +92,82 @@ function ScatterIconTile({
   return (
     <div
       className={cn(
-        "absolute z-[1] flex h-16 w-16 cursor-default pointer-events-auto items-center justify-center rounded-md border border-black/[0.04] shadow-[0_1px_0_rgba(255,255,255,0.65)_inset,0_6px_18px_-10px_rgba(0,0,0,0.12)] transition-transform duration-300 ease-in-out hover:-translate-y-[5px]",
+        "absolute z-[1] flex h-14 w-14 items-center justify-center rounded-sm border border-black/[0.04] shadow-[0_1px_0_rgba(255,255,255,0.65)_inset,0_6px_18px_-10px_rgba(0,0,0,0.12)] transition-transform duration-300 ease-out hover:-translate-y-1 md:h-16 md:w-16",
         position,
         tileClass,
       )}
       title={icon.title}
     >
-      <svg viewBox="0 0 24 24" role="img" className={cn("h-7 w-7", fg)} aria-hidden>
+      <svg viewBox="0 0 24 24" role="img" className={cn("h-6 w-6 md:h-7 md:w-7", fg)} aria-hidden>
         <path fill="currentColor" d={icon.path} />
       </svg>
     </div>
   );
 }
 
-/**
- * Tools & stack: marketing header + Render-style fixed scatter (pastel tiles, simple-icons),
- * blueprint grid, centered trust card.
- */
 export function ToolsTechSection() {
+  const ref = useRef<HTMLElement>(null);
+  const inView = useInView(ref, { once: true, amount: 0.08 });
+  const reduceMotion = !!useReducedMotion();
+
   return (
-    <section id="tools" className="bg-[var(--bg-primary)] px-4 py-24 md:px-8">
-      <div className="mx-auto max-w-6xl">
+    <section id="tools" ref={ref} className="bg-white px-3 py-14 md:px-8 md:py-24">
+      <SectionContainer>
         <SectionHeader>
-          <p className="flex items-center gap-2 text-[12px] font-normal uppercase leading-none tracking-widest text-neutral-500">
-            <span className="h-3 w-px rounded-full bg-blue-600/70" aria-hidden />
-            <span className="text-blue-600">Tools & stack</span>
+          <p className="text-[10px] font-medium uppercase tracking-[0.14em] text-zinc-400 md:text-[11px]">
+            Tools & stack
           </p>
-          <h2 className={cn(sectionTitle, "mt-4 max-w-[22ch] text-neutral-950")}>
-            The stack behind <span className="text-blue-600">fast, reliable launches</span>.
+          <h2 className="mt-2.5 text-[clamp(1.5rem,3.2vw,2.375rem)] font-medium leading-[1.14] tracking-tighter text-[var(--fg-primary)] md:mt-3 md:leading-[1.12]">
+            The stack behind fast, reliable launches.
           </h2>
-          <p className={cn(bodyText, "mt-4 max-w-2xl text-[var(--fg-secondary)]")}>
+          <p className="mt-3 text-[0.875rem] font-normal leading-relaxed text-[var(--fg-secondary)] md:mt-4 md:text-[0.9375rem]">
             We use a focused modern stack to design, build, launch, and iterate quickly — without
             slowing your team down.
           </p>
         </SectionHeader>
 
-        <div
-          className={cn(
-            "relative mt-12 flex min-h-[52svh] flex-col items-center justify-center overflow-hidden rounded-2xl border border-[var(--border)] md:mt-14 md:min-h-[min(85svh,760px)]",
-            "bg-[var(--bg-surface)] shadow-[0_1px_0_rgba(0,0,0,0.03)_inset,0_8px_30px_-12px_rgba(0,0,0,0.08)]",
-            "md:bg-[#fafafa]",
-          )}
+        <motion.div
+          initial={reduceMotion ? false : { opacity: 0, y: 16 }}
+          animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
+          transition={{ delay: reduceMotion ? 0 : 0.06, duration: 0.5, ease }}
+          className="relative mt-10 overflow-hidden rounded-sm p-2.5 md:mt-12 md:p-3"
         >
-          <div className="pointer-events-none absolute inset-0 z-0 hidden overflow-hidden rounded-2xl md:block">
-            {scatterTiles.map(({ icon, position, tile }) => (
-              <ScatterIconTile key={icon.slug} icon={icon} position={position} tileClass={tile} />
-            ))}
-          </div>
-
-          <div
-            className={cn(
-              "pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-28 rounded-b-2xl opacity-80 [mask-image:linear-gradient(to_top,black_40%,transparent)] md:h-32 md:opacity-60",
-              blueprintLines,
-            )}
+          <Image
+            src="/card-bg/process-extras-bg.png"
+            alt=""
+            fill
+            sizes="(max-width: 1024px) 100vw, 1152px"
+            className="object-cover object-center saturate-180"
             aria-hidden
           />
 
-          <div
-            className={cn(
-              "pointer-events-none absolute inset-x-0 top-0 z-[1] h-28 rounded-t-2xl opacity-80 [mask-image:linear-gradient(to_bottom,black_40%,transparent)] md:h-32 md:opacity-60",
-              blueprintLines,
-            )}
-            aria-hidden
-          />
+          <div className="relative overflow-hidden rounded-sm border border-white/30 bg-white/40 backdrop-blur-[2px] md:rounded-xl">
+            <div className="relative flex min-h-[min(72svh,640px)] flex-col items-center justify-center overflow-hidden px-4 py-16 md:min-h-[min(80svh,720px)]">
+              <div className="pointer-events-none absolute inset-0 hidden md:block">
+                {scatterTiles.map(({ icon, position, tile }) => (
+                  <ScatterIconTile key={icon.slug} icon={icon} position={position} tileClass={tile} />
+                ))}
+              </div>
 
-          <main className="relative z-10 w-full max-w-2xl px-5 pb-20 pt-10 md:px-6 md:pb-12 md:pt-12">
-            <div
-              className={cn(
-                "flex flex-col items-center text-center",
-                "md:rounded-xl md:border md:border-[var(--border)] md:bg-white md:p-14 md:shadow-[0_20px_50px_rgba(0,0,0,0.06)]",
-              )}
-            >
-              <h3 className="max-w-[20ch] text-[clamp(1.625rem,4.5vw,2.75rem)] font-medium leading-[1.12] tracking-tighter text-[var(--fg-primary)] md:max-w-[22ch]">
-                Tools we trust.
-              </h3>
-              <p className={cn(bodyText, "mx-auto mt-4 max-w-xl text-[var(--fg-secondary)]")}>
-                Design, development, automation, analytics, and deployment tools selected for speed
-                and reliability.
-              </p>
-              <Link href="#tools" className={cn(primaryCta, "mt-9")}>
-                See the stack
-              </Link>
+              <div className="relative z-10 w-full max-w-xl text-center">
+                <h3 className="text-[clamp(1.375rem,3.5vw,2rem)] font-medium leading-[1.14] tracking-tighter text-[var(--fg-primary)]">
+                  Tools we trust.
+                </h3>
+                <p className="mx-auto mt-3 max-w-md text-[0.875rem] font-normal leading-relaxed text-[var(--fg-secondary)]">
+                  Design, development, automation, analytics, and deployment tools selected for
+                  speed and reliability.
+                </p>
+                <Link
+                  href="#tools"
+                  className="mt-8 inline-flex items-center justify-center rounded-full border border-zinc-200 bg-white px-5 py-2 text-[13px] font-normal tracking-tight text-[var(--fg-primary)] shadow-sm transition-all duration-150 hover:border-zinc-300 hover:bg-zinc-50 active:scale-[0.97]"
+                >
+                  See the stack
+                </Link>
+              </div>
             </div>
-          </main>
-        </div>
-      </div>
+          </div>
+        </motion.div>
+      </SectionContainer>
     </section>
   );
 }

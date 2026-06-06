@@ -18,6 +18,7 @@ import Image from "next/image";
 import { useRef } from "react";
 
 import { SectionHeader } from "@/components/home/section-header";
+import { SectionContainer } from "@/components/layout/section-container";
 import { servicesEyebrow, servicesSubtitle, servicesTitle } from "@/lib/page-styles";
 import { cn } from "@/lib/utils";
 
@@ -185,7 +186,7 @@ export function ProcessSection() {
 
   return (
     <section className="flex min-h-screen flex-col justify-center bg-white  px-4 py-20 md:px-8 md:py-24">
-      <div className="mx-auto w-full max-w-6xl">
+      <SectionContainer>
         <SectionHeader>
           <p className={cn(servicesEyebrow, "text-zinc-500")}>Process</p>
           <h2 className={cn(servicesTitle, "text-zinc-900")}>How we work.</h2>
@@ -236,7 +237,7 @@ export function ProcessSection() {
             ))}
           </div>
         </div>
-      </div>
+      </SectionContainer>
     </section>
   );
 }

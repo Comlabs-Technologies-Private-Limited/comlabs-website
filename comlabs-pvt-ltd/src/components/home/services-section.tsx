@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useRef } from "react";
 
 import { SectionHeader } from "@/components/home/section-header";
+import { SectionContainer } from "@/components/layout/section-container";
 import { MOCK_VIEWPORT, ServiceMockup } from "@/components/home/services-mockups";
 import { servicesEyebrow, servicesSubtitle, servicesTitle } from "@/lib/page-styles";
 import { cn } from "@/lib/utils";
@@ -204,7 +205,7 @@ function ServiceCard({
 export function ServicesSection() {
   return (
     <section id="services" className="bg-white px-4 py-20 md:px-8 md:py-24">
-      <div className="mx-auto max-w-6xl">
+      <SectionContainer>
         <SectionHeader>
           <p className={servicesEyebrow}>Services</p>
           <h2 className={servicesTitle}>
@@ -221,7 +222,7 @@ export function ServicesSection() {
             <ServiceCard key={service.id} {...service} index={index} />
           ))}
         </div>
-      </div>
+      </SectionContainer>
     </section>
   );
 }

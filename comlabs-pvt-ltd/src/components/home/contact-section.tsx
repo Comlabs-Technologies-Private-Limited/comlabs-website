@@ -1,33 +1,96 @@
 "use client";
 
+import { motion, useInView, useReducedMotion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import type { FormEvent } from "react";
+import { useRef, useState } from "react";
 
 import { SectionHeader } from "@/components/home/section-header";
+import { SectionContainer } from "@/components/layout/section-container";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { bodyText, eyebrow } from "@/lib/page-styles";
 import { cn } from "@/lib/utils";
 
-const primaryLinkClass =
-  "inline-flex w-full items-center justify-center rounded-full bg-gradient-to-b from-neutral-800 to-neutral-950 px-5 py-2 text-[13px] font-normal tracking-tight text-white shadow-[0px_3.5px_1px_0px_var(--color-neutral-700)_inset,0px_1px_4px_0px_var(--color-neutral-900)] transition-all duration-150 [text-shadow:0_1px_2px_rgba(0,0,0,0.4)] hover:from-neutral-700 hover:to-neutral-900 hover:shadow-[0px_3.5px_3px_0px_var(--color-neutral-600)_inset,0px_1px_6px_0px_var(--color-neutral-900)] active:scale-[0.97]";
+const ease = [0.25, 0.1, 0, 1] as const;
+
+const primaryLinkClass = cn(
+  "group inline-flex w-full items-center justify-center gap-3 rounded-full border border-zinc-200 bg-zinc-900 py-2 pl-5 pr-1.5",
+  "text-[13px] font-medium tracking-tight text-white",
+  "shadow-[0_4px_20px_-6px_rgba(0,0,0,0.35)]",
+  "transition-[background-color,transform] duration-150 hover:bg-zinc-800 active:scale-[0.98]",
+);
+
+type FormState = "idle" | "submitting" | "success" | "error";
 
 export function ContactSection() {
+  const ref = useRef<HTMLElement>(null);
+  const inView = useInView(ref, { once: true, amount: 0.1 });
+  const reduceMotion = !!useReducedMotion();
+  const [formState, setFormState] = useState<FormState>("idle");
+  const [formMessage, setFormMessage] = useState("");
+
+  async function submitRequirement(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+
+    setFormState("submitting");
+    setFormMessage("");
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.get("name"),
+          email: formData.get("email"),
+          message: formData.get("message"),
+          company: formData.get("company"),
+        }),
+      });
+
+      const data = (await response.json()) as { error?: string };
+
+      if (!response.ok) {
+        throw new Error(data.error ?? "Could not send your requirement.");
+      }
+
+      form.reset();
+      setFormState("success");
+      setFormMessage("Requirement sent. I’ll get back to you within 24–48 hours.");
+    } catch (error) {
+      setFormState("error");
+      setFormMessage(
+        error instanceof Error
+          ? error.message
+          : "Could not send your requirement. Please try again.",
+      );
+    }
+  }
+
   return (
-    <section id="contact" className="bg-[var(--bg-primary)] px-4 py-24 md:px-8">
-      <div className="mx-auto grid max-w-6xl gap-12 md:grid-cols-2 md:gap-8">
+    <section id="contact" ref={ref} className="bg-white px-3 py-14 md:px-8 md:py-24">
+      <SectionContainer className="grid gap-10 md:grid-cols-2 md:gap-12">
         <div>
           <SectionHeader>
-            <p className={eyebrow}>Contact</p>
-            <h2 className="mt-4 text-[clamp(1.75rem,3vw,2.5rem)] font-medium leading-tight tracking-[-0.025em] text-[var(--fg-primary)]">
+            <p className="text-[10px] font-medium uppercase tracking-[0.14em] text-zinc-400 md:text-[11px]">
+              Contact
+            </p>
+            <h2 className="mt-2.5 text-[clamp(1.5rem,3.2vw,2.375rem)] font-medium leading-[1.14] tracking-tighter text-[var(--fg-primary)] md:mt-3 md:leading-[1.12]">
               Let&apos;s make your startup look ready to scale.
             </h2>
-            <p className={cn(bodyText, "mt-4 max-w-md")}>
+            <p className="mt-3 text-[0.875rem] font-normal leading-relaxed text-[var(--fg-secondary)] md:mt-4 md:text-[0.9375rem]">
               Share your website, product, or launch goal. I&apos;ll review where you are, what needs
               to change, and how we can ship it with clarity.
             </p>
           </SectionHeader>
-          <div className="mt-8 flex gap-6 text-[var(--fg-tertiary)]">
+
+          <div className="mt-8 flex gap-5 text-zinc-400">
             <Link
               href="https://github.com"
               className="transition-colors duration-100 hover:text-[var(--fg-primary)]"
@@ -57,38 +120,81 @@ export function ContactSection() {
             </Link>
           </div>
         </div>
-        <div>
+
+        <motion.div
+          initial={reduceMotion ? false : { opacity: 0, y: 16 }}
+          animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
+          transition={{ delay: reduceMotion ? 0 : 0.08, duration: 0.5, ease }}
+          className="rounded-sm border border-zinc-200 bg-zinc-50/40 p-5 md:p-6"
+        >
           <form
             className="flex flex-col gap-4"
-            onSubmit={(e) => {
-              e.preventDefault();
-            }}
+            onSubmit={submitRequirement}
           >
-            <Input name="name" placeholder="Name" autoComplete="name" />
-            <Input name="email" type="email" placeholder="Email" autoComplete="email" />
-            <Textarea name="message" placeholder="Tell us about your project" rows={5} />
+            <Input name="name" placeholder="Name" autoComplete="name" required maxLength={120} />
+            <Input
+              name="email"
+              type="email"
+              placeholder="Email"
+              autoComplete="email"
+              required
+              maxLength={160}
+            />
+            <Input
+              name="company"
+              tabIndex={-1}
+              autoComplete="off"
+              className="hidden"
+              aria-hidden="true"
+            />
+            <Textarea
+              name="message"
+              placeholder="Tell us about your project"
+              rows={5}
+              required
+              minLength={20}
+              maxLength={4000}
+            />
             <div className="flex flex-col gap-3">
               <Link
                 href="mailto:hello@comlabs.in?subject=Book%20a%20strategy%20call"
                 className={primaryLinkClass}
               >
-                Book a strategy call
+                <span>Book a strategy call</span>
+                <span
+                  className="flex size-8 shrink-0 items-center justify-center rounded-full bg-white/10 transition-transform duration-150 group-hover:translate-x-0.5"
+                  aria-hidden
+                >
+                  <ArrowRight className="size-4 -rotate-45 text-white" strokeWidth={2} />
+                </span>
               </Link>
-              <Button type="submit" variant="ghost" className="w-full">
-                Send project details
+              <Button
+                type="submit"
+                variant="ghost"
+                className="w-full"
+                disabled={formState === "submitting"}
+              >
+                {formState === "submitting" ? "Sending..." : "Send project details"}
               </Button>
             </div>
+            {formMessage ? (
+              <p
+                className={cn(
+                  "text-center text-[12px] font-normal md:text-left",
+                  formState === "success" ? "text-emerald-700" : "text-red-600",
+                )}
+                role="status"
+                aria-live="polite"
+              >
+                {formMessage}
+              </p>
+            ) : null}
           </form>
-          <p
-            className={cn(
-              bodyText,
-              "mt-3 text-center text-[12px] text-[var(--fg-tertiary)] md:text-left",
-            )}
-          >
+          <p className="mt-3 text-center text-[12px] font-normal text-zinc-500 md:text-left">
             Response within 24–48 hours.
           </p>
-        </div>
-      </div>
+        </motion.div>
+      </SectionContainer>
     </section>
   );
 }

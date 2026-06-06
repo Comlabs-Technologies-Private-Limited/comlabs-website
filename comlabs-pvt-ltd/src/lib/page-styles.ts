@@ -1,6 +1,10 @@
 /** 4px base; use multiples of 4 only. */
+
+/** Site content width — MacBook Air 13" M1 viewport (1440px). Use via `SectionContainer`. */
+export const sectionContainer = "mx-auto w-full max-w-screen";
+
 export const pageMain =
-  "mx-auto w-full max-w-6xl px-4 pb-16 pt-[68px] md:px-8 md:pb-24 md:pt-[72px]";
+  "mx-auto w-full max-w-screen px-4 pb-16 pt-[68px] md:px-8 md:pb-24 md:pt-[72px]";
 
 export const cardSurface =
   "rounded-2xl bg-[var(--bg-surface)] p-6 shadow-sm shadow-black/[0.04] ring-1 ring-black/[0.06]";
@@ -19,7 +23,7 @@ export const servicesEyebrow =
   "text-[11px] font-medium uppercase tracking-[0.14em] text-zinc-400";
 
 export const servicesTitle =
-  "mt-3 max-w-[22ch] text-[clamp(1.625rem,3.2vw,2.375rem)] font-medium leading-[1.12] tracking-tighter text-[var(--fg-primary)]";
+  "mt-3 text-[clamp(1.625rem,3.2vw,2.375rem)] font-medium leading-[1.12] tracking-tighter text-[var(--fg-primary)]";
 
 export const servicesSubtitle =
-  "mt-4 max-w-[42rem] text-[0.9375rem] font-normal leading-relaxed text-[var(--fg-secondary)]";
+  "mt-4 text-[0.9375rem] font-normal leading-relaxed text-[var(--fg-secondary)]";

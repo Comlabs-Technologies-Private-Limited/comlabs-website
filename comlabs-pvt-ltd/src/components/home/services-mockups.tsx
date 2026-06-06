@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { ComponentType, ReactNode, SVGProps } from "react";
 
+import { easeOut, GPU, motionFor } from "@/lib/product-motion";
 import { cn } from "@/lib/utils";
 
 /** Design tokens — SF Pro stack, premium mockup palette */
@@ -21,7 +22,15 @@ const mock = {
 const mockFont =
   "font-[system-ui,-apple-system,'SF_Pro_Text','SF_Pro_Display',BlinkMacSystemFont,sans-serif]";
 
-const ease = [0.25, 0.1, 0, 1] as const;
+/** @deprecated use easeOut — kept as alias for existing transitions */
+const ease = easeOut;
+
+/** Static transitions when `reduce` is not in scope */
+const T_FEEDBACK = { type: "tween" as const, duration: 0.22, ease: easeOut };
+const T_ENTER = { type: "tween" as const, duration: 0.38, ease: easeOut };
+const T_EXPAND = { type: "tween" as const, duration: 0.42, ease: easeOut };
+const T_LOOP = { type: "tween" as const, duration: 0.2, ease: easeOut };
+const T_FADE = { type: "tween" as const, duration: 0.26, ease: easeOut };
 
 /** Shared viewport trigger — passed from services-section when card enters view */
 export type MockupProps = { active?: boolean };
@@ -185,25 +194,28 @@ function ReadinessStatusIcon({
   reduce: boolean;
   size?: number;
 }) {
+  const t = motionFor(reduce);
   return (
     <AnimatePresence mode="wait">
       {checked ? (
         <motion.span
           key="checked"
-          initial={reduce ? false : { opacity: 0, scale: 0.72 }}
+          className={GPU}
+          initial={reduce ? false : { opacity: 0, scale: 0.94 }}
           animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.72 }}
-          transition={{ type: "spring", stiffness: 380, damping: 24 }}
+          exit={{ opacity: 0, scale: 0.96 }}
+          transition={t.feedback}
         >
           <IconCheck size={size} strokeWidth={2.5} />
         </motion.span>
       ) : scanning ? (
         <motion.span
           key="loading"
-          initial={reduce ? false : { opacity: 0, scale: 0.85 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.85 }}
-          transition={{ duration: 0.22, ease }}
+          className={GPU}
+          initial={reduce ? false : { opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={t.loop}
         >
           <SpinLoader size={size + 1} />
         </motion.span>
@@ -282,10 +294,12 @@ function PlatformBrandIcon({ platform, size = 11 }: { platform: SeoPlatform; siz
 function useMockMotion(active: boolean) {
   const reduce = !!useReducedMotion();
   const playing = active || reduce;
+  const t = motionFor(reduce);
 
   return {
     reduce,
     playing,
+    t,
     reveal: {
       initial: "hidden" as const,
       animate: playing ? ("show" as const) : ("hidden" as const),
@@ -294,23 +308,23 @@ function useMockMotion(active: boolean) {
       hidden: {},
       show: {
         transition: {
-          staggerChildren: reduce ? 0 : 0.07,
-          delayChildren: reduce ? 0 : 0.12,
+          staggerChildren: reduce ? 0 : 0.06,
+          delayChildren: reduce ? 0 : 0.1,
         },
       },
     },
     item: {
-      hidden: { opacity: reduce ? 1 : 0, y: reduce ? 0 : 5 },
+      hidden: { opacity: reduce ? 1 : 0, y: reduce ? 0 : 4 },
       show: {
         opacity: 1,
         y: 0,
-        transition: { duration: reduce ? 0 : 0.32, ease },
+        transition: t.enter,
       },
     },
     fade: {
       initial: { opacity: reduce ? 1 : 0 },
       animate: { opacity: playing ? 1 : reduce ? 1 : 0 },
-      transition: { duration: reduce ? 0 : 0.4, ease },
+      transition: t.fade,
     },
   };
 }
@@ -944,7 +958,7 @@ function FlowPrototypeCard({
                   <motion.div
                     initial={reduce ? false : { opacity: 0, y: -8, scale: 0.985 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
-                    transition={{ type: "spring", stiffness: 480, damping: 30 }}
+                    transition={T_ENTER}
                     className={cn(
                       "relative grid grid-cols-[24px_minmax(0,1fr)_56px] items-center gap-2 rounded-[10px] border bg-white px-2 py-1.5",
                       "shadow-[0_1px_1px_rgba(0,0,0,0.02)]",
@@ -1129,7 +1143,7 @@ export function AutomationFlowMockup({ active = false }: MockupProps) {
         height: playing ? "100%" : "auto",
         maxHeight: playing ? "100%" : "12.75rem",
       }}
-      transition={{ duration: reduce ? 0 : 0.62, ease }}
+      transition={reduce ? { duration: 0 } : T_EXPAND}
     >
       <div className="relative rounded-t-xl z-[100] shrink-0 border-b border-zinc-200/70 bg-[#F2F2F2] px-3.5 py-2.5 md:px-4">
         <WindowDots />
@@ -1155,13 +1169,11 @@ export function AutomationFlowMockup({ active = false }: MockupProps) {
                     {showChecks ? (
                       <motion.span
                         key="check"
-                        initial={reduce ? false : { scale: 0.55, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
+                        initial={reduce ? false : { opacity: 0, scale: 0.96 }}
+                        animate={{ opacity: 1, scale: 1 }}
                         transition={{
-                          type: "spring",
-                          stiffness: 520,
-                          damping: 24,
-                          delay: reduce ? 0 : index * 0.14,
+                          ...T_FEEDBACK,
+                          delay: reduce ? 0 : index * 0.1,
                         }}
                         style={{ color: mock.strong }}
                       >
@@ -1172,13 +1184,12 @@ export function AutomationFlowMockup({ active = false }: MockupProps) {
                         key="icon"
                         initial={false}
                         animate={{
-                          opacity: isPending ? 0.42 : 1,
-                          scale: isActive && !reduce ? [1, 1.06, 1] : 1,
+                          opacity: isPending ? 0.42 : isActive && !reduce ? [0.55, 1, 0.55] : 1,
+                          scale: 1,
                         }}
                         transition={{
-                          opacity: { duration: 0.28, ease },
-                          scale: {
-                            duration: 1.6,
+                          opacity: {
+                            duration: 1.4,
                             repeat: isActive && !reduce ? Infinity : 0,
                             ease: "easeInOut",
                           },
@@ -1216,8 +1227,8 @@ export function AutomationFlowMockup({ active = false }: MockupProps) {
                     className="ml-auto size-1.5 shrink-0 rounded-full bg-emerald-500"
                     animate={
                       playing && !reduce
-                        ? { opacity: [0.35, 1, 0.35], scale: [0.9, 1.12, 0.9] }
-                        : { opacity: 1, scale: 1 }
+                        ? { opacity: [0.45, 1, 0.45] }
+                        : { opacity: 1 }
                     }
                     transition={{
                       duration: 1.5,
@@ -1231,10 +1242,8 @@ export function AutomationFlowMockup({ active = false }: MockupProps) {
                     initial={reduce ? false : { scale: 0, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{
-                      type: "spring",
-                      stiffness: 480,
-                      damping: 22,
-                      delay: reduce ? 0 : index * 0.14 + 0.08,
+                      ...T_FEEDBACK,
+                      delay: reduce ? 0 : index * 0.1 + 0.06,
                     }}
                   />
                 ) : null}
@@ -1250,23 +1259,23 @@ export function AutomationFlowMockup({ active = false }: MockupProps) {
             initial={reduce ? false : { opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 6 }}
-            transition={{ duration: 0.42, ease }}
+            transition={T_EXPAND}
             className="mt-auto shrink-0 border-t pt-3"
             style={{ borderColor: mock.border }}
           >
             <div className="flex items-center justify-between gap-2">
               <motion.span
                 className="inline-flex items-center gap-1.5 rounded-full border border-[#D1FAE5] bg-[#ECFDF5] px-2 py-1 text-[9px] font-medium leading-none tracking-tight text-[#047857] md:text-[10px]"
-                initial={reduce ? false : { scale: 0.92, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ type: "spring", stiffness: 440, damping: 26, delay: reduce ? 0 : 0.05 }}
+                initial={reduce ? false : { opacity: 0, scale: 0.96 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ ...T_FEEDBACK, delay: reduce ? 0 : 0.05 }}
               >
                 <motion.span
                   className="size-1.5 rounded-full bg-emerald-500"
                   animate={
                     playing && !reduce
-                      ? { opacity: [0.45, 1, 0.45], scale: [0.92, 1.08, 0.92] }
-                      : { opacity: 1, scale: 1 }
+                      ? { opacity: [0.5, 1, 0.5] }
+                      : { opacity: 1 }
                   }
                   transition={{ duration: 1.6, repeat: playing && !reduce ? Infinity : 0, ease: "easeInOut" }}
                 />
@@ -1279,13 +1288,11 @@ export function AutomationFlowMockup({ active = false }: MockupProps) {
                     key={tool.name}
                     className="flex items-center gap-1 rounded-full border px-1.5 py-0.5"
                     style={{ borderColor: mock.border, backgroundColor: tool.bg }}
-                    initial={reduce ? false : { scale: 0.7, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
+                    initial={reduce ? false : { opacity: 0, scale: 0.96 }}
+                    animate={{ opacity: 1, scale: 1 }}
                     transition={{
-                      type: "spring",
-                      stiffness: 500,
-                      damping: 24,
-                      delay: reduce ? 0 : 0.12 + index * 0.1,
+                      ...T_FEEDBACK,
+                      delay: reduce ? 0 : 0.1 + index * 0.08,
                     }}
                   >
                     <Image
@@ -1662,10 +1669,13 @@ export function LandingMockup({ active = false }: MockupProps) {
             {showLive ? (
               <motion.span
                 key="live"
-                initial={reduce ? false : { opacity: 0, scale: 0.92 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.35, ease }}
-                className="ml-auto inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2 py-0.5 text-[9px] font-medium text-emerald-700 lg:px-2.5 lg:py-1 lg:text-[10px]"
+                className={cn(
+                  GPU,
+                  "ml-auto inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2 py-0.5 text-[9px] font-medium text-emerald-700 lg:px-2.5 lg:py-1 lg:text-[10px]",
+                )}
+                initial={reduce ? false : { opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={T_FADE}
               >
                 <span className="size-1 rounded-full bg-emerald-500 lg:size-1.5" aria-hidden />
                 Live
@@ -1721,9 +1731,10 @@ export function LandingMockup({ active = false }: MockupProps) {
                     </span>
                     {isDone ? (
                       <motion.span
-                        initial={reduce ? false : { opacity: 0, scale: 0.75 }}
+                        className={GPU}
+                        initial={reduce ? false : { opacity: 0, scale: 0.96 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        transition={{ type: "spring", stiffness: 380, damping: 24 }}
+                        transition={T_FEEDBACK}
                       >
                         <IconCheck size={10} className="shrink-0 text-blue-600" strokeWidth={2.25} />
                       </motion.span>
@@ -2035,11 +2046,11 @@ export function CopywritingSeoMockup({ active = false }: MockupProps) {
   };
 
   const platformIconPop = {
-    hidden: { scale: reduce ? 1 : 0.65, opacity: reduce ? 1 : 0 },
+    hidden: { opacity: reduce ? 1 : 0, scale: reduce ? 1 : 0.96 },
     show: {
-      scale: 1,
       opacity: 1,
-      transition: { type: "spring" as const, stiffness: 520, damping: 22 },
+      scale: 1,
+      transition: reduce ? { duration: 0 } : T_FEEDBACK,
     },
   };
 
@@ -2053,11 +2064,11 @@ export function CopywritingSeoMockup({ active = false }: MockupProps) {
   };
 
   const platformCheckPop = {
-    hidden: { scale: reduce ? 1 : 0, opacity: reduce ? 1 : 0 },
+    hidden: { opacity: reduce ? 1 : 0, scale: reduce ? 1 : 0.96 },
     show: {
-      scale: 1,
       opacity: 1,
-      transition: { type: "spring" as const, stiffness: 580, damping: 17, delay: reduce ? 0 : 0.05 },
+      scale: 1,
+      transition: reduce ? { duration: 0 } : { ...T_FEEDBACK, delay: 0.05 },
     },
   };
 
@@ -2094,12 +2105,12 @@ export function CopywritingSeoMockup({ active = false }: MockupProps) {
           </div>
 
           <motion.span
-            className="inline-flex shrink-0 items-center gap-1 rounded-full bg-[#ECFDF5] px-2 py-0.5 text-[8px] font-medium text-[#059669]"
-            initial={reduce ? false : { scale: 0.92, opacity: 0 }}
+            className={cn("inline-flex shrink-0 items-center gap-1 rounded-full bg-[#ECFDF5] px-2 py-0.5 text-[8px] font-medium text-[#059669]", GPU)}
+            initial={reduce ? false : { opacity: 0, scale: 0.96 }}
             animate={
-              showOptimized ? { scale: 1, opacity: 1 } : { scale: 0.92, opacity: 0 }
+              showOptimized ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.98 }
             }
-            transition={{ type: "spring", stiffness: 440, damping: 26 }}
+            transition={T_FEEDBACK}
           >
             <IconCheck size={9} />
             Optimized
@@ -2188,10 +2199,10 @@ export function CopywritingSeoMockup({ active = false }: MockupProps) {
                       <div className="h-px flex-1" style={{ backgroundColor: mock.border }} />
                       {headlineText.length >= SEO_HEADLINE.length ? (
                         <motion.span
-                          className="ml-1 text-[#9333EA]"
-                          initial={{ opacity: 0, scale: 0.85 }}
+                          className={cn("ml-1 text-[#9333EA]", GPU)}
+                          initial={reduce ? false : { opacity: 0, scale: 0.96 }}
                           animate={{ opacity: 1, scale: 1 }}
-                          transition={{ type: "spring", stiffness: 480, damping: 22 }}
+                          transition={T_FEEDBACK}
                         >
                           <IconSparkle size={10} />
                         </motion.span>
@@ -2345,7 +2356,7 @@ export function MobileMockup({ active = false }: MockupProps) {
 
 /** growth-cro — experiment lift + animated bars */
 export function GrowthCroMockup({ active = false }: MockupProps) {
-  const { container, item, reduce, playing, reveal } = useMockMotion(active);
+  const { container, item, reduce, playing, reveal, t } = useMockMotion(active);
   const bars = [38, 52, 46, 68, 61, 84, 92];
 
   return (
@@ -2360,11 +2371,11 @@ export function GrowthCroMockup({ active = false }: MockupProps) {
 
         <motion.div variants={item} className="mt-2 flex items-baseline gap-2">
           <motion.span
-            className="text-[24px] font-medium tabular-nums tracking-tight"
+            className={cn("text-[24px] font-medium tabular-nums tracking-tight", GPU)}
             style={{ color: mock.strong }}
-            initial={reduce ? false : { opacity: 0, y: 6 }}
-            animate={playing ? { opacity: 1, y: 0 } : { opacity: 0, y: 6 }}
-            transition={{ delay: playing ? 0.25 : 0, duration: 0.4, ease }}
+            initial={reduce ? false : { opacity: 0, y: 4 }}
+            animate={playing ? { opacity: 1, y: 0 } : { opacity: 0, y: 4 }}
+            transition={{ ...t.enter, delay: playing && !reduce ? 0.2 : 0 }}
           >
             +4.2%
           </motion.span>
@@ -2388,7 +2399,7 @@ export function GrowthCroMockup({ active = false }: MockupProps) {
               className="flex-1 rounded-sm bg-blue-500/45"
               initial={reduce ? false : { scaleY: 0 }}
               animate={playing ? { scaleY: 1 } : { scaleY: 0 }}
-              transition={{ duration: 0.38, delay: playing ? 0.35 + i * 0.05 : 0, ease }}
+              transition={{ ...T_ENTER, delay: playing && !reduce ? 0.3 + i * 0.05 : 0 }}
               style={{ height: `${h}%`, transformOrigin: "bottom" }}
             />
           ))}

@@ -1,4 +1,5 @@
 import { SectionHeader } from "@/components/home/section-header";
+import { SectionContainer } from "@/components/layout/section-container";
 import { bodyText, servicesEyebrow, servicesSubtitle, servicesTitle } from "@/lib/page-styles";
 import { cn } from "@/lib/utils";
 
@@ -28,7 +29,7 @@ const principles = [
 export function WorkSection() {
   return (
     <section id="work" className="bg-[var(--bg-primary)] px-4 py-24 md:px-8">
-      <div className="mx-auto max-w-6xl">
+      <SectionContainer>
         <SectionHeader>
           <p className={servicesEyebrow}>How we work</p>
           <h2 className={servicesTitle}>Work that ships.</h2>
@@ -54,7 +55,7 @@ export function WorkSection() {
             </article>
           ))}
         </div>
-      </div>
+      </SectionContainer>
     </section>
   );
 }

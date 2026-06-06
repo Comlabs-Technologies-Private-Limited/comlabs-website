@@ -20,6 +20,8 @@
 
 @theme inline {
   --font-sans: var(--font-inter);
+  /* MacBook Air 13" M1 default viewport width (1440×900). */
+  --max-width-screen: 1440px;
 }
 
 html {
@@ -64,14 +66,6 @@ body {
 .animate-marquee-logos {
   animation: logo-marquee 56s linear infinite;
   will-change: transform;
-}
-
-/* Vanta canvas can render 1–2px wider than its container on mobile WebKit */
-.hero-vanta canvas {
-  display: block;
-  width: 100% !important;
-  max-width: 100% !important;
-  height: 100% !important;
 }
 
 /* Hero “rain” background — adapted from Uiverse (SelfMadeSystem); colors match site tokens */
