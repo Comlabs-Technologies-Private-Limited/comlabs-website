@@ -1,6 +1,5 @@
 "use client";
 
-import { EnterpriseClientsSection } from "@/components/home/enterprise-clients-section";
 import { FigmaCtaSection } from "@/components/home/figma/cta-section";
 import { FigmaHeroSection } from "@/components/home/figma/hero-section";
 import { FigmaProcessSection } from "@/components/home/figma/process-section";
@@ -21,7 +20,6 @@ export function FigmaHomePage() {
 
       <main>
         <FigmaHeroSection />
-        <EnterpriseClientsSection />
         <FigmaServicesSection />
         <FigmaProcessSection />
         <FigmaSpecialtySection />

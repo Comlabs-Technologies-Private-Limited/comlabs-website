@@ -1,10 +1,10 @@
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, Loader2 } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { ComponentType, ReactNode, SVGProps } from "react";
 
 import { easeOut, GPU, motionFor } from "@/lib/product-motion";
@@ -35,7 +35,105 @@ const T_FADE = { type: "tween" as const, duration: 0.26, ease: easeOut };
 /** Shared viewport trigger — passed from services-section when card enters view */
 export type MockupProps = { active?: boolean };
 
-const MOCK_VIEWPORT = { once: true, amount: 0.35 } as const;
+const MOCK_VIEWPORT = { once: true, amount: 0.2 } as const;
+
+const T_CARD_ENTER = { duration: 0.28, ease: easeOut };
+const SPRING_CHECK = { type: "spring" as const, stiffness: 320, damping: 20 };
+const SPRING_BADGE = { type: "spring" as const, stiffness: 280, damping: 18 };
+const SPRING_CHECK_SM = { type: "spring" as const, stiffness: 400, damping: 22 };
+const SPRING_PRESS = { type: "spring" as const, stiffness: 300, damping: 22 };
+const DEMO_LOOP_PAUSE_MS = 2500;
+
+function MockupDemoShell({
+  active,
+  reduce,
+  children,
+  className,
+}: {
+  active: boolean;
+  reduce: boolean;
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <motion.div
+      aria-hidden
+      className={cn(
+        GPU,
+        "transition-shadow duration-[120ms] ease-out",
+        active && !reduce && "hover:shadow-[0_20px_48px_-20px_rgba(0,0,0,0.14)]",
+        className,
+      )}
+      initial={reduce ? false : { opacity: 0, y: 12, scale: 0.97 }}
+      animate={
+        active
+          ? { opacity: 1, y: 0, scale: 1 }
+          : reduce
+            ? { opacity: 1, y: 0, scale: 1 }
+            : { opacity: 0, y: 12, scale: 0.97 }
+      }
+      transition={reduce ? { duration: 0 } : T_CARD_ENTER}
+      whileHover={reduce ? undefined : { scale: 1.015, transition: { duration: 0.12, ease: easeOut } }}
+      whileTap={
+        reduce
+          ? undefined
+          : { scale: 0.985, transition: SPRING_PRESS }
+      }
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+function useDemoLoop(active: boolean, reduce: boolean, sequenceMs: number) {
+  const [cycle, setCycle] = useState(0);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const bump = useCallback(() => setCycle((c) => c + 1), []);
+
+  useEffect(() => {
+    if (!active || reduce) return;
+
+    timerRef.current = setTimeout(bump, sequenceMs + DEMO_LOOP_PAUSE_MS);
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, [active, reduce, sequenceMs, cycle, bump]);
+
+  useEffect(() => {
+    if (!active) setCycle(0);
+  }, [active]);
+
+  return { cycle, playing: active };
+}
+
+function ClipReveal({
+  show,
+  reduce,
+  children,
+  className,
+  duration = 0.22,
+}: {
+  show: boolean;
+  reduce: boolean;
+  children: ReactNode;
+  className?: string;
+  duration?: number;
+}) {
+  return (
+    <motion.div
+      className={cn("overflow-hidden", className)}
+      initial={false}
+      animate={{
+        clipPath: show ? "inset(0 0% 0 0 round 12px)" : "inset(0 100% 0 0 round 12px)",
+        opacity: show || reduce ? 1 : 0,
+      }}
+      transition={{ duration: reduce ? 0 : duration, ease: easeOut }}
+    >
+      {children}
+    </motion.div>
+  );
+}
 
 const frame = cn(
   mockFont,
@@ -172,60 +270,194 @@ function IconCheck({ size = 14, ...props }: NucleoProps) {
   );
 }
 
-function SpinLoader({ size = 10, className }: { size?: number; className?: string }) {
+const LANDING_SEQUENCE_MS = 4200;
+
+const landingPageStagger = (reduce: boolean) => ({
+  hidden: {},
+  show: {
+    transition: {
+      staggerChildren: reduce ? 0 : 0.055,
+      delayChildren: reduce ? 0 : 0.28,
+    },
+  },
+});
+
+const landingBlock = (reduce: boolean) => ({
+  hidden: { opacity: reduce ? 1 : 0, y: reduce ? 0 : 10 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: reduce ? 0 : 0.22, ease: easeOut },
+  },
+});
+
+const landingShowcaseGrid = (reduce: boolean) => ({
+  hidden: { opacity: reduce ? 1 : 0, y: reduce ? 0 : 10 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: reduce ? 0 : 0.22,
+      ease: easeOut,
+      staggerChildren: reduce ? 0 : 0.07,
+    },
+  },
+});
+
+/** landing-sprint — mini landing page built in Comlabs style */
+export function LandingMockup({ active = false }: MockupProps) {
+  const reduce = !!useReducedMotion();
+  const { cycle, playing } = useDemoLoop(active, reduce, LANDING_SEQUENCE_MS);
+
+  const block = landingBlock(reduce);
+  const container = landingPageStagger(reduce);
+  const showcaseGrid = landingShowcaseGrid(reduce);
+
   return (
-    <Loader2
-      className={cn("animate-spin text-blue-500", className)}
-      size={size}
-      strokeWidth={2.25}
-      aria-hidden
-    />
+    <MockupDemoShell active={playing} reduce={reduce} className="h-full w-full">
+      <MockFrame
+        className="flex h-full flex-col overflow-hidden bg-[#f7f7f4] p-0"
+        interactive
+      >
+        {/* Browser chrome */}
+        <div className="flex shrink-0 items-center gap-2 border-b border-stone-200/80 bg-white/90 px-2.5 py-1.5">
+          <WindowDots />
+          <div className="flex min-w-0 flex-1 items-center rounded-md border border-stone-200/90 bg-white px-2 py-0.5">
+            <span className="truncate text-[8px] text-stone-400">launch.yourstartup.com</span>
+          </div>
+        </div>
+
+        {/* Mini landing page */}
+        <div className="relative min-h-0 flex-1 overflow-hidden">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 opacity-40"
+            style={{
+              background:
+                "radial-gradient(circle at 85% 10%, rgba(201,100,66,0.18) 0%, transparent 45%), radial-gradient(circle at 10% 90%, rgba(201,100,66,0.08) 0%, transparent 40%)",
+            }}
+          />
+
+          <motion.div
+            key={`landing-page-${cycle}`}
+            className="relative flex h-full flex-col"
+            variants={container}
+            initial="hidden"
+            animate={playing ? "show" : "hidden"}
+          >
+            {/* Nav */}
+            <motion.div
+              variants={block}
+              className="flex shrink-0 items-center justify-between border-b border-stone-200/60 bg-[#f7f7f4]/90 px-2.5 py-1.5 backdrop-blur-sm"
+            >
+              <div className="flex items-center gap-1">
+                <span
+                  className="flex size-4 items-center justify-center rounded-[3px] text-[5px] font-bold text-white"
+                  style={{ background: "#1c1917" }}
+                >
+                  C
+                </span>
+                <span className="text-[7px] font-semibold tracking-tight text-stone-900">COMLABS</span>
+              </div>
+              <div className="hidden items-center gap-2 sm:flex">
+                {["Work", "Services"].map((link) => (
+                  <span key={link} className="text-[6px] text-stone-500">
+                    {link}
+                  </span>
+                ))}
+              </div>
+              <span
+                className="rounded-full px-1.5 py-0.5 text-[6px] font-semibold text-[#f7f7f4]"
+                style={{ background: "#1c1917" }}
+              >
+                Get Started
+              </span>
+            </motion.div>
+
+            {/* Hero */}
+            <div className="flex flex-1 flex-col px-2.5 pt-2 pb-1.5 text-center">
+              <motion.div
+                variants={block}
+                className="mx-auto inline-flex items-center gap-1 rounded-full border border-stone-200/80 px-1.5 py-0.5"
+                style={{ background: "#f5e6df", color: "#c96442" }}
+              >
+                <span className="size-1 rounded-full bg-[#c96442]" aria-hidden />
+                <span className="text-[6px] font-medium">Now accepting projects</span>
+              </motion.div>
+
+              <motion.h1
+                variants={block}
+                className="mx-auto mt-1.5 max-w-[92%] text-[11px] leading-[1.12] font-bold tracking-tight text-stone-900"
+                style={{ letterSpacing: "-0.03em" }}
+              >
+                We Turn Ambitious Ideas Into{" "}
+                <span style={{ color: "#c96442" }}>Products</span> People Use
+              </motion.h1>
+
+              <motion.p
+                variants={block}
+                className="mx-auto mt-1 max-w-[88%] text-[6.5px] leading-relaxed text-stone-500"
+              >
+                High-performance websites and web apps for ambitious companies.
+              </motion.p>
+
+              <motion.div
+                variants={block}
+                className="mt-1.5 flex items-center justify-center gap-1"
+              >
+                <span
+                  className="inline-flex items-center gap-0.5 rounded-full px-2 py-0.5 text-[6px] font-semibold text-[#f7f7f4]"
+                  style={{ background: "#1c1917" }}
+                >
+                  View our work
+                  <ArrowRight size={7} aria-hidden />
+                </span>
+                <span className="rounded-full border border-stone-200/90 px-2 py-0.5 text-[6px] font-medium text-stone-700">
+                  Talk to us
+                </span>
+              </motion.div>
+
+              {/* Showcase cards */}
+              <motion.div variants={showcaseGrid} className="mt-2 grid flex-1 grid-cols-2 gap-1">
+                {["/imports/image.png", "/imports/image-1.png"].map((src) => (
+                  <motion.div
+                    key={src}
+                    variants={block}
+                    className="relative aspect-[4/3] overflow-hidden rounded-md border border-stone-200/80 bg-white shadow-[0_2px_8px_rgba(28,25,23,0.06)]"
+                  >
+                    <Image
+                      src={src}
+                      alt=""
+                      fill
+                      sizes="120px"
+                      className="object-cover object-top"
+                      aria-hidden
+                    />
+                  </motion.div>
+                ))}
+              </motion.div>
+
+              {/* Client logos */}
+              <motion.div
+                variants={block}
+                className="mt-1.5 flex shrink-0 items-center justify-center gap-1 border-t border-stone-200/60 pt-1.5"
+              >
+                {["Vodafone", "JIO", "Formial", "Vithub"].map((name) => (
+                  <span
+                    key={name}
+                    className="rounded border border-stone-200/70 bg-white/80 px-1.5 py-0.5 text-[5px] font-semibold tracking-tight text-stone-400"
+                  >
+                    {name}
+                  </span>
+                ))}
+              </motion.div>
+            </div>
+          </motion.div>
+        </div>
+      </MockFrame>
+    </MockupDemoShell>
   );
 }
-
-function ReadinessStatusIcon({
-  checked,
-  scanning,
-  reduce,
-  size = 9,
-}: {
-  checked: boolean;
-  scanning: boolean;
-  reduce: boolean;
-  size?: number;
-}) {
-  const t = motionFor(reduce);
-  return (
-    <AnimatePresence mode="wait">
-      {checked ? (
-        <motion.span
-          key="checked"
-          className={GPU}
-          initial={reduce ? false : { opacity: 0, scale: 0.94 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.96 }}
-          transition={t.feedback}
-        >
-          <IconCheck size={size} strokeWidth={2.5} />
-        </motion.span>
-      ) : scanning ? (
-        <motion.span
-          key="loading"
-          className={GPU}
-          initial={reduce ? false : { opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={t.loop}
-        >
-          <SpinLoader size={size + 1} />
-        </motion.span>
-      ) : null}
-    </AnimatePresence>
-  );
-}
-
-const landingFooterBtn =
-  "flex w-full items-center justify-center gap-2.5 rounded-xl border px-4 py-2.5 text-[10px] font-medium lg:text-[11px]";
 
 function IconChart({ size = 14, ...props }: NucleoProps) {
   return (
@@ -293,7 +525,7 @@ function PlatformBrandIcon({ platform, size = 11 }: { platform: SeoPlatform; siz
 
 function useMockMotion(active: boolean) {
   const reduce = !!useReducedMotion();
-  const playing = active || reduce;
+  const playing = active;
   const t = motionFor(reduce);
 
   return {
@@ -488,8 +720,6 @@ function PipelineStepIcon({ step, size = 13 }: { step: PipelineStep; size?: numb
   return null;
 }
 
-type PipelineStepState = "pending" | "active" | "completed";
-
 const LIVE_ACTIVITY = [
   { icon: "/icons/brands/gmail.png", text: "Lead captured from form" },
   { icon: "/icons/brands/claude-ai.png", text: "Follow-up drafted" },
@@ -502,73 +732,62 @@ const LIVE_INTEGRATIONS = [
   { name: "ChatGPT", icon: "/icons/brands/chatgpt.png", bg: "#F0FDF4" },
 ] as const;
 
-function useComlabsPipelineSequence(active: boolean, reduce: boolean) {
-  const [activeIndex, setActiveIndex] = useState(-1);
-  const [showChecks, setShowChecks] = useState(false);
-  const [showLive, setShowLive] = useState(false);
+function useComlabsPipelineSequence(active: boolean, reduce: boolean, cycle: number) {
+  const [visibleRows, setVisibleRows] = useState(0);
+  const [showLiveBar, setShowLiveBar] = useState(false);
+  const [showBadges, setShowBadges] = useState(false);
+  const [visibleEvents, setVisibleEvents] = useState(0);
 
   useEffect(() => {
     if (!active) {
-      setActiveIndex(-1);
-      setShowChecks(false);
-      setShowLive(false);
+      setVisibleRows(0);
+      setShowLiveBar(false);
+      setShowBadges(false);
+      setVisibleEvents(0);
       return;
     }
 
     if (reduce) {
-      setActiveIndex(COMLABS_PIPELINE_STEPS.length - 1);
-      setShowChecks(true);
-      setShowLive(true);
+      setVisibleRows(COMLABS_PIPELINE_STEPS.length);
+      setShowLiveBar(true);
+      setShowBadges(true);
+      setVisibleEvents(LIVE_ACTIVITY.length);
       return;
     }
 
-    setActiveIndex(-1);
-    setShowChecks(false);
-    setShowLive(false);
+    setVisibleRows(0);
+    setShowLiveBar(false);
+    setShowBadges(false);
+    setVisibleEvents(0);
 
     const timers = new Set<ReturnType<typeof setTimeout>>();
     const later = (fn: () => void, ms: number) => {
       timers.add(setTimeout(fn, ms));
     };
 
-    const START_MS = 500;
-    const STEP_MS = 500;
-    const FINAL_MS = 900;
-    const LIVE_MS = 900;
+    const rowCount = COMLABS_PIPELINE_STEPS.length;
+    const rowsDoneMs = (rowCount - 1) * 40 + 200;
+    const barMs = rowsDoneMs + 80;
+    const badgesMs = barMs + 300;
+    const eventStartMs = badgesMs + 120;
 
-    let step = 0;
+    for (let i = 0; i < rowCount; i += 1) {
+      later(() => setVisibleRows(i + 1), i * 40);
+    }
 
-    const advance = () => {
-      setActiveIndex(step);
+    later(() => setShowLiveBar(true), barMs);
+    later(() => setShowBadges(true), badgesMs);
 
-      if (step >= COMLABS_PIPELINE_STEPS.length - 1) {
-        later(() => {
-          setShowChecks(true);
-          later(() => setShowLive(true), LIVE_MS);
-        }, FINAL_MS);
-        return;
-      }
-
-      step += 1;
-      later(advance, STEP_MS);
-    };
-
-    later(advance, START_MS);
+    LIVE_ACTIVITY.forEach((_, index) => {
+      later(() => setVisibleEvents(index + 1), eventStartMs + index * 600);
+    });
 
     return () => {
       timers.forEach(clearTimeout);
     };
-  }, [active, reduce]);
+  }, [active, reduce, cycle]);
 
-  const getStepState = (index: number): PipelineStepState => {
-    if (activeIndex < 0) return "pending";
-    if (showChecks) return "completed";
-    if (index < activeIndex) return "completed";
-    if (index === activeIndex) return "active";
-    return "pending";
-  };
-
-  return { getStepState, showChecks, showLive };
+  return { visibleRows, showLiveBar, showBadges, visibleEvents };
 }
 
 /** ai-automation — Comlabs Flow card prototype (replaced by terminal pipeline) */
@@ -1108,192 +1327,116 @@ function FlowPrototypeCard({
 
 /** ai-automation — Comlabs model pipeline terminal */
 export function AutomationFlowMockup({ active = false }: MockupProps) {
-  const { container, item, reduce, playing } = useMockMotion(active);
-  const { getStepState, showChecks, showLive } = useComlabsPipelineSequence(playing, reduce);
+  const reduce = !!useReducedMotion();
+  const { cycle, playing } = useDemoLoop(active, reduce, 4200);
+  const { visibleRows, showLiveBar, showBadges, visibleEvents } = useComlabsPipelineSequence(
+    playing,
+    reduce,
+    cycle,
+  );
 
-  const activityContainer = {
-    hidden: {},
-    show: {
-      transition: {
-        staggerChildren: reduce ? 0 : 0.22,
-        delayChildren: reduce ? 0 : 0.08,
-      },
-    },
-  };
-
-  const activityItem = {
+  const taskRow = {
     hidden: { opacity: reduce ? 1 : 0, x: reduce ? 0 : -8 },
     show: {
       opacity: 1,
       x: 0,
-      transition: { duration: reduce ? 0 : 0.36, ease },
+      transition: { duration: reduce ? 0 : 0.2, ease: easeOut },
+    },
+  };
+
+  const eventItem = {
+    hidden: { opacity: reduce ? 1 : 0, y: reduce ? 0 : 10 },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: reduce ? 0 : 0.16, ease: easeOut },
     },
   };
 
   return (
-    <motion.div
-      aria-hidden
-      className={cn(
-        mockFont,
-        "flex w-full flex-col self-start mt-2 min-h-84 rounded-xl bg-white",
-        "shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_-6px_rgba(0,0,0,0.06)]",
-      )}
-      initial={false}
-      animate={{
-        height: playing ? "100%" : "auto",
-        maxHeight: playing ? "100%" : "12.75rem",
-      }}
-      transition={reduce ? { duration: 0 } : T_EXPAND}
-    >
-      <div className="relative rounded-t-xl z-[100] shrink-0 border-b border-zinc-200/70 bg-[#F2F2F2] px-3.5 py-2.5 md:px-4">
-        <WindowDots />
+    <MockupDemoShell active={playing} reduce={reduce} className="w-full self-start">
+      <div
+        className={cn(
+          mockFont,
+          "flex w-full flex-col rounded-xl bg-white",
+          "shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_-6px_rgba(0,0,0,0.06)]",
+        )}
+      >
+        <div className="relative z-[100] shrink-0 rounded-t-xl border-b border-zinc-200/70 bg-[#F2F2F2] px-3.5 py-2.5 md:px-4">
+          <WindowDots />
         </div>
 
-      <div className="flex min-h-0 flex-1 flex-col px-3.5 pb-3.5 pt-3 md:px-4 md:pb-4">
-        <div className={cn("shrink-0", playing && "flex flex-1 flex-col")}>
-          <motion.ul
-            className="space-y-3.5"
-            variants={container}
-            initial="hidden"
-            animate={playing ? "show" : "hidden"}
-          >
-          {COMLABS_PIPELINE_STEPS.map((step, index) => {
-            const state = getStepState(index);
-            const isActive = state === "active";
-            const isPending = state === "pending";
+        <div className="flex flex-col px-3.5 pb-3.5 pt-3 md:px-4 md:pb-4">
+          <ul className="space-y-3.5">
+            {COMLABS_PIPELINE_STEPS.map((step, index) => {
+              const visible = index < visibleRows;
+              const showDot = visible;
 
-            return (
-              <motion.li key={step.label} variants={item} className="flex items-center gap-3 mb-2">
-                <span className="relative flex size-[18px] shrink-0 items-center justify-center">
-                  <AnimatePresence mode="wait" initial={false}>
-                    {showChecks ? (
-                      <motion.span
-                        key="check"
-                        initial={reduce ? false : { opacity: 0, scale: 0.96 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{
-                          ...T_FEEDBACK,
-                          delay: reduce ? 0 : index * 0.1,
-                        }}
-                        style={{ color: mock.strong }}
-                      >
-                        <IconCheck size={14} strokeWidth={2.25} />
-                      </motion.span>
-                    ) : (
-                      <motion.span
-                        key="icon"
-                        initial={false}
-                        animate={{
-                          opacity: isPending ? 0.42 : isActive && !reduce ? [0.55, 1, 0.55] : 1,
-                          scale: 1,
-                        }}
-                        transition={{
-                          opacity: {
-                            duration: 1.4,
-                            repeat: isActive && !reduce ? Infinity : 0,
-                            ease: "easeInOut",
-                          },
-                        }}
-                        className="flex items-center justify-center"
-                      >
-                        <PipelineStepIcon step={step} size={15} />
-                      </motion.span>
-                    )}
-                  </AnimatePresence>
-        </span>
-
-                <span
-                  className="text-[12px] font-normal leading-none tracking-tight md:text-[13px]"
-                  style={{ color: isPending ? mock.subtle : mock.strong }}
+              return (
+                <motion.li
+                  key={`${step.label}-${cycle}`}
+                  variants={taskRow}
+                  initial="hidden"
+                  animate={visible ? "show" : "hidden"}
+                  className="mb-2 flex items-center gap-3"
                 >
-                  {step.label}
-                  {isActive ? (
+                  <span className="flex size-[18px] shrink-0 items-center justify-center">
+                    <PipelineStepIcon step={step} size={15} />
+                  </span>
+
+                  <span
+                    className="text-[12px] font-normal leading-none tracking-tight md:text-[13px]"
+                    style={{ color: visible ? mock.strong : mock.subtle }}
+                  >
+                    {step.label}
+                  </span>
+
+                  {showDot ? (
                     <motion.span
-                      className="inline-flex w-4"
-                      animate={playing && !reduce ? { opacity: [0.25, 1, 0.25] } : { opacity: 1 }}
+                      className={cn("ml-auto size-1.5 shrink-0 rounded-full bg-emerald-500", GPU)}
+                      initial={reduce ? false : { scale: 1, opacity: 1 }}
+                      animate={
+                        playing && !reduce
+                          ? { scale: [1, 1.4, 1], opacity: [1, 0.5, 1] }
+                          : { scale: 1, opacity: 1 }
+                      }
                       transition={{
-                        duration: 1.35,
+                        duration: 1.4,
                         repeat: playing && !reduce ? Infinity : 0,
-                        ease: "easeInOut",
+                        ease: "linear",
+                        delay: reduce ? 0 : index * 0.22,
                       }}
-                    >
-                      …
-                    </motion.span>
+                    />
                   ) : null}
-                </span>
+                </motion.li>
+              );
+            })}
+          </ul>
 
-                {isActive ? (
-                  <motion.span
-                    className="ml-auto size-1.5 shrink-0 rounded-full bg-emerald-500"
-                    animate={
-                      playing && !reduce
-                        ? { opacity: [0.45, 1, 0.45] }
-                        : { opacity: 1 }
-                    }
-                    transition={{
-                      duration: 1.5,
-                      repeat: playing && !reduce ? Infinity : 0,
-                      ease: "easeInOut",
-                    }}
-                  />
-                ) : showChecks ? (
-                  <motion.span
-                    className="ml-auto size-1.5 shrink-0 rounded-full bg-emerald-500/80"
-                    initial={reduce ? false : { scale: 0, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{
-                      ...T_FEEDBACK,
-                      delay: reduce ? 0 : index * 0.1 + 0.06,
-                    }}
-                  />
-                ) : null}
-              </motion.li>
-            );
-          })}
-          </motion.ul>
-      </div>
-
-      <AnimatePresence>
-        {showLive ? (
-          <motion.div
-            initial={reduce ? false : { opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 6 }}
-            transition={T_EXPAND}
-            className="mt-auto shrink-0 border-t pt-3"
-            style={{ borderColor: mock.border }}
-          >
-            <div className="flex items-center justify-between gap-2">
-              <motion.span
-                className="inline-flex items-center gap-1.5 rounded-full border border-[#D1FAE5] bg-[#ECFDF5] px-2 py-1 text-[9px] font-medium leading-none tracking-tight text-[#047857] md:text-[10px]"
-                initial={reduce ? false : { opacity: 0, scale: 0.96 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ ...T_FEEDBACK, delay: reduce ? 0 : 0.05 }}
-              >
+          <div className="mt-4 shrink-0 border-t pt-3" style={{ borderColor: mock.border }}>
+            <ClipReveal show={showLiveBar} reduce={reduce} duration={0.3}>
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-[#D1FAE5] bg-[#ECFDF5] px-2 py-1 text-[9px] font-medium leading-none tracking-tight text-[#047857] md:text-[10px]">
                 <motion.span
                   className="size-1.5 rounded-full bg-emerald-500"
                   animate={
-                    playing && !reduce
-                      ? { opacity: [0.5, 1, 0.5] }
-                      : { opacity: 1 }
+                    playing && !reduce ? { opacity: [0.5, 1, 0.5] } : { opacity: 1 }
                   }
                   transition={{ duration: 1.6, repeat: playing && !reduce ? Infinity : 0, ease: "easeInOut" }}
                 />
                 Automation live
-              </motion.span>
+              </span>
+            </ClipReveal>
 
-              <div className="flex items-center gap-1">
+            {showBadges ? (
+              <div className="mt-2 flex items-center gap-1">
                 {LIVE_INTEGRATIONS.map((tool, index) => (
                   <motion.span
-                    key={tool.name}
+                    key={`${tool.name}-${cycle}`}
                     className="flex items-center gap-1 rounded-full border px-1.5 py-0.5"
                     style={{ borderColor: mock.border, backgroundColor: tool.bg }}
-                    initial={reduce ? false : { opacity: 0, scale: 0.96 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{
-                      ...T_FEEDBACK,
-                      delay: reduce ? 0 : 0.1 + index * 0.08,
-                    }}
+                    initial={reduce ? false : { opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: reduce ? 0 : 0.2, delay: reduce ? 0 : index * 0.02, ease: easeOut }}
                   >
                     <Image
                       src={tool.icon}
@@ -1311,68 +1454,49 @@ export function AutomationFlowMockup({ active = false }: MockupProps) {
                     </span>
                   </motion.span>
                 ))}
-      </div>
-    </div>
+              </div>
+            ) : null}
 
-            <motion.ul
-              className="mt-2.5 mb-2 space-y-1.5"
-              variants={activityContainer}
-              initial="hidden"
-              animate="show"
-            >
-              {LIVE_ACTIVITY.map((entry) => (
-                <motion.li
-                  key={entry.text}
-                  variants={activityItem}
-                  className="flex items-center gap-2 rounded-md px-1 py-1.5"
-                  style={{ backgroundColor: mock.bgSelected }}
-                >
-                  <Image
-                    src={entry.icon}
-                    alt=""
-                    width={12}
-                    height={12}
-                    className="size-3 shrink-0 object-contain"
-                    aria-hidden
-                  />
-                  <span
-                    className="min-w-0 flex-1 truncate text-[9px] font-normal leading-none tracking-tight md:text-[10px]"
-                    style={{ color: mock.default }}
+            <ul className="mb-2 mt-2.5 space-y-1.5">
+              {LIVE_ACTIVITY.map((entry, index) => {
+                const visible = index < visibleEvents;
+                return (
+                  <motion.li
+                    key={`${entry.text}-${cycle}`}
+                    variants={eventItem}
+                    initial="hidden"
+                    animate={visible ? "show" : "hidden"}
+                    className="flex items-center gap-2 rounded-md px-1 py-1.5"
+                    style={{ backgroundColor: mock.bgSelected }}
                   >
-                    {entry.text}
-                  </span>
-                  <motion.span
-                    className="shrink-0 text-[8px] font-normal tabular-nums"
-                    style={{ color: mock.subtle }}
-                    initial={reduce ? false : { opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.28, delay: reduce ? 0 : 0.18 }}
-                  >
-                    just now
-                  </motion.span>
-                </motion.li>
-              ))}
-            </motion.ul>
-
-            <motion.div
-              className="relative mt-2.5 h-1 overflow-hidden rounded-full"
-              style={{ backgroundColor: mock.border }}
-              initial={reduce ? false : { opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.32, delay: reduce ? 0 : 0.35 }}
-            >
-              <motion.div
-                className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-[#C084FC] via-[#60A5FA] to-[#34D399]"
-                initial={{ width: "0%" }}
-                animate={{ width: "100%" }}
-                transition={{ duration: reduce ? 0 : 1.1, ease, delay: reduce ? 0 : 0.45 }}
-              />
-            </motion.div>
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
+                    <Image
+                      src={entry.icon}
+                      alt=""
+                      width={12}
+                      height={12}
+                      className="size-3 shrink-0 object-contain"
+                      aria-hidden
+                    />
+                    <span
+                      className="min-w-0 flex-1 truncate text-[9px] font-normal leading-none tracking-tight md:text-[10px]"
+                      style={{ color: mock.default }}
+                    >
+                      {entry.text}
+                    </span>
+                    <span
+                      className="shrink-0 text-[8px] font-normal tabular-nums"
+                      style={{ color: mock.subtle }}
+                    >
+                      just now
+                    </span>
+                  </motion.li>
+                );
+              })}
+            </ul>
+          </div>
+        </div>
       </div>
-    </motion.div>
+    </MockupDemoShell>
   );
 }
 
@@ -1518,361 +1642,40 @@ export function MvpMockup({ active = false }: MockupProps) {
 }
 */
 
-const LANDING_BLUEPRINT_SECTIONS = [
-  { title: "Hero", label: "Clear offer + CTA" },
-  { title: "Problem", label: "Pain and urgency" },
-  { title: "Proof", label: "Logos, testimonials, results" },
-  { title: "Pricing", label: "Simple package decision" },
-  { title: "FAQ", label: "Objections answered" },
-  { title: "Final CTA", label: "Book consultation" },
-] as const;
-
-const LANDING_READINESS_ITEMS = [
-  "Offer clarity",
-  "CTA path",
-  "Trust proof",
-  "Pricing logic",
-  "FAQ coverage",
-  "Form connected",
-] as const;
-
-const LANDING_START_MS = 520;
-const READINESS_SCAN_MS = 1050;
-const LANDING_STEP_GAP_MS = 380;
-const SCANNED_HOLD_MS = 900;
-
-type ReadinessFooterPhase = "idle" | "scanning" | "scanned" | "ready";
-
-function useLandingBlueprintSequence(active: boolean, reduce: boolean) {
-  const [activeSection, setActiveSection] = useState(-1);
-  const [checkedCount, setCheckedCount] = useState(0);
-  const [scanningIndex, setScanningIndex] = useState(-1);
-  const [footerPhase, setFooterPhase] = useState<ReadinessFooterPhase>("idle");
-
-  useEffect(() => {
-    if (!active) {
-      setActiveSection(-1);
-      setCheckedCount(0);
-      setScanningIndex(-1);
-      setFooterPhase("idle");
-      return;
-    }
-
-    if (reduce) {
-      setActiveSection(LANDING_BLUEPRINT_SECTIONS.length - 1);
-      setCheckedCount(LANDING_READINESS_ITEMS.length);
-      setScanningIndex(-1);
-      setFooterPhase("ready");
-      return;
-    }
-
-    setActiveSection(-1);
-    setCheckedCount(0);
-    setScanningIndex(-1);
-    setFooterPhase("idle");
-
-    const timers = new Set<ReturnType<typeof setTimeout>>();
-    const later = (fn: () => void, ms: number) => {
-      timers.add(setTimeout(fn, ms));
-    };
-
-    const runStep = (step: number) => {
-      setFooterPhase("scanning");
-      setActiveSection(step);
-      setScanningIndex(step);
-
-      later(() => {
-        setCheckedCount(step + 1);
-        setScanningIndex(-1);
-
-        if (step >= LANDING_BLUEPRINT_SECTIONS.length - 1) {
-          later(() => {
-            setFooterPhase("scanned");
-            later(() => setFooterPhase("ready"), SCANNED_HOLD_MS);
-          }, 80);
-          return;
-        }
-
-        later(() => runStep(step + 1), LANDING_STEP_GAP_MS);
-      }, READINESS_SCAN_MS);
-    };
-
-    later(() => runStep(0), LANDING_START_MS);
-
-    return () => {
-      timers.forEach(clearTimeout);
-    };
-  }, [active, reduce]);
-
-  return { activeSection, checkedCount, scanningIndex, footerPhase };
-}
-
 function TypingCaret({
   visible,
+  reduce,
   className,
 }: {
   visible: boolean;
+  reduce: boolean;
   className?: string;
 }) {
-  if (!visible) return null;
+  const [show, setShow] = useState(visible);
+
+  useEffect(() => {
+    if (!visible) {
+      setShow(false);
+      return;
+    }
+    if (reduce) {
+      setShow(false);
+      return;
+    }
+    setShow(true);
+    const timer = setTimeout(() => setShow(false), 530 * 3);
+    return () => clearTimeout(timer);
+  }, [visible, reduce]);
+
+  if (!show) return null;
 
   return (
     <motion.span
       className={cn("ml-px inline-block h-2 w-px align-middle bg-zinc-400", className)}
-      animate={{ opacity: [1, 0.2, 1] }}
-      transition={{ duration: 0.55, repeat: Infinity, ease: "easeInOut" }}
+      animate={{ opacity: [1, 0, 1] }}
+      transition={{ duration: 0.53, repeat: 2, ease: "linear" }}
       aria-hidden
     />
-  );
-}
-
-/** landing-sprint — landing page blueprint + launch readiness */
-export function LandingMockup({ active = false }: MockupProps) {
-  const reduce = !!useReducedMotion();
-  const playing = active || reduce;
-  const { checkedCount, scanningIndex, footerPhase } = useLandingBlueprintSequence(
-    active,
-    reduce,
-  );
-
-  const showLive = footerPhase === "ready";
-  const itemCount = LANDING_READINESS_ITEMS.length;
-
-  return (
-    <MockFrame
-      className="flex h-full flex-col overflow-hidden bg-zinc-50/40 p-3 lg:rounded-2xl lg:border lg:border-zinc-200/80 lg:bg-white lg:p-4 lg:shadow-[0_0_0_1px_rgba(0,0,0,0.02),0_20px_48px_-20px_rgba(0,0,0,0.12)]"
-      interactive
-    >
-      {/* Browser chrome */}
-      <div className="flex shrink-0 items-center gap-2 border-b border-zinc-200/80 pb-2 lg:gap-3 lg:pb-2.5">
-        <WindowDots />
-        <div className="flex min-w-0 flex-1 items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-2.5 py-1 lg:gap-2 lg:px-3 lg:py-1.5 lg:shadow-[inset_0_1px_2px_rgba(0,0,0,0.03)]">
-          <span className="size-1.5 shrink-0 rounded-full bg-zinc-300 lg:hidden" aria-hidden />
-          <svg
-            className="hidden shrink-0 text-zinc-300 lg:block"
-            width="10"
-            height="10"
-            viewBox="0 0 10 10"
-            aria-hidden
-          >
-            <path
-              d="M5 1a3.5 3.5 0 0 0-1.4 6.7V8h2.8v-.3A3.5 3.5 0 0 0 5 1Z"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.1"
-            />
-          </svg>
-          <span className="truncate text-[10px] font-normal text-zinc-500 lg:text-[11px]">
-            launch.yourstartup.com
-          </span>
-          <AnimatePresence>
-            {showLive ? (
-              <motion.span
-                key="live"
-                className={cn(
-                  GPU,
-                  "ml-auto inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2 py-0.5 text-[9px] font-medium text-emerald-700 lg:px-2.5 lg:py-1 lg:text-[10px]",
-                )}
-                initial={reduce ? false : { opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={T_FADE}
-              >
-                <span className="size-1 rounded-full bg-emerald-500 lg:size-1.5" aria-hidden />
-                Live
-              </motion.span>
-            ) : null}
-          </AnimatePresence>
-        </div>
-      </div>
-
-      <motion.div
-        initial={reduce ? false : { opacity: 0 }}
-        animate={playing ? { opacity: 1 } : { opacity: 0 }}
-        transition={{ duration: reduce ? 0 : 0.45, ease }}
-        className="mt-2.5 flex min-h-0 flex-1 flex-col gap-3 md:flex-row md:gap-0 lg:mt-3"
-      >
-        {/* Blueprint — stacked page sections */}
-        <div className="min-w-0 flex-1 md:pr-3 lg:pr-4">
-          <p className="text-[10px] font-medium uppercase tracking-[0.1em] text-zinc-400 lg:text-[11px] lg:tracking-[0.12em]">
-            Page structure
-          </p>
-
-          <div className="mt-1.5 space-y-1 lg:mt-2 lg:space-y-1.5">
-            {LANDING_BLUEPRINT_SECTIONS.map((section, index) => {
-              const isActive = index === scanningIndex;
-              const isDone = index < checkedCount;
-              const isPending = !isDone && !isActive;
-
-              return (
-                <motion.div
-                  key={section.title}
-                  initial={reduce ? false : { opacity: 0, y: 4 }}
-                  animate={{
-                    opacity: playing ? 1 : 0,
-                    y: playing ? 0 : 4,
-                    borderColor: isActive ? "#BFDBFE" : isDone ? "#E4E4E7" : "#F4F4F5",
-                    backgroundColor: isActive ? "#F8FAFC" : isDone ? "#FAFAFA" : "#FFFFFF",
-                  }}
-                  transition={{
-                    opacity: { duration: reduce ? 0 : 0.32, delay: reduce ? 0 : index * 0.04 },
-                    y: { duration: reduce ? 0 : 0.32, delay: reduce ? 0 : index * 0.04 },
-                    default: { duration: 0.32, ease },
-                  }}
-                  className="rounded-lg border px-2 py-1.5 lg:rounded-xl lg:px-3 lg:py-2 lg:shadow-[0_1px_2px_rgba(0,0,0,0.02)]"
-                >
-                  <div className="flex items-center justify-between gap-2">
-                    <span
-                      className={cn(
-                        "text-[10px] font-medium leading-none lg:text-[11px]",
-                        isPending ? "text-zinc-400" : "text-zinc-900",
-                      )}
-                    >
-                      {section.title}
-                    </span>
-                    {isDone ? (
-                      <motion.span
-                        className={GPU}
-                        initial={reduce ? false : { opacity: 0, scale: 0.96 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={T_FEEDBACK}
-                      >
-                        <IconCheck size={10} className="shrink-0 text-blue-600" strokeWidth={2.25} />
-                      </motion.span>
-                    ) : isActive ? (
-                      <SpinLoader size={11} />
-                    ) : (
-                      <span className="size-1.5 shrink-0 rounded-full bg-zinc-200 lg:size-2" aria-hidden />
-                    )}
-                  </div>
-                  <p className="mt-0.5 truncate text-[9px] leading-snug text-zinc-500 lg:mt-1 lg:text-[10px]">
-                    {section.label}
-                  </p>
-                </motion.div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Readiness — clean checklist */}
-        <div className="flex min-w-0 flex-col border-zinc-200/80 md:w-[44%] md:border-l md:pl-3 lg:pl-4">
-          <div className="flex items-baseline justify-between gap-2">
-            <p className="text-[11px] font-medium text-zinc-900 lg:text-[12px]">Launch readiness</p>
-            <motion.span
-              key={checkedCount}
-              initial={reduce ? false : { opacity: 0.6, y: 2 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.35, ease }}
-              className="text-[10px] font-medium tabular-nums text-zinc-500 lg:text-[11px]"
-            >
-              {checkedCount}/{itemCount}
-            </motion.span>
-          </div>
-
-          <div className="mt-2 h-0.5 overflow-hidden rounded-full bg-zinc-100 lg:mt-2.5 lg:h-1">
-            <motion.div
-              className="h-full rounded-full bg-blue-600"
-              animate={{ width: `${(checkedCount / itemCount) * 100}%` }}
-              transition={{ duration: reduce ? 0 : 0.55, ease }}
-            />
-          </div>
-
-          <ul className="mt-2.5 flex-1 space-y-1 lg:mt-3 lg:space-y-1.5">
-            {LANDING_READINESS_ITEMS.map((item, index) => {
-              const checked = index < checkedCount;
-              const scanning = index === scanningIndex;
-
-              return (
-                <motion.li
-                  key={item}
-                  animate={{ opacity: checked || scanning ? 1 : 0.38 }}
-                  transition={{ duration: 0.35, ease }}
-                  className="flex items-center gap-2 py-0.5 lg:gap-2.5 lg:py-1"
-                >
-                  <span
-                    className={cn(
-                      "flex size-3.5 shrink-0 items-center justify-center rounded-full border lg:size-4",
-                      checked && "border-blue-200 bg-blue-50 text-blue-600",
-                      scanning && "border-blue-300 bg-white",
-                      !checked && !scanning && "border-zinc-200 bg-white",
-                    )}
-                  >
-                    <ReadinessStatusIcon
-                      checked={checked}
-                      scanning={scanning}
-                      reduce={reduce}
-                      size={9}
-                    />
-                  </span>
-                  <span
-                    className={cn(
-                      "text-[10px] leading-tight lg:text-[11px]",
-                      checked ? "font-medium text-zinc-800" : scanning ? "text-blue-700" : "text-zinc-400",
-                    )}
-                  >
-                    {item}
-                  </span>
-                </motion.li>
-              );
-            })}
-          </ul>
-
-          <AnimatePresence mode="wait">
-            {footerPhase === "ready" ? (
-              <motion.div
-                key="ready"
-                initial={reduce ? false : { opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 4 }}
-                transition={{ duration: 0.38, ease }}
-                className={cn(landingFooterBtn, "mt-2 border-blue-200 bg-blue-50 text-blue-700 lg:mt-3")}
-              >
-                <IconCheck size={11} strokeWidth={2.5} className="shrink-0" />
-                <span>Ready to publish</span>
-              </motion.div>
-            ) : footerPhase === "scanned" ? (
-              <motion.div
-                key="scanned"
-                initial={reduce ? false : { opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 4 }}
-                transition={{ duration: 0.38, ease }}
-                className={cn(
-                  landingFooterBtn,
-                  "mt-2 border-emerald-200 bg-emerald-50 text-emerald-700 lg:mt-3",
-                )}
-              >
-                <IconCheck size={11} strokeWidth={2.5} className="shrink-0" />
-                <span>Scanned</span>
-              </motion.div>
-            ) : footerPhase === "scanning" ? (
-              <motion.div
-                key="scanning"
-                initial={{ opacity: 0, y: 4 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 4 }}
-                transition={{ duration: 0.32, ease }}
-                className={cn(
-                  landingFooterBtn,
-                  "mt-2 border-zinc-200 bg-white text-zinc-500 lg:mt-3",
-                )}
-              >
-                <SpinLoader size={11} className="text-blue-500" />
-                <span>Scanning structure…</span>
-              </motion.div>
-            ) : (
-              <motion.div
-                key="idle"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.45 }}
-                className="mt-2 rounded-xl border border-dashed border-zinc-200 px-4 py-2.5 text-center text-[10px] text-zinc-400 lg:mt-3 lg:text-[11px]"
-              >
-                Awaiting scan
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      </motion.div>
-    </MockFrame>
   );
 }
 
@@ -1881,38 +1684,38 @@ const SEO_HEADLINE = "How SaaS Brands Win with AI Content";
 const SEO_EXCERPT =
   "A practical playbook for SaaS teams to plan, create, and optimize content that ranks on Google and gets cited by AI answer engines.";
 
-type SeoSequencePhase =
-  | "idle"
-  | "query"
-  | "loading"
-  | "headline"
-  | "excerpt"
-  | "visibility"
-  | "done";
+const SEO_SEQUENCE_MS = 5600;
+const SEO_HEADLINE_MAX = 60;
 
-function useSeoMockupSequence(active: boolean, reduce: boolean) {
+type SeoSequencePhase = "idle" | "headline" | "excerpt" | "visibility" | "done";
+
+function useSeoMockupSequence(active: boolean, reduce: boolean, cycle: number) {
   const [phase, setPhase] = useState<SeoSequencePhase>("idle");
-  const [queryText, setQueryText] = useState("");
+  const [showOptimizedBadge, setShowOptimizedBadge] = useState(false);
   const [headlineText, setHeadlineText] = useState("");
+  const [isTypingHeadline, setIsTypingHeadline] = useState(false);
 
   useEffect(() => {
     if (!active) {
       setPhase("idle");
-      setQueryText("");
+      setShowOptimizedBadge(false);
       setHeadlineText("");
+      setIsTypingHeadline(false);
       return;
     }
 
     if (reduce) {
       setPhase("done");
-      setQueryText(SEO_QUERY);
+      setShowOptimizedBadge(true);
       setHeadlineText(SEO_HEADLINE);
+      setIsTypingHeadline(false);
       return;
     }
 
-    setPhase("query");
-    setQueryText("");
+    setPhase("idle");
+    setShowOptimizedBadge(false);
     setHeadlineText("");
+    setIsTypingHeadline(false);
 
     let cancelled = false;
     const timers = new Set<ReturnType<typeof setTimeout>>();
@@ -1945,60 +1748,52 @@ function useSeoMockupSequence(active: boolean, reduce: boolean) {
       intervals.add(id);
     };
 
-    typeText(SEO_QUERY, setQueryText, 34, () => {
-      later(() => {
-        setPhase("loading");
+    later(() => {
+      setShowOptimizedBadge(true);
+      setPhase("headline");
+      setIsTypingHeadline(true);
+      typeText(SEO_HEADLINE, setHeadlineText, 28, () => {
+        setIsTypingHeadline(false);
         later(() => {
-          setPhase("headline");
-          typeText(SEO_HEADLINE, setHeadlineText, 26, () => {
-            later(() => {
-              setPhase("excerpt");
-              later(() => {
-                setPhase("visibility");
-                later(() => setPhase("done"), 520);
-              }, 420);
-            }, 180);
-          });
-        }, 2000);
-      }, 220);
-    });
+          setPhase("excerpt");
+          later(() => {
+            setPhase("visibility");
+            later(() => setPhase("done"), 400);
+          }, 200);
+        }, 80);
+      });
+    }, 400);
 
     return () => {
       cancelled = true;
       timers.forEach(clearTimeout);
       intervals.forEach(clearInterval);
     };
-  }, [active, reduce]);
+  }, [active, reduce, cycle]);
 
   return {
     phase,
-    queryText,
     headlineText,
-    showDraft: phase !== "idle" && phase !== "query",
+    showOptimizedBadge,
     showExcerpt: ["excerpt", "visibility", "done"].includes(phase),
     showVisibility: ["visibility", "done"].includes(phase),
-    showOptimized: phase === "done",
-    isLoading: phase === "loading",
-    isTypingQuery: phase === "query",
-    isTypingHeadline: phase === "headline",
+    isTypingHeadline,
+    showHeadline: phase !== "idle",
   };
 }
 
 /** maintenance — copywriting & SEO content optimizer */
 export function CopywritingSeoMockup({ active = false }: MockupProps) {
-  const { item, reduce, playing } = useMockMotion(active);
-  const sequence = useSeoMockupSequence(playing, reduce);
+  const reduce = !!useReducedMotion();
+  const { cycle, playing } = useDemoLoop(active, reduce, SEO_SEQUENCE_MS);
   const {
-    queryText,
     headlineText,
-    showDraft,
+    showOptimizedBadge,
     showExcerpt,
     showVisibility,
-    showOptimized,
-    isLoading,
-    isTypingQuery,
     isTypingHeadline,
-  } = sequence;
+    showHeadline,
+  } = useSeoMockupSequence(playing, reduce, cycle);
 
   const platforms: SeoPlatform[] = [
     { name: "Google", mark: GoogleMark, status: "Indexed", bg: "#F8FAFC" },
@@ -2011,239 +1806,115 @@ export function CopywritingSeoMockup({ active = false }: MockupProps) {
     hidden: {},
     show: {
       transition: {
-        staggerChildren: reduce ? 0 : 0.14,
-        delayChildren: reduce ? 0 : 0.06,
+        staggerChildren: reduce ? 0 : 0.03,
       },
     },
   };
 
   const platformCard = {
-    hidden: {
-      opacity: reduce ? 1 : 0,
-      y: reduce ? 0 : 7,
-      scale: reduce ? 1 : 0.97,
-    },
-    show: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      transition: {
-        duration: reduce ? 0 : 0.34,
-        ease,
-        staggerChildren: reduce ? 0 : 0.1,
-        delayChildren: reduce ? 0 : 0.06,
-      },
-    },
-  };
-
-  const platformBrandRow = {
-    hidden: { opacity: reduce ? 1 : 0, x: reduce ? 0 : -4 },
-    show: {
-      opacity: 1,
-      x: 0,
-      transition: { duration: reduce ? 0 : 0.28, ease },
-    },
-  };
-
-  const platformIconPop = {
-    hidden: { opacity: reduce ? 1 : 0, scale: reduce ? 1 : 0.96 },
+    hidden: { opacity: reduce ? 1 : 0, scale: reduce ? 1 : 0.8 },
     show: {
       opacity: 1,
       scale: 1,
-      transition: reduce ? { duration: 0 } : T_FEEDBACK,
-    },
-  };
-
-  const platformStatusRow = {
-    hidden: { opacity: reduce ? 1 : 0, y: reduce ? 0 : 5 },
-    show: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: reduce ? 0 : 0.3, ease },
-    },
-  };
-
-  const platformCheckPop = {
-    hidden: { opacity: reduce ? 1 : 0, scale: reduce ? 1 : 0.96 },
-    show: {
-      opacity: 1,
-      scale: 1,
-      transition: reduce ? { duration: 0 } : { ...T_FEEDBACK, delay: 0.05 },
-    },
-  };
-
-  const platformStatusText = {
-    hidden: { opacity: reduce ? 1 : 0, x: reduce ? 0 : -3 },
-    show: {
-      opacity: 1,
-      x: 0,
-      transition: { duration: reduce ? 0 : 0.24, ease, delay: reduce ? 0 : 0.08 },
+      transition: reduce ? { duration: 0 } : SPRING_BADGE,
     },
   };
 
   return (
-    <MockFrame className="p-3 min-h-96 -mt-5">
-      <motion.div initial="hidden" animate={playing ? "show" : "hidden"} variants={{ hidden: {}, show: {} }}>
-        <motion.div
-          variants={item}
-          initial="hidden"
-          animate={playing ? "show" : "hidden"}
-          className="flex items-start justify-between gap-2"
-        >
-          <div className="flex min-w-0 items-start gap-2">
-            <span className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-[#F3E8FF] text-[#9333EA]">
-              <IconEdit size={13} />
-            </span>
-            <div className="min-w-0">
-              <p className="text-[11px] font-medium leading-snug tracking-tight" style={{ color: mock.strong }}>
-                Your content, found everywhere
-              </p>
-              <p className="mt-0.5 text-[9px] font-normal leading-relaxed" style={{ color: mock.subtle }}>
-                Optimized copy that ranks and gets cited.
-              </p>
+    <MockupDemoShell active={playing} reduce={reduce} className="w-full">
+      <MockFrame className="-mt-5 min-h-96 p-3">
+        <div key={`seo-${cycle}`}>
+          <div className="flex items-start justify-between gap-2">
+            <div className="flex min-w-0 items-start gap-2">
+              <span className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-[#F3E8FF] text-[#9333EA]">
+                <IconEdit size={13} />
+              </span>
+              <div className="min-w-0">
+                <p className="text-[11px] font-medium leading-snug tracking-tight" style={{ color: mock.strong }}>
+                  Your content, found everywhere
+                </p>
+                <p className="mt-0.5 text-[9px] font-normal leading-relaxed" style={{ color: mock.subtle }}>
+                  Optimized copy that ranks and gets cited.
+                </p>
+              </div>
+            </div>
+
+            <ClipReveal show={showOptimizedBadge} reduce={reduce} duration={0.24}>
+              <span
+                className={cn(
+                  "inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-[8px] font-medium transition-colors duration-200",
+                  showOptimizedBadge
+                    ? "bg-[#ECFDF5] text-[#059669]"
+                    : "bg-zinc-100 text-zinc-500",
+                )}
+              >
+                <IconCheck size={9} />
+                Optimized
+              </span>
+            </ClipReveal>
+          </div>
+
+          <div className="mt-2.5">
+            <p className="text-[8px] font-normal" style={{ color: mock.subtle }}>
+              Topic / Query
+            </p>
+            <div
+              className="mt-1 flex items-center gap-1.5 rounded-lg border px-2 py-1.5"
+              style={{ borderColor: mock.border, backgroundColor: "#FAFAFA" }}
+            >
+              <IconSearch size={11} style={{ color: mock.subtle }} />
+              <span className="truncate text-[9px] font-normal" style={{ color: mock.strong }}>
+                {playing ? SEO_QUERY : ""}
+              </span>
             </div>
           </div>
 
-          <motion.span
-            className={cn("inline-flex shrink-0 items-center gap-1 rounded-full bg-[#ECFDF5] px-2 py-0.5 text-[8px] font-medium text-[#059669]", GPU)}
-            initial={reduce ? false : { opacity: 0, scale: 0.96 }}
-            animate={
-              showOptimized ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.98 }
-            }
-            transition={T_FEEDBACK}
-          >
-            <IconCheck size={9} />
-            Optimized
-          </motion.span>
-        </motion.div>
-
-        <motion.div
-          variants={item}
-          initial="hidden"
-          animate={playing ? "show" : "hidden"}
-          className="mt-2.5"
-        >
-          <p className="text-[8px] font-normal" style={{ color: mock.subtle }}>
-            Topic / Query
-          </p>
-          <div
-            className="mt-1 flex items-center gap-1.5 rounded-lg border px-2 py-1.5"
-            style={{ borderColor: mock.border, backgroundColor: "#FAFAFA" }}
-          >
-            <IconSearch size={11} style={{ color: mock.subtle }} />
-            <span className="truncate text-[9px] font-normal" style={{ color: mock.strong }}>
-              {queryText}
-              <TypingCaret visible={isTypingQuery} />
-            </span>
-        </div>
-        </motion.div>
-
-        <AnimatePresence mode="wait">
-          {showDraft ? (
-            <motion.div
-              key="draft"
-              initial={reduce ? false : { opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -4 }}
-              transition={{ duration: 0.32, ease }}
-              className="mt-2.5"
-            >
+          {showHeadline ? (
+            <div className="mt-2.5">
               <p className="text-[8px] font-normal" style={{ color: mock.subtle }}>
-                Headline (Draft)
+                Headline
               </p>
               <div
                 className="mt-1 rounded-xl border p-2"
                 style={{ borderColor: mock.border, backgroundColor: "#FAFAFA" }}
               >
-                {isLoading ? (
+                <div className="flex items-start justify-between gap-2">
+                  <p className="text-[10px] font-medium leading-snug tracking-tight" style={{ color: mock.strong }}>
+                    {headlineText}
+                    <TypingCaret visible={isTypingHeadline} reduce={reduce} />
+                  </p>
+                  <span className="shrink-0 text-[8px] tabular-nums" style={{ color: mock.subtle }}>
+                    {headlineText.length} / {SEO_HEADLINE_MAX}
+                  </span>
+                </div>
+
+                {showExcerpt ? (
                   <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="flex items-center gap-1.5 py-1"
+                    initial={reduce ? false : { opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: reduce ? 0 : 0.2, ease: easeOut }}
+                    className="mt-2"
                   >
-                    {[0, 1, 2].map((dot) => (
-                      <motion.span
-                        key={dot}
-                        className="size-1 rounded-full bg-zinc-300"
-                        animate={{ opacity: [0.3, 1, 0.3] }}
-                        transition={{
-                          duration: 0.9,
-                          repeat: Infinity,
-                          delay: dot * 0.14,
-                          ease: "easeInOut",
-                        }}
-                      />
-                    ))}
-                    <span className="text-[8px] font-normal" style={{ color: mock.subtle }}>
-                      Drafting headline…
-                    </span>
+                    <p className="text-[8px] font-medium" style={{ color: mock.strong }}>
+                      Excerpt
+                    </p>
+                    <p
+                      className="mt-0.5 text-[8px] font-normal leading-relaxed"
+                      style={{ color: mock.default }}
+                    >
+                      {SEO_EXCERPT}
+                    </p>
                   </motion.div>
-                ) : (
-                  <>
-                    <div className="flex items-start justify-between gap-2">
-                      <p className="text-[10px] font-medium leading-snug tracking-tight" style={{ color: mock.strong }}>
-                        {headlineText}
-                        <TypingCaret visible={isTypingHeadline} />
-                      </p>
-                      <motion.span
-                        className="shrink-0 text-[8px] tabular-nums"
-                        style={{ color: mock.subtle }}
-                        animate={{ opacity: headlineText.length > 0 ? 1 : 0.4 }}
-                        transition={{ duration: 0.2 }}
-                      >
-                        {headlineText.length} / 60
-                      </motion.span>
-      </div>
-
-                    <div className="relative my-1.5 flex items-center">
-                      <div className="h-px flex-1" style={{ backgroundColor: mock.border }} />
-                      {headlineText.length >= SEO_HEADLINE.length ? (
-                        <motion.span
-                          className={cn("ml-1 text-[#9333EA]", GPU)}
-                          initial={reduce ? false : { opacity: 0, scale: 0.96 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          transition={T_FEEDBACK}
-                        >
-                          <IconSparkle size={10} />
-                        </motion.span>
-                      ) : null}
-    </div>
-
-                    <AnimatePresence>
-                      {showExcerpt ? (
-                        <motion.div
-                          key="excerpt"
-                          initial={reduce ? false : { opacity: 0, y: 5 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.38, ease }}
-                        >
-                          <p className="text-[8px] font-medium" style={{ color: mock.strong }}>
-                            Excerpt
-                          </p>
-                          <p
-                            className="mt-0.5 text-[8px] font-normal leading-relaxed"
-                            style={{ color: mock.default }}
-                          >
-                            {SEO_EXCERPT}
-                          </p>
-                        </motion.div>
-                      ) : null}
-                    </AnimatePresence>
-                  </>
-                )}
+                ) : null}
               </div>
-            </motion.div>
+            </div>
           ) : null}
-        </AnimatePresence>
 
-        <AnimatePresence>
           {showVisibility ? (
             <motion.div
-              key="visibility"
-              initial={reduce ? false : { opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.36, ease }}
+              initial={reduce ? false : { opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: reduce ? 0 : 0.2, ease: easeOut }}
               className="mt-2.5"
             >
               <p className="text-[9px] font-medium" style={{ color: mock.strong }}>
@@ -2258,38 +1929,37 @@ export function CopywritingSeoMockup({ active = false }: MockupProps) {
               >
                 {platforms.map((platform) => (
                   <motion.div
-                    key={platform.name}
+                    key={`${platform.name}-${cycle}`}
                     variants={platformCard}
-                    whileHover={reduce ? undefined : { y: -1, transition: { duration: 0.18 } }}
-                    className="rounded-lg border px-1.5 py-1.5 transition-shadow duration-300"
+                    className="rounded-lg border px-1.5 py-1.5"
                     style={{ borderColor: mock.border, backgroundColor: platform.bg }}
                   >
-                    <motion.div variants={platformBrandRow} className="flex items-center gap-1">
-                      <motion.span variants={platformIconPop} className="flex shrink-0">
-                        <PlatformBrandIcon platform={platform} size={11} />
-                      </motion.span>
+                    <div className="flex items-center gap-1">
+                      <PlatformBrandIcon platform={platform} size={11} />
                       <span className="text-[8px] font-medium" style={{ color: mock.strong }}>
                         {platform.name}
                       </span>
-                    </motion.div>
+                    </div>
 
-                    <motion.div
-                      variants={platformStatusRow}
-                      className="mt-1 flex items-center gap-0.5 text-[7px] font-medium text-[#059669]"
-                    >
-                      <motion.span variants={platformCheckPop} className="flex shrink-0">
+                    <div className="mt-1 flex items-center gap-0.5 text-[7px] font-medium text-[#059669]">
+                      <motion.span
+                        className={GPU}
+                        initial={reduce ? false : { scale: 0, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={reduce ? { duration: 0 } : SPRING_CHECK_SM}
+                      >
                         <IconCheck size={8} />
                       </motion.span>
-                      <motion.span variants={platformStatusText}>{platform.status}</motion.span>
-                    </motion.div>
+                      <span>{platform.status}</span>
+                    </div>
                   </motion.div>
                 ))}
               </motion.div>
             </motion.div>
           ) : null}
-        </AnimatePresence>
-      </motion.div>
-    </MockFrame>
+        </div>
+      </MockFrame>
+    </MockupDemoShell>
   );
 }
 

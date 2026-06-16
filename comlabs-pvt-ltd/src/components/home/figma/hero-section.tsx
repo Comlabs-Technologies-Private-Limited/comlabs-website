@@ -3,14 +3,12 @@
 import { ArrowRight } from "lucide-react";
 import { motion } from "motion/react";
 
-import { SHOWCASE_IMAGES } from "@/components/home/figma/home-data";
-
-const showcaseImages = [SHOWCASE_IMAGES.primary, SHOWCASE_IMAGES.secondary];
+import { EnterpriseClientsTrust } from "@/components/home/enterprise-clients-section";
 
 export function FigmaHeroSection() {
   return (
     <section
-      className="relative overflow-hidden px-6 pt-16 pb-16 md:pt-24"
+      className="relative overflow-hidden px-6 pt-16 pb-16 md:pt-24 md:pb-20"
       style={{
         backgroundImage:
           "linear-gradient(180deg, rgba(247,247,244,0.86) 0%, rgba(247,247,244,0.78) 45%, rgba(247,247,244,0.88) 100%), url('/hero/hero-bg.png')",
@@ -108,21 +106,10 @@ export function FigmaHeroSection() {
         initial={{ opacity: 0, y: 28 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.65, delay: 1.48, ease: "easeOut" }}
-        className="mx-auto mt-16 grid max-w-5xl grid-cols-1 gap-5 md:grid-cols-2"
+        className="mx-auto mt-16 max-w-5xl"
+        aria-label="Trusted clients"
       >
-        {showcaseImages.map((src, i) => (
-          <div
-            key={src}
-            className="relative aspect-[4/3] overflow-hidden rounded-3xl border border-border bg-card"
-            style={{ boxShadow: "0 2px 24px rgba(28,25,23,0.07)" }}
-          >
-            <img
-              src={src}
-              alt={`Comlabs showcase ${i + 1}`}
-              className="h-full w-full object-cover object-top"
-            />
-          </div>
-        ))}
+        <EnterpriseClientsTrust />
       </motion.div>
     </section>
   );

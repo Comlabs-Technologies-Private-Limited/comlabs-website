@@ -1,27 +1,31 @@
 "use client";
 
-import { ServiceCard, serviceItems } from "@/components/home/services-section";
+import { ServiceRow, serviceItems } from "@/components/home/services-section";
 
 export function FigmaServicesSection() {
   return (
-    <section id="services" className="px-6 py-24">
+    <section id="services" className="px-6 py-24 md:py-32">
       <div className="mx-auto max-w-6xl">
-        <div className="mb-12">
+        <div className="mb-16 md:mb-20">
           <p className="mb-4 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
             Services
           </p>
           <h2
-            className="max-w-lg text-2xl font-bold tracking-tight md:text-5xl"
+            className="max-w-2xl text-2xl font-bold tracking-tight md:text-5xl"
             style={{ letterSpacing: "-0.03em" }}
           >
             Everything you need to ship{" "}
             <span style={{ color: "var(--warm-orange)" }}>great</span> products.
           </h2>
+          <p className="mt-5 max-w-xl text-sm leading-relaxed text-muted-foreground md:text-base">
+            Focused website, product, and automation work designed to remove friction and help your
+            business grow.
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+        <div className="flex flex-col gap-20 md:gap-28 lg:gap-32">
           {serviceItems.map((service, index) => (
-            <ServiceCard key={service.id} {...service} index={index} variant="figma" />
+            <ServiceRow key={service.id} {...service} index={index} variant="figma" />
           ))}
         </div>
       </div>

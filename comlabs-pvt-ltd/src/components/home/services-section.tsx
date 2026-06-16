@@ -1,7 +1,9 @@
 "use client";
 
 import { motion, useInView, useReducedMotion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRef } from "react";
 
 import { SectionHeader } from "@/components/home/section-header";
@@ -32,6 +34,8 @@ const services = [
     mockupOverlayClassName: "",
     mockupWrapperClassName: "mt-12 md:mt-22",
     mockupClassName: "scale-107 pl-1",
+    linkLabel: "See a rebuild example",
+    linkHref: "/work/global-services",
   },
   {
     id: "landing-sprint",
@@ -43,6 +47,8 @@ const services = [
     mockupOverlayClassName: "md:top-6 top-2 bottom-2 items-stretch",
     mockupWrapperClassName: "mt-6 flex h-full flex-col",
     mockupClassName: "",
+    linkLabel: "Book a landing page sprint",
+    linkHref: "#contact",
   },
   {
     id: "ai-automation",
@@ -54,6 +60,8 @@ const services = [
     mockupOverlayClassName: "inset-2.5 top-8 bottom-2.5 items-stretch md:inset-3 md:top-10",
     mockupWrapperClassName: "flex h-full w-full max-w-[94%] flex-col",
     mockupClassName: "",
+    linkLabel: "Explore automations",
+    linkHref: "#contact",
   },
   {
     id: "product-ui",
@@ -66,8 +74,9 @@ const services = [
     mockupOverlayClassName: "mt-5 md:mt-6 scale-112",
     mockupWrapperClassName: "",
     mockupClassName: "",
+    linkLabel: "View product work",
+    linkHref: "/work/formula-lab",
   },
-
   {
     id: "growth-cro",
     title: "Strategy Calls",
@@ -79,6 +88,8 @@ const services = [
     mockupOverlayClassName: "",
     mockupWrapperClassName: "md:mt-20 mt-12",
     mockupClassName: "",
+    linkLabel: "Book a strategy call",
+    linkHref: "#contact",
   },
   {
     id: "maintenance",
@@ -90,12 +101,121 @@ const services = [
     mockupOverlayClassName: "md:top-16 top-8 items-",
     mockupWrapperClassName: "top-16",
     mockupClassName: "",
+    linkLabel: "Improve your copy & SEO",
+    linkHref: "#contact",
   },
 ] as const;
 
 export type ServiceItem = (typeof services)[number];
 
-export function ServiceCard({
+function ServiceVisual({
+  background,
+  index,
+  mockupImage,
+  mockupAlt,
+  mockupOverlayClassName,
+  mockupWrapperClassName,
+  mockupClassName,
+  id,
+  variant,
+}: {
+  background: string;
+  index: number;
+  mockupImage?: string;
+  mockupAlt?: string;
+  mockupOverlayClassName?: string;
+  mockupWrapperClassName?: string;
+  mockupClassName?: string;
+  id: string;
+  variant: "legacy" | "figma";
+}) {
+  const visualRef = useRef<HTMLDivElement>(null);
+  const reduceMotion = useReducedMotion();
+  const inView = useInView(visualRef, MOCK_VIEWPORT);
+  const mockupActive = inView;
+
+  return (
+    <div
+      className={cn(
+        "relative aspect-[5/4] overflow-hidden rounded-2xl md:aspect-[4/3] md:rounded-3xl",
+        variant === "figma" ? "bg-secondary/60" : "bg-zinc-50",
+      )}
+    >
+      {mockupImage ? (
+        <>
+          <Image
+            src={background}
+            alt=""
+            fill
+            priority={index === 0}
+            sizes="(max-width: 768px) 100vw, 50vw"
+            className="object-cover object-center saturate-100"
+            aria-hidden
+          />
+          <motion.div
+            ref={visualRef}
+            className={cn(
+              "absolute inset-3 flex items-center justify-center md:inset-5",
+              mockupOverlayClassName,
+            )}
+            initial={reduceMotion ? false : { opacity: 0, y: 10, scale: 0.98 }}
+            animate={
+              mockupActive
+                ? { opacity: 1, y: 0, scale: 1 }
+                : { opacity: 0, y: 10, scale: 0.98 }
+            }
+            transition={{ duration: reduceMotion ? 0 : 0.5, ease }}
+          >
+            <div className={cn("relative h-full w-full max-w-[88%]", mockupWrapperClassName)}>
+              <Image
+                src={mockupImage}
+                alt={mockupAlt || "Service preview mockup"}
+                width={640}
+                height={640}
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className={cn(
+                  "pointer-events-none rounded-lg object-contain object-center drop-shadow-[0_12px_40px_rgba(0,0,0,0.12)]",
+                  mockupClassName,
+                )}
+              />
+            </div>
+          </motion.div>
+        </>
+      ) : (
+        <>
+          <Image
+            src={background}
+            alt=""
+            fill
+            priority={index === 0}
+            sizes="(max-width: 768px) 100vw, 50vw"
+            className="object-cover object-center saturate-180"
+            aria-hidden
+          />
+          <div
+            ref={visualRef}
+            className={cn(
+              "absolute inset-3 flex items-end justify-center px-3 py-2 md:inset-5 md:px-5",
+              mockupOverlayClassName,
+            )}
+          >
+            <div
+              className={cn(
+                "w-full max-w-[90%] [&>*]:shadow-[0_12px_40px_rgba(0,0,0,0.1)]",
+                mockupWrapperClassName,
+                mockupClassName,
+              )}
+            >
+              <ServiceMockup id={id} active={mockupActive} />
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+export function ServiceRow({
   title,
   description,
   background,
@@ -106,126 +226,77 @@ export function ServiceCard({
   mockupWrapperClassName,
   mockupClassName,
   id,
+  linkLabel,
+  linkHref,
   variant = "legacy",
 }: ServiceItem & { index: number; mockupImage?: string; variant?: "legacy" | "figma" }) {
-  const cardRef = useRef<HTMLElement>(null);
+  const rowRef = useRef<HTMLElement>(null);
   const reduceMotion = useReducedMotion();
-  const inView = useInView(cardRef, MOCK_VIEWPORT);
-  const visible = reduceMotion || inView;
+  const inView = useInView(rowRef, MOCK_VIEWPORT);
+  const visible = inView;
+  const reversed = index % 2 === 1;
 
   return (
     <motion.article
-      ref={cardRef}
-      className={cn(
-        "flex flex-col",
-        variant === "figma"
-          ? "rounded-2xl border border-border bg-card p-4 transition-colors hover:border-foreground/20 md:p-5"
-          : "rounded-sm border border-zinc-200 bg-white p-4 shadow-none md:p-4",
-      )}
-      initial={reduceMotion ? false : { opacity: 0, y: 14 }}
-      animate={visible ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
-      transition={{ duration: reduceMotion ? 0 : 0.45, delay: reduceMotion ? 0 : index * 0.06, ease }}
+      ref={rowRef}
+      className="grid grid-cols-1 items-center gap-10 md:grid-cols-2 md:gap-12 lg:gap-20"
+      initial={reduceMotion ? false : { opacity: 0, y: 20 }}
+      animate={visible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+      transition={{ duration: reduceMotion ? 0 : 0.28, delay: reduceMotion ? 0 : index * 0.08, ease }}
     >
-      <div
-        className={cn(
-          "relative mask-t-from-95% mask-b-from-95% aspect-[6/4] overflow-hidden rounded-lg border p-2.5 md:p-3",
-          variant === "figma" ? "border-border bg-secondary/40" : "border-zinc-100",
-        )}
-      >
-        {mockupImage ? (
-          <>
-            <Image
-              src={background}
-              alt=""
-              fill
-              priority={index === 0}
-              sizes="(max-width: 768px) 100vw, 33vw"
-              className="object-cover object-center saturate-100"
-              aria-hidden
-            />
-            <motion.div
-              className={cn(
-                "absolute inset-2.5 flex items-center justify-center md:inset-3",
-                mockupOverlayClassName,
-              )}
-              initial={reduceMotion ? false : { opacity: 0, y: 10, scale: 0.98 }}
-              animate={
-                visible
-                  ? { opacity: 1, y: 0, scale: 1 }
-                  : { opacity: 0, y: 10, scale: 0.98 }
-              }
-              transition={{ duration: reduceMotion ? 0 : 0.5, ease }}
-            >
-              <div
-                className={cn(
-                  "relative h-full w-full max-w-[92%]",
-                  mockupWrapperClassName,
-                )}
-              >
-                <Image
-                  src={mockupImage}
-                  alt={mockupAlt || "Service preview mockup"}
-                  width={500}
-                  height={500}
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                  className={cn(
-                    "pointer-events-none rounded-lg object-contain object-center",
-                    mockupClassName,
-                  )}
-                />
-              </div>
-            </motion.div>
-          </>
-        ) : (
-          <>
-            <Image
-              src={background}
-              alt=""
-              fill
-              priority={index === 0}
-              sizes="(max-width: 768px) 100vw, 33vw"
-              className="object-cover object-center saturate-180"
-              aria-hidden
-            />
-            <div
-              className={cn(
-                "absolute right-2 bottom-2 left-2 flex justify-center px-3 py-2 md:px-4",
-                mockupOverlayClassName,
-              )}
-            >
-              <div
-                className={cn(
-                  "w-full max-w-[92%] [&>*]:shadow-[0_8px_24px_rgba(0,0,0,0.08)]",
-                  mockupWrapperClassName,
-                  mockupClassName,
-                )}
-              >
-                <ServiceMockup id={id} active={visible} />
-              </div>
-            </div>
-          </>
-        )}
+      <div className={cn("max-w-lg", reversed && "md:order-2 md:justify-self-end")}>
+        <h3
+          className={cn(
+            "text-[clamp(1.5rem,2.8vw,2.25rem)] leading-[1.12] font-medium tracking-tight",
+            variant === "figma" ? "font-bold text-foreground" : "text-zinc-900",
+          )}
+          style={variant === "figma" ? { letterSpacing: "-0.03em" } : undefined}
+        >
+          {title}
+        </h3>
+        <p
+          className={cn(
+            "mt-4 text-[15px] leading-relaxed md:text-base",
+            variant === "figma" ? "text-muted-foreground" : "text-zinc-500",
+          )}
+        >
+          {description}
+        </p>
+        <Link
+          href={linkHref}
+          className={cn(
+            "group mt-6 inline-flex items-center gap-1.5 text-[15px] font-medium transition-opacity hover:opacity-80",
+            variant === "figma" ? "text-[var(--warm-orange)]" : "text-zinc-900",
+          )}
+        >
+          {linkLabel}
+          <ArrowRight
+            size={15}
+            className="transition-transform duration-200 group-hover:translate-x-0.5"
+            aria-hidden
+          />
+        </Link>
       </div>
 
-      <h3
-        className={cn(
-          "mt-4 text-[15px] leading-snug font-medium tracking-tight md:mt-5 md:text-base",
-          variant === "figma" ? "text-sm font-semibold text-foreground" : "text-zinc-900",
-        )}
-      >
-        {title}
-      </h3>
-      <p
-        className={cn(
-          "mt-1.5 text-[13px] leading-relaxed font-normal md:text-[14px]",
-          variant === "figma" ? "text-sm text-muted-foreground" : "text-zinc-500",
-        )}
-      >
-        {description}
-      </p>
+      <div className={cn(reversed && "md:order-1")}>
+        <ServiceVisual
+          background={background}
+          index={index}
+          mockupImage={mockupImage}
+          mockupAlt={mockupAlt}
+          mockupOverlayClassName={mockupOverlayClassName}
+          mockupWrapperClassName={mockupWrapperClassName}
+          mockupClassName={mockupClassName}
+          id={id}
+          variant={variant}
+        />
+      </div>
     </motion.article>
   );
 }
+
+/** @deprecated Use ServiceRow — kept for compatibility */
+export const ServiceCard = ServiceRow;
 
 export { services as serviceItems };
 
@@ -236,17 +307,19 @@ export function ServicesSection() {
         <SectionHeader>
           <p className={servicesEyebrow}>Services</p>
           <h2 className={servicesTitle}>
-            What we ship for startups <br />that need to move <br />
+            What we ship for startups <br />
+            that need to move <br />
             faster.
           </h2>
           <p className={servicesSubtitle}>
-          Focused website, product, and automation work designed to remove friction <br/> and help your business grow.
+            Focused website, product, and automation work designed to remove friction <br /> and help
+            your business grow.
           </p>
         </SectionHeader>
 
-        <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-5">
+        <div className="mt-16 flex flex-col gap-20 md:mt-20 md:gap-28 lg:gap-32">
           {services.map((service, index) => (
-            <ServiceCard key={service.id} {...service} index={index} />
+            <ServiceRow key={service.id} {...service} index={index} />
           ))}
         </div>
       </SectionContainer>

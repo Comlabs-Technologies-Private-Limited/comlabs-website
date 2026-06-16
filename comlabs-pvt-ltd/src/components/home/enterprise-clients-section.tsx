@@ -58,19 +58,27 @@ function LogoBox({ client }: { client: ClientLogo }) {
   );
 }
 
+export function EnterpriseClientsTrust({ className }: { className?: string }) {
+  return (
+    <div className={className}>
+      <p className="mb-6 text-center text-[18px] text-muted-foreground">
+        Trusted by the people building inside India&apos;s biggest companies
+      </p>
+
+      <ul className="flex flex-wrap items-stretch justify-center">
+        {clients.map((client) => (
+          <LogoBox key={client.name} client={client} />
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 export function EnterpriseClientsSection() {
   return (
     <section className="px-6 py-10 md:py-14" aria-label="Trusted clients">
       <div className="mx-auto max-w-5xl">
-        <p className="mb-6 text-center text-[18px] text-muted-foreground">
-        Trusted by the people building inside India's biggest companies
-                </p>
-
-        <ul className="flex flex-wrap items-stretch justify-center">
-          {clients.map((client) => (
-            <LogoBox key={client.name} client={client} />
-          ))}
-        </ul>
+        <EnterpriseClientsTrust />
       </div>
     </section>
   );
