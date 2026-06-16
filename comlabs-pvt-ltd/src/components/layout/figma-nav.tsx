@@ -2,6 +2,7 @@
 
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
+import Image from "next/image";
 
 const NAV_LINKS = [
   { label: "Work", href: "/#work" },
@@ -20,12 +21,15 @@ export function FigmaNav() {
       style={{ background: "rgba(247,247,244,0.88)", backdropFilter: "blur(12px)" }}
     >
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-6">
-        <a
-          href="/"
-          className="text-sm font-semibold tracking-tight"
-          style={{ fontFamily: "var(--font-mono)", letterSpacing: "-0.01em" }}
-        >
-          comlabs
+        <a href="/" aria-label="Comlabs home">
+          <Image
+            src="/logo.png"
+            alt="Comlabs Technologies logo"
+            className="h-22 w-28"
+            height={100}
+            width={100}
+            style={{ mixBlendMode: "multiply" }}
+          />
         </a>
 
         <nav className="hidden items-center gap-7 md:flex">

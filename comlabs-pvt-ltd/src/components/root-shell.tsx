@@ -14,6 +14,8 @@ type RootShellProps = {
 export function RootShell({ fontClassName, children }: RootShellProps) {
   const pathname = usePathname();
   const usesFigmaChrome = pathname === "/" || pathname.startsWith("/work") || pathname === "/contact";
+  const isAdmin = pathname.startsWith("/admin");
+  const showLegacyChrome = !usesFigmaChrome && !isAdmin;
 
   return (
     <html lang="en" className={`${fontClassName} h-full antialiased`} suppressHydrationWarning>
@@ -25,10 +27,10 @@ export function RootShell({ fontClassName, children }: RootShellProps) {
             : "flex min-h-full max-w-full flex-col overflow-x-clip bg-[var(--bg-primary)] text-[var(--fg-primary)]"
         }
       >
-        {!usesFigmaChrome ? <ScrollProgress /> : null}
-        {!usesFigmaChrome ? <AppNavbar /> : null}
+        {showLegacyChrome ? <ScrollProgress /> : null}
+        {showLegacyChrome ? <AppNavbar /> : null}
         <div className="relative flex min-w-0 flex-1 flex-col overflow-x-clip">{children}</div>
-        {!usesFigmaChrome ? (
+        {showLegacyChrome ? (
           <div
             aria-hidden
             className="pointer-events-none fixed inset-x-0 bottom-0 z-[28] h-[min(14vh,128px)]"
@@ -39,7 +41,7 @@ export function RootShell({ fontClassName, children }: RootShellProps) {
             <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-primary)]/75 via-[var(--bg-primary)]/20 to-transparent" />
           </div>
         ) : null}
-        {!usesFigmaChrome ? <FooterBar /> : null}
+        {showLegacyChrome ? <FooterBar /> : null}
       </body>
     </html>
   );

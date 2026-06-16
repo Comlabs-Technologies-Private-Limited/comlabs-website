@@ -18,99 +18,53 @@ const clients: ClientLogo[] = [
   { name: "Vithub.in", type: "wordmark", label: "Vithub", emphasis: ".in" },
 ];
 
-function BrandIcon({ icon }: { icon: SimpleIcon }) {
+function LogoBox({ client }: { client: ClientLogo }) {
   return (
-    <svg
-      role="img"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-label={icon.title}
-      className="h-7 w-auto shrink-0 text-foreground/55 transition-colors duration-200 hover:text-foreground/80 md:h-8"
-    >
-      <path fill="currentColor" d={icon.path} />
-    </svg>
+    <li className="flex min-w-[120px] flex-1 items-center justify-center border border-border px-8 py-5 sm:min-w-[140px]">
+      {client.type === "icon" ? (
+        <svg
+          role="img"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-label={client.icon.title}
+          className="h-6 w-auto text-foreground/50"
+        >
+          <path fill="currentColor" d={client.icon.path} />
+        </svg>
+      ) : client.type === "image" ? (
+        <img
+          src={client.src}
+          alt={client.alt}
+          className="h-6 w-auto object-contain opacity-55"
+        />
+      ) : (
+        <span
+          className="whitespace-nowrap text-[15px] font-semibold tracking-tight text-foreground/50"
+          style={{ fontFamily: "var(--font-sans)" }}
+        >
+          {client.label}
+          {client.emphasis ? (
+            <span className="font-medium text-foreground/35">{client.emphasis}</span>
+          ) : null}
+        </span>
+      )}
+    </li>
   );
 }
 
-function BrandWordmark({
-  label,
-  emphasis,
-}: {
-  label: string;
-  emphasis?: string;
-}) {
+export function EnterpriseClientsSection() {
   return (
-    <span
-      className="whitespace-nowrap text-[15px] font-semibold tracking-tight text-foreground/55 transition-colors duration-200 hover:text-foreground/80 md:text-base"
-      style={{ fontFamily: "var(--font-sans)" }}
-    >
-      {label}
-      {emphasis ? (
-        <span className="font-medium text-foreground/40">{emphasis}</span>
-      ) : null}
-    </span>
-  );
-}
+    <section className="px-6 py-10 md:py-14" aria-label="Trusted clients">
+      <div className="mx-auto max-w-5xl">
+        <p className="mb-6 text-center text-[13px] text-muted-foreground">
+          Trusted every day by teams that build world-class software
+        </p>
 
-function BrandImage({ src, alt }: { src: string; alt: string }) {
-  return <img src={src} alt={alt} className="h-8 w-auto object-contain opacity-75 md:h-9" />;
-}
-
-type EnterpriseStat = { value: string; label: string };
-
-export function EnterpriseClientsSection({ stats }: { stats: EnterpriseStat[] }) {
-  return (
-    <section className="bg-background px-6 py-10 md:py-12" aria-label="Enterprise experience">
-      <div className="mx-auto max-w-6xl overflow-hidden rounded-3xl border border-border bg-card">
-        <div className="px-6 py-8 md:px-10 md:py-10">
-          <p
-            className="text-center text-[10px] font-semibold tracking-[0.22em] text-muted-foreground uppercase"
-            style={{ fontFamily: "var(--font-mono)" }}
-          >
-            Trusted by ambitious teams
-          </p>
-          <h3
-            className="mx-auto mt-4 max-w-2xl text-center text-2xl leading-tight font-semibold tracking-tight text-foreground md:text-[2rem]"
-            style={{ letterSpacing: "-0.03em" }}
-          >
-            Trusted by product teams and founders building serious digital products.
-          </h3>
-
-          <ul className="mt-8 flex flex-wrap items-center justify-center gap-x-10 gap-y-6 md:gap-x-14 lg:gap-x-16">
-            {clients.map((client) => (
-              <li key={client.name} className="flex items-center justify-center">
-                {client.type === "icon" ? (
-                  <BrandIcon icon={client.icon} />
-                ) : client.type === "image" ? (
-                  <BrandImage src={client.src} alt={client.alt} />
-                ) : (
-                  <BrandWordmark label={client.label} emphasis={client.emphasis} />
-                )}
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="grid grid-cols-2 border-t border-border md:grid-cols-4">
-          {stats.map((s, index) => (
-            <div
-              key={s.label}
-              className={`px-6 py-7 text-center md:px-8 ${index % 2 === 1 ? "border-l border-border md:border-l" : ""} ${
-                index > 1 ? "border-t border-border md:border-t-0" : ""
-              } ${index > 0 ? "md:border-l md:border-border" : ""}`}
-            >
-              <div className="text-3xl font-bold tracking-tight text-foreground" style={{ letterSpacing: "-0.03em" }}>
-                {s.value}
-              </div>
-              <div
-                className="mt-2 text-[10px] font-medium tracking-[0.18em] text-muted-foreground uppercase"
-                style={{ fontFamily: "var(--font-mono)" }}
-              >
-                {s.label}
-              </div>
-            </div>
+        <ul className="flex flex-wrap items-stretch justify-center">
+          {clients.map((client) => (
+            <LogoBox key={client.name} client={client} />
           ))}
-        </div>
+        </ul>
       </div>
     </section>
   );

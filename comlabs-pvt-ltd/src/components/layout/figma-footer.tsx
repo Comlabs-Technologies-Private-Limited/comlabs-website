@@ -10,12 +10,13 @@ export function FigmaFooter() {
       <div className="mx-auto max-w-6xl">
         <div className="mb-12 flex flex-col justify-between gap-10 md:flex-row">
           <div>
-            <a
-              href="/"
-              className="mb-2 block text-sm font-semibold tracking-tight"
-              style={{ fontFamily: "var(--font-mono)" }}
-            >
-              comlabs
+            <a href="/" className="mb-3 block" aria-label="Comlabs home">
+              <img
+                src="/logo.png"
+                alt="Comlabs"
+                className="h-22 -ml-4 w-auto"
+                style={{ mixBlendMode: "multiply" }}
+              />
             </a>
             <p className="text-sm text-muted-foreground">Design & development studio.</p>
           </div>
