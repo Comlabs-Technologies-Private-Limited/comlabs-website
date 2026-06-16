@@ -16,6 +16,12 @@ const clients: ClientLogo[] = [
     alt: "Formial Labs logo",
   },
   { name: "Vithub.in", type: "wordmark", label: "Vithub", emphasis: ".in" },
+  {
+    name: "Jindal Steel & Power",
+    type: "image",
+    src: "/logos/clients/jindal-steel.png",
+    alt: "Jindal Steel & Power logo",
+  },
 ];
 
 function LogoBox({ client }: { client: ClientLogo }) {
@@ -39,7 +45,7 @@ function LogoBox({ client }: { client: ClientLogo }) {
         />
       ) : (
         <span
-          className="whitespace-nowrap text-[15px] font-semibold tracking-tight text-foreground/50"
+          className="whitespace-nowrap text-[15px] font-semibold tracking-tight text-foreground/90"
           style={{ fontFamily: "var(--font-sans)" }}
         >
           {client.label}
@@ -56,9 +62,9 @@ export function EnterpriseClientsSection() {
   return (
     <section className="px-6 py-10 md:py-14" aria-label="Trusted clients">
       <div className="mx-auto max-w-5xl">
-        <p className="mb-6 text-center text-[13px] text-muted-foreground">
-          Trusted every day by teams that build world-class software
-        </p>
+        <p className="mb-6 text-center text-[18px] text-muted-foreground">
+        Trusted by the people building inside India's biggest companies
+                </p>
 
         <ul className="flex flex-wrap items-stretch justify-center">
           {clients.map((client) => (
