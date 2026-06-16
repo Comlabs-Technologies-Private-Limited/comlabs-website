@@ -120,7 +120,7 @@ export function HeroSection() {
               {HERO_SUBTITLE}
             </p>
             <div className="mt-10 flex flex-wrap items-center justify-start gap-3">
-              <Link href="/#contact" className={navPrimaryCtaClass}>
+              <Link href="/contact" className={navPrimaryCtaClass}>
                 <span>Get a website audit for free</span>
                 <span className={navPrimaryCtaIconClass} aria-hidden>
                   <ArrowRight className="size-4 -rotate-45 text-black" strokeWidth={2} />
@@ -153,7 +153,7 @@ export function HeroSection() {
               className="mt-10 flex flex-wrap items-center justify-start gap-3"
               variants={heroSlideItem}
             >
-              <Link href="/#contact" className={navPrimaryCtaClass}>
+              <Link href="/contact" className={navPrimaryCtaClass}>
                 <span>Get a website audit for free</span>
                 <span className={navPrimaryCtaIconClass} aria-hidden>
                   <ArrowRight className="size-4 -rotate-45 text-black" strokeWidth={2} />

@@ -1,16 +1,57 @@
 @import "tailwindcss";
 
 :root {
+  --font-size: 16px;
+  --background: #f7f7f4;
+  --foreground: #1c1917;
+  --card: #ffffff;
+  --card-foreground: #1c1917;
+  --popover: #ffffff;
+  --popover-foreground: #1c1917;
+  --primary: #1c1917;
+  --primary-foreground: #f7f7f4;
+  --secondary: #eeeee9;
+  --secondary-foreground: #1c1917;
+  --muted: #eeeee9;
+  --muted-foreground: #78716c;
+  --accent: #e8e8e2;
+  --accent-foreground: #1c1917;
+  --destructive: #d4183d;
+  --destructive-foreground: #ffffff;
+  --border: rgba(28, 25, 23, 0.1);
+  --input: transparent;
+  --input-background: #eeeee9;
+  --switch-background: #c8c8c0;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --ring: oklch(0.708 0 0);
+  --font-sans: var(--font-plus-jakarta), system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), "Fira Code", monospace;
+  --warm-orange: #c96442;
+  --warm-orange-light: #f5e6df;
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: #030213;
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+
+  /* Legacy tokens for non-home pages */
   --bg-primary: #f5f5f5;
   --bg-surface: #ffffff;
   --bg-overlay: rgba(255, 255, 255, 0.7);
   --fg-primary: oklch(21% 0.006 285.885);
   --fg-secondary: oklch(45% 0.006 285.885);
   --fg-tertiary: oklch(65% 0.006 285.885);
-  --border: oklch(90% 0.003 285.885);
   --border-strong: oklch(82% 0.004 285.885);
-  --accent: oklch(21% 0.006 285.885);
-  /* Hero rain: blend accent into page bg so streaks stay on-brand but quiet in light mode */
   --hero-rain-c: color-mix(in srgb, rgb(37 99 235) 100%, var(--bg-primary));
   --hero-rain-dot: oklch(0.72 0.006 285 / 0.04);
   --hero-rain-overlay-blur: 1em;
@@ -18,26 +59,99 @@
   --hero-rain-duration: 120s;
 }
 
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.145 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.145 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.985 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.396 0.141 25.723);
+  --destructive-foreground: oklch(0.637 0.237 25.331);
+  --border: oklch(0.269 0 0);
+  --input: oklch(0.269 0 0);
+  --ring: oklch(0.439 0 0);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(0.269 0 0);
+  --sidebar-ring: oklch(0.439 0 0);
+}
+
 @theme inline {
-  --font-sans: var(--font-inter);
-  /* MacBook Air 13" M1 default viewport width (1440×900). */
+  --font-sans: var(--font-plus-jakarta), system-ui, sans-serif;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-switch-background: var(--switch-background);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
   --max-width-screen: 1440px;
 }
 
-html {
-  scroll-behavior: smooth;
-  overflow-x: clip;
-  max-width: 100%;
-}
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
 
-body {
-  background-color: var(--bg-primary);
-  color: var(--fg-primary);
-  font-family: var(--font-inter), system-ui, sans-serif;
-  letter-spacing: -0.025em;
-  overflow-x: clip;
-  max-width: 100%;
-  overscroll-behavior-x: none;
+  html {
+    font-size: var(--font-size);
+    scroll-behavior: smooth;
+    overflow-x: clip;
+    max-width: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-sans), system-ui, sans-serif;
+    letter-spacing: -0.025em;
+    overflow-x: clip;
+    max-width: 100%;
+    overscroll-behavior-x: none;
+  }
 }
 
 /* `translate3d` + unique name: reliable compositing; avoid mask on same node as animated transform (WebKit). */

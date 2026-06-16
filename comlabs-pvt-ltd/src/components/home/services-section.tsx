@@ -13,9 +13,11 @@ import { cn } from "@/lib/utils";
 const ease = [0.25, 0.1, 0, 1] as const;
 
 const serviceBackgrounds = [
-  "/card-bg/process-card-1.png",
-  "/card-bg/process-card-3.png",
-  "/card-bg/process-card-3.png",
+  "/services-bg/service-bg-1.png",
+  "/services-bg/service-bg-2.png",
+  "/services-bg/service-bg-3.png",
+  "/services-bg/service-bg-4.png",
+  "/services-bg/service-bg-5.png",
 ] as const;
 
 const services = [
@@ -47,7 +49,7 @@ const services = [
     title: "AI Automations",
     description:
       "Automate lead capture, follow-ups, onboarding, and support so your team saves time every week.",
-    background: serviceBackgrounds[1],
+    background: serviceBackgrounds[2],
     mockupAlt: "",
     mockupOverlayClassName: "inset-2.5 top-8 bottom-2.5 items-stretch md:inset-3 md:top-10",
     mockupWrapperClassName: "flex h-full w-full max-w-[94%] flex-col",
@@ -58,7 +60,7 @@ const services = [
     title: "Product UI & Frontend",
     description:
       "Clean dashboards, portals, and product interfaces that feel polished, usable, and ready to scale.",
-    background: serviceBackgrounds[0],
+    background: serviceBackgrounds[3],
     mockupImage: "/card-bg/product-ui-mockup.png",
     mockupAlt: "Pulse SaaS dashboard and mobile UI design mockup",
     mockupOverlayClassName: "mt-5 md:mt-6 scale-112",
@@ -71,7 +73,7 @@ const services = [
     title: "Strategy Calls",
     description:
       "Get clear direction on your website, positioning, page structure, and next best improvements.",
-    background: serviceBackgrounds[0],
+    background: serviceBackgrounds[4],
     mockupImage: "/card-bg/consultation_strategy_card_only.png",
     mockupAlt: "Live consultation call with strategy board, live notes, and focus areas",
     mockupOverlayClassName: "",
@@ -83,7 +85,7 @@ const services = [
     title: "Copywriting & SEO",
     description:
       "Get found on Google, ChatGPT, and Perplexity — with clear copy that turns visitors into customers.",
-    background: serviceBackgrounds[1],
+    background: serviceBackgrounds[0],
     mockupAlt: "",
     mockupOverlayClassName: "md:top-16 top-8 items-",
     mockupWrapperClassName: "top-16",
@@ -91,7 +93,9 @@ const services = [
   },
 ] as const;
 
-function ServiceCard({
+export type ServiceItem = (typeof services)[number];
+
+export function ServiceCard({
   title,
   description,
   background,
@@ -102,7 +106,8 @@ function ServiceCard({
   mockupWrapperClassName,
   mockupClassName,
   id,
-}: (typeof services)[number] & { index: number; mockupImage?: string }) {
+  variant = "legacy",
+}: ServiceItem & { index: number; mockupImage?: string; variant?: "legacy" | "figma" }) {
   const cardRef = useRef<HTMLElement>(null);
   const reduceMotion = useReducedMotion();
   const inView = useInView(cardRef, MOCK_VIEWPORT);
@@ -111,12 +116,22 @@ function ServiceCard({
   return (
     <motion.article
       ref={cardRef}
-      className="flex flex-col rounded-sm border border-zinc-200 bg-white p-4 shadow-none md:p-4"
+      className={cn(
+        "flex flex-col",
+        variant === "figma"
+          ? "rounded-2xl border border-border bg-card p-4 transition-colors hover:border-foreground/20 md:p-5"
+          : "rounded-sm border border-zinc-200 bg-white p-4 shadow-none md:p-4",
+      )}
       initial={reduceMotion ? false : { opacity: 0, y: 14 }}
       animate={visible ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
       transition={{ duration: reduceMotion ? 0 : 0.45, delay: reduceMotion ? 0 : index * 0.06, ease }}
     >
-      <div className="relative mask-t-from-95% mask-b-from-95% aspect-[6/4] overflow-hidden rounded-lg border border-zinc-100 p-2.5 md:p-3">
+      <div
+        className={cn(
+          "relative mask-t-from-95% mask-b-from-95% aspect-[6/4] overflow-hidden rounded-lg border p-2.5 md:p-3",
+          variant === "figma" ? "border-border bg-secondary/40" : "border-zinc-100",
+        )}
+      >
         {mockupImage ? (
           <>
             <Image
@@ -125,7 +140,7 @@ function ServiceCard({
               fill
               priority={index === 0}
               sizes="(max-width: 768px) 100vw, 33vw"
-              className="object-cover object-center saturate-200"
+              className="object-cover object-center saturate-100"
               aria-hidden
             />
             <motion.div
@@ -192,15 +207,27 @@ function ServiceCard({
         )}
       </div>
 
-      <h3 className="mt-4 text-[15px] font-medium leading-snug tracking-tight text-zinc-900 md:mt-5 md:text-base">
+      <h3
+        className={cn(
+          "mt-4 text-[15px] leading-snug font-medium tracking-tight md:mt-5 md:text-base",
+          variant === "figma" ? "text-sm font-semibold text-foreground" : "text-zinc-900",
+        )}
+      >
         {title}
       </h3>
-      <p className="mt-1.5 text-[13px] font-normal leading-relaxed text-zinc-500 md:text-[14px]">
+      <p
+        className={cn(
+          "mt-1.5 text-[13px] leading-relaxed font-normal md:text-[14px]",
+          variant === "figma" ? "text-sm text-muted-foreground" : "text-zinc-500",
+        )}
+      >
         {description}
       </p>
     </motion.article>
   );
 }
+
+export { services as serviceItems };
 
 export function ServicesSection() {
   return (

@@ -119,7 +119,7 @@ export function PricingSection() {
           requirements.
         </p>
 
-        <Link href="/#contact" className={pricingCta}>
+        <Link href="/contact" className={pricingCta}>
           <span>Book a strategy call</span>
           <span
             className="flex size-8 shrink-0 items-center justify-center rounded-full bg-neutral-100 transition-transform duration-150 group-hover:translate-x-0.5"
