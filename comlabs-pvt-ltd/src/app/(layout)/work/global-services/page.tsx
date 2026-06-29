@@ -17,7 +17,7 @@ const content: CaseStudyContent = {
   title: (
     <>
       A website that earns{" "}
-      <span className="italic" style={{ color: "var(--warm-orange)" }}>
+      <span className="font-bold" style={{ color: "var(--warm-orange)" }}>
         enterprise trust.
       </span>
     </>

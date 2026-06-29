@@ -51,7 +51,7 @@ export function FigmaHeroSection() {
             className="inline-block h-1.5 w-1.5 rounded-full"
             style={{ background: "var(--warm-orange)" }}
           />
-          Now accepting projects for Q3 2025
+          Currently taking new projects
         </motion.div>
 
         <motion.h1
@@ -87,17 +87,17 @@ export function FigmaHeroSection() {
           className="flex flex-wrap items-center justify-start gap-3 md:justify-center"
         >
           <a
-            href="#work"
+            href="/contact"
             className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-background transition-opacity hover:opacity-90"
             style={{ background: "var(--foreground)" }}
           >
-            View our work <ArrowRight size={14} />
+            Talk to us <ArrowRight size={14} />
           </a>
           <a
-            href="/contact"
+            href="#work"
             className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium transition-colors hover:bg-accent"
           >
-            Talk to us
+            View our work
           </a>
         </motion.div>
       </div>

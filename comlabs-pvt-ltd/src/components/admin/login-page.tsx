@@ -1,32 +1,35 @@
 "use client";
 
 import { LockKeyhole } from "lucide-react";
-import { FormEvent, useEffect, useState } from "react";
+import { signIn } from "next-auth/react";
+import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useAdminStore } from "./admin-store";
 
-const ADMIN_EMAIL = "admin@comlabstechnologies.com";
+const ADMIN_EMAIL = process.env.NEXT_PUBLIC_ADMIN_EMAIL ?? "admin@comlabstechnologies.com";
 
 export function AdminLoginPage() {
   const router = useRouter();
-  const { hydrated, isAuthenticated, login } = useAdminStore();
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (hydrated && isAuthenticated) {
-      router.replace("/admin/dashboard");
-    }
-  }, [hydrated, isAuthenticated, router]);
-
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
+    setLoading(true);
 
-    if (!login(password)) {
+    const result = await signIn("credentials", {
+      email: ADMIN_EMAIL,
+      password,
+      redirect: false,
+    });
+
+    setLoading(false);
+
+    if (!result || result.error) {
       setError("Incorrect password. Please try again.");
       return;
     }
@@ -39,9 +42,7 @@ export function AdminLoginPage() {
       className="flex min-h-screen items-center justify-center px-6 py-12"
       style={{
         backgroundImage:
-          "linear-gradient(180deg, rgba(247,247,244,0.92) 0%, rgba(247,247,244,0.82) 100%), url('/hero/hero-bg.png')",
-        backgroundSize: "cover",
-        backgroundPosition: "center right",
+          "linear-gradient(180deg, rgba(247,247,244,0.92) 0%, rgba(247,247,244,0.82) 100%)",
       }}
     >
       <form
@@ -56,7 +57,7 @@ export function AdminLoginPage() {
             <LockKeyhole size={19} />
           </div>
           <p className="mb-3 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
-            Protected CRM
+            Protected Admin
           </p>
           <h1
             className="text-2xl font-bold tracking-tight md:text-3xl"
@@ -80,13 +81,14 @@ export function AdminLoginPage() {
               onChange={(event) => setPassword(event.target.value)}
               placeholder="Enter password"
               autoFocus
+              required
             />
           </label>
 
           {error ? <p className="text-sm text-destructive">{error}</p> : null}
 
-          <Button type="submit" className="h-11 w-full">
-            Sign in
+          <Button type="submit" disabled={loading} className="h-11 w-full">
+            {loading ? "Signing in…" : "Sign in"}
           </Button>
         </div>
       </form>

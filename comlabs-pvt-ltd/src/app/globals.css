@@ -164,22 +164,8 @@
   }
 }
 
-@keyframes logo-marquee {
-  from {
-    transform: translate3d(0, 0, 0);
-  }
-  to {
-    transform: translate3d(-50%, 0, 0);
-  }
-}
-
 .animate-marquee {
   animation: marquee 30s linear infinite;
-}
-
-.animate-marquee-logos {
-  animation: logo-marquee 56s linear infinite;
-  will-change: transform;
 }
 
 /* Hero “rain” background — adapted from Uiverse (SelfMadeSystem); colors match site tokens */
@@ -274,4 +260,101 @@
       225px 18770px, 228px 18770px, 376.5px 18910.5px, 250px 5082px, 253px 5082px,
       401.5px 5161px, 275px 6375px, 278px 6375px, 426.5px 6480px;
   }
+}
+
+/* ── Blog post body typography ─────────────────────────────────────────────── */
+.post-body {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--foreground);
+  max-width: 72ch;
+}
+.post-body > * + * { margin-top: 1.5em; }
+.post-body h1,
+.post-body h2,
+.post-body h3,
+.post-body h4 {
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+  color: var(--foreground);
+  margin-top: 2em;
+  margin-bottom: 0.6em;
+}
+.post-body h2 { font-size: 1.5rem; }
+.post-body h3 { font-size: 1.25rem; }
+.post-body h4 { font-size: 1.1rem; }
+.post-body p { margin-top: 1.25em; margin-bottom: 0; }
+.post-body a {
+  color: var(--warm-orange);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  transition: opacity 0.15s;
+}
+.post-body a:hover { opacity: 0.75; }
+.post-body strong { font-weight: 600; color: var(--foreground); }
+.post-body em { font-style: italic; }
+.post-body ul,
+.post-body ol {
+  padding-left: 1.5em;
+  margin-top: 1.25em;
+}
+.post-body ul { list-style-type: disc; }
+.post-body ol { list-style-type: decimal; }
+.post-body li { margin-top: 0.4em; }
+.post-body blockquote {
+  border-left: 3px solid var(--warm-orange);
+  margin-left: 0;
+  padding: 0.75em 1.25em;
+  background: var(--warm-orange-light);
+  border-radius: 0 0.5rem 0.5rem 0;
+  color: var(--muted-foreground);
+  font-style: italic;
+}
+.post-body code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  background: var(--secondary);
+  color: var(--foreground);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+}
+.post-body pre {
+  background: var(--foreground);
+  color: var(--background);
+  padding: 1.25em 1.5em;
+  border-radius: 0.75rem;
+  overflow-x: auto;
+  font-size: 0.875rem;
+  line-height: 1.7;
+}
+.post-body pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  border: none;
+  font-size: inherit;
+}
+.post-body img {
+  width: 100%;
+  height: auto;
+  border-radius: 0.75rem;
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+.post-body hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 2em 0;
+}
+
+/* Tiptap placeholder */
+.tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  color: var(--muted-foreground);
+  pointer-events: none;
+  float: left;
+  height: 0;
 }

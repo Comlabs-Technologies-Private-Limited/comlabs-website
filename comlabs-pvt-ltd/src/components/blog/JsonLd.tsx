@@ -1,0 +1,73 @@
+import { siteUrl } from "@/lib/site";
+import type { Post } from "@/types/post";
+
+type JsonLdProps = {
+  post: Post;
+};
+
+export function PostJsonLd({ post }: JsonLdProps) {
+  const base = siteUrl.replace(/\/$/, "");
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.metaTitle || post.title,
+    description: post.metaDescription || post.excerpt,
+    image: post.ogImage || post.coverImage || undefined,
+    datePublished: post.publishedAt ?? post.createdAt,
+    dateModified: post.updatedAt,
+    author: {
+      "@type": "Organization",
+      name: post.author || "Comlabs",
+      url: base,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "Comlabs Technologies",
+      url: base,
+      logo: {
+        "@type": "ImageObject",
+        url: `${base}/logo.png`,
+      },
+    },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": post.canonicalUrl || `${base}/blog/${post.slug}`,
+    },
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+      }}
+    />
+  );
+}
+
+export function BreadcrumbJsonLd({
+  items,
+}: {
+  items: { name: string; url: string }[];
+}) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: item.name,
+      item: item.url,
+    })),
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+      }}
+    />
+  );
+}

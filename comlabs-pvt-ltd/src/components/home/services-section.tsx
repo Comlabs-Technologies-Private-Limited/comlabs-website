@@ -44,8 +44,9 @@ const services = [
       "Clear landing pages for launches, waitlists, and campaigns — built to explain fast and convert visitors.",
     background: serviceBackgrounds[1],
     mockupAlt: "",
-    mockupOverlayClassName: "md:top-6 top-2 bottom-2 items-stretch",
-    mockupWrapperClassName: "mt-6 flex h-full flex-col",
+    mockupOverlayClassName:
+      "inset-x-3 top-8 bottom-0 flex items-end justify-center md:inset-x-5 md:top-10",
+    mockupWrapperClassName: "flex w-full max-w-[92%] flex-col",
     mockupClassName: "",
     linkLabel: "Book a landing page sprint",
     linkHref: "#contact",
@@ -116,6 +117,7 @@ function ServiceVisual({
   mockupOverlayClassName,
   mockupWrapperClassName,
   mockupClassName,
+  visualClassName,
   id,
   variant,
 }: {
@@ -126,6 +128,7 @@ function ServiceVisual({
   mockupOverlayClassName?: string;
   mockupWrapperClassName?: string;
   mockupClassName?: string;
+  visualClassName?: string;
   id: string;
   variant: "legacy" | "figma";
 }) {
@@ -139,6 +142,7 @@ function ServiceVisual({
       className={cn(
         "relative aspect-[5/4] overflow-hidden rounded-2xl md:aspect-[4/3] md:rounded-3xl",
         variant === "figma" ? "bg-secondary/60" : "bg-zinc-50",
+        visualClassName,
       )}
     >
       {mockupImage ? (
@@ -247,8 +251,9 @@ export function ServiceRow({
       <div className={cn("max-w-lg", reversed && "md:order-2 md:justify-self-end")}>
         <h3
           className={cn(
-            "text-[clamp(1.5rem,2.8vw,2.25rem)] leading-[1.12] font-medium tracking-tight",
-            variant === "figma" ? "font-bold text-foreground" : "text-zinc-900",
+            variant === "figma"
+              ? "text-xl leading-[1.15] font-bold tracking-tight text-foreground md:text-3xl lg:text-4xl"
+              : "text-[clamp(1.5rem,2.8vw,2.25rem)] leading-[1.12] font-medium tracking-tight text-zinc-900",
           )}
           style={variant === "figma" ? { letterSpacing: "-0.03em" } : undefined}
         >
@@ -256,8 +261,9 @@ export function ServiceRow({
         </h3>
         <p
           className={cn(
-            "mt-4 text-[15px] leading-relaxed md:text-base",
-            variant === "figma" ? "text-muted-foreground" : "text-zinc-500",
+            variant === "figma"
+              ? "mt-3 text-sm leading-relaxed text-muted-foreground md:mt-4 md:text-base"
+              : "mt-4 text-[15px] leading-relaxed text-zinc-500 md:text-base",
           )}
         >
           {description}
@@ -265,8 +271,10 @@ export function ServiceRow({
         <Link
           href={linkHref}
           className={cn(
-            "group mt-6 inline-flex items-center gap-1.5 text-[15px] font-medium transition-opacity hover:opacity-80",
-            variant === "figma" ? "text-[var(--warm-orange)]" : "text-zinc-900",
+            "group inline-flex items-center gap-1.5 font-medium transition-opacity hover:opacity-80",
+            variant === "figma"
+              ? "mt-5 text-sm text-[var(--warm-orange)] md:mt-6"
+              : "mt-6 text-[15px] text-zinc-900",
           )}
         >
           {linkLabel}

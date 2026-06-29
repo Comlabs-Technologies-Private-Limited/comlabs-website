@@ -348,17 +348,15 @@ export function LandingMockup({ active = false }: MockupProps) {
             {/* Nav */}
             <motion.div
               variants={block}
-              className="flex shrink-0 items-center justify-between border-b border-stone-200/60 bg-[#f7f7f4]/90 px-2.5 py-1.5 backdrop-blur-sm"
+              className="flex shrink-0 items-center justify-between border-b border-stone-200/60 bg-[#f7f7f4]/90 px-2.5 py-0.5 backdrop-blur-sm"
             >
-              <div className="flex items-center gap-1">
-                <span
-                  className="flex size-4 items-center justify-center rounded-[3px] text-[5px] font-bold text-white"
-                  style={{ background: "#1c1917" }}
-                >
-                  C
-                </span>
-                <span className="text-[7px] font-semibold tracking-tight text-stone-900">COMLABS</span>
-              </div>
+              <Image
+                src="/logo.png"
+                alt="Comlabs"
+                width={112}
+                height={40}
+                className="h-7 w-auto object-contain"
+              />
               <div className="hidden items-center gap-2 sm:flex">
                 {["Work", "Services"].map((link) => (
                   <span key={link} className="text-[6px] text-stone-500">
@@ -367,7 +365,7 @@ export function LandingMockup({ active = false }: MockupProps) {
                 ))}
               </div>
               <span
-                className="rounded-full px-1.5 py-0.5 text-[6px] font-semibold text-[#f7f7f4]"
+                className="rounded-full px-1.5 py-px text-[6px] font-semibold text-[#f7f7f4]"
                 style={{ background: "#1c1917" }}
               >
                 Get Started
@@ -375,10 +373,10 @@ export function LandingMockup({ active = false }: MockupProps) {
             </motion.div>
 
             {/* Hero */}
-            <div className="flex flex-1 flex-col px-2.5 pt-2 pb-1.5 text-center">
+            <div className="flex flex-1 flex-col px-3 pt-3 pb-2 text-center">
               <motion.div
                 variants={block}
-                className="mx-auto inline-flex items-center gap-1 rounded-full border border-stone-200/80 px-1.5 py-0.5"
+                className="mx-auto inline-flex items-center gap-1 rounded-full border border-stone-200/80 px-2 py-0.5"
                 style={{ background: "#f5e6df", color: "#c96442" }}
               >
                 <span className="size-1 rounded-full bg-[#c96442]" aria-hidden />
@@ -387,7 +385,7 @@ export function LandingMockup({ active = false }: MockupProps) {
 
               <motion.h1
                 variants={block}
-                className="mx-auto mt-1.5 max-w-[92%] text-[11px] leading-[1.12] font-bold tracking-tight text-stone-900"
+                className="mx-auto mt-2 max-w-[92%] text-[11px] leading-[1.12] font-bold tracking-tight text-stone-900"
                 style={{ letterSpacing: "-0.03em" }}
               >
                 We Turn Ambitious Ideas Into{" "}
@@ -396,14 +394,14 @@ export function LandingMockup({ active = false }: MockupProps) {
 
               <motion.p
                 variants={block}
-                className="mx-auto mt-1 max-w-[88%] text-[6.5px] leading-relaxed text-stone-500"
+                className="mx-auto mt-1.5 max-w-[88%] text-[6.5px] leading-relaxed text-stone-500"
               >
                 High-performance websites and web apps for ambitious companies.
               </motion.p>
 
               <motion.div
                 variants={block}
-                className="mt-1.5 flex items-center justify-center gap-1"
+                className="mt-2 flex items-center justify-center gap-1.5"
               >
                 <span
                   className="inline-flex items-center gap-0.5 rounded-full px-2 py-0.5 text-[6px] font-semibold text-[#f7f7f4]"
@@ -418,7 +416,7 @@ export function LandingMockup({ active = false }: MockupProps) {
               </motion.div>
 
               {/* Showcase cards */}
-              <motion.div variants={showcaseGrid} className="mt-2 grid flex-1 grid-cols-2 gap-1">
+              <motion.div variants={showcaseGrid} className="mt-3 grid flex-1 grid-cols-2 gap-1.5">
                 {["/imports/image.png", "/imports/image-1.png"].map((src) => (
                   <motion.div
                     key={src}
@@ -434,21 +432,6 @@ export function LandingMockup({ active = false }: MockupProps) {
                       aria-hidden
                     />
                   </motion.div>
-                ))}
-              </motion.div>
-
-              {/* Client logos */}
-              <motion.div
-                variants={block}
-                className="mt-1.5 flex shrink-0 items-center justify-center gap-1 border-t border-stone-200/60 pt-1.5"
-              >
-                {["Vodafone", "JIO", "Formial", "Vithub"].map((name) => (
-                  <span
-                    key={name}
-                    className="rounded border border-stone-200/70 bg-white/80 px-1.5 py-0.5 text-[5px] font-semibold tracking-tight text-stone-400"
-                  >
-                    {name}
-                  </span>
                 ))}
               </motion.div>
             </div>

@@ -1,8 +1,32 @@
+import Image from "next/image";
+import Link from "next/link";
+
 const FOOTER_COLUMNS = [
-  { heading: "Company", links: ["About", "Blog", "Careers", "Contact"] },
-  { heading: "Services", links: ["Web Dev", "UI Design", "CMS", "Maintenance"] },
-  { heading: "Work", links: ["Projects", "Case Studies", "Testimonials"] },
-];
+  {
+    heading: "Company",
+    links: [
+      { label: "Blog", href: "/blog" },
+      { label: "Contact", href: "/contact" },
+    ],
+  },
+  {
+    heading: "Services",
+    links: [
+      { label: "Web Dev", href: "/#services" },
+      { label: "UI Design", href: "/#services" },
+      { label: "CMS", href: "/#services" },
+      { label: "Maintenance", href: "/#services" },
+    ],
+  },
+  {
+    heading: "Work",
+    links: [
+      { label: "Projects", href: "/#work" },
+      { label: "Case Studies", href: "/#work" },
+      { label: "Testimonials", href: "/#testimonials" },
+    ],
+  },
+] as const;
 
 export function FigmaFooter() {
   return (
@@ -10,14 +34,16 @@ export function FigmaFooter() {
       <div className="mx-auto max-w-6xl">
         <div className="mb-12 flex flex-col justify-between gap-10 md:flex-row">
           <div>
-            <a href="/" className="mb-3 block" aria-label="Comlabs home">
-              <img
+            <Link href="/" className="mb-3 block" aria-label="Comlabs home">
+              <Image
                 src="/logo.png"
                 alt="Comlabs"
+                width={112}
+                height={40}
                 className="h-22 -ml-4 w-auto"
                 style={{ mixBlendMode: "multiply" }}
               />
-            </a>
+            </Link>
             <p className="text-sm text-muted-foreground">Design & development studio.</p>
           </div>
 
@@ -29,13 +55,13 @@ export function FigmaFooter() {
                 </p>
                 <ul className="space-y-2.5">
                   {col.links.map((link) => (
-                    <li key={link}>
-                      <a
-                        href="/"
+                    <li key={link.label}>
+                      <Link
+                        href={link.href}
                         className="text-sm text-muted-foreground transition-colors hover:text-foreground"
                       >
-                        {link}
-                      </a>
+                        {link.label}
+                      </Link>
                     </li>
                   ))}
                 </ul>
@@ -44,15 +70,8 @@ export function FigmaFooter() {
           </div>
         </div>
 
-        <div className="flex flex-col items-center justify-between gap-4 border-t border-border pt-8 text-xs text-muted-foreground md:flex-row">
-          <p>© 2025 Comlabs. All rights reserved.</p>
-          <div className="flex gap-5">
-            {["Privacy", "Terms", "Cookies"].map((l) => (
-              <a key={l} href="/" className="transition-colors hover:text-foreground">
-                {l}
-              </a>
-            ))}
-          </div>
+        <div className="border-t border-border pt-8 text-xs text-muted-foreground">
+          <p>© {new Date().getFullYear()} Comlabs. All rights reserved.</p>
         </div>
       </div>
     </footer>

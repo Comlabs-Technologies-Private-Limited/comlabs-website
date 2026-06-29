@@ -61,47 +61,41 @@ export const PROJECTS = [
   },
 ] as const;
 
-export const TESTIMONIALS = [
+export type Testimonial = {
+  quote: string;
+  name: string;
+  title: string;
+  company: string;
+  initials: string;
+  avatarSrc?: string;
+  companyLogoSrc?: string;
+  linkedinUrl?: string;
+};
+
+export const TESTIMONIALS: Testimonial[] = [
   {
     quote:
-      "It was night and day from one batch to another, adoption went from single digits to over 80%. It just spread like wildfire, all the best builders were using Cursor.",
-    author: "Diana Hu",
-    role: "General Partner, Y Combinator",
-    initials: "DH",
+      "Honestly, I came to Comlabs with a messy idea and not much else. They figured out what I was actually trying to build and turned it into a dashboard that just works. Our users went from confused to comfortable. Felt less like hiring an agency and more like having someone on the team who cared.",
+    name: "Jeet Patel",
+    title: "Founder",
+    company: "Formial Labs",
+    initials: "JP",
+    companyLogoSrc: "/logos/clients/formial-labs.png",
   },
   {
     quote:
-      "My favorite enterprise AI service is Cursor. Every one of our engineers, some 40,000, are now assisted by AI and our productivity has gone up incredibly.",
-    author: "Jensen Huang",
-    role: "President & CEO, NVIDIA",
-    initials: "JH",
+      "We deal with companies like JIO and Vodafone, so I didn't want a website that looked small. Comlabs got that immediately. They rebuilt the whole thing and now it actually looks like a company at our level. No hand-holding, no chasing — they just got it done.",
+    name: "Pramod Mishra",
+    title: "CEO",
+    company: "Global Services",
+    initials: "PM",
   },
   {
     quote:
-      "The best LLM applications have an autonomy slider: you control how much independence to give the AI. In Cursor, you can do Tab completion, Cmd+K for targeted edits, or you can let it rip with the full autonomy agentic version.",
-    author: "Andrej Karpathy",
-    role: "CEO, Eureka Labs",
-    initials: "AK",
+      "I'd been putting off the website for ages. Comlabs made it painless. The site finally looks like the brand I've had in my head, and people have actually noticed. Quick, easy to talk to, and they got Vithub in a way I didn't expect.",
+    name: "Harsh Sihag",
+    title: "Founder",
+    company: "Vithub",
+    initials: "HS",
   },
-  {
-    quote:
-      "Cursor quickly grew from hundreds to thousands of extremely enthusiastic Stripe employees. We spend more on R&D and software creation than any other undertaking, and there's significant economic outcomes when making that process more efficient.",
-    author: "Patrick Collison",
-    role: "Co Founder & CEO, Stripe",
-    initials: "PC",
-  },
-  {
-    quote:
-      "The most useful AI tool that I currently pay for, hands down, is Cursor. It's fast, autocompletes when and where you need it to, handles brackets properly, sensible keyboard shortcuts, bring-your-own-model... everything is well put together.",
-    author: "shadcn",
-    role: "Creator of shadcn/ui",
-    initials: "SC",
-  },
-  {
-    quote:
-      "It's definitely becoming more fun to be a programmer. We are at the 1% of what's possible, and it's in interactive experiences like Cursor where models like GPT-5 shine brightest.",
-    author: "Greg Brockman",
-    role: "President, OpenAI",
-    initials: "GB",
-  },
-] as const;
+];

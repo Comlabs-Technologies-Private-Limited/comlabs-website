@@ -1,5 +1,3 @@
-import { ExternalLink } from "lucide-react";
-
 import { SHOWCASE_IMAGES } from "@/components/home/figma/home-data";
 
 const SPECIALTY_ITEMS = [
@@ -38,12 +36,6 @@ export function FigmaSpecialtySection() {
               </li>
             ))}
           </ul>
-          <a
-            href="#"
-            className="mt-8 inline-flex items-center gap-2 rounded-full border border-border px-5 py-2.5 text-sm font-medium transition-colors hover:bg-accent"
-          >
-            See our tech stack <ExternalLink size={13} />
-          </a>
         </div>
 
         <div

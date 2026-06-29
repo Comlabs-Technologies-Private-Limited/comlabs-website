@@ -9,12 +9,13 @@ import {
   PanelLeftClose,
 } from "lucide-react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
+
+import { signOut } from "next-auth/react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useAdminStore } from "./admin-store";
 
 const navItems = [
   { label: "Dashboard", href: "/admin/dashboard", icon: BarChart3 },
@@ -24,32 +25,15 @@ const navItems = [
 
 export function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const router = useRouter();
-  const { hydrated, isAuthenticated, logout } = useAdminStore();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const isLoginRoute = pathname === "/admin";
-
-  useEffect(() => {
-    if (hydrated && !isAuthenticated && !isLoginRoute) {
-      router.replace("/admin");
-    }
-  }, [hydrated, isAuthenticated, isLoginRoute, router]);
 
   if (isLoginRoute) {
     return <>{children}</>;
   }
 
-  if (!hydrated) {
-    return <AdminLoading />;
-  }
-
-  if (!isAuthenticated) {
-    return <AdminLoading />;
-  }
-
   function handleLogout() {
-    logout();
-    router.replace("/admin");
+    void signOut({ callbackUrl: "/admin" });
   }
 
   return (
