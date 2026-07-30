@@ -1,0 +1,30 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mongodb"
+}
+
+model Post {
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  title           String
+  slug            String    @unique
+  excerpt         String    @default("")
+  content         String    @default("")
+  coverImage      String    @default("")
+  tags            String[]
+  status          String    @default("draft")
+  author          String    @default("Comlabs")
+  publishedAt     DateTime?
+  readingTime     Int       @default(0)
+  metaTitle       String    @default("")
+  metaDescription String    @default("")
+  ogImage         String    @default("")
+  canonicalUrl    String    @default("")
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([status])
+}
