@@ -23,6 +23,7 @@ function clean(value: unknown) {
 
 function escapeHtml(value: string) {
   return value
+  
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
