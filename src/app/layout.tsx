@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { JetBrains_Mono, Plus_Jakarta_Sans } from "next/font/google";
 
 import { RootShell } from "@/components/root-shell";
-import { siteUrl } from "@/lib/site";
+import { siteFaviconPath, siteOgImage, siteUrl } from "@/lib/site";
 import "./globals.css";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -39,6 +39,11 @@ export const metadata: Metadata = {
     "conversion-focused websites",
     "frontend development for startups",
   ],
+  icons: {
+    icon: [{ url: siteFaviconPath, type: "image/png" }],
+    shortcut: siteFaviconPath,
+    apple: [{ url: siteFaviconPath, type: "image/png" }],
+  },
   openGraph: {
     type: "website",
     locale: "en_IN",
@@ -46,11 +51,13 @@ export const metadata: Metadata = {
     title: DEFAULT_TITLE,
     description: DEFAULT_DESCRIPTION,
     url: siteUrl,
+    images: [siteOgImage],
   },
   twitter: {
     card: "summary_large_image",
     title: DEFAULT_TITLE,
     description: DEFAULT_DESCRIPTION,
+    images: [siteOgImage.url],
   },
 };
 
