@@ -7,7 +7,7 @@ import { PostCard } from "@/components/blog/PostCard";
 import { connectDB } from "@/lib/db";
 import { serializePostSummary } from "@/lib/post-utils";
 import { Post } from "@/models/post";
-import { siteUrl } from "@/lib/site";
+import { siteOgImage, siteUrl } from "@/lib/site";
 import type { PostSummary } from "@/types/post";
 
 export const revalidate = 60;
@@ -25,6 +25,14 @@ export const metadata: Metadata = {
       "Strategy, design, and development insights from the Comlabs team.",
     url: `${siteUrl}/blog`,
     type: "website",
+    images: [siteOgImage],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Blog — Comlabs Technologies",
+    description:
+      "Strategy, design, and development insights from the Comlabs team.",
+    images: [siteOgImage.url],
   },
 };
 

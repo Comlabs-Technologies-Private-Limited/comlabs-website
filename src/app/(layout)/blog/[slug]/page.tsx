@@ -11,7 +11,7 @@ import { BreadcrumbJsonLd, PostJsonLd } from "@/components/blog/JsonLd";
 import { connectDB } from "@/lib/db";
 import { serializePost } from "@/lib/post-utils";
 import { Post } from "@/models/post";
-import { siteUrl } from "@/lib/site";
+import { siteOgImagePath, siteUrl } from "@/lib/site";
 import type { Post as PostType } from "@/types/post";
 
 export const revalidate = 60;
@@ -44,7 +44,7 @@ export async function generateMetadata({
 
   const base = siteUrl.replace(/\/$/, "");
   const canonical = post.canonicalUrl || `${base}/blog/${post.slug}`;
-  const ogImage = post.ogImage || post.coverImage || undefined;
+  const ogImage = post.ogImage || post.coverImage || siteOgImagePath;
 
   return {
     title: post.metaTitle || post.title,
@@ -58,13 +58,13 @@ export async function generateMetadata({
       publishedTime: post.publishedAt ?? undefined,
       modifiedTime: post.updatedAt,
       authors: [post.author || "Comlabs"],
-      images: ogImage ? [{ url: ogImage }] : undefined,
+      images: [{ url: ogImage }],
     },
     twitter: {
       card: "summary_large_image",
       title: post.metaTitle || post.title,
       description: post.metaDescription || post.excerpt,
-      images: ogImage ? [ogImage] : undefined,
+      images: [ogImage],
     },
   };
 }

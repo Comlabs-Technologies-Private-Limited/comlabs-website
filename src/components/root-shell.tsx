@@ -14,8 +14,7 @@ type RootShellProps = {
 export function RootShell({ fontClassName, children }: RootShellProps) {
   const pathname = usePathname();
   const usesFigmaChrome = pathname === "/" || pathname.startsWith("/work") || pathname === "/contact";
-  const isAdmin = pathname.startsWith("/admin");
-  const showLegacyChrome = !usesFigmaChrome && !isAdmin;
+  const showLegacyChrome = !usesFigmaChrome;
 
   return (
     <html lang="en" className={`${fontClassName} h-full antialiased`} suppressHydrationWarning>

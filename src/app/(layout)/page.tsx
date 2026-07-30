@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 import { FigmaHomePage } from "@/components/home/figma-home-page";
 import { HomeJsonLd } from "@/components/seo/home-json-ld";
-import { siteUrl } from "@/lib/site";
+import { siteOgImage, siteUrl } from "@/lib/site";
 
 const HOME_TITLE =
   "Comlabs Technologies — Startup Website Design, Product UI & Development";
@@ -25,11 +25,13 @@ export const metadata: Metadata = {
     title: HOME_TITLE,
     description: HOME_DESCRIPTION,
     url: HOME_URL,
+    images: [siteOgImage],
   },
   twitter: {
     card: "summary_large_image",
     title: HOME_TITLE,
     description: HOME_DESCRIPTION,
+    images: [siteOgImage.url],
   },
 };
 

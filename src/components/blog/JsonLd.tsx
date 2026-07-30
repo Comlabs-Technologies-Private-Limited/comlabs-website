@@ -1,4 +1,4 @@
-import { siteUrl } from "@/lib/site";
+import { siteOgImagePath, siteUrl } from "@/lib/site";
 import type { Post } from "@/types/post";
 
 type JsonLdProps = {
@@ -7,13 +7,14 @@ type JsonLdProps = {
 
 export function PostJsonLd({ post }: JsonLdProps) {
   const base = siteUrl.replace(/\/$/, "");
+  const image = post.ogImage || post.coverImage || `${base}${siteOgImagePath}`;
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     headline: post.metaTitle || post.title,
     description: post.metaDescription || post.excerpt,
-    image: post.ogImage || post.coverImage || undefined,
+    image,
     datePublished: post.publishedAt ?? post.createdAt,
     dateModified: post.updatedAt,
     author: {
