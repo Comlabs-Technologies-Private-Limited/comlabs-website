@@ -1,5 +1,7 @@
 import { ArrowRight } from "lucide-react";
 
+import { canonicalPath } from "@/lib/site";
+
 export function FigmaCtaSection() {
   return (
     <section
@@ -25,7 +27,7 @@ export function FigmaCtaSection() {
           commitment required.
         </p>
         <a
-          href="/contact"
+          href={canonicalPath("/contact")}
           className="inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-sm font-semibold transition-opacity hover:opacity-90"
           style={{ background: "var(--background)", color: "var(--foreground)" }}
         >

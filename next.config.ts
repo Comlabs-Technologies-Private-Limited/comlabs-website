@@ -4,16 +4,6 @@ const nextConfig: NextConfig = {
   trailingSlash: true,
   // Allow HMR when opening the dev server from a LAN IP (e.g. phone/tablet on same Wi‑Fi).
   allowedDevOrigins: ["192.168.1.23", "192.168.1.4"],
-  async redirects() {
-    return [
-      {
-        source: "/:path*",
-        has: [{ type: "host", value: "comlabstechnologies.com" }],
-        destination: "https://www.comlabstechnologies.com/:path*",
-        permanent: true,
-      },
-    ];
-  },
 };
 
 export default nextConfig;

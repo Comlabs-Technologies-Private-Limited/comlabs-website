@@ -8,6 +8,7 @@ import type { ReactNode } from "react";
 
 import { FigmaFooter } from "@/components/layout/figma-footer";
 import { FigmaNav } from "@/components/layout/figma-nav";
+import { canonicalPath } from "@/lib/site";
 
 export type CaseStudyMetric = { value: string; label: string };
 
@@ -109,7 +110,7 @@ export function CaseStudyLayout({ content }: { content: CaseStudyContent }) {
         >
           <div className="mx-auto max-w-6xl">
             <Link
-              href="/work"
+              href={canonicalPath("/work")}
               className="mb-10 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
             >
               <ArrowLeft size={14} /> All work
@@ -317,7 +318,7 @@ export function CaseStudyLayout({ content }: { content: CaseStudyContent }) {
             <div className="mx-auto max-w-6xl">
               <SectionLabel>Related service</SectionLabel>
               <Link
-                href={relatedService.href}
+                href={canonicalPath(relatedService.href)}
                 className="inline-flex items-center gap-1.5 text-sm text-[var(--warm-orange)] transition-opacity hover:opacity-80"
               >
                 {relatedService.label} <ArrowRight size={14} />
@@ -340,7 +341,7 @@ export function CaseStudyLayout({ content }: { content: CaseStudyContent }) {
                 </h2>
               </div>
               <Link
-                href="/work"
+                href={canonicalPath("/work")}
                 className="hidden items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground md:inline-flex"
               >
                 View all <ArrowRight size={13} />
@@ -351,7 +352,7 @@ export function CaseStudyLayout({ content }: { content: CaseStudyContent }) {
               {related.map((item) => (
                 <Link
                   key={item.slug}
-                  href={item.href}
+                  href={canonicalPath(item.href)}
                   className="group flex items-center justify-between rounded-2xl border border-border bg-card px-6 py-5 transition-colors hover:border-foreground/20"
                 >
                   <div>
@@ -392,7 +393,7 @@ export function CaseStudyLayout({ content }: { content: CaseStudyContent }) {
             </p>
             <div className="flex flex-wrap items-center justify-center gap-3">
               <Link
-                href="/contact"
+                href={canonicalPath("/contact")}
                 className="inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-sm font-semibold transition-opacity hover:opacity-90"
                 style={{ background: "var(--background)", color: "var(--foreground)" }}
               >

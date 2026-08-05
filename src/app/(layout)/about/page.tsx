@@ -7,6 +7,7 @@ import { FigmaNav } from "@/components/layout/figma-nav";
 import { PROJECTS } from "@/components/home/figma/home-data";
 import { PageBreadcrumbs } from "@/components/seo/page-breadcrumbs";
 import { buildPageMetadata } from "@/lib/metadata";
+import { canonicalPath } from "@/lib/site";
 import { siteLocation, siteName } from "@/lib/site";
 
 export const metadata: Metadata = buildPageMetadata({
@@ -78,7 +79,7 @@ export default function AboutPage() {
               {PROJECTS.map((project) => (
                 <Link
                   key={project.href}
-                  href={project.href}
+                  href={canonicalPath(project.href)}
                   className="rounded-2xl border border-border bg-background p-6 transition-colors hover:border-foreground/20"
                 >
                   <h3 className="text-sm font-semibold">{project.title}</h3>
@@ -88,7 +89,7 @@ export default function AboutPage() {
               ))}
             </div>
             <Link
-              href="/work"
+              href={canonicalPath("/work")}
               className="mt-8 inline-flex items-center gap-1.5 text-sm text-[var(--warm-orange)]"
             >
               View all case studies <ArrowRight size={14} />
@@ -111,7 +112,7 @@ export default function AboutPage() {
               Based in {siteLocation}. Available for local and remote projects.
             </p>
             <Link
-              href="/contact"
+              href={canonicalPath("/contact")}
               className="inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-sm font-semibold transition-opacity hover:opacity-90"
               style={{ background: "var(--background)", color: "var(--foreground)" }}
             >

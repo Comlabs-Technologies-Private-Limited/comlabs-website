@@ -8,6 +8,7 @@ import { useRef } from "react";
 import { SectionHeader } from "@/components/home/section-header";
 import { SectionContainer } from "@/components/layout/section-container";
 import { cn } from "@/lib/utils";
+import { canonicalPath } from "@/lib/site";
 
 const ease = [0.25, 0.1, 0, 1] as const;
 
@@ -119,7 +120,7 @@ export function PricingSection() {
           requirements.
         </p>
 
-        <Link href="/contact" className={pricingCta}>
+        <Link href={canonicalPath("/contact")} className={pricingCta}>
           <span>Book a strategy call</span>
           <span
             className="flex size-8 shrink-0 items-center justify-center rounded-full bg-neutral-100 transition-transform duration-150 group-hover:translate-x-0.5"

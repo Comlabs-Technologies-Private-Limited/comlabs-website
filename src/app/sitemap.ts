@@ -1,13 +1,6 @@
 import type { MetadataRoute } from "next";
 
-import { indexableStaticPaths, isBlogEnabled, siteUrl } from "@/lib/site";
-
-const base = siteUrl;
-
-function urlForPath(path: string): string {
-  if (path === "/") return `${base}/`;
-  return `${base}${path}/`;
-}
+import { canonicalUrl, indexableStaticPaths, isBlogEnabled } from "@/lib/site";
 
 function priorityForPath(path: string): number {
   if (path === "/") return 1;
@@ -39,7 +32,7 @@ async function getBlogPostEntries(): Promise<MetadataRoute.Sitemap> {
       .lean();
 
     return posts.map((post) => ({
-      url: `${base}/blog/${post.slug}/`,
+      url: canonicalUrl(`/blog/${post.slug}`),
       ...(post.updatedAt ? { lastModified: post.updatedAt as Date } : {}),
       changeFrequency: "weekly" as const,
       priority: 0.7,
@@ -51,7 +44,7 @@ async function getBlogPostEntries(): Promise<MetadataRoute.Sitemap> {
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticEntries: MetadataRoute.Sitemap = indexableStaticPaths.map((path) => ({
-    url: urlForPath(path),
+    url: canonicalUrl(path),
     changeFrequency: changeFrequencyForPath(path),
     priority: priorityForPath(path),
   }));
@@ -59,7 +52,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const blogEntries: MetadataRoute.Sitemap = isBlogEnabled()
     ? [
         {
-          url: `${base}/blog/`,
+          url: canonicalUrl("/blog"),
           changeFrequency: "weekly",
           priority: 0.7,
         },
