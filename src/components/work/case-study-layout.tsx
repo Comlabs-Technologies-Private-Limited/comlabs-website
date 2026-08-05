@@ -56,6 +56,21 @@ function SectionLabel({ children }: { children: ReactNode }) {
   );
 }
 
+const RELATED_SERVICE_BY_SLUG: Record<string, { label: string; href: string }> = {
+  "global-services": {
+    label: "Website redesign services",
+    href: "/services/website-redesign",
+  },
+  "formula-lab": {
+    label: "Product UI & frontend development",
+    href: "/services/product-ui-development",
+  },
+  "with-hub": {
+    label: "Website design & development",
+    href: "/services/website-design-development",
+  },
+};
+
 export function CaseStudyLayout({ content }: { content: CaseStudyContent }) {
   const {
     slug,
@@ -74,6 +89,7 @@ export function CaseStudyLayout({ content }: { content: CaseStudyContent }) {
   } = content;
 
   const related = OTHER_CASE_STUDIES.filter((item) => item.slug !== slug);
+  const relatedService = RELATED_SERVICE_BY_SLUG[slug];
 
   return (
     <div
@@ -93,7 +109,7 @@ export function CaseStudyLayout({ content }: { content: CaseStudyContent }) {
         >
           <div className="mx-auto max-w-6xl">
             <Link
-              href="/#work"
+              href="/work"
               className="mb-10 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
             >
               <ArrowLeft size={14} /> All work
@@ -295,6 +311,21 @@ export function CaseStudyLayout({ content }: { content: CaseStudyContent }) {
           </div>
         </section>
 
+        {/* RELATED SERVICE */}
+        {relatedService ? (
+          <section className="border-b border-border px-6 py-12 md:py-16">
+            <div className="mx-auto max-w-6xl">
+              <SectionLabel>Related service</SectionLabel>
+              <Link
+                href={relatedService.href}
+                className="inline-flex items-center gap-1.5 text-sm text-[var(--warm-orange)] transition-opacity hover:opacity-80"
+              >
+                {relatedService.label} <ArrowRight size={14} />
+              </Link>
+            </div>
+          </section>
+        ) : null}
+
         {/* MORE WORK */}
         <section className="px-6 py-24 md:py-28">
           <div className="mx-auto max-w-6xl">
@@ -309,7 +340,7 @@ export function CaseStudyLayout({ content }: { content: CaseStudyContent }) {
                 </h2>
               </div>
               <Link
-                href="/#work"
+                href="/work"
                 className="hidden items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground md:inline-flex"
               >
                 View all <ArrowRight size={13} />

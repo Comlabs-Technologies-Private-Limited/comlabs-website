@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 
 import { ContactPage } from "@/components/contact/contact-page";
+import { buildPageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
-  title: "Contact Us",
+export const metadata: Metadata = buildPageMetadata({
+  title: "Contact",
   description:
-    "Get in touch with Comlabs Technologies. Tell us what you're building and we'll tell you how we'd approach it.",
-};
+    "Contact Comlabs Technologies Pvt Ltd in Pune to discuss website design, development, CMS, ERP, or product UI projects.",
+  path: "/contact",
+});
 
 export default function ContactRoute() {
   return <ContactPage />;

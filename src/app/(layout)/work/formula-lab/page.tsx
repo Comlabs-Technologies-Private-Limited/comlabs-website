@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 
 import { CaseStudyLayout, type CaseStudyContent } from "@/components/work/case-study-layout";
+import { buildPageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: "Formula Lab — Dashboard Onboarding Flow",
   description:
-    "Comlabs designed and built Formula Lab's multi-page dashboard onboarding flow — from signup to activation — to cut drop-off and make a complex product feel simple on day one.",
-};
+    "Comlabs Technologies Pvt Ltd designed and built Formula Lab's multi-page dashboard onboarding flow to reduce drop-off and improve first-run activation.",
+  path: "/work/formula-lab",
+});
 
 const content: CaseStudyContent = {
   slug: "formula-lab",

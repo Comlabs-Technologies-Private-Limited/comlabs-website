@@ -383,14 +383,15 @@ export function LandingMockup({ active = false }: MockupProps) {
                 <span className="text-[6px] font-medium">Now accepting projects</span>
               </motion.div>
 
-              <motion.h1
+              <motion.div
                 variants={block}
                 className="mx-auto mt-2 max-w-[92%] text-[11px] leading-[1.12] font-bold tracking-tight text-stone-900"
                 style={{ letterSpacing: "-0.03em" }}
+                aria-hidden
               >
                 We Turn Ambitious Ideas Into{" "}
                 <span style={{ color: "#c96442" }}>Products</span> People Use
-              </motion.h1>
+              </motion.div>
 
               <motion.p
                 variants={block}

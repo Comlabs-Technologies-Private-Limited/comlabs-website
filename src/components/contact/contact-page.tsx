@@ -45,7 +45,7 @@ export function ContactPage() {
               it.&rdquo;
             </blockquote>
             <p className="mt-6 text-sm leading-relaxed" style={{ color: "rgba(247,247,244,0.55)" }}>
-              Comlabs Technologies · Pune, India
+              Comlabs Technologies Pvt Ltd · Pune, Maharashtra, India
             </p>
           </div>
         </div>
@@ -53,12 +53,12 @@ export function ContactPage() {
         {/* RIGHT — form */}
         <div className="flex items-center px-6 py-12 md:px-12 lg:px-16 lg:py-20">
           <div className="mx-auto w-full max-w-md">
-            <h2
+            <h1
               className="text-3xl font-bold tracking-tight md:text-4xl"
               style={{ letterSpacing: "-0.03em" }}
             >
               Start a project.
-            </h2>
+            </h1>
             <p className="mt-3 text-base leading-relaxed text-muted-foreground">
               Share your website, product, or launch goal. We&apos;ll review where you are and how we
               can help you ship it.
@@ -67,6 +67,7 @@ export function ContactPage() {
             <div className="mt-10">
               <ContactForm />
             </div>
+            {/* Owner note: add verified public contact details when confirmed (phone, address, LinkedIn, GBP URL). */}
           </div>
         </div>
       </div>

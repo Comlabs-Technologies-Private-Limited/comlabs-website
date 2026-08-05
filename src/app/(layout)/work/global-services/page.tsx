@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 
 import { CaseStudyLayout, type CaseStudyContent } from "@/components/work/case-study-layout";
+import { buildPageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: "Global Services — Website & Conversion Growth",
   description:
-    "Comlabs built Global Services a high-conversion website that earns enterprise trust. Conversion went up, and their roster now includes JIO and Vodafone-Idea.",
-};
+    "Comlabs Technologies Pvt Ltd rebuilt Global Services' website for enterprise trust and stronger conversion — supporting wins with JIO and Vodafone-Idea.",
+  path: "/work/global-services",
+});
 
 const content: CaseStudyContent = {
   slug: "global-services",
