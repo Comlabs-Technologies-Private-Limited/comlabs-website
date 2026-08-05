@@ -3,7 +3,7 @@ import { ChevronRight } from "lucide-react";
 
 import { JsonLdScript } from "@/components/seo/json-ld-script";
 import { getBreadcrumbSchema } from "@/lib/schema";
-import { siteUrl } from "@/lib/site";
+import { canonicalPath, canonicalUrl } from "@/lib/site";
 
 export type BreadcrumbItem = {
   label: string;
@@ -18,13 +18,13 @@ type PageBreadcrumbsProps = {
 
 export function PageBreadcrumbs({ items, currentPath }: PageBreadcrumbsProps) {
   const schemaItems = [
-    { name: "Home", url: `${siteUrl}/` },
+    { name: "Home", url: canonicalUrl("/") },
     ...items.map((item, index) => {
       const isLast = index === items.length - 1;
       const path = isLast ? currentPath : item.href;
       return {
         name: item.label,
-        url: path ? `${siteUrl}${path}` : `${siteUrl}${currentPath}`,
+        url: canonicalUrl(path ?? currentPath),
       };
     }),
   ];
@@ -47,7 +47,10 @@ export function PageBreadcrumbs({ items, currentPath }: PageBreadcrumbsProps) {
                 {isLast || !item.href ? (
                   <span className="text-foreground">{item.label}</span>
                 ) : (
-                  <Link href={item.href} className="transition-colors hover:text-foreground">
+                  <Link
+                    href={canonicalPath(item.href)}
+                    className="transition-colors hover:text-foreground"
+                  >
                     {item.label}
                   </Link>
                 )}

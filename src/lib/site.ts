@@ -20,6 +20,54 @@ export const organizationId = `${siteUrl}/#organization` as const;
 export const websiteId = `${siteUrl}/#website` as const;
 export const logoUrl = `${siteUrl}/logo.png` as const;
 
+/**
+ * Absolute canonical URL for an indexable page path or same-origin absolute URL.
+ * Homepage → `https://www.comlabstechnologies.com/`
+ * Do not use for entity fragments (#website), assets (.png), or external URLs.
+ */
+export function canonicalUrl(pathOrUrl: string): string {
+  if (!pathOrUrl) return `${siteUrl}/`;
+
+  if (/^https?:\/\//i.test(pathOrUrl)) {
+    const parsed = new URL(pathOrUrl);
+    if (parsed.origin !== siteUrl) return pathOrUrl;
+    return canonicalUrl(`${parsed.pathname}${parsed.search}`);
+  }
+
+  const hashIndex = pathOrUrl.indexOf("#");
+  const withoutHash = hashIndex >= 0 ? pathOrUrl.slice(0, hashIndex) : pathOrUrl;
+
+  const queryIndex = withoutHash.indexOf("?");
+  const query = queryIndex >= 0 ? withoutHash.slice(queryIndex) : "";
+  const pathname = queryIndex >= 0 ? withoutHash.slice(0, queryIndex) : withoutHash;
+
+  if (!pathname || pathname === "/") {
+    return query ? `${siteUrl}/${query}` : `${siteUrl}/`;
+  }
+
+  const normalized = pathname.replace(/\/+$/, "").replace(/^\/+/, "");
+  return `${siteUrl}/${normalized}/${query}`;
+}
+
+/**
+ * Relative canonical path for internal page links (trailing slash, preserves hash anchors).
+ */
+export function canonicalPath(href: string): string {
+  if (!href) return "/";
+  if (/^[a-z][a-z0-9+.-]*:/i.test(href) || href.startsWith("/api")) return href;
+  if (href.startsWith("#")) return href;
+  if (!href.startsWith("/")) return href;
+
+  const hashIndex = href.indexOf("#");
+  const hash = hashIndex >= 0 ? href.slice(hashIndex) : "";
+  const pathname = hashIndex >= 0 ? href.slice(0, hashIndex) : href;
+
+  if (pathname === "/") return hash ? `/${hash}` : "/";
+
+  const normalized = pathname.replace(/\/+$/, "").replace(/^\/+/, "");
+  return `/${normalized}/${hash}`;
+}
+
 /** Default brand assets served from /public */
 export const siteFaviconPath = "/favicon.png";
 export const siteOgImagePath = "/opengraph.png";

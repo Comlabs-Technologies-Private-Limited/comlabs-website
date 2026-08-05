@@ -11,6 +11,7 @@ import { SectionContainer } from "@/components/layout/section-container";
 import { MOCK_VIEWPORT, ServiceMockup } from "@/components/home/services-mockups";
 import { servicesEyebrow, servicesSubtitle, servicesTitle } from "@/lib/page-styles";
 import { cn } from "@/lib/utils";
+import { canonicalPath } from "@/lib/site";
 
 const ease = [0.25, 0.1, 0, 1] as const;
 
@@ -269,7 +270,7 @@ export function ServiceRow({
           {description}
         </p>
         <Link
-          href={linkHref}
+          href={canonicalPath(linkHref)}
           className={cn(
             "group inline-flex items-center gap-1.5 font-medium transition-opacity hover:opacity-80",
             variant === "figma"

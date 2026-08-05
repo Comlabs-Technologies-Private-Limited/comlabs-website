@@ -8,7 +8,7 @@ import { PageBreadcrumbs } from "@/components/seo/page-breadcrumbs";
 import { JsonLdScript } from "@/components/seo/json-ld-script";
 import { getFaqPageSchema, getServiceSchema } from "@/lib/schema";
 import type { ServicePageData } from "@/lib/services-data";
-import { siteUrl } from "@/lib/site";
+import { canonicalPath, canonicalUrl } from "@/lib/site";
 
 function SectionLabel({ children }: { children: ReactNode }) {
   return (
@@ -19,7 +19,7 @@ function SectionLabel({ children }: { children: ReactNode }) {
 }
 
 export function ServicePageLayout({ service }: { service: ServicePageData }) {
-  const pageUrl = `${siteUrl}${service.path}`;
+  const pageUrl = canonicalUrl(service.path);
 
   return (
     <div
@@ -181,7 +181,7 @@ export function ServicePageLayout({ service }: { service: ServicePageData }) {
             <div className="mx-auto max-w-6xl">
               <SectionLabel>Related work</SectionLabel>
               <Link
-                href={service.relatedCaseStudy.href}
+                href={canonicalPath(service.relatedCaseStudy.href)}
                 className="group flex flex-col gap-3 rounded-2xl border border-border bg-card p-8 transition-colors hover:border-foreground/20 md:max-w-2xl"
               >
                 <p className="text-sm font-semibold text-foreground">
@@ -226,7 +226,7 @@ export function ServicePageLayout({ service }: { service: ServicePageData }) {
               {service.relatedServices.map((related) => (
                 <Link
                   key={related.href}
-                  href={related.href}
+                  href={canonicalPath(related.href)}
                   className="rounded-full border border-border px-4 py-2 text-sm text-muted-foreground transition-colors hover:border-foreground/20 hover:text-foreground"
                 >
                   {related.label}
@@ -252,7 +252,7 @@ export function ServicePageLayout({ service }: { service: ServicePageData }) {
               and delivery.
             </p>
             <Link
-              href="/contact"
+              href={canonicalPath("/contact")}
               className="inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-sm font-semibold transition-opacity hover:opacity-90"
               style={{ background: "var(--background)", color: "var(--foreground)" }}
             >

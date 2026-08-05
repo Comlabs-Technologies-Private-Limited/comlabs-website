@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { isBlogPublic, siteDescriptor, siteLocation, siteName } from "@/lib/site";
+import { canonicalPath, isBlogPublic, siteDescriptor, siteLocation, siteName } from "@/lib/site";
 
 const FOOTER_COLUMNS = [
   {
@@ -80,7 +80,7 @@ export function FigmaFooter({ showBlogLink = true }: FigmaFooterProps) {
                   {col.links.map((link) => (
                     <li key={link.label}>
                       <Link
-                        href={link.href}
+                        href={canonicalPath(link.href)}
                         className="text-sm text-muted-foreground transition-colors hover:text-foreground"
                       >
                         {link.label}

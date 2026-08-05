@@ -7,6 +7,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import { canonicalPath } from "@/lib/site";
 import { cn } from "@/lib/utils";
 import { navPrimaryCtaClass, navPrimaryCtaIconClass } from "@/lib/nav-cta";
 
@@ -149,7 +150,7 @@ export function AppNavbar() {
                 return (
                   <Link
                     key={item.id}
-                    href={item.href}
+                    href={canonicalPath(item.href)}
                     className={cn(
                       "relative z-0 rounded-full px-3 py-1.5 text-[13px] font-normal transition-colors duration-100",
                       active
@@ -169,7 +170,7 @@ export function AppNavbar() {
                 );
               })}
               <Link
-                href="/contact"
+                href={canonicalPath("/contact")}
                 className="relative z-0 rounded-full px-3 py-1.5 text-[13px] font-normal text-[var(--fg-secondary)] transition-colors duration-100 hover:text-[var(--fg-primary)]"
               >
                 Contact
@@ -178,7 +179,7 @@ export function AppNavbar() {
           </LayoutGroup>
 
           <div className="flex shrink-0 items-center justify-self-end gap-1 md:gap-2">
-            <Link href="/contact" className={cn(navPrimaryCtaClass, "hidden md:inline-flex")}>
+            <Link href={canonicalPath("/contact")} className={cn(navPrimaryCtaClass, "hidden md:inline-flex")}>
               <span>Start a project</span>
               <span className={navPrimaryCtaIconClass} aria-hidden>
                 <ArrowRight className="size-4 -rotate-45 text-black" strokeWidth={2} />
@@ -211,7 +212,7 @@ export function AppNavbar() {
                 {navItems.map((item) => (
                   <Link
                     key={item.id}
-                    href={item.href}
+                    href={canonicalPath(item.href)}
                     className="rounded-lg px-3 py-2 text-[13px] font-normal text-[var(--fg-secondary)]"
                     onClick={() => setMobileOpen(false)}
                   >
@@ -219,14 +220,14 @@ export function AppNavbar() {
                   </Link>
                 ))}
                 <Link
-                  href="/contact"
+                  href={canonicalPath("/contact")}
                   className="rounded-lg px-3 py-2 text-[13px] font-normal text-[var(--fg-secondary)]"
                   onClick={() => setMobileOpen(false)}
                 >
                   Contact
                 </Link>
                 <Link
-                  href="/contact"
+                  href={canonicalPath("/contact")}
                   className={cn(navPrimaryCtaClass, "mt-2 w-full justify-between")}
                   onClick={() => setMobileOpen(false)}
                 >

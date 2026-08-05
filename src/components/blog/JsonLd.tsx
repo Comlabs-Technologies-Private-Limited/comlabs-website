@@ -1,4 +1,4 @@
-import { organizationId, siteName, siteOgImagePath, siteUrl } from "@/lib/site";
+import { canonicalUrl, organizationId, siteName, siteOgImagePath, siteUrl } from "@/lib/site";
 import type { Post } from "@/types/post";
 
 type JsonLdProps = {
@@ -6,6 +6,9 @@ type JsonLdProps = {
 };
 
 export function PostJsonLd({ post }: JsonLdProps) {
+  const pageUrl = post.canonicalUrl
+    ? canonicalUrl(post.canonicalUrl)
+    : canonicalUrl(`/blog/${post.slug}`);
   const image = post.ogImage || post.coverImage || `${siteUrl}${siteOgImagePath}`;
 
   const jsonLd = {
@@ -19,14 +22,14 @@ export function PostJsonLd({ post }: JsonLdProps) {
     author: {
       "@type": "Organization",
       name: post.author || siteName,
-      url: `${siteUrl}/`,
+      url: canonicalUrl("/"),
     },
     publisher: {
       "@id": organizationId,
     },
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": post.canonicalUrl || `${siteUrl}/blog/${post.slug}`,
+      "@id": pageUrl,
     },
   };
 
@@ -52,7 +55,7 @@ export function BreadcrumbJsonLd({
       "@type": "ListItem",
       position: index + 1,
       name: item.name,
-      item: item.url,
+      item: canonicalUrl(item.url),
     })),
   };
 

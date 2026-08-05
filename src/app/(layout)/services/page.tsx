@@ -6,6 +6,7 @@ import { FigmaFooter } from "@/components/layout/figma-footer";
 import { FigmaNav } from "@/components/layout/figma-nav";
 import { PageBreadcrumbs } from "@/components/seo/page-breadcrumbs";
 import { buildPageMetadata } from "@/lib/metadata";
+import { canonicalPath } from "@/lib/site";
 import { servicePages, servicesIndex } from "@/lib/services-data";
 
 export const metadata: Metadata = buildPageMetadata({
@@ -47,7 +48,7 @@ export default function ServicesIndexPage() {
             {servicePages.map((service) => (
               <Link
                 key={service.slug}
-                href={service.path}
+                href={canonicalPath(service.path)}
                 className="group rounded-3xl border border-border bg-card p-8 transition-colors hover:border-foreground/20"
               >
                 <p className="text-xs font-semibold tracking-widest text-muted-foreground uppercase">
@@ -83,7 +84,7 @@ export default function ServicesIndexPage() {
               will recommend the right starting point.
             </p>
             <Link
-              href="/contact"
+              href={canonicalPath("/contact")}
               className="inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-sm font-semibold transition-opacity hover:opacity-90"
               style={{ background: "var(--background)", color: "var(--foreground)" }}
             >
