@@ -42,7 +42,8 @@ export const PROJECTS = [
     title: "Formial Labs",
     category: "Product UX · Dashboard",
     desc: "Multi-page onboarding flow for an internal dashboard — built to cut drop-off and get users to activation fast.",
-    href: "/work/formula-lab",
+    href: "/work/formial-labs",
+    liveSiteUrl: "https://formial.in",
     image: SHOWCASE_IMAGES.primary,
   },
   {
@@ -56,7 +57,8 @@ export const PROJECTS = [
     title: "Vithub",
     category: "Brand · Marketing Site",
     desc: "Design-led marketing website built to give Vithub a strong digital identity and a foundation for growth.",
-    href: "/work/with-hub",
+    href: "/work/vithub",
+    liveSiteUrl: "https://vithub.in",
     image: SHOWCASE_IMAGES.primary,
   },
 ] as const;

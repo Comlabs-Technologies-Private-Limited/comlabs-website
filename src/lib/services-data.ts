@@ -110,7 +110,7 @@ export const servicePages: ServicePageData[] = [
     ],
     relatedCaseStudy: {
       client: "Vithub",
-      href: "/work/with-hub",
+      href: "/work/vithub",
       summary:
         "A design-led marketing website built to give Vithub a strong digital identity and room to grow.",
     },
@@ -473,7 +473,7 @@ export const servicePages: ServicePageData[] = [
     ],
     relatedCaseStudy: {
       client: "Formial Labs",
-      href: "/work/formula-lab",
+      href: "/work/formial-labs",
       summary:
         "A structured onboarding flow that moves users from signup to first value with less friction.",
     },

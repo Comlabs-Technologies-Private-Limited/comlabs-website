@@ -7,12 +7,13 @@ export const metadata: Metadata = buildPageMetadata({
   title: "Formial Labs — Dashboard Onboarding Flow",
   description:
     "Comlabs Technologies Pvt Ltd designed and built Formial Labs' multi-page dashboard onboarding flow to reduce drop-off and improve first-run activation.",
-  path: "/work/formula-lab",
+  path: "/work/formial-labs",
 });
 
 const content: CaseStudyContent = {
-  slug: "formula-lab",
+  slug: "formial-labs",
   client: "Formial Labs",
+  liveSiteUrl: "https://formial.in",
   category: "Product UX · Dashboard",
   year: "2025",
   eyebrow: "Case Study — Product UX",

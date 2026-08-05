@@ -58,6 +58,11 @@ export function FigmaWorkSection() {
                 </div>
                 <p className="mb-3 text-xs text-muted-foreground">{project.category}</p>
                 <p className="text-sm leading-relaxed text-muted-foreground">{project.desc}</p>
+                {"liveSiteUrl" in project && project.liveSiteUrl ? (
+                  <span className="mt-4 block text-xs text-[var(--warm-orange)]">
+                    {new URL(project.liveSiteUrl).hostname}
+                  </span>
+                ) : null}
               </div>
             </motion.a>
           ))}

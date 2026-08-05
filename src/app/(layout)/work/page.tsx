@@ -48,29 +48,42 @@ export default function WorkIndexPage() {
         <section className="border-t border-border px-6 pb-24 md:pb-32">
           <div className="mx-auto grid max-w-6xl gap-6 md:grid-cols-2 lg:grid-cols-3">
             {PROJECTS.map((project) => (
-              <Link
+              <article
                 key={project.href}
-                href={canonicalPath(project.href)}
                 className="group overflow-hidden rounded-3xl border border-border bg-card transition-colors hover:border-foreground/20"
               >
-                <div className="relative aspect-video overflow-hidden">
-                  <img
-                    src={project.image}
-                    alt={`${project.title} project preview`}
-                    className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.02]"
-                  />
-                </div>
-                <div className="p-6">
-                  <h2 className="text-sm font-semibold">{project.title}</h2>
-                  <p className="mt-1 text-xs text-muted-foreground">{project.category}</p>
-                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                    {project.desc}
-                  </p>
-                  <span className="mt-4 inline-flex items-center gap-1.5 text-sm text-[var(--warm-orange)]">
-                    Read case study <ArrowRight size={14} />
-                  </span>
-                </div>
-              </Link>
+                <Link href={canonicalPath(project.href)} className="block">
+                  <div className="relative aspect-video overflow-hidden">
+                    <img
+                      src={project.image}
+                      alt={`${project.title} project preview`}
+                      className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.02]"
+                    />
+                  </div>
+                  <div className="p-6">
+                    <h2 className="text-sm font-semibold">{project.title}</h2>
+                    <p className="mt-1 text-xs text-muted-foreground">{project.category}</p>
+                    <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                      {project.desc}
+                    </p>
+                    <span className="mt-4 inline-flex items-center gap-1.5 text-sm text-[var(--warm-orange)]">
+                      Read case study <ArrowRight size={14} />
+                    </span>
+                  </div>
+                </Link>
+                {"liveSiteUrl" in project && project.liveSiteUrl ? (
+                  <div className="border-t border-border px-6 py-3">
+                    <a
+                      href={project.liveSiteUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs text-muted-foreground transition-colors hover:text-foreground"
+                    >
+                      Visit {new URL(project.liveSiteUrl).hostname}
+                    </a>
+                  </div>
+                ) : null}
+              </article>
             ))}
           </div>
         </section>

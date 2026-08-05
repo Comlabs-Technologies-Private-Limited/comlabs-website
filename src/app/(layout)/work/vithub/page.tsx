@@ -7,12 +7,13 @@ export const metadata: Metadata = buildPageMetadata({
   title: "Vithub — Marketing Website for Growth",
   description:
     "Comlabs Technologies Pvt Ltd designed and built Vithub's marketing website — a design-led brand identity built to support marketing and drive user acquisition.",
-  path: "/work/with-hub",
+  path: "/work/vithub",
 });
 
 const content: CaseStudyContent = {
-  slug: "with-hub",
+  slug: "vithub",
   client: "Vithub",
+  liveSiteUrl: "https://vithub.in",
   category: "Brand · Marketing Site",
   year: "2025",
   eyebrow: "Case Study — Brand & Marketing Site",
