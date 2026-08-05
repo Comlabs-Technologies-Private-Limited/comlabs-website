@@ -32,8 +32,8 @@ export function PageBreadcrumbs({ items, currentPath }: PageBreadcrumbsProps) {
   return (
     <>
       <JsonLdScript data={getBreadcrumbSchema(schemaItems)} />
-      <nav aria-label="Breadcrumb" className="mb-8">
-        <ol className="flex flex-wrap items-center gap-1.5 text-sm text-muted-foreground">
+      <nav aria-label="Breadcrumb" className="mb-6 md:mb-8">
+        <ol className="flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground md:text-sm">
           <li>
             <Link href="/" className="transition-colors hover:text-foreground">
               Home
