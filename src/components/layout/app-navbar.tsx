@@ -20,9 +20,9 @@ const navItems: {
   sectionId?: string;
 }[] = [
   { href: "/", label: "Home", id: "home" },
-  { href: "/#services", label: "Services", id: "services", sectionId: "services" },
-  { href: "/#work", label: "Work", id: "work", sectionId: "work" },
-  { href: "/#pricing", label: "Pricing", id: "pricing", sectionId: "pricing" },
+  { href: "/services", label: "Services", id: "services" },
+  { href: "/work", label: "Work", id: "work", sectionId: "work" },
+  { href: "/about", label: "About", id: "about" },
 ];
 
 function useActiveNavItem(pathname: string) {

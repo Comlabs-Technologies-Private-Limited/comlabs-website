@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 
 import { CaseStudyLayout, type CaseStudyContent } from "@/components/work/case-study-layout";
+import { buildPageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: "With Hub — Marketing Website for Growth",
   description:
-    "Comlabs designed and built With Hub's marketing website — a design-led brand identity built to support marketing and drive user acquisition.",
-};
+    "Comlabs Technologies Pvt Ltd designed and built With Hub's marketing website — a design-led brand identity built to support marketing and drive user acquisition.",
+  path: "/work/with-hub",
+});
 
 const content: CaseStudyContent = {
   slug: "with-hub",

@@ -22,7 +22,7 @@ export function FigmaWorkSection() {
             </h2>
           </div>
           <a
-            href="#work"
+            href="/work"
             className="hidden items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground md:inline-flex"
           >
             View all <ArrowRight size={13} />
