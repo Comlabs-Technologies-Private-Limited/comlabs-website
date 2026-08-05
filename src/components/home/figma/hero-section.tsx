@@ -4,6 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { motion } from "motion/react";
 
 import { EnterpriseClientsTrust } from "@/components/home/enterprise-clients-section";
+import { canonicalPath } from "@/lib/site";
 
 export function FigmaHeroSection() {
   return (
@@ -87,14 +88,14 @@ export function FigmaHeroSection() {
           className="flex flex-wrap items-center justify-start gap-3 md:justify-center"
         >
           <a
-            href="/contact"
+            href={canonicalPath("/contact")}
             className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-background transition-opacity hover:opacity-90"
             style={{ background: "var(--foreground)" }}
           >
             Talk to us <ArrowRight size={14} />
           </a>
           <a
-            href="/work"
+            href={canonicalPath("/work")}
             className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium transition-colors hover:bg-accent"
           >
             View our work

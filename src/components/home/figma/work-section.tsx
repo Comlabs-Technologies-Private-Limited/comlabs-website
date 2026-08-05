@@ -4,6 +4,7 @@ import { ArrowRight, ExternalLink } from "lucide-react";
 import { motion } from "motion/react";
 
 import { PROJECTS } from "@/components/home/figma/home-data";
+import { canonicalPath } from "@/lib/site";
 
 export function FigmaWorkSection() {
   return (
@@ -22,7 +23,7 @@ export function FigmaWorkSection() {
             </h2>
           </div>
           <a
-            href="/work"
+            href={canonicalPath("/work")}
             className="hidden items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground md:inline-flex"
           >
             View all <ArrowRight size={13} />
@@ -33,7 +34,7 @@ export function FigmaWorkSection() {
           {PROJECTS.map((project, i) => (
             <motion.a
               key={project.title}
-              href={project.href}
+              href={canonicalPath(project.href)}
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}

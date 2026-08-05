@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { siteName, siteOgImage, siteUrl } from "@/lib/site";
+import { canonicalUrl, siteName, siteOgImage } from "@/lib/site";
 
 type PageMetadataInput = {
   title: string;
@@ -11,18 +11,13 @@ type PageMetadataInput = {
   absoluteTitle?: boolean;
 };
 
-function canonicalForPath(path: string): string {
-  if (path === "/") return `${siteUrl}/`;
-  return `${siteUrl}${path.replace(/\/$/, "")}/`;
-}
-
 export function buildPageMetadata({
   title,
   description,
   path,
   absoluteTitle = false,
 }: PageMetadataInput): Metadata {
-  const canonical = canonicalForPath(path);
+  const canonical = canonicalUrl(path);
 
   return {
     title: absoluteTitle ? { absolute: title } : title,

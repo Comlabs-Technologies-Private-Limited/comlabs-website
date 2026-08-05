@@ -7,6 +7,7 @@ import { FigmaNav } from "@/components/layout/figma-nav";
 import { PROJECTS } from "@/components/home/figma/home-data";
 import { PageBreadcrumbs } from "@/components/seo/page-breadcrumbs";
 import { buildPageMetadata } from "@/lib/metadata";
+import { canonicalPath } from "@/lib/site";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Website & Product Development Case Studies",
@@ -49,7 +50,7 @@ export default function WorkIndexPage() {
             {PROJECTS.map((project) => (
               <Link
                 key={project.href}
-                href={project.href}
+                href={canonicalPath(project.href)}
                 className="group overflow-hidden rounded-3xl border border-border bg-card transition-colors hover:border-foreground/20"
               >
                 <div className="relative aspect-video overflow-hidden">
@@ -83,19 +84,19 @@ export default function WorkIndexPage() {
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <Link
-                href="/services/website-redesign"
+                href={canonicalPath("/services/website-redesign")}
                 className="rounded-full border border-border px-4 py-2 text-sm transition-colors hover:border-foreground/20"
               >
                 Website redesign
               </Link>
               <Link
-                href="/services/website-design-development"
+                href={canonicalPath("/services/website-design-development")}
                 className="rounded-full border border-border px-4 py-2 text-sm transition-colors hover:border-foreground/20"
               >
                 Website design & development
               </Link>
               <Link
-                href="/services/product-ui-development"
+                href={canonicalPath("/services/product-ui-development")}
                 className="rounded-full border border-border px-4 py-2 text-sm transition-colors hover:border-foreground/20"
               >
                 Product UI development

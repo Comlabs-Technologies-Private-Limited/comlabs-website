@@ -5,7 +5,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-import { isBlogPublic } from "@/lib/site";
+import { canonicalPath, isBlogPublic } from "@/lib/site";
 
 const BASE_NAV_LINKS = [
   { label: "Services", href: "/services" },
@@ -46,7 +46,7 @@ export function FigmaNav({ showBlogLink = true }: FigmaNavProps) {
           {navLinks.map((link) => (
             <Link
               key={link.label}
-              href={link.href}
+              href={canonicalPath(link.href)}
               className="text-sm text-muted-foreground transition-colors hover:text-foreground"
             >
               {link.label}
@@ -56,7 +56,7 @@ export function FigmaNav({ showBlogLink = true }: FigmaNavProps) {
 
         <div className="hidden items-center gap-3 md:flex">
           <Link
-            href="/contact"
+            href={canonicalPath("/contact")}
             className="rounded-full px-4 py-1.5 text-sm font-semibold text-background transition-opacity hover:opacity-90"
             style={{ background: "var(--foreground)" }}
           >
@@ -82,7 +82,7 @@ export function FigmaNav({ showBlogLink = true }: FigmaNavProps) {
           {navLinks.map((link) => (
             <Link
               key={link.label}
-              href={link.href}
+              href={canonicalPath(link.href)}
               className="text-sm text-muted-foreground"
               onClick={() => setMenuOpen(false)}
             >
@@ -90,7 +90,7 @@ export function FigmaNav({ showBlogLink = true }: FigmaNavProps) {
             </Link>
           ))}
           <Link
-            href="/contact"
+            href={canonicalPath("/contact")}
             className="rounded-full bg-foreground px-4 py-2 text-center text-sm font-semibold text-background"
             onClick={() => setMenuOpen(false)}
           >

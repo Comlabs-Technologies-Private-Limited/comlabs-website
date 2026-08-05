@@ -10,7 +10,7 @@ import { PostBody } from "@/components/blog/PostBody";
 import { BreadcrumbJsonLd, PostJsonLd } from "@/components/blog/JsonLd";
 import { buildPageMetadata } from "@/lib/metadata";
 import { serializePost } from "@/lib/post-utils";
-import { isBlogEnabled, siteOgImagePath, siteUrl } from "@/lib/site";
+import { canonicalPath, canonicalUrl, isBlogEnabled, siteOgImagePath } from "@/lib/site";
 import type { Post as PostType } from "@/types/post";
 
 export const revalidate = 60;
@@ -53,7 +53,9 @@ export async function generateMetadata({
   const post = await getPost(slug);
   if (!post) return {};
 
-  const canonical = post.canonicalUrl || `${siteUrl}/blog/${post.slug}`;
+  const canonical = post.canonicalUrl
+    ? canonicalUrl(post.canonicalUrl)
+    : canonicalUrl(`/blog/${post.slug}`);
   const ogImage = post.ogImage || post.coverImage || siteOgImagePath;
 
   return {
@@ -102,9 +104,9 @@ export default async function BlogPostPage({
       <PostJsonLd post={post} />
       <BreadcrumbJsonLd
         items={[
-          { name: "Home", url: `${siteUrl}/` },
-          { name: "Blog", url: `${siteUrl}/blog` },
-          { name: post.title, url: `${siteUrl}/blog/${post.slug}` },
+          { name: "Home", url: canonicalUrl("/") },
+          { name: "Blog", url: canonicalUrl("/blog") },
+          { name: post.title, url: canonicalUrl(`/blog/${post.slug}`) },
         ]}
       />
       <FigmaNav showBlogLink={false} />
@@ -114,7 +116,7 @@ export default async function BlogPostPage({
           <header className="px-6 pt-14 pb-10 md:pt-20 md:pb-14">
             <div className="mx-auto max-w-3xl">
               <Link
-                href="/blog"
+                href={canonicalPath("/blog")}
                 className="mb-10 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
               >
                 <ArrowLeft size={14} /> All posts

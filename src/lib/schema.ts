@@ -1,10 +1,10 @@
 import {
+  canonicalUrl,
   logoUrl,
   organizationId,
   siteLocation,
   siteName,
   siteShortName,
-  siteUrl,
   websiteId,
 } from "@/lib/site";
 
@@ -15,7 +15,7 @@ export function getOrganizationSchema() {
     "@id": organizationId,
     name: siteName,
     alternateName: siteShortName,
-    url: `${siteUrl}/`,
+    url: canonicalUrl("/"),
     logo: logoUrl,
     description:
       "Comlabs Technologies Pvt Ltd is a website design and software development studio in Pune, India.",
@@ -33,7 +33,7 @@ export function getWebsiteSchema() {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "@id": websiteId,
-    url: `${siteUrl}/`,
+    url: canonicalUrl("/"),
     name: siteName,
     alternateName: [
       siteShortName,
@@ -53,10 +53,12 @@ export function getServiceSchema(input: {
   description: string;
   serviceType: string;
 }) {
+  const url = canonicalUrl(input.url);
+
   return {
     "@context": "https://schema.org",
     "@type": "Service",
-    "@id": input.url,
+    "@id": url,
     name: input.name,
     description: input.description,
     serviceType: input.serviceType,
@@ -73,7 +75,7 @@ export function getServiceSchema(input: {
         name: "India",
       },
     ],
-    url: input.url,
+    url,
   } as const;
 }
 
@@ -102,7 +104,7 @@ export function getBreadcrumbSchema(
       "@type": "ListItem",
       position: index + 1,
       name: item.name,
-      item: item.url,
+      item: canonicalUrl(item.url),
     })),
   } as const;
 }
