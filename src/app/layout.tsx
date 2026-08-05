@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { JetBrains_Mono, Plus_Jakarta_Sans } from "next/font/google";
 
 import { RootShell } from "@/components/root-shell";
-import { siteFaviconPath, siteName, siteOgImage, siteUrl } from "@/lib/site";
+import { siteDefaultDescription, siteFaviconPath, siteName, siteOgImage, siteUrl } from "@/lib/site";
 import "./globals.css";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -17,8 +17,6 @@ const jetbrainsMono = JetBrains_Mono({
   weight: ["400", "500"],
 });
 
-const DEFAULT_DESCRIPTION =
-  "Comlabs Technologies Pvt Ltd is a website design and software development studio in Pune creating high-performance websites, CMS platforms, product interfaces and custom web applications.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -27,7 +25,7 @@ export const metadata: Metadata = {
     default: "Comlabs Technologies Pvt Ltd | Website Design Studio",
     template: "%s | Comlabs Technologies Pvt Ltd",
   },
-  description: DEFAULT_DESCRIPTION,
+  description: siteDefaultDescription,
   icons: {
     icon: [{ url: siteFaviconPath, type: "image/png" }],
     shortcut: siteFaviconPath,
@@ -37,13 +35,13 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_IN",
     siteName,
-    description: DEFAULT_DESCRIPTION,
+    description: siteDefaultDescription,
     url: `${siteUrl}/`,
     images: [siteOgImage],
   },
   twitter: {
     card: "summary_large_image",
-    description: DEFAULT_DESCRIPTION,
+    description: siteDefaultDescription,
     images: [siteOgImage.url],
   },
   robots: {

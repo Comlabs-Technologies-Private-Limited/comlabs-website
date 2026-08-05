@@ -12,6 +12,10 @@ export const siteDescriptor =
   "Website Design & Software Development Studio" as const;
 export const siteLocation = "Pune, Maharashtra, India" as const;
 
+/** Default meta description — keep at or below ~155 characters for SERP display. */
+export const siteDefaultDescription =
+  "Comlabs Technologies Pvt Ltd is a website design studio in Pune creating high-performance websites, CMS platforms, product UI, and web apps." as const;
+
 export const organizationId = `${siteUrl}/#organization` as const;
 export const websiteId = `${siteUrl}/#website` as const;
 export const logoUrl = `${siteUrl}/logo.png` as const;
