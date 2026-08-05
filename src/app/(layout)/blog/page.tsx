@@ -1,44 +1,29 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import Link from "next/link";
 
 import { FigmaFooter } from "@/components/layout/figma-footer";
 import { FigmaNav } from "@/components/layout/figma-nav";
 import { PostCard } from "@/components/blog/PostCard";
-import { connectDB } from "@/lib/db";
+import { buildPageMetadata } from "@/lib/metadata";
 import { serializePostSummary } from "@/lib/post-utils";
-import { Post } from "@/models/post";
-import { siteOgImage, siteUrl } from "@/lib/site";
+import { isBlogEnabled } from "@/lib/site";
 import type { PostSummary } from "@/types/post";
 
 export const revalidate = 60;
 
-export const metadata: Metadata = {
-  title: "Blog — Comlabs Technologies",
+export const metadata: Metadata = buildPageMetadata({
+  title: "Blog",
   description:
-    "Strategy, design, and development insights from the Comlabs team. We write about building products, websites, and brand systems that perform.",
-  alternates: {
-    canonical: `${siteUrl}/blog`,
-  },
-  openGraph: {
-    title: "Blog — Comlabs Technologies",
-    description:
-      "Strategy, design, and development insights from the Comlabs team.",
-    url: `${siteUrl}/blog`,
-    type: "website",
-    images: [siteOgImage],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Blog — Comlabs Technologies",
-    description:
-      "Strategy, design, and development insights from the Comlabs team.",
-    images: [siteOgImage.url],
-  },
-};
+    "Strategy, design, and development insights from Comlabs Technologies Pvt Ltd on websites, product UI, and shipping reliable software.",
+  path: "/blog",
+});
 
 const PAGE_SIZE = 9;
 
 async function getPosts(page: number): Promise<{ posts: PostSummary[]; total: number }> {
+  const { connectDB } = await import("@/lib/db");
+  const { Post } = await import("@/models/post");
   await connectDB();
   const [docs, total] = await Promise.all([
     Post.find({ status: "published" })
@@ -63,14 +48,29 @@ export default async function BlogIndexPage({
 }: {
   searchParams: Promise<{ page?: string }>;
 }) {
+  if (!isBlogEnabled()) {
+    notFound();
+  }
+
   const { page: pageParam } = await searchParams;
   const page = Math.max(1, Number(pageParam ?? 1));
-  const { posts, total } = await getPosts(page);
+
+  let posts: PostSummary[] = [];
+  let total = 0;
+
+  try {
+    const result = await getPosts(page);
+    posts = result.posts;
+    total = result.total;
+  } catch {
+    notFound();
+  }
+
   const totalPages = Math.ceil(total / PAGE_SIZE);
 
   return (
     <div className="min-h-screen bg-background text-foreground antialiased">
-      <FigmaNav />
+      <FigmaNav showBlogLink={false} />
       <main>
         <section className="px-6 pt-14 pb-16 md:pt-20 md:pb-20">
           <div className="mx-auto max-w-6xl">
@@ -84,7 +84,7 @@ export default async function BlogIndexPage({
               Insights on building things that work.
             </h1>
             <p className="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
-              Strategy, design, and development — from the Comlabs team.
+              Strategy, design, and development from Comlabs Technologies Pvt Ltd.
             </p>
           </div>
         </section>
@@ -92,7 +92,7 @@ export default async function BlogIndexPage({
         <section className="px-6 pb-24 md:pb-32">
           <div className="mx-auto max-w-6xl">
             {posts.length === 0 ? (
-              <p className="text-center text-muted-foreground py-16">
+              <p className="py-16 text-center text-muted-foreground">
                 No posts yet — check back soon.
               </p>
             ) : (
@@ -132,7 +132,7 @@ export default async function BlogIndexPage({
           </div>
         </section>
       </main>
-      <FigmaFooter />
+      <FigmaFooter showBlogLink={false} />
     </div>
   );
 }

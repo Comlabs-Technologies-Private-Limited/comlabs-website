@@ -13,7 +13,12 @@ type RootShellProps = {
 
 export function RootShell({ fontClassName, children }: RootShellProps) {
   const pathname = usePathname();
-  const usesFigmaChrome = pathname === "/" || pathname.startsWith("/work") || pathname === "/contact";
+  const usesFigmaChrome =
+    pathname === "/" ||
+    pathname.startsWith("/services") ||
+    pathname.startsWith("/work") ||
+    pathname === "/about" ||
+    pathname === "/contact";
   const showLegacyChrome = !usesFigmaChrome;
 
   return (

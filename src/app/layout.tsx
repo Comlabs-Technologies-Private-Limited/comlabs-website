@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { JetBrains_Mono, Plus_Jakarta_Sans } from "next/font/google";
 
 import { RootShell } from "@/components/root-shell";
-import { siteFaviconPath, siteOgImage, siteUrl } from "@/lib/site";
+import { siteFaviconPath, siteName, siteOgImage, siteUrl } from "@/lib/site";
 import "./globals.css";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -17,28 +17,17 @@ const jetbrainsMono = JetBrains_Mono({
   weight: ["400", "500"],
 });
 
-const DEFAULT_TITLE =
-  "Comlabs Technologies — Startup Website Design, Product UI & Development";
 const DEFAULT_DESCRIPTION =
-  "Comlabs is a design and development studio that creates high-performance websites and web applications for ambitious companies.";
+  "Comlabs Technologies Pvt Ltd is a website design and software development studio in Pune creating high-performance websites, CMS platforms, product interfaces and custom web applications.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  applicationName: "Comlabs Technologies",
+  applicationName: siteName,
   title: {
-    default: DEFAULT_TITLE,
-    template: "%s — Comlabs Technologies",
+    default: "Comlabs Technologies Pvt Ltd | Website Design Studio",
+    template: "%s | Comlabs Technologies Pvt Ltd",
   },
   description: DEFAULT_DESCRIPTION,
-  keywords: [
-    "startup website design",
-    "website rebuilds for startups",
-    "SaaS website design",
-    "product UI/UX for startups",
-    "AI automation for startups",
-    "conversion-focused websites",
-    "frontend development for startups",
-  ],
   icons: {
     icon: [{ url: siteFaviconPath, type: "image/png" }],
     shortcut: siteFaviconPath,
@@ -47,17 +36,19 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_IN",
-    siteName: "Comlabs Technologies",
-    title: DEFAULT_TITLE,
+    siteName,
     description: DEFAULT_DESCRIPTION,
-    url: siteUrl,
+    url: `${siteUrl}/`,
     images: [siteOgImage],
   },
   twitter: {
     card: "summary_large_image",
-    title: DEFAULT_TITLE,
     description: DEFAULT_DESCRIPTION,
     images: [siteOgImage.url],
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 

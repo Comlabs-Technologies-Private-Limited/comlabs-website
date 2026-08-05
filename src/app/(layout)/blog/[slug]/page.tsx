@@ -8,23 +8,32 @@ import { FigmaFooter } from "@/components/layout/figma-footer";
 import { FigmaNav } from "@/components/layout/figma-nav";
 import { PostBody } from "@/components/blog/PostBody";
 import { BreadcrumbJsonLd, PostJsonLd } from "@/components/blog/JsonLd";
-import { connectDB } from "@/lib/db";
+import { buildPageMetadata } from "@/lib/metadata";
 import { serializePost } from "@/lib/post-utils";
-import { Post } from "@/models/post";
-import { siteOgImagePath, siteUrl } from "@/lib/site";
+import { isBlogEnabled, siteOgImagePath, siteUrl } from "@/lib/site";
 import type { Post as PostType } from "@/types/post";
 
 export const revalidate = 60;
 
 async function getPost(slug: string): Promise<PostType | null> {
-  await connectDB();
-  const doc = await Post.findOne({ slug, status: "published" });
-  if (!doc) return null;
-  return serializePost(doc);
+  try {
+    const { connectDB } = await import("@/lib/db");
+    const { Post } = await import("@/models/post");
+    await connectDB();
+    const doc = await Post.findOne({ slug, status: "published" });
+    if (!doc) return null;
+    return serializePost(doc);
+  } catch {
+    return null;
+  }
 }
 
 export async function generateStaticParams() {
+  if (!isBlogEnabled()) return [];
+
   try {
+    const { connectDB } = await import("@/lib/db");
+    const { Post } = await import("@/models/post");
     await connectDB();
     const slugs = await Post.find({ status: "published" }).select("slug").lean();
     return slugs.map((s) => ({ slug: s.slug }));
@@ -38,17 +47,21 @@ export async function generateMetadata({
 }: {
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
+  if (!isBlogEnabled()) return {};
+
   const { slug } = await params;
   const post = await getPost(slug);
   if (!post) return {};
 
-  const base = siteUrl.replace(/\/$/, "");
-  const canonical = post.canonicalUrl || `${base}/blog/${post.slug}`;
+  const canonical = post.canonicalUrl || `${siteUrl}/blog/${post.slug}`;
   const ogImage = post.ogImage || post.coverImage || siteOgImagePath;
 
   return {
-    title: post.metaTitle || post.title,
-    description: post.metaDescription || post.excerpt,
+    ...buildPageMetadata({
+      title: post.metaTitle || post.title,
+      description: post.metaDescription || post.excerpt,
+      path: `/blog/${post.slug}`,
+    }),
     alternates: { canonical },
     openGraph: {
       title: post.metaTitle || post.title,
@@ -57,14 +70,8 @@ export async function generateMetadata({
       type: "article",
       publishedTime: post.publishedAt ?? undefined,
       modifiedTime: post.updatedAt,
-      authors: [post.author || "Comlabs"],
+      authors: [post.author || "Comlabs Technologies Pvt Ltd"],
       images: [{ url: ogImage }],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: post.metaTitle || post.title,
-      description: post.metaDescription || post.excerpt,
-      images: [ogImage],
     },
   };
 }
@@ -74,11 +81,14 @@ export default async function BlogPostPage({
 }: {
   params: Promise<{ slug: string }>;
 }) {
+  if (!isBlogEnabled()) {
+    notFound();
+  }
+
   const { slug } = await params;
   const post = await getPost(slug);
   if (!post) notFound();
 
-  const base = siteUrl.replace(/\/$/, "");
   const publishedDate = post.publishedAt
     ? new Date(post.publishedAt).toLocaleDateString("en-IN", {
         day: "numeric",
@@ -92,16 +102,15 @@ export default async function BlogPostPage({
       <PostJsonLd post={post} />
       <BreadcrumbJsonLd
         items={[
-          { name: "Home", url: base },
-          { name: "Blog", url: `${base}/blog` },
-          { name: post.title, url: `${base}/blog/${post.slug}` },
+          { name: "Home", url: `${siteUrl}/` },
+          { name: "Blog", url: `${siteUrl}/blog` },
+          { name: post.title, url: `${siteUrl}/blog/${post.slug}` },
         ]}
       />
-      <FigmaNav />
+      <FigmaNav showBlogLink={false} />
 
       <main>
         <article>
-          {/* Header */}
           <header className="px-6 pt-14 pb-10 md:pt-20 md:pb-14">
             <div className="mx-auto max-w-3xl">
               <Link
@@ -131,7 +140,7 @@ export default async function BlogPostPage({
               ) : null}
 
               <div className="mt-6 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-                <span>{post.author || "Comlabs"}</span>
+                <span>{post.author || "Comlabs Technologies Pvt Ltd"}</span>
                 {publishedDate ? (
                   <>
                     <span aria-hidden>·</span>
@@ -148,7 +157,6 @@ export default async function BlogPostPage({
             </div>
           </header>
 
-          {/* Cover image */}
           {post.coverImage ? (
             <div className="px-6 pb-10 md:pb-14">
               <div className="mx-auto max-w-5xl">
@@ -166,7 +174,6 @@ export default async function BlogPostPage({
             </div>
           ) : null}
 
-          {/* Post body */}
           <div className="px-6 pb-24 md:pb-32">
             <div className="mx-auto max-w-3xl">
               <PostBody html={post.content} />
@@ -188,7 +195,7 @@ export default async function BlogPostPage({
         </article>
       </main>
 
-      <FigmaFooter />
+      <FigmaFooter showBlogLink={false} />
     </div>
   );
 }

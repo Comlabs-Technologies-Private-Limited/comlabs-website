@@ -1,4 +1,4 @@
-import { siteOgImagePath, siteUrl } from "@/lib/site";
+import { organizationId, siteName, siteOgImagePath, siteUrl } from "@/lib/site";
 import type { Post } from "@/types/post";
 
 type JsonLdProps = {
@@ -6,8 +6,7 @@ type JsonLdProps = {
 };
 
 export function PostJsonLd({ post }: JsonLdProps) {
-  const base = siteUrl.replace(/\/$/, "");
-  const image = post.ogImage || post.coverImage || `${base}${siteOgImagePath}`;
+  const image = post.ogImage || post.coverImage || `${siteUrl}${siteOgImagePath}`;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -19,21 +18,15 @@ export function PostJsonLd({ post }: JsonLdProps) {
     dateModified: post.updatedAt,
     author: {
       "@type": "Organization",
-      name: post.author || "Comlabs",
-      url: base,
+      name: post.author || siteName,
+      url: `${siteUrl}/`,
     },
     publisher: {
-      "@type": "Organization",
-      name: "Comlabs Technologies",
-      url: base,
-      logo: {
-        "@type": "ImageObject",
-        url: `${base}/logo.png`,
-      },
+      "@id": organizationId,
     },
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": post.canonicalUrl || `${base}/blog/${post.slug}`,
+      "@id": post.canonicalUrl || `${siteUrl}/blog/${post.slug}`,
     },
   };
 

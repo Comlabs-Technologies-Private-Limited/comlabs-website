@@ -2,38 +2,18 @@ import type { Metadata } from "next";
 
 import { FigmaHomePage } from "@/components/home/figma-home-page";
 import { HomeJsonLd } from "@/components/seo/home-json-ld";
-import { siteOgImage, siteUrl } from "@/lib/site";
+import { buildPageMetadata } from "@/lib/metadata";
 
-const HOME_TITLE =
-  "Comlabs Technologies — Startup Website Design, Product UI & Development";
+const HOME_TITLE = "Comlabs Technologies Pvt Ltd | Website Design Studio";
 const HOME_DESCRIPTION =
-  "Comlabs is a design and development studio that creates high-performance websites and web applications for ambitious companies.";
-const HOME_URL = `${siteUrl}/`;
+  "Comlabs Technologies Pvt Ltd is a website design and development studio in Pune creating high-performance websites, CMS platforms, product interfaces and custom web applications.";
 
-export const metadata: Metadata = {
-  title: {
-    absolute: HOME_TITLE,
-  },
+export const metadata: Metadata = buildPageMetadata({
+  title: HOME_TITLE,
   description: HOME_DESCRIPTION,
-  alternates: {
-    canonical: HOME_URL,
-  },
-  openGraph: {
-    type: "website",
-    locale: "en_IN",
-    siteName: "Comlabs Technologies",
-    title: HOME_TITLE,
-    description: HOME_DESCRIPTION,
-    url: HOME_URL,
-    images: [siteOgImage],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: HOME_TITLE,
-    description: HOME_DESCRIPTION,
-    images: [siteOgImage.url],
-  },
-};
+  path: "/",
+  absoluteTitle: true,
+});
 
 export function MarketingHomePage() {
   return (

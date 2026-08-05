@@ -94,7 +94,7 @@ export function FigmaHeroSection() {
             Talk to us <ArrowRight size={14} />
           </a>
           <a
-            href="#work"
+            href="/work"
             className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium transition-colors hover:bg-accent"
           >
             View our work
