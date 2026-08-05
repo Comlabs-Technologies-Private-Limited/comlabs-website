@@ -11,14 +11,27 @@ type RootShellProps = {
   children: React.ReactNode;
 };
 
+/** Strip trailing slash so checks work with trailingSlash-enabled routes. */
+function normalizePathname(pathname: string): string {
+  if (pathname === "/") return "/";
+  return pathname.replace(/\/$/, "") || "/";
+}
+
+function usesFigmaChromePath(pathname: string): boolean {
+  const path = normalizePathname(pathname);
+  return (
+    path === "/" ||
+    path.startsWith("/services") ||
+    path.startsWith("/work") ||
+    path === "/about" ||
+    path === "/contact" ||
+    path.startsWith("/blog")
+  );
+}
+
 export function RootShell({ fontClassName, children }: RootShellProps) {
   const pathname = usePathname();
-  const usesFigmaChrome =
-    pathname === "/" ||
-    pathname.startsWith("/services") ||
-    pathname.startsWith("/work") ||
-    pathname === "/about" ||
-    pathname === "/contact";
+  const usesFigmaChrome = usesFigmaChromePath(pathname);
   const showLegacyChrome = !usesFigmaChrome;
 
   return (
