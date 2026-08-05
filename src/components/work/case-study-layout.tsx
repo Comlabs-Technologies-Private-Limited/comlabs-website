@@ -31,7 +31,7 @@ export type CaseStudyContent = {
 const OTHER_CASE_STUDIES = [
   {
     slug: "formula-lab",
-    client: "Formula Lab",
+    client: "Formial Labs",
     category: "Product UX",
     href: "/work/formula-lab",
   },
@@ -43,7 +43,7 @@ const OTHER_CASE_STUDIES = [
   },
   {
     slug: "with-hub",
-    client: "With Hub",
+    client: "Vithub",
     category: "Brand & Marketing",
     href: "/work/with-hub",
   },

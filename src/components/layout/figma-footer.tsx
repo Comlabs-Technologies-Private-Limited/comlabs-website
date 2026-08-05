@@ -29,8 +29,8 @@ const FOOTER_COLUMNS = [
     links: [
       { label: "Case studies", href: "/work" },
       { label: "Global Services", href: "/work/global-services" },
-      { label: "Formula Lab", href: "/work/formula-lab" },
-      { label: "With Hub", href: "/work/with-hub" },
+      { label: "Formial Labs", href: "/work/formula-lab" },
+      { label: "Vithub", href: "/work/with-hub" },
     ],
   },
 ] as const;

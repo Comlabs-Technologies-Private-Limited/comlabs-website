@@ -4,28 +4,28 @@ import { CaseStudyLayout, type CaseStudyContent } from "@/components/work/case-s
 import { buildPageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Formula Lab — Dashboard Onboarding Flow",
+  title: "Formial Labs — Dashboard Onboarding Flow",
   description:
-    "Comlabs Technologies Pvt Ltd designed and built Formula Lab's multi-page dashboard onboarding flow to reduce drop-off and improve first-run activation.",
+    "Comlabs Technologies Pvt Ltd designed and built Formial Labs' multi-page dashboard onboarding flow to reduce drop-off and improve first-run activation.",
   path: "/work/formula-lab",
 });
 
 const content: CaseStudyContent = {
   slug: "formula-lab",
-  client: "Formula Lab",
+  client: "Formial Labs",
   category: "Product UX · Dashboard",
   year: "2025",
   eyebrow: "Case Study — Product UX",
   title: (
     <>
-      We made Formula Lab&apos;s dashboard click on the{" "}
+      We made Formial Labs&apos; dashboard click on the{" "}
       <span className="italic" style={{ color: "var(--warm-orange)" }}>
         first try.
       </span>
     </>
   ),
   subtitle:
-    "A complete, multi-page onboarding flow for Formula Lab's internal dashboard — built to walk every new user from signup to their first real win.",
+    "A complete, multi-page onboarding flow for Formial Labs' internal dashboard — built to walk every new user from signup to their first real win.",
   coverImage: "/services-bg/service-bg-1.png",
   metrics: [
     { value: "Multi-page", label: "Guided onboarding flow" },
@@ -33,7 +33,7 @@ const content: CaseStudyContent = {
     { value: "Lower", label: "First-run drop-off" },
   ],
   problem: [
-    "Formula Lab had a capable dashboard, but new users hit friction before they ever saw the payoff.",
+    "Formial Labs had a capable dashboard, but new users hit friction before they ever saw the payoff.",
     "Onboarding was scattered, so people stalled and left before activating — the quickest way to lose retention you haven't earned yet.",
   ],
   whatWeBuilt: [
@@ -49,6 +49,6 @@ const content: CaseStudyContent = {
   ],
 };
 
-export default function FormulaLabCaseStudy() {
+export default function FormialLabsCaseStudy() {
   return <CaseStudyLayout content={content} />;
 }

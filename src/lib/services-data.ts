@@ -109,10 +109,10 @@ export const servicePages: ServicePageData[] = [
       "Founders who need one partner for design through deployment",
     ],
     relatedCaseStudy: {
-      client: "With Hub",
+      client: "Vithub",
       href: "/work/with-hub",
       summary:
-        "A design-led marketing website built to give With Hub a strong digital identity and room to grow.",
+        "A design-led marketing website built to give Vithub a strong digital identity and room to grow.",
     },
     relatedServices: [
       { label: "Website redesign", href: "/services/website-redesign" },
@@ -420,7 +420,7 @@ export const servicePages: ServicePageData[] = [
       "Product UI and frontend development for SaaS dashboards, onboarding flows, and customer-facing web applications.",
     proposition: [
       "Product UI work spans UX flow, visual design, and front-end implementation — especially where first-run experience affects retention.",
-      "See our Formula Lab case study for a multi-page onboarding flow built to reduce drop-off.",
+      "See our Formial Labs case study for a multi-page onboarding flow built to reduce drop-off.",
     ],
     problems: [
       "New users stall during setup and never reach activation.",
@@ -472,7 +472,7 @@ export const servicePages: ServicePageData[] = [
       "Founders shipping an MVP UI without hiring a full product team",
     ],
     relatedCaseStudy: {
-      client: "Formula Lab",
+      client: "Formial Labs",
       href: "/work/formula-lab",
       summary:
         "A structured onboarding flow that moves users from signup to first value with less friction.",
