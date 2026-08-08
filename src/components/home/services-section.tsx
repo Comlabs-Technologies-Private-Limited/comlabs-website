@@ -77,7 +77,7 @@ const services = [
     mockupWrapperClassName: "",
     mockupClassName: "",
     linkLabel: "View product work",
-    linkHref: "/work/formula-lab",
+    linkHref: "/work/formial-labs",
   },
   {
     id: "growth-cro",

@@ -4,28 +4,29 @@ import { CaseStudyLayout, type CaseStudyContent } from "@/components/work/case-s
 import { buildPageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "With Hub — Marketing Website for Growth",
+  title: "Vithub — Marketing Website for Growth",
   description:
-    "Comlabs Technologies Pvt Ltd designed and built With Hub's marketing website — a design-led brand identity built to support marketing and drive user acquisition.",
-  path: "/work/with-hub",
+    "Comlabs Technologies Pvt Ltd designed and built Vithub's marketing website — a design-led brand identity built to support marketing and drive user acquisition.",
+  path: "/work/vithub",
 });
 
 const content: CaseStudyContent = {
-  slug: "with-hub",
-  client: "With Hub",
+  slug: "vithub",
+  client: "Vithub",
+  liveSiteUrl: "https://vithub.in",
   category: "Brand · Marketing Site",
   year: "2025",
   eyebrow: "Case Study — Brand & Marketing Site",
   title: (
     <>
-      A brand With Hub can{" "}
+      A brand Vithub can{" "}
       <span className="italic" style={{ color: "var(--warm-orange)" }}>
         grow on.
       </span>
     </>
   ),
   subtitle:
-    "A design-led marketing website built to give With Hub a digital identity that actually pulls its weight.",
+    "A design-led marketing website built to give Vithub a digital identity that actually pulls its weight.",
   coverImage: "/services-bg/service-bg-4.png",
   metrics: [
     { value: "Design-led", label: "Brand-first build" },
@@ -33,7 +34,7 @@ const content: CaseStudyContent = {
     { value: "Campaign-ready", label: "Foundation, not just a page" },
   ],
   problem: [
-    "With Hub needed more than a placeholder site.",
+    "Vithub needed more than a placeholder site.",
     "They needed a presence that could actually drive growth — something marketing could point traffic at and convert.",
   ],
   whatWeBuilt: [
@@ -43,12 +44,12 @@ const content: CaseStudyContent = {
     "A look that makes the brand feel established, not early.",
   ],
   results: [
-    "Positioned With Hub for marketing and user acquisition.",
+    "Positioned Vithub for marketing and user acquisition.",
     "A clear identity that makes the brand feel credible at a glance.",
     "A site that finally gives growth efforts somewhere to land.",
   ],
 };
 
-export default function WithHubCaseStudy() {
+export default function VithubCaseStudy() {
   return <CaseStudyLayout content={content} />;
 }

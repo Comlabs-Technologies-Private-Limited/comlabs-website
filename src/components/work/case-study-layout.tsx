@@ -21,6 +21,7 @@ export type CaseStudyContent = {
   title: ReactNode;
   subtitle: string;
   coverImage: string;
+  liveSiteUrl?: string;
   metrics: CaseStudyMetric[];
   problem: string[];
   whatWeBuilt: string[];
@@ -30,10 +31,10 @@ export type CaseStudyContent = {
 
 const OTHER_CASE_STUDIES = [
   {
-    slug: "formula-lab",
-    client: "Formula Lab",
+    slug: "formial-labs",
+    client: "Formial Labs",
     category: "Product UX",
-    href: "/work/formula-lab",
+    href: "/work/formial-labs",
   },
   {
     slug: "global-services",
@@ -42,10 +43,10 @@ const OTHER_CASE_STUDIES = [
     href: "/work/global-services",
   },
   {
-    slug: "with-hub",
-    client: "With Hub",
+    slug: "vithub",
+    client: "Vithub",
     category: "Brand & Marketing",
-    href: "/work/with-hub",
+    href: "/work/vithub",
   },
 ] as const;
 
@@ -62,11 +63,11 @@ const RELATED_SERVICE_BY_SLUG: Record<string, { label: string; href: string }> =
     label: "Website redesign services",
     href: "/services/website-redesign",
   },
-  "formula-lab": {
+  "formial-labs": {
     label: "Product UI & frontend development",
     href: "/services/product-ui-development",
   },
-  "with-hub": {
+  vithub: {
     label: "Website design & development",
     href: "/services/website-design-development",
   },
@@ -82,6 +83,7 @@ export function CaseStudyLayout({ content }: { content: CaseStudyContent }) {
     title,
     subtitle,
     coverImage,
+    liveSiteUrl,
     metrics,
     problem,
     whatWeBuilt,
@@ -157,6 +159,20 @@ export function CaseStudyLayout({ content }: { content: CaseStudyContent }) {
                 >
                   {subtitle}
                 </motion.p>
+
+                {liveSiteUrl ? (
+                  <motion.a
+                    href={liveSiteUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.14 }}
+                    className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--warm-orange)] transition-opacity hover:opacity-80"
+                  >
+                    Visit {new URL(liveSiteUrl).hostname} <ArrowRight size={14} />
+                  </motion.a>
+                ) : null}
               </div>
 
               <motion.div
