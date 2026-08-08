@@ -1,12 +1,16 @@
 import type { ReactNode } from "react";
-import { Agentation } from "agentation";
+
+import { AgentationGate } from "@/components/dev/agentation-gate";
 
 export function MarketingLayout({
   children,
 }: Readonly<{ children: ReactNode }>) {
-  return <>{children}
-  <Agentation />
-  </>;
+  return (
+    <>
+      {children}
+      <AgentationGate />
+    </>
+  );
 }
 
 export default MarketingLayout;
