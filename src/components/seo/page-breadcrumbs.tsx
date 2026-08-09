@@ -12,7 +12,7 @@ export type BreadcrumbItem = {
 
 type PageBreadcrumbsProps = {
   items: BreadcrumbItem[];
-  /** Canonical path for the current page, e.g. `/services/cms-development`. */
+  /** Canonical path for the current page, e.g. `/services/custom-software-development`. */
   currentPath: string;
 };
 
