@@ -18,7 +18,7 @@ export function getOrganizationSchema() {
     url: canonicalUrl("/"),
     logo: logoUrl,
     description:
-      "Comlabs Technologies Pvt Ltd is a website design and software development studio in Pune, India.",
+      "Comlabs Technologies is a design and engineering studio building websites, custom software, mobile products, and scalable digital infrastructure.",
     address: {
       "@type": "PostalAddress",
       addressLocality: "Pune",

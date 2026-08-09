@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-react";
 
 import { FigmaFooter } from "@/components/layout/figma-footer";
 import { FigmaNav } from "@/components/layout/figma-nav";
+import { EditorialPhotoSection } from "@/components/marketing/editorial-photo";
 import { MarketingCtaSection } from "@/components/marketing/marketing-cta-section";
 import { MarketingFadeIn } from "@/components/marketing/marketing-motion";
 import { MarketingPageHero } from "@/components/marketing/marketing-page-hero";
@@ -54,6 +55,10 @@ export function ServicePageLayout({ service }: { service: ServicePageData }) {
             ]}
           />
         </MarketingPageHero>
+
+        {service.editorialImage ? (
+          <EditorialPhotoSection image={service.editorialImage} />
+        ) : null}
 
         <section className="border-y border-border bg-card px-6 py-20 md:py-24">
           <div className="mx-auto grid max-w-6xl gap-16 lg:grid-cols-2 lg:gap-20">

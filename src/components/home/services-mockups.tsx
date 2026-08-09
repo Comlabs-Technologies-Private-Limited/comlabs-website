@@ -2065,18 +2065,26 @@ export function GrowthCroMockup({ active = false }: MockupProps) {
 
 export function ServiceMockup({ id, active = false }: { id: string; active?: boolean }) {
   switch (id) {
+    case "website-design":
     case "website-rebuild":
       // return <SaaSMockup active={active} />;
       return null;
-    case "landing-sprint":
-      return <LandingMockup active={active} />;
+    case "custom-software":
     case "product-ui":
       // return <MvpMockup active={active} />;
       return null;
-    case "ai-automation":
-      return <AutomationFlowMockup active={active} />;
+    case "mobile-app":
+    case "mobile":
+      // return <MobileMockup active={active} />;
+      return null;
+    case "seo-aeo":
     case "maintenance":
       return <CopywritingSeoMockup active={active} />;
+    case "cloud-infrastructure":
+    case "ai-automation":
+      return <AutomationFlowMockup active={active} />;
+    case "landing-sprint":
+      return <LandingMockup active={active} />;
     case "growth-cro":
       return <GrowthCroMockup active={active} />;
     case "saas":
@@ -2090,9 +2098,6 @@ export function ServiceMockup({ id, active = false }: { id: string; active?: boo
       return null;
     case "landing":
       return <LandingMockup active={active} />;
-    case "mobile":
-      // return <MobileMockup active={active} />;
-      return null;
     default:
       return null;
   }

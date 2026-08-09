@@ -18,10 +18,10 @@ const FOOTER_COLUMNS = [
     links: [
       { label: "All services", href: "/services" },
       { label: "Website design & development", href: "/services/website-design-development" },
-      { label: "Website redesign", href: "/services/website-redesign" },
-      { label: "CMS development", href: "/services/cms-development" },
-      { label: "ERP development", href: "/services/erp-development" },
-      { label: "Product UI development", href: "/services/product-ui-development" },
+      { label: "Custom software development", href: "/services/custom-software-development" },
+      { label: "Mobile app development", href: "/services/mobile-app-development" },
+      { label: "SEO / AEO & copywriting", href: "/services/seo-aeo-copywriting" },
+      { label: "Cloud infrastructure & scaling", href: "/services/cloud-infrastructure-scaling" },
     ],
   },
   {

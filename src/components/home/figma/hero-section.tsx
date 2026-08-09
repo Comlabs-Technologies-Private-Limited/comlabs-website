@@ -77,8 +77,8 @@ export function FigmaHeroSection() {
           transition={{ duration: 0.6, delay: 0.82, ease: "easeOut" }}
           className="mb-10 max-w-lg text-md leading-relaxed text-muted-foreground md:mx-auto md:text-lg"
         >
-          Comlabs is a design and development studio that crafts high-performance websites and web
-          apps for ambitious companies.
+          Comlabs is a design and engineering studio building high-performance websites, custom
+          software, and mobile products for ambitious companies.
         </motion.p>
 
         <motion.div

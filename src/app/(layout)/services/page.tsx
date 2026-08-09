@@ -32,8 +32,8 @@ export default function ServicesIndexPage() {
           eyebrow={servicesIndex.eyebrow}
           title={
             <>
-              Website and software development,{" "}
-              <MarketingOrangeHighlight>end to end</MarketingOrangeHighlight>.
+              Design and engineering for products that need to{" "}
+              <MarketingOrangeHighlight>ship</MarketingOrangeHighlight>.
             </>
           }
           description={servicesIndex.subheadline}
@@ -52,7 +52,7 @@ export default function ServicesIndexPage() {
                   <MarketingOrangeHighlight>stage</MarketingOrangeHighlight>.
                 </>
               }
-              description="From initial website builds to CMS platforms, product UI, and custom modules — each service page covers scope, process, and deliverables."
+              description="Websites, custom software, mobile apps, SEO/AEO, and cloud infrastructure — each service page covers scope, process, and deliverables."
             />
             <MarketingServiceCards services={servicePages} />
           </div>
@@ -60,7 +60,7 @@ export default function ServicesIndexPage() {
 
         <MarketingCtaSection
           title="Not sure where to start?"
-          description="Share your goal — website launch, redesign, CMS, ERP module, or product UI — and we will recommend the right starting point."
+          description="Share your goal — website, custom software, mobile app, SEO/AEO, or cloud infrastructure — and we will recommend the right starting point."
           ctaLabel="Contact us"
         />
       </main>
