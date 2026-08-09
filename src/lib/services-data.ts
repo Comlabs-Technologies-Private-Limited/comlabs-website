@@ -1,4 +1,5 @@
 import { editorialImages } from "@/lib/editorial-images";
+import { canonicalServices } from "@/lib/canonical-services";
 
 export type ServiceFaq = {
   question: string;
@@ -32,32 +33,148 @@ export type ServicePageData = {
   faqs: ServiceFaq[];
 };
 
-const sharedProcess = [
-  {
-    step: "01",
-    title: "Discovery",
-    description:
-      "We review goals, constraints, existing systems, and the workflows that matter — then define scope that can ship.",
-  },
-  {
-    step: "02",
-    title: "Design",
-    description:
-      "Structure, UI, and technical approach are shaped together so what gets built matches how the business runs.",
-  },
-  {
-    step: "03",
-    title: "Build",
-    description:
-      "Production code in focused releases — with clear milestones, review points, and quality checks throughout.",
-  },
-  {
-    step: "04",
-    title: "Launch",
-    description:
-      "We deploy, verify critical paths, hand over documentation, and support the transition to your team or ours.",
-  },
-] as const;
+const processSteps = {
+  website: [
+    {
+      step: "01",
+      title: "Discover",
+      description:
+        "We review goals, audience, existing content, and constraints — then define the pages and flows that matter most.",
+    },
+    {
+      step: "02",
+      title: "Structure",
+      description:
+        "Information architecture and messaging are mapped so visitors understand the offer before design begins.",
+    },
+    {
+      step: "03",
+      title: "Design & Build",
+      description:
+        "UI and front-end code ship together — responsive templates, CMS hooks, and performance basics built in.",
+    },
+    {
+      step: "04",
+      title: "Launch",
+      description:
+        "We deploy, verify analytics and forms, and hand over a site your team can keep improving.",
+    },
+  ],
+  customSoftware: [
+    {
+      step: "01",
+      title: "Map Workflows",
+      description:
+        "We document how work happens today — bottlenecks, handoffs, and the modules worth automating first.",
+    },
+    {
+      step: "02",
+      title: "Design Architecture",
+      description:
+        "Data models, permissions, and UI patterns are shaped around real operator and customer tasks.",
+    },
+    {
+      step: "03",
+      title: "Build & Integrate",
+      description:
+        "Backend services, admin UI, and third-party integrations are delivered in focused releases.",
+    },
+    {
+      step: "04",
+      title: "Roll Out",
+      description:
+        "Modules go live incrementally with training and documentation so teams adopt new workflows safely.",
+    },
+  ],
+  mobile: [
+    {
+      step: "01",
+      title: "Define Product",
+      description:
+        "Core jobs-to-be-done, platform choice, and backend requirements are scoped before screens are designed.",
+    },
+    {
+      step: "02",
+      title: "Design Experience",
+      description:
+        "Flows and UI patterns are designed for small screens, real usage, and store-ready presentation.",
+    },
+    {
+      step: "03",
+      title: "Engineer",
+      description:
+        "Production builds connect to APIs, auth, and integrations with quality checks throughout.",
+    },
+    {
+      step: "04",
+      title: "Release",
+      description:
+        "We support store submission, launch verification, and the first iteration after go-live.",
+    },
+  ],
+  seoAeo: [
+    {
+      step: "01",
+      title: "Audit",
+      description:
+        "Technical SEO, page structure, metadata, and content gaps are reviewed against how people search.",
+    },
+    {
+      step: "02",
+      title: "Map Opportunities",
+      description:
+        "Priority pages, queries, and AEO targets are defined — including how AI systems read your content.",
+    },
+    {
+      step: "03",
+      title: "Implement",
+      description:
+        "On-page copy, schema, internal links, and technical fixes ship in a sequence that preserves rankings.",
+    },
+    {
+      step: "04",
+      title: "Measure",
+      description:
+        "Indexing, rankings, and conversion signals are verified so improvements can be tracked after launch.",
+    },
+  ],
+  cloud: [
+    {
+      step: "01",
+      title: "Assess",
+      description:
+        "Current deployments, bottlenecks, and reliability risks are mapped against how the product runs today.",
+    },
+    {
+      step: "02",
+      title: "Architect",
+      description:
+        "Target environments, caching, databases, and pipelines are designed for your stack and growth path.",
+    },
+    {
+      step: "03",
+      title: "Implement",
+      description:
+        "Infrastructure, CI/CD, and performance improvements are built and tested before cutover.",
+    },
+    {
+      step: "04",
+      title: "Observe & Scale",
+      description:
+        "Logging, monitoring, and scaling patterns are put in place so usage growth stays predictable.",
+    },
+  ],
+} as const;
+
+function relatedServicesFor(
+  slug: string,
+  hrefs: `/services/${string}`[],
+): { label: string; href: string }[] {
+  return hrefs.map((href) => {
+    const match = canonicalServices.find((service) => service.path === href);
+    return { label: match?.title ?? href, href };
+  });
+}
 
 export const servicesIndex = {
   path: "/services",
@@ -70,13 +187,7 @@ export const servicesIndex = {
     "Comlabs Technologies Pvt Ltd builds high-performance websites, custom software, mobile products, and scalable digital infrastructure for teams in Pune, India, and worldwide.",
 } as const;
 
-export const canonicalServicePaths = [
-  "/services/website-design-development",
-  "/services/custom-software-development",
-  "/services/mobile-app-development",
-  "/services/seo-aeo-copywriting",
-  "/services/cloud-infrastructure-scaling",
-] as const;
+export { canonicalServicePaths } from "@/lib/canonical-services";
 
 export const servicePages: ServicePageData[] = [
   {
@@ -111,7 +222,7 @@ export const servicePages: ServicePageData[] = [
       "CMS setup or integration for pages your team can maintain",
       "Launch support, documentation, and a path for post-launch iteration",
     ],
-    process: [...sharedProcess],
+    process: [...processSteps.website],
     capabilities: [
       "New company and marketing websites",
       "Website redesigns and conversion-focused rebuilds",
@@ -132,11 +243,11 @@ export const servicePages: ServicePageData[] = [
       summary:
         "A full website rebuild that improved conversion and helped position Global Services for enterprise telecom clients.",
     },
-    relatedServices: [
-      { label: "SEO / AEO & copywriting", href: "/services/seo-aeo-copywriting" },
-      { label: "Custom software development", href: "/services/custom-software-development" },
-      { label: "Cloud infrastructure & scaling", href: "/services/cloud-infrastructure-scaling" },
-    ],
+    relatedServices: relatedServicesFor("website-design-development", [
+      "/services/seo-aeo-copywriting",
+      "/services/custom-software-development",
+      "/services/cloud-infrastructure-scaling",
+    ]),
     faqs: [
       {
         question: "Do you handle both design and development?",
@@ -187,7 +298,7 @@ export const servicePages: ServicePageData[] = [
       "Integrations with CRM, accounting, or third-party tools where required",
       "Deployment plan with documentation and handover",
     ],
-    process: [...sharedProcess],
+    process: [...processSteps.customSoftware],
     capabilities: [
       "Web applications and SaaS products",
       "Dashboards, settings, and operator interfaces",
@@ -208,11 +319,11 @@ export const servicePages: ServicePageData[] = [
       summary:
         "A structured product onboarding flow and dashboard UI built to move users from signup to first value with less friction.",
     },
-    relatedServices: [
-      { label: "Website design & development", href: "/services/website-design-development" },
-      { label: "Mobile app development", href: "/services/mobile-app-development" },
-      { label: "Cloud infrastructure & scaling", href: "/services/cloud-infrastructure-scaling" },
-    ],
+    relatedServices: relatedServicesFor("custom-software-development", [
+      "/services/website-design-development",
+      "/services/mobile-app-development",
+      "/services/cloud-infrastructure-scaling",
+    ]),
     faqs: [
       {
         question: "Do you replace entire ERP suites like SAP or Oracle?",
@@ -263,7 +374,7 @@ export const servicePages: ServicePageData[] = [
       "Application APIs and integration points where required",
       "Launch support and a plan for post-release iteration",
     ],
-    process: [...sharedProcess],
+    process: [...processSteps.mobile],
     capabilities: [
       "iOS and Android product development",
       "Cross-platform apps where it fits the product",
@@ -277,11 +388,11 @@ export const servicePages: ServicePageData[] = [
       "Founders shipping an MVP app without hiring a full mobile team",
       "Businesses replacing a legacy app with something maintainable",
     ],
-    relatedServices: [
-      { label: "Custom software development", href: "/services/custom-software-development" },
-      { label: "Cloud infrastructure & scaling", href: "/services/cloud-infrastructure-scaling" },
-      { label: "Website design & development", href: "/services/website-design-development" },
-    ],
+    relatedServices: relatedServicesFor("mobile-app-development", [
+      "/services/custom-software-development",
+      "/services/cloud-infrastructure-scaling",
+      "/services/website-design-development",
+    ]),
     faqs: [
       {
         question: "Do you build native or cross-platform apps?",
@@ -327,7 +438,7 @@ export const servicePages: ServicePageData[] = [
       "Conversion-focused copy for key pages and landing templates",
       "Content guidelines your team can follow after handover",
     ],
-    process: [...sharedProcess],
+    process: [...processSteps.seoAeo],
     capabilities: [
       "Technical SEO and on-page optimisation",
       "Search positioning and keyword-informed page structure",
@@ -347,11 +458,11 @@ export const servicePages: ServicePageData[] = [
       summary:
         "A design-led marketing website built to give Vithub a strong digital identity and clearer positioning online.",
     },
-    relatedServices: [
-      { label: "Website design & development", href: "/services/website-design-development" },
-      { label: "Custom software development", href: "/services/custom-software-development" },
-      { label: "Cloud infrastructure & scaling", href: "/services/cloud-infrastructure-scaling" },
-    ],
+    relatedServices: relatedServicesFor("seo-aeo-copywriting", [
+      "/services/website-design-development",
+      "/services/custom-software-development",
+      "/services/cloud-infrastructure-scaling",
+    ]),
     faqs: [
       {
         question: "What is AEO and why does it matter?",
@@ -375,7 +486,7 @@ export const servicePages: ServicePageData[] = [
     eyebrow: "Cloud infrastructure & scaling",
     headline: "Infrastructure that keeps pace with usage.",
     subheadline:
-      "We design and operate cloud architecture, deployments, and performance engineering so your product stays fast, observable, and reliable in production.",
+      "We design, deploy and optimise cloud architecture for production applications that need reliable performance as usage grows.",
     serviceType: "Cloud infrastructure and scaling",
     schemaDescription:
       "Cloud infrastructure and scaling including architecture, application deployments, databases, CDN and caching, performance, observability, and reliability engineering.",
@@ -397,13 +508,13 @@ export const servicePages: ServicePageData[] = [
       "Observability setup — logging, monitoring, and alerts",
       "Runbooks and handover for your team",
     ],
-    process: [...sharedProcess],
+    process: [...processSteps.cloud],
     capabilities: [
       "Cloud architecture and environment design",
       "Application deployments and CI/CD pipelines",
       "Database setup, migrations, and scaling patterns",
       "CDN, caching, and performance optimisation",
-      "Observability, logging, and incident response readiness",
+      "Observability, logging, and monitoring setup",
       "Infrastructure cost and reliability reviews",
     ],
     suitableFor: [
@@ -411,11 +522,11 @@ export const servicePages: ServicePageData[] = [
       "Companies outgrowing a single-server or manual deploy setup",
       "Engineering leads who need production confidence without hiring a full platform team",
     ],
-    relatedServices: [
-      { label: "Custom software development", href: "/services/custom-software-development" },
-      { label: "Mobile app development", href: "/services/mobile-app-development" },
-      { label: "Website design & development", href: "/services/website-design-development" },
-    ],
+    relatedServices: relatedServicesFor("cloud-infrastructure-scaling", [
+      "/services/custom-software-development",
+      "/services/mobile-app-development",
+      "/services/website-design-development",
+    ]),
     faqs: [
       {
         question: "Which cloud providers do you work with?",

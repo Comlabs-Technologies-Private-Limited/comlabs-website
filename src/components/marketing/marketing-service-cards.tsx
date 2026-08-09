@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 import { MarketingFadeIn } from "@/components/marketing/marketing-motion";
+import { getCanonicalService } from "@/lib/canonical-services";
 import type { ServicePageData } from "@/lib/services-data";
 import { canonicalPath } from "@/lib/site";
 
@@ -25,7 +26,7 @@ export function MarketingServiceCards({ services }: MarketingServiceCardsProps) 
             </p>
             <h2 className="mt-3 text-xl font-bold tracking-tight md:text-2xl">{service.title}</h2>
             <p className="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground">
-              {service.metaDescription}
+              {getCanonicalService(service.slug)?.cardDescription ?? service.metaDescription}
             </p>
             <span className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--warm-orange)] transition-transform duration-300 group-hover:translate-x-0.5">
               View service <ArrowRight size={14} />

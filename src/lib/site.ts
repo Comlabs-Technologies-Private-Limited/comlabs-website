@@ -2,6 +2,8 @@
  * Canonical production origin for metadata, sitemap, JSON-LD, and redirects.
  * Override with NEXT_PUBLIC_SITE_URL for preview/staging; local dev keeps defaults.
  */
+import { canonicalServicePaths } from "@/lib/canonical-services";
+
 export const siteUrl = (
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.comlabstechnologies.com"
 ).replace(/\/$/, "");
@@ -81,14 +83,12 @@ export const siteOgImage = {
 } as const;
 
 /** Public marketing routes included in the sitemap when indexable. */
+export { canonicalServicePaths as indexableServicePaths } from "@/lib/canonical-services";
+
 export const indexableStaticPaths = [
   "/",
   "/services",
-  "/services/website-design-development",
-  "/services/custom-software-development",
-  "/services/mobile-app-development",
-  "/services/seo-aeo-copywriting",
-  "/services/cloud-infrastructure-scaling",
+  ...canonicalServicePaths,
   "/about",
   "/work",
   "/contact",
