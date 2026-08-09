@@ -60,12 +60,12 @@ function SectionLabel({ children }: { children: ReactNode }) {
 
 const RELATED_SERVICE_BY_SLUG: Record<string, { label: string; href: string }> = {
   "global-services": {
-    label: "Website redesign services",
-    href: "/services/website-redesign",
+    label: "Website design & development",
+    href: "/services/website-design-development",
   },
   "formial-labs": {
-    label: "Product UI & frontend development",
-    href: "/services/product-ui-development",
+    label: "Custom software development",
+    href: "/services/custom-software-development",
   },
   vithub: {
     label: "Website design & development",

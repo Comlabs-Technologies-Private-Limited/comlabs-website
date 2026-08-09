@@ -15,6 +15,26 @@ const nextConfig: NextConfig = {
         destination: "/work/vithub/",
         permanent: true,
       },
+      {
+        source: "/services/website-redesign",
+        destination: "/services/website-design-development/",
+        permanent: true,
+      },
+      {
+        source: "/services/cms-development",
+        destination: "/services/custom-software-development/",
+        permanent: true,
+      },
+      {
+        source: "/services/erp-development",
+        destination: "/services/custom-software-development/",
+        permanent: true,
+      },
+      {
+        source: "/services/product-ui-development",
+        destination: "/services/custom-software-development/",
+        permanent: true,
+      },
     ];
   },
 };

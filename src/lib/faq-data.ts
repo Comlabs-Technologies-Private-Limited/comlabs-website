@@ -8,7 +8,7 @@ export const homeFaqs: { question: string; answer: string }[] = [
   {
     question: "Do you only build websites?",
     answer:
-      "The main focus is premium websites and product interfaces. AI automation and workflow tools are added when they directly improve the business outcome.",
+      "No. Comlabs builds websites, custom software, mobile products, and the cloud infrastructure behind them — with SEO, copy, and applied AI where it supports the product.",
   },
   {
     question: "How fast can we launch?",
@@ -31,9 +31,9 @@ export const homeFaqs: { question: string; answer: string }[] = [
       "Yes. Comlabs is built for founders who need credibility before sales calls, investor conversations, product launches, or hiring.",
   },
   {
-    question: "Can you add AI automation to the website?",
+    question: "Can you add AI to our product or website?",
     answer:
-      "Yes, when it makes sense. Automation can support lead capture, qualification, onboarding, support, internal workflows, and follow-up systems.",
+      "Yes, when it fits a real workflow — intelligent search, internal copilots, automation, and model integrations built around how your team actually works.",
   },
   {
     question: "Who will I work with?",

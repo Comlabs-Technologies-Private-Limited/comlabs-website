@@ -60,8 +60,8 @@ export function ContactPage() {
               Start a project.
             </h1>
             <p className="mt-3 text-base leading-relaxed text-muted-foreground">
-              Share your website, product, or launch goal. We&apos;ll review where you are and how we
-              can help you ship it.
+              Share your website, custom software, mobile app, or infrastructure goal. We&apos;ll
+              review where you are and how we can help you ship it.
             </p>
 
             <div className="mt-10">

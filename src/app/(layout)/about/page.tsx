@@ -5,6 +5,7 @@ import { ArrowRight } from "lucide-react";
 import { FigmaFooter } from "@/components/layout/figma-footer";
 import { FigmaNav } from "@/components/layout/figma-nav";
 import { MarketingCtaSection } from "@/components/marketing/marketing-cta-section";
+import { EditorialPhotoSection } from "@/components/marketing/editorial-photo";
 import { MarketingFadeIn } from "@/components/marketing/marketing-motion";
 import { MarketingPageHero } from "@/components/marketing/marketing-page-hero";
 import {
@@ -14,12 +15,13 @@ import {
 import { MarketingProjectCards } from "@/components/marketing/marketing-work-grid";
 import { PageBreadcrumbs } from "@/components/seo/page-breadcrumbs";
 import { buildPageMetadata } from "@/lib/metadata";
+import { editorialImages } from "@/lib/editorial-images";
 import { canonicalPath, siteLocation, siteName } from "@/lib/site";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "About Comlabs Technologies Pvt Ltd",
   description:
-    "Learn about Comlabs Technologies Pvt Ltd — a Pune-based website design and software development studio building websites, CMS platforms, and product interfaces.",
+    "Learn about Comlabs Technologies Pvt Ltd — a Pune-based design and engineering studio building websites, custom software, mobile products, and scalable digital infrastructure.",
   path: "/about",
   absoluteTitle: true,
 });
@@ -36,10 +38,12 @@ export default function AboutPage() {
         <MarketingPageHero
           eyebrow="About"
           title={siteName}
-          description={`A website design and software development studio in ${siteLocation}. We help companies ship credible websites, content systems, product interfaces, and focused internal tools.`}
+          description={`A design and engineering studio in ${siteLocation}. We help companies ship high-performance websites, custom software, mobile products, and scalable digital infrastructure.`}
         >
           <PageBreadcrumbs currentPath="/about" items={[{ label: "About" }]} />
         </MarketingPageHero>
+
+        <EditorialPhotoSection image={editorialImages.aboutDesert} />
 
         <section className="border-y border-border bg-card px-6 py-20 md:py-28">
           <div className="mx-auto grid max-w-6xl gap-16 lg:grid-cols-2 lg:gap-20">
@@ -49,15 +53,15 @@ export default function AboutPage() {
                 eyebrow="What we do"
                 title={
                   <>
-                    Design and development,{" "}
+                    Design and engineering,{" "}
                     <MarketingOrangeHighlight>together</MarketingOrangeHighlight>.
                   </>
                 }
               />
               <p className="mt-5 text-base leading-[1.7] text-muted-foreground">
-                Comlabs combines UX structure, interface design, and front-end engineering. Projects
-                range from marketing websites and redesigns to CMS implementations, ERP modules, and
-                product UI for web applications.
+                Comlabs combines UX structure, interface design, and production engineering. Projects
+                range from marketing websites and redesigns to custom software, mobile apps, and
+                cloud infrastructure for growing product teams.
               </p>
             </MarketingFadeIn>
             <MarketingFadeIn delay={0.08}>

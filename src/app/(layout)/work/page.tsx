@@ -38,7 +38,7 @@ export default function WorkIndexPage() {
               <MarketingOrangeHighlight>practice</MarketingOrangeHighlight>.
             </>
           }
-          description="Recent projects from Comlabs Technologies Pvt Ltd — from conversion-focused website rebuilds to product UI and onboarding flows."
+          description="Recent projects from Comlabs Technologies Pvt Ltd — from conversion-focused website rebuilds to custom software and product onboarding flows."
         >
           <PageBreadcrumbs currentPath="/work" items={[{ label: "Work" }]} />
         </MarketingPageHero>
@@ -61,22 +61,22 @@ export default function WorkIndexPage() {
                 </p>
                 <div className="mt-6 flex flex-wrap gap-3">
                   <Link
-                    href={canonicalPath("/services/website-redesign")}
-                    className="rounded-full border border-border px-4 py-2 text-sm text-muted-foreground transition-all hover:border-foreground/20 hover:bg-background hover:text-foreground"
-                  >
-                    Website redesign
-                  </Link>
-                  <Link
                     href={canonicalPath("/services/website-design-development")}
                     className="rounded-full border border-border px-4 py-2 text-sm text-muted-foreground transition-all hover:border-foreground/20 hover:bg-background hover:text-foreground"
                   >
                     Website design & development
                   </Link>
                   <Link
-                    href={canonicalPath("/services/product-ui-development")}
+                    href={canonicalPath("/services/custom-software-development")}
                     className="rounded-full border border-border px-4 py-2 text-sm text-muted-foreground transition-all hover:border-foreground/20 hover:bg-background hover:text-foreground"
                   >
-                    Product UI development
+                    Custom software development
+                  </Link>
+                  <Link
+                    href={canonicalPath("/services/seo-aeo-copywriting")}
+                    className="rounded-full border border-border px-4 py-2 text-sm text-muted-foreground transition-all hover:border-foreground/20 hover:bg-background hover:text-foreground"
+                  >
+                    SEO / AEO & copywriting
                   </Link>
                 </div>
               </div>

@@ -1,3 +1,5 @@
+import { editorialImages } from "@/lib/editorial-images";
+
 export type ServiceFaq = {
   question: string;
   answer: string;
@@ -14,6 +16,7 @@ export type ServicePageData = {
   subheadline: string;
   serviceType: string;
   schemaDescription: string;
+  editorialImage?: (typeof editorialImages)[keyof typeof editorialImages];
   proposition: string[];
   problems: string[];
   deliverables: string[];
@@ -29,16 +32,51 @@ export type ServicePageData = {
   faqs: ServiceFaq[];
 };
 
+const sharedProcess = [
+  {
+    step: "01",
+    title: "Discovery",
+    description:
+      "We review goals, constraints, existing systems, and the workflows that matter — then define scope that can ship.",
+  },
+  {
+    step: "02",
+    title: "Design",
+    description:
+      "Structure, UI, and technical approach are shaped together so what gets built matches how the business runs.",
+  },
+  {
+    step: "03",
+    title: "Build",
+    description:
+      "Production code in focused releases — with clear milestones, review points, and quality checks throughout.",
+  },
+  {
+    step: "04",
+    title: "Launch",
+    description:
+      "We deploy, verify critical paths, hand over documentation, and support the transition to your team or ours.",
+  },
+] as const;
+
 export const servicesIndex = {
   path: "/services",
-  metaTitle: "Website & Software Development Services",
+  metaTitle: "Website, Software & Mobile Development Services",
   metaDescription:
-    "Website design, redesign, CMS, ERP, and product UI development from Comlabs Technologies Pvt Ltd — a Pune-based studio for companies that need reliable delivery.",
+    "Website design, custom software, mobile apps, SEO/AEO, and cloud infrastructure from Comlabs Technologies Pvt Ltd — a Pune-based design and engineering studio.",
   eyebrow: "Services",
-  headline: "Website and software development, end to end.",
+  headline: "Design and engineering for products that need to ship.",
   subheadline:
-    "Comlabs Technologies Pvt Ltd builds high-performance websites, CMS platforms, product interfaces, and custom web applications for teams in Pune, India, and worldwide.",
+    "Comlabs Technologies Pvt Ltd builds high-performance websites, custom software, mobile products, and scalable digital infrastructure for teams in Pune, India, and worldwide.",
 } as const;
+
+export const canonicalServicePaths = [
+  "/services/website-design-development",
+  "/services/custom-software-development",
+  "/services/mobile-app-development",
+  "/services/seo-aeo-copywriting",
+  "/services/cloud-infrastructure-scaling",
+] as const;
 
 export const servicePages: ServicePageData[] = [
   {
@@ -47,162 +85,46 @@ export const servicePages: ServicePageData[] = [
     title: "Website Design & Development",
     metaTitle: "Website Design & Development Company in Pune",
     metaDescription:
-      "Comlabs designs and develops fast, conversion-focused websites for growing companies — from structure and UI to production-ready Next.js builds.",
+      "Comlabs designs and develops fast, conversion-focused websites — new builds, redesigns, landing pages, and CMS-backed marketing sites from wireframe to production.",
     eyebrow: "Website design & development",
     headline: "Websites designed to earn trust and convert.",
     subheadline:
-      "We plan, design, and build marketing and product sites with clear messaging, responsive UI, and performance that holds up under real traffic.",
+      "We plan, design, and build marketing and company sites with clear messaging, responsive UI, and performance that holds up under real traffic.",
     serviceType: "Website design and development",
     schemaDescription:
-      "Website design and development for companies that need credible positioning, fast pages, and maintainable front-end implementation.",
+      "Website design and development including new sites, redesigns, landing pages, front-end builds, and CMS-backed marketing websites.",
+    editorialImage: editorialImages.websiteDesign,
     proposition: [
       "Comlabs combines UX structure, visual design, and front-end development so your site ships as one coherent product — not a handoff between teams.",
-      "Based in Pune, we work with local and remote clients on marketing sites, product landing pages, and multi-page company websites.",
+      "Engagements cover new websites, full redesigns, campaign landing pages, and CMS-backed marketing sites — built around how your team publishes and sells.",
     ],
     problems: [
       "Visitors leave because the site looks outdated or unclear about what you offer.",
       "Pages load slowly or break on mobile, undermining trust before a sales conversation starts.",
       "Marketing wants updates but the current stack makes every change slow or risky.",
+      "A redesign is overdue but you cannot afford to lose search visibility or brand equity.",
     ],
     deliverables: [
       "Information architecture and page wireframes aligned to your offer",
       "High-fidelity UI design for key templates and components",
       "Responsive front-end build with analytics and form integrations",
+      "CMS setup or integration for pages your team can maintain",
       "Launch support, documentation, and a path for post-launch iteration",
     ],
-    process: [
-      {
-        step: "01",
-        title: "Discovery",
-        description:
-          "We review goals, audience, existing content, and constraints — then define the pages and flows that matter most.",
-      },
-      {
-        step: "02",
-        title: "Design",
-        description:
-          "Wireframes become polished UI with typography, spacing, and component patterns that match your brand direction.",
-      },
-      {
-        step: "03",
-        title: "Build",
-        description:
-          "Production code in a modern stack — typically Next.js and React — with performance, accessibility, and SEO basics built in.",
-      },
-      {
-        step: "04",
-        title: "Launch",
-        description:
-          "We deploy, verify critical paths, and hand over a site your team can keep improving without starting from scratch.",
-      },
-    ],
+    process: [...sharedProcess],
     capabilities: [
+      "New company and marketing websites",
+      "Website redesigns and conversion-focused rebuilds",
+      "Landing pages for launches, waitlists, and campaigns",
       "Next.js and React front-end development",
-      "Responsive marketing and product pages",
-      "Component systems and design tokens",
-      "Forms, CRM, and analytics integrations",
+      "CMS-backed page templates and content models",
       "Core Web Vitals–aware implementation",
     ],
     suitableFor: [
       "Companies launching or repositioning online",
       "Teams replacing a template site with something credible",
-      "Founders who need one partner for design through deployment",
-    ],
-    relatedCaseStudy: {
-      client: "Vithub",
-      href: "/work/vithub",
-      summary:
-        "A design-led marketing website built to give Vithub a strong digital identity and room to grow.",
-    },
-    relatedServices: [
-      { label: "Website redesign", href: "/services/website-redesign" },
-      { label: "CMS development", href: "/services/cms-development" },
-      { label: "Product UI development", href: "/services/product-ui-development" },
-    ],
-    faqs: [
-      {
-        question: "Do you handle both design and development?",
-        answer:
-          "Yes. Most website projects include UX structure, visual design, and front-end implementation in one engagement so nothing gets lost between handoffs.",
-      },
-      {
-        question: "What stack do you typically use?",
-        answer:
-          "We usually build with Next.js, React, and TypeScript, paired with a CMS or content approach that fits how your team publishes updates.",
-      },
-      {
-        question: "Can you work with our existing brand?",
-        answer:
-          "Yes. We can refine and extend existing brand direction rather than forcing a full rebrand when that is not needed.",
-      },
-    ],
-  },
-  {
-    slug: "website-redesign",
-    path: "/services/website-redesign",
-    title: "Website Redesign",
-    metaTitle: "Website Redesign Services for Growing Companies",
-    metaDescription:
-      "Upgrade an underperforming website with clearer messaging, modern UI, and faster pages — without losing the brand equity you have already built.",
-    eyebrow: "Website redesign",
-    headline: "Redesigns that fix positioning, speed, and conversion.",
-    subheadline:
-      "When your site no longer reflects the business you run today, we rebuild structure, design, and front-end quality so it supports sales instead of slowing it down.",
-    serviceType: "Website redesign",
-    schemaDescription:
-      "Website redesign services for companies whose current site hurts credibility, conversion, or maintainability.",
-    proposition: [
-      "A redesign is not a visual refresh alone. We audit messaging, page flow, and technical debt, then rebuild what is holding the business back.",
-      "Comlabs has delivered full rebuilds for clients who needed enterprise-grade credibility — see our Global Services case study.",
-    ],
-    problems: [
-      "The site looks smaller than the deals you are trying to win.",
-      "Conversion paths are buried or confusing, so good traffic does not become pipeline.",
-      "The codebase or CMS makes simple updates expensive.",
-    ],
-    deliverables: [
-      "Audit of current pages, messaging, and technical constraints",
-      "Updated information architecture and conversion-focused layouts",
-      "New UI system applied across priority templates",
-      "Migrated or rebuilt front-end with improved performance",
-    ],
-    process: [
-      {
-        step: "01",
-        title: "Audit",
-        description:
-          "We map what is working, what is not, and which pages drive revenue or trust.",
-      },
-      {
-        step: "02",
-        title: "Restructure",
-        description:
-          "Messaging and navigation are simplified so visitors understand the offer quickly.",
-      },
-      {
-        step: "03",
-        title: "Redesign & rebuild",
-        description:
-          "New design and code replace the weakest templates first, then roll out site-wide.",
-      },
-      {
-        step: "04",
-        title: "Measure",
-        description:
-          "Analytics and key conversion events are verified so improvements can be tracked after launch.",
-      },
-    ],
-    capabilities: [
-      "Conversion-focused page structure",
-      "Enterprise-ready visual design",
-      "Performance improvements on launch",
-      "Content migration support",
-      "SEO-safe URL and metadata updates",
-    ],
-    suitableFor: [
-      "B2B teams outgrowing an old brochure site",
-      "Service businesses targeting larger accounts",
       "Marketing leaders who need measurable uplift, not just new visuals",
+      "Founders who need one partner for design through deployment",
     ],
     relatedCaseStudy: {
       client: "Global Services",
@@ -211,185 +133,85 @@ export const servicePages: ServicePageData[] = [
         "A full website rebuild that improved conversion and helped position Global Services for enterprise telecom clients.",
     },
     relatedServices: [
-      { label: "Website design & development", href: "/services/website-design-development" },
-      { label: "CMS development", href: "/services/cms-development" },
-      { label: "Product UI development", href: "/services/product-ui-development" },
+      { label: "SEO / AEO & copywriting", href: "/services/seo-aeo-copywriting" },
+      { label: "Custom software development", href: "/services/custom-software-development" },
+      { label: "Cloud infrastructure & scaling", href: "/services/cloud-infrastructure-scaling" },
     ],
     faqs: [
       {
-        question: "Will a redesign hurt our existing SEO?",
+        question: "Do you handle both design and development?",
         answer:
-          "We plan URL, redirect, and metadata changes carefully so search equity is preserved while pages improve.",
+          "Yes. Most website projects include UX structure, visual design, and front-end implementation in one engagement so nothing gets lost between handoffs.",
       },
       {
-        question: "Can you keep parts of the current brand?",
+        question: "Can you redesign an existing site without starting from scratch?",
         answer:
-          "Yes. Redesigns often keep core brand elements while improving layout, typography, and clarity.",
+          "Yes. We audit messaging, page flow, and technical debt first — then rebuild what is holding the business back while planning redirects and metadata carefully.",
       },
       {
-        question: "How long does a typical redesign take?",
+        question: "What stack do you typically use?",
         answer:
-          "Most multi-page redesigns run a few weeks to a couple of months depending on scope, content readiness, and integrations.",
+          "We usually build with Next.js, React, and TypeScript, paired with a CMS or content approach that fits how your team publishes updates.",
       },
     ],
   },
   {
-    slug: "cms-development",
-    path: "/services/cms-development",
-    title: "Custom CMS Development",
-    metaTitle: "Custom CMS Development Services",
+    slug: "custom-software-development",
+    path: "/services/custom-software-development",
+    title: "Custom Software Development",
+    metaTitle: "Custom Software Development Services in Pune",
     metaDescription:
-      "Custom CMS development so marketing and operations teams can publish and manage content without fighting the codebase — built around your workflows.",
-    eyebrow: "CMS development",
-    headline: "Content systems your team can actually run.",
+      "Custom web applications, SaaS products, dashboards, ERP modules, and internal tools — designed and built around how your business actually operates.",
+    eyebrow: "Custom software development",
+    headline: "Software shaped around how your business runs.",
     subheadline:
-      "We design and build CMS setups — headless or integrated — that match how your team creates pages, updates copy, and ships campaigns.",
-    serviceType: "Custom CMS development",
+      "We build web applications, SaaS products, dashboards, ERP modules, and internal tools when off-the-shelf products do not fit the workflow.",
+    serviceType: "Custom software development",
     schemaDescription:
-      "Custom CMS development for teams that need structured content, editorial workflows, and maintainable publishing tools.",
+      "Custom software development including web applications, SaaS, dashboards, ERP systems, CMS platforms, internal tools, APIs, and product UI.",
+    editorialImage: editorialImages.customSoftware,
     proposition: [
-      "The right CMS reduces dependency on developers for everyday updates while keeping the front-end fast and flexible.",
-      "Comlabs implements content models, admin UX, and front-end rendering so publishing stays predictable after launch.",
-    ],
-    problems: [
-      "Marketing waits on developers for simple copy or landing page changes.",
-      "Off-the-shelf CMS templates fight your page structure and brand.",
-      "Content is duplicated across tools with no single source of truth.",
-    ],
-    deliverables: [
-      "Content model design for pages, modules, and reusable blocks",
-      "CMS configuration or custom admin where needed",
-      "Front-end integration with preview and publishing workflow",
-      "Editor documentation and handover",
-    ],
-    process: [
-      {
-        step: "01",
-        title: "Model content",
-        description:
-          "We define fields, relationships, and reusable blocks based on real page types you publish.",
-      },
-      {
-        step: "02",
-        title: "Configure CMS",
-        description:
-          "Admin views, roles, and validation are set up so editors see only what they need.",
-      },
-      {
-        step: "03",
-        title: "Connect front-end",
-        description:
-          "Pages render from the CMS with type-safe data fetching and preview support.",
-      },
-      {
-        step: "04",
-        title: "Train & launch",
-        description:
-          "We walk your team through publishing workflows before go-live.",
-      },
-    ],
-    capabilities: [
-      "Headless CMS integration",
-      "Structured content and reusable blocks",
-      "Preview and staging workflows",
-      "Role-based editing access",
-      "Next.js rendering and caching patterns",
-    ],
-    suitableFor: [
-      "Marketing teams publishing frequently",
-      "Companies with multiple page templates or locales",
-      "Products that mix marketing pages with logged-in experiences",
-    ],
-    relatedServices: [
-      { label: "Website design & development", href: "/services/website-design-development" },
-      { label: "Website redesign", href: "/services/website-redesign" },
-      { label: "Product UI development", href: "/services/product-ui-development" },
-    ],
-    faqs: [
-      {
-        question: "Do you only build custom CMS platforms from scratch?",
-        answer:
-          "No. We often integrate proven headless CMS tools and tailor the content model, admin experience, and front-end — custom builds only when requirements demand it.",
-      },
-      {
-        question: "Can non-technical editors manage pages safely?",
-        answer:
-          "Yes. We constrain layouts with reusable blocks and validation so updates stay on-brand and hard to break.",
-      },
-    ],
-  },
-  {
-    slug: "erp-development",
-    path: "/services/erp-development",
-    title: "Custom ERP Development",
-    metaTitle: "Custom ERP Development Services",
-    metaDescription:
-      "Custom ERP development for operations teams — modules, integrations, and workflows built around how your business actually runs, not generic templates.",
-    eyebrow: "ERP development",
-    headline: "ERP modules and workflows built for your operations.",
-    subheadline:
-      "When off-the-shelf ERP products do not fit, Comlabs builds focused internal systems — inventory, orders, approvals, reporting — integrated with the tools you already use.",
-    serviceType: "Custom ERP development",
-    schemaDescription:
-      "Custom ERP development including business modules, workflow automation, integrations, and admin interfaces for operations teams.",
-    proposition: [
-      "We scope ERP work around concrete operational problems — not a generic platform pitch.",
-      "Engagements typically combine data modeling, role-based admin UI, integrations, and phased rollout.",
+      "We scope software around concrete operational problems — not a generic platform pitch.",
+      "Engagements combine data modeling, role-based admin UI, product front-ends, integrations, and phased rollout so teams adopt new workflows without a big-bang cutover.",
     ],
     problems: [
       "Spreadsheets and disconnected tools create errors and slow reporting.",
-      "Legacy ERP modules are expensive to change and do not match current processes.",
-      "Teams need approvals, inventory, or order flows that standard products handle poorly.",
+      "Off-the-shelf products handle your edge cases poorly or require expensive customization.",
+      "Product UI has grown cluttered as features accumulate without a coherent system.",
+      "Marketing and operations depend on developers for changes that should be self-serve.",
     ],
     deliverables: [
       "Process mapping and module scope for phase one",
-      "Data models for core entities and permissions",
-      "Admin and operations UI for day-to-day tasks",
-      "Integrations with accounting, CRM, or warehouse tools where required",
-      "Deployment plan with training for internal users",
+      "Data models, permissions, and API contracts",
+      "Admin, dashboard, and customer-facing UI",
+      "Integrations with CRM, accounting, or third-party tools where required",
+      "Deployment plan with documentation and handover",
     ],
-    process: [
-      {
-        step: "01",
-        title: "Scope modules",
-        description:
-          "We identify the highest-friction workflows to automate first instead of boiling the ocean.",
-      },
-      {
-        step: "02",
-        title: "Design operations UI",
-        description:
-          "Screens are built for the people doing the work — clear tables, filters, and actions.",
-      },
-      {
-        step: "03",
-        title: "Build & integrate",
-        description:
-          "Backend services, permissions, and integrations are implemented in focused releases.",
-      },
-      {
-        step: "04",
-        title: "Roll out in phases",
-        description:
-          "Modules go live incrementally so teams adopt new workflows without a big-bang cutover.",
-      },
-    ],
+    process: [...sharedProcess],
     capabilities: [
-      "Role-based admin interfaces",
-      "Inventory, orders, and approval workflows",
-      "API integrations with third-party systems",
-      "Reporting views and export flows",
-      "TypeScript/Node services with structured data stores",
+      "Web applications and SaaS products",
+      "Dashboards, settings, and operator interfaces",
+      "ERP modules and internal operations tools",
+      "Custom CMS platforms and structured content systems",
+      "Product UI and front-end for customer-facing flows",
+      "APIs, integrations, and workflow automation",
     ],
     suitableFor: [
       "Operations teams outgrowing spreadsheets",
+      "SaaS teams improving activation, retention, or internal tooling",
       "Businesses with specialized workflows in manufacturing, distribution, or services",
-      "Leaders who need a phased internal system rather than a massive ERP rollout",
+      "Leaders who need phased delivery rather than a massive platform rollout",
     ],
+    relatedCaseStudy: {
+      client: "Formial Labs",
+      href: "/work/formial-labs",
+      summary:
+        "A structured product onboarding flow and dashboard UI built to move users from signup to first value with less friction.",
+    },
     relatedServices: [
-      { label: "CMS development", href: "/services/cms-development" },
-      { label: "Product UI development", href: "/services/product-ui-development" },
       { label: "Website design & development", href: "/services/website-design-development" },
+      { label: "Mobile app development", href: "/services/mobile-app-development" },
+      { label: "Cloud infrastructure & scaling", href: "/services/cloud-infrastructure-scaling" },
     ],
     faqs: [
       {
@@ -398,100 +220,212 @@ export const servicePages: ServicePageData[] = [
           "Usually no. We build targeted modules or internal tools that integrate with existing systems, or replace only the parts that block daily operations.",
       },
       {
-        question: "Can ERP work start with a single module?",
+        question: "Can software work start with a single module?",
         answer:
           "Yes. Phased delivery is the default — prove value on one workflow, then expand.",
       },
-    ],
-  },
-  {
-    slug: "product-ui-development",
-    path: "/services/product-ui-development",
-    title: "Product UI & Frontend Development",
-    metaTitle: "Product UI & Frontend Development Studio",
-    metaDescription:
-      "Product UI and front-end development for dashboards, onboarding, and customer-facing flows — designed and built to feel polished from the first session.",
-    eyebrow: "Product UI & front-end",
-    headline: "Product interfaces that feel clear on day one.",
-    subheadline:
-      "We design and build dashboards, onboarding, and customer-facing product UI with the same attention to detail we bring to marketing sites.",
-    serviceType: "Product UI and frontend development",
-    schemaDescription:
-      "Product UI and frontend development for SaaS dashboards, onboarding flows, and customer-facing web applications.",
-    proposition: [
-      "Product UI work spans UX flow, visual design, and front-end implementation — especially where first-run experience affects retention.",
-      "See our Formial Labs case study for a multi-page onboarding flow built to reduce drop-off.",
-    ],
-    problems: [
-      "New users stall during setup and never reach activation.",
-      "Dashboards grow cluttered as features accumulate.",
-      "Design and engineering speak different languages, so UI quality slips at implementation.",
-    ],
-    deliverables: [
-      "User flows for key jobs-to-be-done",
-      "UI design for web dashboards and responsive views",
-      "Component libraries aligned to product patterns",
-      "Front-end implementation with accessible, testable components",
-    ],
-    process: [
-      {
-        step: "01",
-        title: "Map flows",
-        description:
-          "We document the paths users take to complete critical tasks and where they drop off.",
-      },
-      {
-        step: "02",
-        title: "Design UI",
-        description:
-          "Screens and components are designed for clarity, density, and consistent interaction patterns.",
-      },
-      {
-        step: "03",
-        title: "Implement",
-        description:
-          "Front-end code matches the design system and connects to your APIs or prototypes.",
-      },
-      {
-        step: "04",
-        title: "Iterate",
-        description:
-          "We refine with your team based on usage feedback and release constraints.",
-      },
-    ],
-    capabilities: [
-      "Dashboard and settings UI",
-      "Multi-step onboarding",
-      "Design systems and component libraries",
-      "React / Next.js product front-ends",
-      "Motion for state changes where it aids comprehension",
-    ],
-    suitableFor: [
-      "SaaS teams improving activation or retention",
-      "Internal tools that need a credible operator experience",
-      "Founders shipping an MVP UI without hiring a full product team",
-    ],
-    relatedCaseStudy: {
-      client: "Formial Labs",
-      href: "/work/formial-labs",
-      summary:
-        "A structured onboarding flow that moves users from signup to first value with less friction.",
-    },
-    relatedServices: [
-      { label: "Website design & development", href: "/services/website-design-development" },
-      { label: "CMS development", href: "/services/cms-development" },
-      { label: "Website redesign", href: "/services/website-redesign" },
-    ],
-    faqs: [
       {
         question: "Do you work from existing product designs?",
         answer:
           "Yes. We can implement your Figma files, or design and build when product UX is part of the scope.",
       },
+    ],
+  },
+  {
+    slug: "mobile-app-development",
+    path: "/services/mobile-app-development",
+    title: "Mobile App Development",
+    metaTitle: "Mobile App Development Services",
+    metaDescription:
+      "iOS and Android product development with clear UX, production-ready engineering, and the backend infrastructure to support them.",
+    eyebrow: "Mobile app development",
+    headline: "Mobile products built for daily use.",
+    subheadline:
+      "We design and build iOS and Android applications with polished UX, reliable engineering, and the APIs and infrastructure they depend on.",
+    serviceType: "Mobile app development",
+    schemaDescription:
+      "Mobile app development including iOS and Android products, cross-platform apps, mobile UI, application APIs, and integrations.",
+    editorialImage: editorialImages.mobileApp,
+    proposition: [
+      "Mobile work spans product UX, native or cross-platform engineering, and the backend services that power accounts, data, and notifications.",
+      "We treat mobile as part of the product system — not an isolated screen design exercise.",
+    ],
+    problems: [
+      "A web product needs a credible mobile experience but the team lacks mobile delivery capacity.",
+      "An existing app feels slow, dated, or hard to extend as features accumulate.",
+      "Onboarding and core flows were never designed for small screens and real usage patterns.",
+      "Backend APIs and integrations were bolted on after the UI, causing reliability issues.",
+    ],
+    deliverables: [
+      "Mobile UX flows for core jobs-to-be-done",
+      "UI design for iOS and Android (or cross-platform) patterns",
+      "Production app builds with store-ready assets",
+      "Application APIs and integration points where required",
+      "Launch support and a plan for post-release iteration",
+    ],
+    process: [...sharedProcess],
+    capabilities: [
+      "iOS and Android product development",
+      "Cross-platform apps where it fits the product",
+      "Mobile product UI and interaction design",
+      "Application APIs and backend services",
+      "Push notifications, auth, and third-party integrations",
+      "App store submission support",
+    ],
+    suitableFor: [
+      "Product teams extending a web platform to mobile",
+      "Founders shipping an MVP app without hiring a full mobile team",
+      "Businesses replacing a legacy app with something maintainable",
+    ],
+    relatedServices: [
+      { label: "Custom software development", href: "/services/custom-software-development" },
+      { label: "Cloud infrastructure & scaling", href: "/services/cloud-infrastructure-scaling" },
+      { label: "Website design & development", href: "/services/website-design-development" },
+    ],
+    faqs: [
       {
-        question: "Can you help only with front-end implementation?",
+        question: "Do you build native or cross-platform apps?",
         answer:
-          "Yes, when designs and API contracts are stable. Combined design + build is common when speed and cohesion matter.",
+          "We choose based on product requirements, timeline, and team constraints — native when platform-specific quality matters most, cross-platform when speed and shared logic are the priority.",
+      },
+      {
+        question: "Can you connect a mobile app to our existing backend?",
+        answer:
+          "Yes. We often extend existing APIs or build the services needed to support mobile accounts, data sync, and integrations.",
+      },
+    ],
+  },
+  {
+    slug: "seo-aeo-copywriting",
+    path: "/services/seo-aeo-copywriting",
+    title: "SEO / AEO Optimisation & Copywriting",
+    metaTitle: "SEO, AEO & Copywriting Services",
+    metaDescription:
+      "Technical SEO, search positioning, AI search optimisation, structured content, schema, and conversion copywriting for websites that need to be found and understood.",
+    eyebrow: "SEO / AEO & copywriting",
+    headline: "Found in search. Clear on the page.",
+    subheadline:
+      "We improve how your site ranks, reads, and converts — across Google and AI-powered search — with technical SEO, structured content, and copy that earns attention.",
+    serviceType: "SEO, AEO optimisation and copywriting",
+    schemaDescription:
+      "SEO and AEO optimisation, technical search improvements, structured content, schema markup, and conversion copywriting for websites and product pages.",
+    editorialImage: editorialImages.seoAeo,
+    proposition: [
+      "Search work combines technical fixes, page structure, and copy that matches what people actually search for — including how AI systems summarise and cite content.",
+      "We align metadata, schema, internal linking, and on-page copy so visibility and conversion improve together.",
+    ],
+    problems: [
+      "Good traffic arrives but visitors leave because the message is vague or the page structure is confusing.",
+      "Technical issues — slow pages, poor metadata, broken indexing — limit reach regardless of content quality.",
+      "AI search and answer engines surface competitors because your content lacks structure and clarity.",
+      "Marketing copy was written for the brand, not for the queries that drive qualified visits.",
+    ],
+    deliverables: [
+      "Technical SEO audit and priority fix list",
+      "Page-level metadata, headings, and internal link updates",
+      "Schema and structured data where it adds clarity for search",
+      "Conversion-focused copy for key pages and landing templates",
+      "Content guidelines your team can follow after handover",
+    ],
+    process: [...sharedProcess],
+    capabilities: [
+      "Technical SEO and on-page optimisation",
+      "Search positioning and keyword-informed page structure",
+      "AI search / answer-engine optimisation (AEO)",
+      "Structured content and schema markup",
+      "Website and landing page copywriting",
+      "Redirect and metadata planning for site migrations",
+    ],
+    suitableFor: [
+      "Companies launching or relaunching a site that needs to rank from day one",
+      "Marketing teams with traffic but weak conversion on key pages",
+      "Businesses repositioning and needing copy that matches the new offer",
+    ],
+    relatedCaseStudy: {
+      client: "Vithub",
+      href: "/work/vithub",
+      summary:
+        "A design-led marketing website built to give Vithub a strong digital identity and clearer positioning online.",
+    },
+    relatedServices: [
+      { label: "Website design & development", href: "/services/website-design-development" },
+      { label: "Custom software development", href: "/services/custom-software-development" },
+      { label: "Cloud infrastructure & scaling", href: "/services/cloud-infrastructure-scaling" },
+    ],
+    faqs: [
+      {
+        question: "What is AEO and why does it matter?",
+        answer:
+          "Answer-engine optimisation focuses on how AI-powered search tools read, summarise, and cite your content. Clear structure, accurate metadata, and authoritative copy help your pages appear in those results.",
+      },
+      {
+        question: "Will SEO work hurt our existing rankings during a redesign?",
+        answer:
+          "Not when planned correctly. We map URLs, redirects, and metadata before launch so search equity is preserved while pages improve.",
+      },
+    ],
+  },
+  {
+    slug: "cloud-infrastructure-scaling",
+    path: "/services/cloud-infrastructure-scaling",
+    title: "Cloud Infrastructure & Scaling",
+    metaTitle: "Cloud Infrastructure & Scaling Services",
+    metaDescription:
+      "Cloud architecture, deployments, databases, caching, performance engineering, and observability — built to keep products fast and reliable as usage grows.",
+    eyebrow: "Cloud infrastructure & scaling",
+    headline: "Infrastructure that keeps pace with usage.",
+    subheadline:
+      "We design and operate cloud architecture, deployments, and performance engineering so your product stays fast, observable, and reliable in production.",
+    serviceType: "Cloud infrastructure and scaling",
+    schemaDescription:
+      "Cloud infrastructure and scaling including architecture, application deployments, databases, CDN and caching, performance, observability, and reliability engineering.",
+    editorialImage: editorialImages.cloudInfrastructure,
+    proposition: [
+      "Infrastructure work is tied to product outcomes — uptime, response times, deployment confidence, and cost that scales sensibly.",
+      "We help teams move from fragile manual deploys to environments they can trust as traffic and complexity grow.",
+    ],
+    problems: [
+      "Production deploys are manual, risky, or slow — blocking releases and fixes.",
+      "Performance degrades under load because caching, databases, or architecture were not planned for growth.",
+      "Incidents are hard to diagnose without logging, monitoring, or clear environment separation.",
+      "Cloud costs climb without a clear map of what is running or why.",
+    ],
+    deliverables: [
+      "Infrastructure review and target architecture outline",
+      "Deployment pipelines and environment configuration",
+      "Database, CDN, and caching strategy for your stack",
+      "Observability setup — logging, monitoring, and alerts",
+      "Runbooks and handover for your team",
+    ],
+    process: [...sharedProcess],
+    capabilities: [
+      "Cloud architecture and environment design",
+      "Application deployments and CI/CD pipelines",
+      "Database setup, migrations, and scaling patterns",
+      "CDN, caching, and performance optimisation",
+      "Observability, logging, and incident response readiness",
+      "Infrastructure cost and reliability reviews",
+    ],
+    suitableFor: [
+      "Product teams preparing for launch or a traffic spike",
+      "Companies outgrowing a single-server or manual deploy setup",
+      "Engineering leads who need production confidence without hiring a full platform team",
+    ],
+    relatedServices: [
+      { label: "Custom software development", href: "/services/custom-software-development" },
+      { label: "Mobile app development", href: "/services/mobile-app-development" },
+      { label: "Website design & development", href: "/services/website-design-development" },
+    ],
+    faqs: [
+      {
+        question: "Which cloud providers do you work with?",
+        answer:
+          "Most engagements use AWS, Google Cloud, or Vercel-style edge hosting depending on the product stack. We recommend based on your requirements, not a fixed vendor preference.",
+      },
+      {
+        question: "Can you improve an existing deployment without a full rebuild?",
+        answer:
+          "Yes. Many projects start with observability, caching, and deployment fixes that deliver immediate reliability gains before larger architectural changes.",
       },
     ],
   },

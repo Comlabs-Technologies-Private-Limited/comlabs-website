@@ -18,8 +18,8 @@ export function FigmaServicesSection() {
             <span style={{ color: "var(--warm-orange)" }}>great</span> products.
           </h2>
           <p className="mt-5 max-w-xl text-sm leading-relaxed text-muted-foreground md:text-base">
-            Focused website, product, and automation work designed to remove friction and help your
-            business grow.
+            Websites, custom software, mobile products, and infrastructure — built to remove friction
+            and help your business grow.
           </p>
         </div>
 
