@@ -9,92 +9,16 @@ import { useRef } from "react";
 import { SectionHeader } from "@/components/home/section-header";
 import { SectionContainer } from "@/components/layout/section-container";
 import { MOCK_VIEWPORT, ServiceMockup } from "@/components/home/services-mockups";
+import { buildHomeServiceCards, type HomeServiceCard } from "@/lib/canonical-services";
 import { servicesEyebrow, servicesSubtitle, servicesTitle } from "@/lib/page-styles";
 import { cn } from "@/lib/utils";
 import { canonicalPath } from "@/lib/site";
 
 const ease = [0.25, 0.1, 0, 1] as const;
 
-const serviceBackgrounds = [
-  "/services-bg/service-bg-1.png",
-  "/services-bg/service-bg-2.png",
-  "/services-bg/service-bg-3.png",
-  "/services-bg/service-bg-4.png",
-  "/services-bg/service-bg-5.png",
-] as const;
+const serviceItems = buildHomeServiceCards();
 
-const services = [
-  {
-    id: "website-design",
-    title: "Website Design & Development",
-    description:
-      "High-performance websites designed around positioning, usability and conversion — from first wireframe to production.",
-    background: serviceBackgrounds[0],
-    mockupImage: "/card-bg/mockup_before.png",
-    mockupAlt: "Before and after website rebuild comparison",
-    mockupOverlayClassName: "",
-    mockupWrapperClassName: "mt-12 md:mt-22",
-    mockupClassName: "scale-107 pl-1",
-    linkLabel: "View website services",
-    linkHref: "/services/website-design-development",
-  },
-  {
-    id: "custom-software",
-    title: "Custom Software Development",
-    description:
-      "Custom web applications, SaaS products and internal systems built around how your business actually works.",
-    background: serviceBackgrounds[1],
-    mockupImage: "/card-bg/product-ui-mockup.png",
-    mockupAlt: "Product dashboard UI design mockup",
-    mockupOverlayClassName: "mt-5 md:mt-6 scale-112",
-    mockupWrapperClassName: "",
-    mockupClassName: "",
-    linkLabel: "View custom software",
-    linkHref: "/services/custom-software-development",
-  },
-  {
-    id: "mobile-app",
-    title: "Mobile App Development",
-    description:
-      "Polished mobile products with clear UX, production-ready engineering and the infrastructure behind them.",
-    background: serviceBackgrounds[2],
-    mockupAlt: "",
-    mockupOverlayClassName: "inset-2.5 top-8 bottom-2.5 items-stretch md:inset-3 md:top-10",
-    mockupWrapperClassName: "flex h-full w-full max-w-[94%] flex-col",
-    mockupClassName: "",
-    linkLabel: "View mobile services",
-    linkHref: "/services/mobile-app-development",
-  },
-  {
-    id: "seo-aeo",
-    title: "SEO / AEO Optimisation & Copywriting",
-    description:
-      "Search strategy, technical optimisation and clear content built to earn visibility across Google and AI-powered search.",
-    background: serviceBackgrounds[3],
-    mockupAlt: "",
-    mockupOverlayClassName: "md:top-16 top-8 items-",
-    mockupWrapperClassName: "top-16",
-    mockupClassName: "",
-    linkLabel: "View SEO & copywriting",
-    linkHref: "/services/seo-aeo-copywriting",
-  },
-  {
-    id: "cloud-infrastructure",
-    title: "Cloud Infrastructure & Scaling",
-    description:
-      "Reliable cloud architecture, deployments and performance engineering designed to keep products fast as usage grows.",
-    background: serviceBackgrounds[4],
-    mockupAlt: "",
-    mockupOverlayClassName:
-      "inset-x-3 top-8 bottom-0 flex items-end justify-center md:inset-x-5 md:top-10",
-    mockupWrapperClassName: "flex w-full max-w-[92%] flex-col",
-    mockupClassName: "",
-    linkLabel: "View cloud services",
-    linkHref: "/services/cloud-infrastructure-scaling",
-  },
-] as const;
-
-export type ServiceItem = (typeof services)[number];
+export type ServiceItem = HomeServiceCard;
 
 function ServiceVisual({
   background,
@@ -208,7 +132,7 @@ function ServiceVisual({
 
 export function ServiceRow({
   title,
-  description,
+  cardDescription,
   background,
   index,
   mockupImage,
@@ -220,7 +144,7 @@ export function ServiceRow({
   linkLabel,
   linkHref,
   variant = "legacy",
-}: ServiceItem & { index: number; mockupImage?: string; variant?: "legacy" | "figma" }) {
+}: HomeServiceCard & { index: number; variant?: "legacy" | "figma" }) {
   const rowRef = useRef<HTMLElement>(null);
   const reduceMotion = useReducedMotion();
   const inView = useInView(rowRef, MOCK_VIEWPORT);
@@ -253,7 +177,7 @@ export function ServiceRow({
               : "mt-4 text-[15px] leading-relaxed text-zinc-500 md:text-base",
           )}
         >
-          {description}
+          {cardDescription}
         </p>
         <Link
           href={canonicalPath(linkHref)}
@@ -293,7 +217,7 @@ export function ServiceRow({
 /** @deprecated Use ServiceRow — kept for compatibility */
 export const ServiceCard = ServiceRow;
 
-export { services as serviceItems };
+export { serviceItems };
 
 export function ServicesSection() {
   return (
@@ -313,7 +237,7 @@ export function ServicesSection() {
         </SectionHeader>
 
         <div className="mt-16 flex flex-col gap-20 md:mt-20 md:gap-28 lg:gap-32">
-          {services.map((service, index) => (
+          {serviceItems.map((service, index) => (
             <ServiceRow key={service.id} {...service} index={index} />
           ))}
         </div>

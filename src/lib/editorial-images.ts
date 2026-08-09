@@ -22,7 +22,7 @@ export const editorialImages = {
   },
   customSoftware: {
     src: "/editorial/custom-software.jpg",
-    alt: "Aerial view of a mountain road through layered terrain",
+    alt: "Mountain range above a sea of clouds in warm, muted light",
     width: 1800,
     height: 1200,
   },

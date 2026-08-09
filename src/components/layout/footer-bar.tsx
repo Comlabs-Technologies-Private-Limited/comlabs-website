@@ -4,6 +4,7 @@ import { PixelGridMark } from "@/components/decorative/pixel-grid-mark";
 import { SectionContainer } from "@/components/layout/section-container";
 import { cn } from "@/lib/utils";
 import { canonicalPath } from "@/lib/site";
+import { footerServiceLinks } from "@/lib/canonical-services";
 
 const linkClass =
   "text-[13px] font-normal leading-[1.65] text-zinc-400 transition-colors hover:text-zinc-100";
@@ -18,25 +19,21 @@ const columns: {
   {
     title: "Capabilities",
     links: [
-      { href: "/#services", label: "Website rebuilds" },
-      { href: "/#services", label: "Startup websites" },
-      { href: "/#services", label: "Product UI/UX" },
-      { href: "/#services", label: "AI automation" },
+      { href: canonicalPath("/services"), label: "All services" },
+      ...footerServiceLinks.map((link) => ({
+        href: canonicalPath(link.href),
+        label: link.label,
+      })),
       { href: "/#work", label: "Work" },
-      { href: "/#pricing", label: "Pricing" },
       { href: canonicalPath("/contact"), label: "Contact" },
     ],
   },
   {
     title: "Services",
-    links: [
-      { href: "/#services", label: "Startup website design" },
-      { href: "/#services", label: "Conversion-focused websites" },
-      { href: "/#services", label: "Product UI for startups" },
-      { href: "/#services", label: "Frontend development" },
-      { href: "/#services", label: "AI automation for startups" },
-      { href: "/#tools", label: "Stack & tools" },
-    ],
+    links: footerServiceLinks.map((link) => ({
+      href: link.href,
+      label: link.label,
+    })),
   },
   {
     title: "Legal",
@@ -91,8 +88,8 @@ export function FooterBar() {
             <div className="min-w-0 flex-1 lg:flex-initial">
               <p className="text-[13px] font-medium text-zinc-200">ComLabs</p>
               <p className="mt-2 text-[12px] font-normal leading-relaxed text-zinc-500">
-                Premium websites, product interfaces, and automation systems for startups that need to
-                move fast and look credible.
+                Design and engineering studio building websites, custom software, mobile products, and
+                scalable infrastructure.
               </p>
             </div>
           </div>

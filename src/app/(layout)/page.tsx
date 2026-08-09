@@ -5,7 +5,7 @@ import { HomeJsonLd } from "@/components/seo/home-json-ld";
 import { buildPageMetadata } from "@/lib/metadata";
 import { siteDefaultDescription } from "@/lib/site";
 
-const HOME_TITLE = "Comlabs Technologies Pvt Ltd | Website Design Studio";
+const HOME_TITLE = "Comlabs Technologies Pvt Ltd | Design & Engineering Studio";
 
 export const metadata: Metadata = buildPageMetadata({
   title: HOME_TITLE,

@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { canonicalPath, isBlogPublic, siteDescriptor, siteLocation, siteName } from "@/lib/site";
+import { footerServiceLinks } from "@/lib/canonical-services";
 
 const FOOTER_COLUMNS = [
   {
@@ -15,14 +16,7 @@ const FOOTER_COLUMNS = [
   },
   {
     heading: "Services",
-    links: [
-      { label: "All services", href: "/services" },
-      { label: "Website design & development", href: "/services/website-design-development" },
-      { label: "Custom software development", href: "/services/custom-software-development" },
-      { label: "Mobile app development", href: "/services/mobile-app-development" },
-      { label: "SEO / AEO & copywriting", href: "/services/seo-aeo-copywriting" },
-      { label: "Cloud infrastructure & scaling", href: "/services/cloud-infrastructure-scaling" },
-    ],
+    links: [{ label: "All services", href: "/services" }, ...footerServiceLinks],
   },
   {
     heading: "Work",
