@@ -100,7 +100,7 @@ export const homeServiceMockupImages: Record<CanonicalServiceSlug, string> = {
   "website-design-development":
     "https://res.cloudinary.com/p8osc4y4/image/upload/v1786362044/ChatGPT_Image_Aug_10_2026_05_09_44_PM_1_gqznci.png",
   "custom-software-development":
-    "https://res.cloudinary.com/p8osc4y4/image/upload/v1786362044/ChatGPT_Image_Aug_10_2026_05_09_44_PM_2_o2vuma.png",
+    "https://res.cloudinary.com/p8osc4y4/image/upload/v1786363963/ChatGPT_Image_Aug_10_2026_05_42_31_PM_g4qshm.png",
   "mobile-app-development":
     "https://res.cloudinary.com/p8osc4y4/image/upload/v1786362044/ChatGPT_Image_Aug_10_2026_05_09_44_PM_3_uo0nwu.png",
   "seo-aeo-copywriting":
