@@ -3,6 +3,15 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   trailingSlash: true,
   allowedDevOrigins: ["192.168.1.23", "192.168.1.4"],
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        pathname: "/p8osc4y4/image/upload/**",
+      },
+    ],
+  },
   async redirects() {
     return [
       {
