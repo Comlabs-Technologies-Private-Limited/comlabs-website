@@ -7,7 +7,11 @@ export const globalServicesCaseStudy: CaseStudyContent = {
   slug: "global-services",
   client: "Global Services",
   year: "2025",
-  headline: "A website built to earn enterprise trust.",
+  headline: {
+    before: "A website built to earn ",
+    highlight: "enterprise",
+    after: " trust.",
+  },
   standfirst:
     "We rebuilt Global Services' website to close the gap between their capability in the field and how they appeared online — with clearer positioning, stronger structure and conversion paths built for enterprise buyers.",
   meta: [

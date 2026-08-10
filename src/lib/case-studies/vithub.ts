@@ -13,7 +13,11 @@ export const vithubCaseStudy: CaseStudyContent = {
   slug: "vithub",
   client: "Vithub",
   year: "2025",
-  headline: "A brand Vithub can grow on.",
+  headline: {
+    before: "A brand Vithub can ",
+    highlight: "grow",
+    after: " on.",
+  },
   standfirst:
     "We designed and built Vithub's marketing website — a design-led digital identity and campaign-ready foundation for a brand that needed somewhere credible to send traffic.",
   meta: [

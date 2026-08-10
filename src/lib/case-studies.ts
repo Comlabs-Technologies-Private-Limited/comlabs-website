@@ -46,11 +46,17 @@ export type CaseStudySection = {
   outcomes?: CaseStudyOutcomeRow[];
 };
 
+export type CaseStudyHeadline = {
+  before?: string;
+  highlight: string;
+  after?: string;
+};
+
 export type CaseStudyContent = {
   slug: string;
   client: string;
   year: string;
-  headline: string;
+  headline: CaseStudyHeadline;
   standfirst: string;
   meta: CaseStudyMetaItem[];
   leadImage: CaseStudyMedia;
