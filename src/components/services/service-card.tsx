@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 
 import { MarketingOrangeHighlight } from "@/components/marketing/marketing-section-header";
 import { getCanonicalService } from "@/lib/canonical-services";
@@ -36,7 +36,6 @@ type ServiceCardProps = {
 export function ServiceCard({ service, spanFull = false }: ServiceCardProps) {
   const image = service.editorialImage;
   const canonical = getCanonicalService(service.slug);
-  const description = canonical?.cardDescription ?? service.subheadline;
   const highlight = canonical?.cardTitleHighlight ?? service.title.split(" ")[0] ?? service.title;
 
   if (!image) {
@@ -50,7 +49,7 @@ export function ServiceCard({ service, spanFull = false }: ServiceCardProps) {
         spanFull ? "md:col-span-2" : ""
       }`}
     >
-      <div className="relative min-h-[14rem] sm:min-h-[16rem] md:min-h-[18rem] lg:min-h-[20rem]">
+      <div className="relative min-h-[12rem] sm:min-h-[14rem] md:min-h-[16rem] lg:min-h-[18rem]">
         <Image
           src={image.src}
           alt=""
@@ -69,18 +68,17 @@ export function ServiceCard({ service, spanFull = false }: ServiceCardProps) {
           aria-hidden
         />
 
-        <div className="relative flex h-full flex-col p-6 sm:p-8 md:p-10 lg:p-12">
+        <div className="relative h-full p-6 sm:p-8 md:p-10 lg:p-12">
           <h3 className="max-w-[16ch] text-pretty font-sans text-[1.0625rem] font-medium leading-[1.2] tracking-[-0.02em] text-neutral-900 sm:max-w-[18ch] sm:text-lg md:text-xl md:leading-tight">
             <ServiceCardTitle title={service.title} highlight={highlight} />
           </h3>
-          <p className="mt-3 max-w-[32ch] text-pretty text-[13px] font-normal leading-[1.6] text-neutral-600 sm:mt-4 sm:max-w-[34ch] sm:text-sm sm:leading-[1.65]">
-            {description}
-          </p>
-          <span className="mt-4 inline-flex w-fit items-center gap-1.5 rounded-full border border-neutral-900/15 bg-white/55 px-3.5 py-1.5 text-xs font-medium tracking-tight text-neutral-900 backdrop-blur-sm transition-colors group-hover:border-neutral-900/25 group-hover:bg-white/75 sm:mt-5 sm:px-4 sm:py-2 sm:text-[13px]">
-            Learn more
-            <ArrowRight
+
+          <span className="absolute bottom-6 right-6 inline-flex items-center gap-1 text-[11px] font-normal tracking-tight text-neutral-500 transition-colors group-hover:text-neutral-700 sm:bottom-8 sm:right-8 sm:text-xs">
+            Read more
+            <ArrowUpRight
               size={12}
-              className="shrink-0 motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover:translate-x-0.5"
+              strokeWidth={1.75}
+              className="shrink-0 opacity-60 motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover:translate-x-px motion-safe:group-hover:-translate-y-px motion-safe:group-hover:opacity-80"
               aria-hidden
             />
           </span>
