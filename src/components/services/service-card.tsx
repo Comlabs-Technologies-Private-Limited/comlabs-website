@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
 import { MarketingOrangeHighlight } from "@/components/marketing/marketing-section-header";
 import { getCanonicalService } from "@/lib/canonical-services";
@@ -75,6 +76,14 @@ export function ServiceCard({ service, spanFull = false }: ServiceCardProps) {
           <p className="mt-3 max-w-[32ch] text-pretty text-[13px] font-normal leading-[1.6] text-neutral-600 sm:mt-4 sm:max-w-[34ch] sm:text-sm sm:leading-[1.65]">
             {description}
           </p>
+          <span className="mt-4 inline-flex w-fit items-center gap-1.5 rounded-full border border-neutral-900/15 bg-white/55 px-3.5 py-1.5 text-xs font-medium tracking-tight text-neutral-900 backdrop-blur-sm transition-colors group-hover:border-neutral-900/25 group-hover:bg-white/75 sm:mt-5 sm:px-4 sm:py-2 sm:text-[13px]">
+            Learn more
+            <ArrowRight
+              size={12}
+              className="shrink-0 motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover:translate-x-0.5"
+              aria-hidden
+            />
+          </span>
         </div>
       </div>
     </Link>
