@@ -8,7 +8,7 @@ import {
   MarketingOrangeHighlight,
   MarketingSectionHeader,
 } from "@/components/marketing/marketing-section-header";
-import { MarketingServiceCards } from "@/components/marketing/marketing-service-cards";
+import { ServicesGrid } from "@/components/services/service-card";
 import { PageBreadcrumbs } from "@/components/seo/page-breadcrumbs";
 import { buildPageMetadata } from "@/lib/metadata";
 import { servicePages, servicesIndex } from "@/lib/services-data";
@@ -52,9 +52,8 @@ export default function ServicesIndexPage() {
                   <MarketingOrangeHighlight>stage</MarketingOrangeHighlight>.
                 </>
               }
-              description="Websites, custom software, mobile apps, SEO/AEO, and cloud infrastructure — each service page covers scope, process, and deliverables."
             />
-            <MarketingServiceCards services={servicePages} />
+            <ServicesGrid services={servicePages} />
           </div>
         </section>
 

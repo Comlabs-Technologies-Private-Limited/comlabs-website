@@ -16,9 +16,15 @@ type PageBreadcrumbsProps = {
   /** Canonical path for the current page, e.g. `/services/custom-software-development`. */
   currentPath: string;
   tone?: "light" | "dark";
+  className?: string;
 };
 
-export function PageBreadcrumbs({ items, currentPath, tone = "light" }: PageBreadcrumbsProps) {
+export function PageBreadcrumbs({
+  items,
+  currentPath,
+  tone = "light",
+  className,
+}: PageBreadcrumbsProps) {
   const isDark = tone === "dark";
   const schemaItems = [
     { name: "Home", url: canonicalUrl("/") },
@@ -35,7 +41,7 @@ export function PageBreadcrumbs({ items, currentPath, tone = "light" }: PageBrea
   return (
     <>
       <JsonLdScript data={getBreadcrumbSchema(schemaItems)} />
-      <nav aria-label="Breadcrumb" className="mb-6 md:mb-8">
+      <nav aria-label="Breadcrumb" className={className ?? "mb-6 md:mb-8"}>
         <ol
           className={`flex flex-wrap items-center gap-1.5 text-xs md:text-sm ${isDark ? "" : "text-muted-foreground"}`}
           style={isDark ? { color: editorialHeroText.breadcrumb } : undefined}
