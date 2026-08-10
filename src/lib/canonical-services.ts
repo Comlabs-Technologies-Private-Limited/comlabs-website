@@ -14,6 +14,8 @@ export type CanonicalService = {
   slug: CanonicalServiceSlug;
   path: `/services/${CanonicalServiceSlug}`;
   title: string;
+  /** One word from `title` highlighted in service index cards. */
+  cardTitleHighlight: string;
   cardDescription: string;
   linkLabel: string;
   eyebrow: string;
@@ -24,6 +26,7 @@ export const canonicalServices: readonly CanonicalService[] = [
     slug: "website-design-development",
     path: "/services/website-design-development",
     title: "Website Design & Development",
+    cardTitleHighlight: "Development",
     cardDescription:
       "High-performance websites designed around positioning, usability and conversion — from first wireframe to production.",
     linkLabel: "View website services",
@@ -33,6 +36,7 @@ export const canonicalServices: readonly CanonicalService[] = [
     slug: "custom-software-development",
     path: "/services/custom-software-development",
     title: "Custom Software Development",
+    cardTitleHighlight: "Software",
     cardDescription:
       "Custom web applications, SaaS products and internal systems built around how your business actually works.",
     linkLabel: "View custom software",
@@ -42,6 +46,7 @@ export const canonicalServices: readonly CanonicalService[] = [
     slug: "mobile-app-development",
     path: "/services/mobile-app-development",
     title: "Mobile App Development",
+    cardTitleHighlight: "Mobile",
     cardDescription:
       "Polished mobile products with clear UX, production-ready engineering and the infrastructure behind them.",
     linkLabel: "View mobile services",
@@ -51,6 +56,7 @@ export const canonicalServices: readonly CanonicalService[] = [
     slug: "seo-aeo-copywriting",
     path: "/services/seo-aeo-copywriting",
     title: "SEO / AEO Optimisation & Copywriting",
+    cardTitleHighlight: "Copywriting",
     cardDescription:
       "Search strategy, technical optimisation and clear content built to earn visibility across Google and AI-powered search.",
     linkLabel: "View SEO & copywriting",
@@ -60,6 +66,7 @@ export const canonicalServices: readonly CanonicalService[] = [
     slug: "cloud-infrastructure-scaling",
     path: "/services/cloud-infrastructure-scaling",
     title: "Cloud Infrastructure & Scaling",
+    cardTitleHighlight: "Infrastructure",
     cardDescription:
       "Reliable cloud architecture, deployments and performance engineering designed to keep products fast as usage grows.",
     linkLabel: "View cloud services",

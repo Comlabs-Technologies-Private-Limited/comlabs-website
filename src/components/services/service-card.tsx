@@ -1,9 +1,30 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import { MarketingOrangeHighlight } from "@/components/marketing/marketing-section-header";
 import { getCanonicalService } from "@/lib/canonical-services";
 import type { ServicePageData } from "@/lib/services-data";
 import { canonicalPath } from "@/lib/site";
+
+type ServiceCardTitleProps = {
+  title: string;
+  highlight: string;
+};
+
+function ServiceCardTitle({ title, highlight }: ServiceCardTitleProps) {
+  const index = title.indexOf(highlight);
+  if (index === -1) {
+    return <>{title}</>;
+  }
+
+  return (
+    <>
+      {title.slice(0, index)}
+      <MarketingOrangeHighlight>{highlight}</MarketingOrangeHighlight>
+      {title.slice(index + highlight.length)}
+    </>
+  );
+}
 
 type ServiceCardProps = {
   service: ServicePageData;
@@ -15,6 +36,7 @@ export function ServiceCard({ service, spanFull = false }: ServiceCardProps) {
   const image = service.editorialImage;
   const canonical = getCanonicalService(service.slug);
   const description = canonical?.cardDescription ?? service.subheadline;
+  const highlight = canonical?.cardTitleHighlight ?? service.title.split(" ")[0] ?? service.title;
 
   if (!image) {
     return null;
@@ -27,7 +49,7 @@ export function ServiceCard({ service, spanFull = false }: ServiceCardProps) {
         spanFull ? "md:col-span-2" : ""
       }`}
     >
-      <div className="relative min-h-[16rem] sm:min-h-[18rem] lg:min-h-[20rem]">
+      <div className="relative min-h-[14rem] sm:min-h-[16rem] md:min-h-[18rem] lg:min-h-[20rem]">
         <Image
           src={image.src}
           alt=""
@@ -46,15 +68,11 @@ export function ServiceCard({ service, spanFull = false }: ServiceCardProps) {
           aria-hidden
         />
 
-        <div className="relative flex h-full flex-col p-8 md:p-10 lg:p-12">
-          <h3 className="max-w-[18ch] text-pretty font-sans text-lg font-medium leading-tight tracking-[-0.02em] text-neutral-900 md:text-xl">
-            {service.title}
+        <div className="relative flex h-full flex-col p-6 sm:p-8 md:p-10 lg:p-12">
+          <h3 className="max-w-[16ch] text-pretty font-sans text-[1.0625rem] font-medium leading-[1.2] tracking-[-0.02em] text-neutral-900 sm:max-w-[18ch] sm:text-lg md:text-xl md:leading-tight">
+            <ServiceCardTitle title={service.title} highlight={highlight} />
           </h3>
-          <p className="mt-1.5 text-sm font-normal leading-snug text-neutral-600">
-            {service.eyebrow}
-          </p>
-          <span className="mt-4 block h-px w-10 bg-neutral-900/20" aria-hidden />
-          <p className="mt-4 max-w-[34ch] text-pretty text-sm font-normal leading-[1.65] text-neutral-600">
+          <p className="mt-3 max-w-[32ch] text-pretty text-[13px] font-normal leading-[1.6] text-neutral-600 sm:mt-4 sm:max-w-[34ch] sm:text-sm sm:leading-[1.65]">
             {description}
           </p>
         </div>
