@@ -1,3 +1,4 @@
+import { FigmaFooterSocialLinks } from "@/components/layout/figma-footer-social-links";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -62,6 +63,7 @@ export function FigmaFooter({ showBlogLink = true }: FigmaFooterProps) {
             <p className="text-sm font-medium text-foreground">{siteName}</p>
             <p className="mt-1 text-sm text-muted-foreground">{siteDescriptor}</p>
             <p className="mt-1 text-sm text-muted-foreground">{siteLocation}</p>
+            <FigmaFooterSocialLinks />
           </div>
 
           <div className="grid grid-cols-2 gap-10 text-sm md:grid-cols-3">
