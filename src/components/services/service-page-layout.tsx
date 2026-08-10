@@ -56,6 +56,7 @@ export function ServicePageLayout({ service }: { service: ServicePageData }) {
           title={service.title}
           description={service.subheadline}
           backgroundImage={service.editorialImage}
+          editorialOverlay="warm"
           proofItems={proofItems}
         >
           <PageBreadcrumbs
