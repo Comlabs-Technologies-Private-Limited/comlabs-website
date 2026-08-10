@@ -23,6 +23,7 @@ export type ServiceItem = HomeServiceCard;
 function ServiceVisual({
   background,
   index,
+  backgroundOnly,
   mockupImage,
   mockupAlt,
   mockupOverlayClassName,
@@ -34,6 +35,7 @@ function ServiceVisual({
 }: {
   background: string;
   index: number;
+  backgroundOnly?: boolean;
   mockupImage?: string;
   mockupAlt?: string;
   mockupOverlayClassName?: string;
@@ -47,6 +49,28 @@ function ServiceVisual({
   const reduceMotion = useReducedMotion();
   const inView = useInView(visualRef, MOCK_VIEWPORT);
   const mockupActive = inView;
+
+  if (backgroundOnly) {
+    return (
+      <div
+        className={cn(
+          "relative aspect-[5/4] overflow-hidden rounded-2xl md:aspect-[4/3] md:rounded-3xl",
+          variant === "figma" ? "bg-secondary/60" : "bg-zinc-50",
+          visualClassName,
+        )}
+      >
+        <Image
+          src={background}
+          alt=""
+          fill
+          priority={index === 0}
+          sizes="(max-width: 768px) 100vw, 50vw"
+          className="object-cover object-center"
+          aria-hidden
+        />
+      </div>
+    );
+  }
 
   return (
     <div
@@ -135,6 +159,7 @@ export function ServiceRow({
   cardDescription,
   background,
   index,
+  backgroundOnly,
   mockupImage,
   mockupAlt,
   mockupOverlayClassName,
@@ -201,6 +226,7 @@ export function ServiceRow({
         <ServiceVisual
           background={background}
           index={index}
+          backgroundOnly={backgroundOnly}
           mockupImage={mockupImage}
           mockupAlt={mockupAlt}
           mockupOverlayClassName={mockupOverlayClassName}

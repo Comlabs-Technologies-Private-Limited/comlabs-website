@@ -86,11 +86,27 @@ export const footerServiceLinks = canonicalServices.map((service) => ({
   href: service.path,
 }));
 
+/** Homepage service section backgrounds — hosted on Cloudinary. */
+export const homeServiceBackgrounds: Record<CanonicalServiceSlug, string> = {
+  "website-design-development":
+    "https://res.cloudinary.com/p8osc4y4/image/upload/v1786362044/ChatGPT_Image_Aug_10_2026_05_09_44_PM_1_gqznci.png",
+  "custom-software-development":
+    "https://res.cloudinary.com/p8osc4y4/image/upload/v1786362044/ChatGPT_Image_Aug_10_2026_05_09_44_PM_2_o2vuma.png",
+  "mobile-app-development":
+    "https://res.cloudinary.com/p8osc4y4/image/upload/v1786362044/ChatGPT_Image_Aug_10_2026_05_09_44_PM_3_uo0nwu.png",
+  "seo-aeo-copywriting":
+    "https://res.cloudinary.com/p8osc4y4/image/upload/v1786362045/ChatGPT_Image_Aug_10_2026_05_09_44_PM_4_k8jhhj.png",
+  "cloud-infrastructure-scaling":
+    "https://res.cloudinary.com/p8osc4y4/image/upload/v1786362045/ChatGPT_Image_Aug_10_2026_05_09_44_PM_5_lbsvbf.png",
+};
+
 /** Homepage card visuals keyed by slug — layout/motion only, not service copy. */
 export const homeServiceCardVisuals: Record<
   CanonicalServiceSlug,
   {
     id: string;
+    /** When true, show only the editorial background — no UI mockup overlay. */
+    backgroundOnly?: boolean;
     mockupImage?: string;
     mockupAlt?: string;
     mockupOverlayClassName?: string;
@@ -100,57 +116,31 @@ export const homeServiceCardVisuals: Record<
 > = {
   "website-design-development": {
     id: "website-design",
-    mockupImage: "/card-bg/mockup_before.png",
-    mockupAlt: "Website design before and after comparison",
-    mockupOverlayClassName: "",
-    mockupWrapperClassName: "mt-12 md:mt-22",
-    mockupClassName: "scale-107 pl-1",
+    backgroundOnly: true,
   },
   "custom-software-development": {
     id: "custom-software",
-    mockupImage: "/card-bg/product-ui-mockup.png",
-    mockupAlt: "Product dashboard UI design mockup",
-    mockupOverlayClassName: "mt-5 md:mt-6 scale-112",
-    mockupWrapperClassName: "",
-    mockupClassName: "",
+    backgroundOnly: true,
   },
   "mobile-app-development": {
     id: "mobile-app",
-    mockupAlt: "",
-    mockupOverlayClassName: "inset-2.5 top-8 bottom-2.5 items-stretch md:inset-3 md:top-10",
-    mockupWrapperClassName: "flex h-full w-full max-w-[94%] flex-col",
-    mockupClassName: "",
+    backgroundOnly: true,
   },
   "seo-aeo-copywriting": {
     id: "seo-aeo",
-    mockupAlt: "",
-    mockupOverlayClassName: "md:top-16 top-8 items-",
-    mockupWrapperClassName: "top-16",
-    mockupClassName: "",
+    backgroundOnly: true,
   },
   "cloud-infrastructure-scaling": {
     id: "cloud-infrastructure",
-    mockupAlt: "",
-    mockupOverlayClassName:
-      "inset-x-3 top-8 bottom-0 flex items-end justify-center md:inset-x-5 md:top-10",
-    mockupWrapperClassName: "flex w-full max-w-[92%] flex-col",
-    mockupClassName: "",
+    backgroundOnly: true,
   },
 };
 
-export const homeServiceBackgrounds = [
-  "/services-bg/service-bg-1.png",
-  "/services-bg/service-bg-2.png",
-  "/services-bg/service-bg-3.png",
-  "/services-bg/service-bg-4.png",
-  "/services-bg/service-bg-5.png",
-] as const;
-
 export function buildHomeServiceCards() {
-  return canonicalServices.map((service, index) => ({
+  return canonicalServices.map((service) => ({
     ...service,
     ...homeServiceCardVisuals[service.slug],
-    background: homeServiceBackgrounds[index] ?? homeServiceBackgrounds[0],
+    background: homeServiceBackgrounds[service.slug],
     linkHref: service.path,
   }));
 }
