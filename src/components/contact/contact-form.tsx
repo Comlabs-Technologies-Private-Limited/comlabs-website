@@ -1,16 +1,19 @@
 "use client";
 
 import { ArrowRight } from "lucide-react";
+import { useRouter } from "next/navigation";
 import type { FormEvent } from "react";
 import { useState } from "react";
 
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { canonicalPath } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
-type FormState = "idle" | "submitting" | "success" | "error";
+type FormState = "idle" | "submitting" | "error";
 
 export function ContactForm({ className }: { className?: string }) {
+  const router = useRouter();
   const [formState, setFormState] = useState<FormState>("idle");
   const [formMessage, setFormMessage] = useState("");
 
@@ -42,8 +45,7 @@ export function ContactForm({ className }: { className?: string }) {
       }
 
       form.reset();
-      setFormState("success");
-      setFormMessage("Message sent. We'll get back to you within 24–48 hours.");
+      router.push(canonicalPath("/thankyou"));
     } catch (error) {
       setFormState("error");
       setFormMessage(
@@ -120,14 +122,7 @@ export function ContactForm({ className }: { className?: string }) {
       </button>
 
       {formMessage ? (
-        <p
-          className={cn(
-            "text-sm",
-            formState === "success" ? "text-emerald-700" : "text-red-600",
-          )}
-          role="status"
-          aria-live="polite"
-        >
+        <p className="text-sm text-red-600" role="status" aria-live="polite">
           {formMessage}
         </p>
       ) : null}
