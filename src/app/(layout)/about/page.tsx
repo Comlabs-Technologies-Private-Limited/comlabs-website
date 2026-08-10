@@ -5,7 +5,6 @@ import { ArrowRight } from "lucide-react";
 import { FigmaFooter } from "@/components/layout/figma-footer";
 import { FigmaNav } from "@/components/layout/figma-nav";
 import { MarketingCtaSection } from "@/components/marketing/marketing-cta-section";
-import { EditorialPhotoSection } from "@/components/marketing/editorial-photo";
 import { MarketingFadeIn } from "@/components/marketing/marketing-motion";
 import { MarketingPageHero } from "@/components/marketing/marketing-page-hero";
 import {
@@ -39,13 +38,12 @@ export default function AboutPage() {
           eyebrow="About"
           title={siteName}
           description={`A design and engineering studio in ${siteLocation}. We help companies ship high-performance websites, custom software, mobile products, and scalable digital infrastructure.`}
+          backgroundImage={editorialImages.aboutDesert}
         >
-          <PageBreadcrumbs currentPath="/about" items={[{ label: "About" }]} />
+          <PageBreadcrumbs currentPath="/about" tone="dark" items={[{ label: "About" }]} />
         </MarketingPageHero>
 
-        <EditorialPhotoSection image={editorialImages.aboutDesert} />
-
-        <section className="border-y border-border bg-card px-6 py-20 md:py-28">
+        <section className="border-y border-border bg-card px-6 py-24 md:py-28">
           <div className="mx-auto grid max-w-6xl gap-16 lg:grid-cols-2 lg:gap-20">
             <MarketingFadeIn>
               <MarketingSectionHeader
@@ -84,7 +82,7 @@ export default function AboutPage() {
           </div>
         </section>
 
-        <section className="px-6 py-20 md:py-28">
+        <section className="px-6 py-24 md:py-28">
           <div className="mx-auto max-w-6xl">
             <MarketingSectionHeader
               eyebrow="Selected work"

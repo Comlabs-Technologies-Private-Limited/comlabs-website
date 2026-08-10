@@ -1,6 +1,7 @@
 "use client";
 
 import { editorialImages } from "@/lib/editorial-images";
+import { EDITORIAL_HERO_OVERLAY } from "@/lib/editorial-hero-styles";
 
 const APPLIED_AI_CAPABILITIES = [
   "AI Search",
@@ -22,10 +23,7 @@ export function FigmaAppliedAiSection() {
       />
       <div
         className="absolute inset-0"
-        style={{
-          background:
-            "linear-gradient(180deg, rgba(28,25,23,0.72) 0%, rgba(28,25,23,0.82) 45%, rgba(28,25,23,0.9) 100%)",
-        }}
+        style={{ background: EDITORIAL_HERO_OVERLAY }}
       />
 
       <div className="relative z-10 mx-auto max-w-3xl">

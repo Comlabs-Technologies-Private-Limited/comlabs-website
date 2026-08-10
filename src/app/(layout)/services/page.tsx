@@ -41,7 +41,7 @@ export default function ServicesIndexPage() {
           <PageBreadcrumbs currentPath="/services" items={[{ label: "Services" }]} />
         </MarketingPageHero>
 
-        <section className="border-t border-border px-6 pb-24 md:pb-32">
+        <section className="border-y border-border bg-card px-6 py-24 md:py-32">
           <div className="mx-auto max-w-6xl">
             <MarketingSectionHeader
               className="mb-10 md:mb-12"

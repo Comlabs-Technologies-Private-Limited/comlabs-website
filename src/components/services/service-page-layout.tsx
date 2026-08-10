@@ -3,7 +3,6 @@ import { ArrowRight } from "lucide-react";
 
 import { FigmaFooter } from "@/components/layout/figma-footer";
 import { FigmaNav } from "@/components/layout/figma-nav";
-import { EditorialPhotoSection } from "@/components/marketing/editorial-photo";
 import { MarketingCtaSection } from "@/components/marketing/marketing-cta-section";
 import { MarketingFadeIn } from "@/components/marketing/marketing-motion";
 import { MarketingPageHero } from "@/components/marketing/marketing-page-hero";
@@ -46,9 +45,11 @@ export function ServicePageLayout({ service }: { service: ServicePageData }) {
           eyebrow={service.eyebrow}
           title={service.headline}
           description={service.subheadline}
+          backgroundImage={service.editorialImage}
         >
           <PageBreadcrumbs
             currentPath={service.path}
+            tone={service.editorialImage ? "dark" : "light"}
             items={[
               { label: "Services", href: "/services" },
               { label: service.title },
@@ -56,11 +57,7 @@ export function ServicePageLayout({ service }: { service: ServicePageData }) {
           />
         </MarketingPageHero>
 
-        {service.editorialImage ? (
-          <EditorialPhotoSection image={service.editorialImage} />
-        ) : null}
-
-        <section className="border-y border-border bg-card px-6 py-20 md:py-24">
+        <section className="border-y border-border bg-card px-6 py-24 md:py-28">
           <div className="mx-auto grid max-w-6xl gap-16 lg:grid-cols-2 lg:gap-20">
             <MarketingFadeIn>
               <MarketingSectionLabel>What we do</MarketingSectionLabel>
@@ -96,7 +93,7 @@ export function ServicePageLayout({ service }: { service: ServicePageData }) {
           </div>
         </section>
 
-        <section className="px-6 py-20 md:py-28">
+        <section className="px-6 py-24 md:py-28">
           <div className="mx-auto max-w-6xl">
             <MarketingSectionHeader
               eyebrow="Deliverables"
@@ -109,7 +106,7 @@ export function ServicePageLayout({ service }: { service: ServicePageData }) {
             <div className="grid gap-4 md:grid-cols-2">
               {service.deliverables.map((item, index) => (
                 <MarketingFadeIn key={item} delay={index * 0.05}>
-                  <div className="h-full rounded-2xl border border-border bg-background p-6 transition-colors hover:border-foreground/15 md:p-7">
+                  <div className="h-full rounded-3xl border border-border bg-background p-6 transition-colors hover:border-foreground/15 md:p-7">
                     <span
                       className="mb-3 inline-flex h-6 w-6 items-center justify-center rounded-md text-[10px] font-bold"
                       style={{ background: "var(--warm-orange-light)", color: "var(--warm-orange)" }}
@@ -124,7 +121,7 @@ export function ServicePageLayout({ service }: { service: ServicePageData }) {
           </div>
         </section>
 
-        <section className="border-y border-border bg-secondary/40 px-6 py-20 md:py-28">
+        <section className="border-y border-border bg-secondary/40 px-6 py-24 md:py-28">
           <div className="mx-auto max-w-6xl">
             <MarketingSectionHeader
               eyebrow="Process"
@@ -138,7 +135,7 @@ export function ServicePageLayout({ service }: { service: ServicePageData }) {
           </div>
         </section>
 
-        <section className="px-6 py-20 md:py-28">
+        <section className="px-6 py-24 md:py-28">
           <div className="mx-auto grid max-w-6xl gap-16 lg:grid-cols-2 lg:gap-20">
             <MarketingFadeIn>
               <MarketingSectionLabel>Capabilities</MarketingSectionLabel>
@@ -146,7 +143,7 @@ export function ServicePageLayout({ service }: { service: ServicePageData }) {
                 {service.capabilities.map((capability) => (
                   <li
                     key={capability}
-                    className="rounded-xl border border-border bg-card px-4 py-3.5 text-sm text-foreground transition-colors hover:border-foreground/15"
+                    className="rounded-2xl border border-border bg-card px-4 py-3.5 text-sm text-foreground transition-colors hover:border-foreground/15"
                   >
                     {capability}
                   </li>
@@ -176,7 +173,7 @@ export function ServicePageLayout({ service }: { service: ServicePageData }) {
         </section>
 
         {service.relatedCaseStudy ? (
-          <section className="border-y border-border bg-card px-6 py-16 md:py-20">
+          <section className="border-y border-border bg-card px-6 py-20 md:py-24">
             <div className="mx-auto max-w-6xl">
               <MarketingSectionLabel>Related work</MarketingSectionLabel>
               <MarketingFadeIn>
@@ -199,7 +196,7 @@ export function ServicePageLayout({ service }: { service: ServicePageData }) {
           </section>
         ) : null}
 
-        <section className="px-6 py-20 md:py-28">
+        <section className="px-6 py-24 md:py-28">
           <div className="mx-auto max-w-6xl">
             <MarketingSectionHeader
               eyebrow="FAQ"
@@ -227,7 +224,7 @@ export function ServicePageLayout({ service }: { service: ServicePageData }) {
           </div>
         </section>
 
-        <section className="px-6 pb-8">
+        <section className="border-t border-border bg-card px-6 py-16 md:py-20">
           <div className="mx-auto max-w-6xl">
             <MarketingSectionLabel>Related services</MarketingSectionLabel>
             <div className="flex flex-wrap gap-3">
