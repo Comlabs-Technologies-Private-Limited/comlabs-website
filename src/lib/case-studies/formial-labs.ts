@@ -7,7 +7,11 @@ export const formialLabsCaseStudy: CaseStudyContent = {
   slug: "formial-labs",
   client: "Formial Labs",
   year: "2025",
-  headline: "A clearer path from signup to the first useful moment.",
+  headline: {
+    before: "A ",
+    highlight: "clearer",
+    after: " path from signup to the first useful moment.",
+  },
   standfirst:
     "We redesigned and developed Formial Labs' multi-step onboarding experience, creating a guided journey from account creation through setup and into the product.",
   meta: [
