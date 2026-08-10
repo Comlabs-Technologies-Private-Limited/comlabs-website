@@ -45,7 +45,7 @@ export function ServiceCard({ service, spanFull = false }: ServiceCardProps) {
   return (
     <Link
       href={canonicalPath(service.path)}
-      className={`group relative block overflow-hidden bg-[#f7f7f4] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30 focus-visible:ring-offset-2 ${
+      className={`group relative block overflow-hidden bg-neutral-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950 ${
         spanFull ? "md:col-span-2" : ""
       }`}
     >
@@ -60,20 +60,21 @@ export function ServiceCard({ service, spanFull = false }: ServiceCardProps) {
               ? "(max-width: 768px) 100vw, 960px"
               : "(max-width: 768px) 100vw, 50vw"
           }
-          className="object-cover saturate-[0.92] motion-safe:transition-transform motion-safe:duration-[900ms] motion-safe:ease-[cubic-bezier(0.16,1,0.3,1)] motion-safe:group-hover:scale-[1.03] motion-safe:group-focus-visible:scale-[1.03]"
+          className="object-cover motion-safe:transition-transform motion-safe:duration-[900ms] motion-safe:ease-[cubic-bezier(0.16,1,0.3,1)] motion-safe:group-hover:scale-[1.03] motion-safe:group-focus-visible:scale-[1.03]"
         />
 
+        <div className="pointer-events-none absolute inset-0 bg-neutral-950/55" aria-hidden />
         <div
-          className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[#f7f7f4]/92 via-[#f7f7f4]/58 to-[#f7f7f4]/28"
+          className="pointer-events-none absolute inset-0 bg-gradient-to-b from-neutral-950/40 via-neutral-950/10 to-neutral-950/60"
           aria-hidden
         />
 
         <div className="relative h-full p-6 sm:p-8 md:p-10 lg:p-12">
-          <h3 className="max-w-[16ch] text-pretty font-sans text-[1.0625rem] font-medium leading-[1.2] tracking-[-0.02em] text-neutral-900 sm:max-w-[18ch] sm:text-lg md:text-xl md:leading-tight">
+          <h3 className="max-w-[16ch] text-pretty font-sans text-[1.0625rem] font-medium leading-[1.2] tracking-[-0.02em] text-white sm:max-w-[18ch] sm:text-lg md:text-xl md:leading-tight">
             <ServiceCardTitle title={service.title} highlight={highlight} />
           </h3>
 
-          <span className="absolute bottom-6 right-6 inline-flex items-center gap-1 text-[11px] font-normal tracking-tight text-neutral-500 transition-colors group-hover:text-neutral-700 sm:bottom-8 sm:right-8 sm:text-xs">
+          <span className="absolute bottom-6 right-6 inline-flex items-center gap-1 text-[11px] font-normal tracking-tight text-white/45 transition-colors group-hover:text-white/65 sm:bottom-8 sm:right-8 sm:text-xs">
             Read more
             <ArrowUpRight
               size={12}
