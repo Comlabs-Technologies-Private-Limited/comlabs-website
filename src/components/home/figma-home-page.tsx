@@ -2,6 +2,7 @@
 
 import { FigmaAppliedAiSection } from "@/components/home/figma/applied-ai-section";
 import { FigmaCtaSection } from "@/components/home/figma/cta-section";
+import { FigmaIndustriesSection } from "@/components/home/figma/industries-section";
 import { FigmaHeroSection } from "@/components/home/figma/hero-section";
 import { FigmaProcessSection } from "@/components/home/figma/process-section";
 import { FigmaServicesSection } from "@/components/home/figma/services-section";
@@ -26,6 +27,7 @@ export function FigmaHomePage() {
         <FigmaProcessSection />
         <FigmaSpecialtySection />
         <FigmaWorkSection />
+        <FigmaIndustriesSection />
         <FigmaTestimonialsSection />
         <FigmaCtaSection />
       </main>
