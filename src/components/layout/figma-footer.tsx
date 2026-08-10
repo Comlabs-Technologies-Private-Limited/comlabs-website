@@ -1,7 +1,9 @@
+import { FigmaFooterSocialLinks } from "@/components/layout/figma-footer-social-links";
 import Image from "next/image";
 import Link from "next/link";
 
 import { canonicalPath, isBlogPublic, siteDescriptor, siteLocation, siteName } from "@/lib/site";
+import { footerServiceLinks } from "@/lib/canonical-services";
 
 const FOOTER_COLUMNS = [
   {
@@ -15,14 +17,7 @@ const FOOTER_COLUMNS = [
   },
   {
     heading: "Services",
-    links: [
-      { label: "All services", href: "/services" },
-      { label: "Website design & development", href: "/services/website-design-development" },
-      { label: "Website redesign", href: "/services/website-redesign" },
-      { label: "CMS development", href: "/services/cms-development" },
-      { label: "ERP development", href: "/services/erp-development" },
-      { label: "Product UI development", href: "/services/product-ui-development" },
-    ],
+    links: [{ label: "All services", href: "/services" }, ...footerServiceLinks],
   },
   {
     heading: "Work",
@@ -68,6 +63,7 @@ export function FigmaFooter({ showBlogLink = true }: FigmaFooterProps) {
             <p className="text-sm font-medium text-foreground">{siteName}</p>
             <p className="mt-1 text-sm text-muted-foreground">{siteDescriptor}</p>
             <p className="mt-1 text-sm text-muted-foreground">{siteLocation}</p>
+            <FigmaFooterSocialLinks />
           </div>
 
           <div className="grid grid-cols-2 gap-10 text-sm md:grid-cols-3">

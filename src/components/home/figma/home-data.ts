@@ -40,7 +40,7 @@ export const PROCESS_STEPS = [
 export const PROJECTS = [
   {
     title: "Formial Labs",
-    category: "Product UX · Dashboard",
+    category: "Custom Software Development",
     desc: "Multi-page onboarding flow for an internal dashboard — built to cut drop-off and get users to activation fast.",
     href: "/work/formial-labs",
     liveSiteUrl: "https://formial.in",
@@ -48,14 +48,14 @@ export const PROJECTS = [
   },
   {
     title: "Global Services",
-    category: "Website · Conversion",
+    category: "Website Design & Development",
     desc: "Full website rebuild that lifted conversion and helped land JIO and Vodafone-Idea as enterprise clients.",
     href: "/work/global-services",
     image: SHOWCASE_IMAGES.secondary,
   },
   {
     title: "Vithub",
-    category: "Brand · Marketing Site",
+    category: "Website Design & Development",
     desc: "Design-led marketing website built to give Vithub a strong digital identity and a foundation for growth.",
     href: "/work/vithub",
     liveSiteUrl: "https://vithub.in",

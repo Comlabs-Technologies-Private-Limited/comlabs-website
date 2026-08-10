@@ -9,106 +9,16 @@ import { useRef } from "react";
 import { SectionHeader } from "@/components/home/section-header";
 import { SectionContainer } from "@/components/layout/section-container";
 import { MOCK_VIEWPORT, ServiceMockup } from "@/components/home/services-mockups";
+import { buildHomeServiceCards, type HomeServiceCard } from "@/lib/canonical-services";
 import { servicesEyebrow, servicesSubtitle, servicesTitle } from "@/lib/page-styles";
 import { cn } from "@/lib/utils";
 import { canonicalPath } from "@/lib/site";
 
 const ease = [0.25, 0.1, 0, 1] as const;
 
-const serviceBackgrounds = [
-  "/services-bg/service-bg-1.png",
-  "/services-bg/service-bg-2.png",
-  "/services-bg/service-bg-3.png",
-  "/services-bg/service-bg-4.png",
-  "/services-bg/service-bg-5.png",
-] as const;
+const serviceItems = buildHomeServiceCards();
 
-const services = [
-  {
-    id: "website-rebuild",
-    title: "Website Rebuilds",
-    description:
-      "Turn an outdated website into a sharper, faster site that builds trust and brings more inquiries.",
-    background: serviceBackgrounds[0],
-    mockupImage: "/card-bg/mockup_before.png",
-    mockupAlt: "Before and after website rebuild comparison",
-    mockupOverlayClassName: "",
-    mockupWrapperClassName: "mt-12 md:mt-22",
-    mockupClassName: "scale-107 pl-1",
-    linkLabel: "See a rebuild example",
-    linkHref: "/work/global-services",
-  },
-  {
-    id: "landing-sprint",
-    title: "Launch Landing Page",
-    description:
-      "Clear landing pages for launches, waitlists, and campaigns — built to explain fast and convert visitors.",
-    background: serviceBackgrounds[1],
-    mockupAlt: "",
-    mockupOverlayClassName:
-      "inset-x-3 top-8 bottom-0 flex items-end justify-center md:inset-x-5 md:top-10",
-    mockupWrapperClassName: "flex w-full max-w-[92%] flex-col",
-    mockupClassName: "",
-    linkLabel: "Book a landing page sprint",
-    linkHref: "#contact",
-  },
-  {
-    id: "ai-automation",
-    title: "AI Automations",
-    description:
-      "Automate lead capture, follow-ups, onboarding, and support so your team saves time every week.",
-    background: serviceBackgrounds[2],
-    mockupAlt: "",
-    mockupOverlayClassName: "inset-2.5 top-8 bottom-2.5 items-stretch md:inset-3 md:top-10",
-    mockupWrapperClassName: "flex h-full w-full max-w-[94%] flex-col",
-    mockupClassName: "",
-    linkLabel: "Explore automations",
-    linkHref: "#contact",
-  },
-  {
-    id: "product-ui",
-    title: "Product UI & Frontend",
-    description:
-      "Clean dashboards, portals, and product interfaces that feel polished, usable, and ready to scale.",
-    background: serviceBackgrounds[3],
-    mockupImage: "/card-bg/product-ui-mockup.png",
-    mockupAlt: "Pulse SaaS dashboard and mobile UI design mockup",
-    mockupOverlayClassName: "mt-5 md:mt-6 scale-112",
-    mockupWrapperClassName: "",
-    mockupClassName: "",
-    linkLabel: "View product work",
-    linkHref: "/work/formial-labs",
-  },
-  {
-    id: "growth-cro",
-    title: "Strategy Calls",
-    description:
-      "Get clear direction on your website, positioning, page structure, and next best improvements.",
-    background: serviceBackgrounds[4],
-    mockupImage: "/card-bg/consultation_strategy_card_only.png",
-    mockupAlt: "Live consultation call with strategy board, live notes, and focus areas",
-    mockupOverlayClassName: "",
-    mockupWrapperClassName: "md:mt-20 mt-12",
-    mockupClassName: "",
-    linkLabel: "Book a strategy call",
-    linkHref: "#contact",
-  },
-  {
-    id: "maintenance",
-    title: "Copywriting & SEO",
-    description:
-      "Get found on Google, ChatGPT, and Perplexity — with clear copy that turns visitors into customers.",
-    background: serviceBackgrounds[0],
-    mockupAlt: "",
-    mockupOverlayClassName: "md:top-16 top-8 items-",
-    mockupWrapperClassName: "top-16",
-    mockupClassName: "",
-    linkLabel: "Improve your copy & SEO",
-    linkHref: "#contact",
-  },
-] as const;
-
-export type ServiceItem = (typeof services)[number];
+export type ServiceItem = HomeServiceCard;
 
 function ServiceVisual({
   background,
@@ -222,7 +132,7 @@ function ServiceVisual({
 
 export function ServiceRow({
   title,
-  description,
+  cardDescription,
   background,
   index,
   mockupImage,
@@ -234,7 +144,7 @@ export function ServiceRow({
   linkLabel,
   linkHref,
   variant = "legacy",
-}: ServiceItem & { index: number; mockupImage?: string; variant?: "legacy" | "figma" }) {
+}: HomeServiceCard & { index: number; variant?: "legacy" | "figma" }) {
   const rowRef = useRef<HTMLElement>(null);
   const reduceMotion = useReducedMotion();
   const inView = useInView(rowRef, MOCK_VIEWPORT);
@@ -267,7 +177,7 @@ export function ServiceRow({
               : "mt-4 text-[15px] leading-relaxed text-zinc-500 md:text-base",
           )}
         >
-          {description}
+          {cardDescription}
         </p>
         <Link
           href={canonicalPath(linkHref)}
@@ -307,7 +217,7 @@ export function ServiceRow({
 /** @deprecated Use ServiceRow — kept for compatibility */
 export const ServiceCard = ServiceRow;
 
-export { services as serviceItems };
+export { serviceItems };
 
 export function ServicesSection() {
   return (
@@ -327,7 +237,7 @@ export function ServicesSection() {
         </SectionHeader>
 
         <div className="mt-16 flex flex-col gap-20 md:mt-20 md:gap-28 lg:gap-32">
-          {services.map((service, index) => (
+          {serviceItems.map((service, index) => (
             <ServiceRow key={service.id} {...service} index={index} />
           ))}
         </div>

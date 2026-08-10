@@ -6,7 +6,7 @@ import { buildPageMetadata } from "@/lib/metadata";
 export const metadata: Metadata = buildPageMetadata({
   title: "Contact",
   description:
-    "Contact Comlabs Technologies Pvt Ltd in Pune to discuss website design, development, CMS, ERP, or product UI projects.",
+    "Contact Comlabs Technologies Pvt Ltd in Pune to discuss websites, custom software, mobile apps, SEO/AEO, or cloud infrastructure projects.",
   path: "/contact",
 });
 

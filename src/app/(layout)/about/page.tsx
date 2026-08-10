@@ -14,12 +14,13 @@ import {
 import { MarketingProjectCards } from "@/components/marketing/marketing-work-grid";
 import { PageBreadcrumbs } from "@/components/seo/page-breadcrumbs";
 import { buildPageMetadata } from "@/lib/metadata";
+import { editorialImages } from "@/lib/editorial-images";
 import { canonicalPath, siteLocation, siteName } from "@/lib/site";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "About Comlabs Technologies Pvt Ltd",
   description:
-    "Learn about Comlabs Technologies Pvt Ltd — a Pune-based website design and software development studio building websites, CMS platforms, and product interfaces.",
+    "Learn about Comlabs Technologies Pvt Ltd — a Pune-based design and engineering studio building websites, custom software, mobile products, and scalable digital infrastructure.",
   path: "/about",
   absoluteTitle: true,
 });
@@ -36,12 +37,13 @@ export default function AboutPage() {
         <MarketingPageHero
           eyebrow="About"
           title={siteName}
-          description={`A website design and software development studio in ${siteLocation}. We help companies ship credible websites, content systems, product interfaces, and focused internal tools.`}
+          description={`A design and engineering studio in ${siteLocation}. We help companies ship high-performance websites, custom software, mobile products, and scalable digital infrastructure.`}
+          backgroundImage={editorialImages.aboutDesert}
         >
-          <PageBreadcrumbs currentPath="/about" items={[{ label: "About" }]} />
+          <PageBreadcrumbs currentPath="/about" tone="dark" items={[{ label: "About" }]} />
         </MarketingPageHero>
 
-        <section className="border-y border-border bg-card px-6 py-20 md:py-28">
+        <section className="border-y border-border bg-card px-6 py-24 md:py-28">
           <div className="mx-auto grid max-w-6xl gap-16 lg:grid-cols-2 lg:gap-20">
             <MarketingFadeIn>
               <MarketingSectionHeader
@@ -49,15 +51,15 @@ export default function AboutPage() {
                 eyebrow="What we do"
                 title={
                   <>
-                    Design and development,{" "}
+                    Design and engineering,{" "}
                     <MarketingOrangeHighlight>together</MarketingOrangeHighlight>.
                   </>
                 }
               />
               <p className="mt-5 text-base leading-[1.7] text-muted-foreground">
-                Comlabs combines UX structure, interface design, and front-end engineering. Projects
-                range from marketing websites and redesigns to CMS implementations, ERP modules, and
-                product UI for web applications.
+                Comlabs combines UX structure, interface design, and production engineering. Projects
+                range from marketing websites and redesigns to custom software, mobile apps, and
+                cloud infrastructure for growing product teams.
               </p>
             </MarketingFadeIn>
             <MarketingFadeIn delay={0.08}>
@@ -80,7 +82,7 @@ export default function AboutPage() {
           </div>
         </section>
 
-        <section className="px-6 py-20 md:py-28">
+        <section className="px-6 py-24 md:py-28">
           <div className="mx-auto max-w-6xl">
             <MarketingSectionHeader
               eyebrow="Selected work"
@@ -89,7 +91,7 @@ export default function AboutPage() {
                   Recent <MarketingOrangeHighlight>projects</MarketingOrangeHighlight>.
                 </>
               }
-              description="Explore case studies across website rebuilds, product onboarding, and brand-led marketing sites."
+              description="Explore case studies across website projects, product onboarding, and brand-led marketing sites."
             />
             <MarketingProjectCards />
             <Link

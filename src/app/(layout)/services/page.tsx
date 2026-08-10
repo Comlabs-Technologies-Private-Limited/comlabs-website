@@ -8,7 +8,7 @@ import {
   MarketingOrangeHighlight,
   MarketingSectionHeader,
 } from "@/components/marketing/marketing-section-header";
-import { MarketingServiceCards } from "@/components/marketing/marketing-service-cards";
+import { ServicesGrid } from "@/components/services/service-card";
 import { PageBreadcrumbs } from "@/components/seo/page-breadcrumbs";
 import { buildPageMetadata } from "@/lib/metadata";
 import { servicePages, servicesIndex } from "@/lib/services-data";
@@ -32,8 +32,8 @@ export default function ServicesIndexPage() {
           eyebrow={servicesIndex.eyebrow}
           title={
             <>
-              Website and software development,{" "}
-              <MarketingOrangeHighlight>end to end</MarketingOrangeHighlight>.
+              Design and engineering for products that need to{" "}
+              <MarketingOrangeHighlight>ship</MarketingOrangeHighlight>.
             </>
           }
           description={servicesIndex.subheadline}
@@ -41,7 +41,7 @@ export default function ServicesIndexPage() {
           <PageBreadcrumbs currentPath="/services" items={[{ label: "Services" }]} />
         </MarketingPageHero>
 
-        <section className="border-t border-border px-6 pb-24 md:pb-32">
+        <section className="border-y border-border bg-card px-6 py-24 md:py-32">
           <div className="mx-auto max-w-6xl">
             <MarketingSectionHeader
               className="mb-10 md:mb-12"
@@ -52,15 +52,14 @@ export default function ServicesIndexPage() {
                   <MarketingOrangeHighlight>stage</MarketingOrangeHighlight>.
                 </>
               }
-              description="From initial website builds to CMS platforms, product UI, and custom modules — each service page covers scope, process, and deliverables."
             />
-            <MarketingServiceCards services={servicePages} />
+            <ServicesGrid services={servicePages} />
           </div>
         </section>
 
         <MarketingCtaSection
           title="Not sure where to start?"
-          description="Share your goal — website launch, redesign, CMS, ERP module, or product UI — and we will recommend the right starting point."
+          description="Share your goal — website, custom software, mobile app, SEO/AEO, or cloud infrastructure — and we will recommend the right starting point."
           ctaLabel="Contact us"
         />
       </main>

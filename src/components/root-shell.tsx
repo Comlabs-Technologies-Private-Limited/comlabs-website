@@ -25,6 +25,7 @@ function usesFigmaChromePath(pathname: string): boolean {
     path.startsWith("/work") ||
     path === "/about" ||
     path === "/contact" ||
+    path === "/thankyou" ||
     path.startsWith("/blog")
   );
 }
