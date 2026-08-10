@@ -44,14 +44,14 @@ export const PROJECTS = [
     desc: "Multi-page onboarding flow for an internal dashboard — built to cut drop-off and get users to activation fast.",
     href: "/work/formial-labs",
     liveSiteUrl: "https://formial.in",
-    image: SHOWCASE_IMAGES.primary,
+    logo: "https://formial.in/cdn/shop/files/Brand_Design-04_90b8501a-2715-48dc-934d-b45bba7f000b.png?v=1747823670&width=200",
   },
   {
     title: "Global Services",
     category: "Website Design & Development",
     desc: "Full website rebuild that lifted conversion and helped land JIO and Vodafone-Idea as enterprise clients.",
     href: "/work/global-services",
-    image: SHOWCASE_IMAGES.secondary,
+    logo: "https://media.licdn.com/dms/image/v2/D4D0BAQGQX5VqkCJ3Kw/company-logo_200_200/B4DZ_HUcVbK4AE-/0/1785755452993?e=1787788800&v=beta&t=0m0sb88g-MtInzITn26oE280SA6izWiywxQvtZIsbGo",
   },
   {
     title: "Vithub",
@@ -59,7 +59,7 @@ export const PROJECTS = [
     desc: "Design-led marketing website built to give Vithub a strong digital identity and a foundation for growth.",
     href: "/work/vithub",
     liveSiteUrl: "https://vithub.in",
-    image: SHOWCASE_IMAGES.primary,
+    logo: "https://vithub.in/cdn/shop/files/Vit_hub_web_logo_temp.png?height=100&v=1762338028",
   },
 ] as const;
 
