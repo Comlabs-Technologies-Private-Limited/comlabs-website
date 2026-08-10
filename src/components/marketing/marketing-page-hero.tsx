@@ -14,6 +14,8 @@ type MarketingPageHeroProps = {
   description: string;
   children?: ReactNode;
   backgroundImage?: EditorialImage;
+  compactSpacing?: boolean;
+  proofItems?: string[];
 };
 
 export function MarketingPageHero({
@@ -22,8 +24,12 @@ export function MarketingPageHero({
   description,
   children,
   backgroundImage,
+  compactSpacing = false,
+  proofItems,
 }: MarketingPageHeroProps) {
   const isEditorial = Boolean(backgroundImage);
+  const eyebrowMargin = compactSpacing ? "mb-3" : "mb-6";
+  const titleMargin = compactSpacing ? "mt-0" : "";
 
   if (isEditorial && backgroundImage) {
     return (
@@ -46,7 +52,7 @@ export function MarketingPageHero({
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45, delay: 0.05, ease: EASE }}
-            className="mb-6 inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-xs font-medium"
+            className={`${eyebrowMargin} inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-xs font-medium`}
             style={{
               color: "var(--warm-orange)",
               background: "rgba(247,247,244,0.08)",
@@ -64,7 +70,7 @@ export function MarketingPageHero({
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, delay: 0.1, ease: EASE }}
-            className="max-w-3xl text-3xl leading-[1.08] font-bold tracking-tight md:text-5xl lg:text-[3.25rem]"
+            className={`max-w-3xl text-3xl leading-[1.08] font-bold tracking-tight md:text-5xl lg:text-[3.25rem] ${titleMargin}`}
             style={{ color: editorialHeroText.title, letterSpacing: "-0.03em" }}
           >
             {title}
@@ -74,11 +80,37 @@ export function MarketingPageHero({
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.18, ease: EASE }}
-            className="mt-5 max-w-2xl text-base leading-[1.7] md:mt-6 md:text-lg"
+            className={`max-w-2xl text-base leading-[1.7] md:text-lg ${compactSpacing ? "mt-4" : "mt-5 md:mt-6"}`}
             style={{ color: editorialHeroText.description }}
           >
             {description}
           </motion.p>
+
+          {proofItems && proofItems.length > 0 ? (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.45, delay: 0.24, ease: EASE }}
+              className={`${compactSpacing ? "mt-5" : "mt-6"} flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-0`}
+            >
+              {proofItems.map((item, index) => (
+                <div key={item} className="flex items-center sm:contents">
+                  {index > 0 ? (
+                    <span
+                      className="mx-4 hidden h-3 w-px shrink-0 bg-white/25 sm:inline-block"
+                      aria-hidden
+                    />
+                  ) : null}
+                  <span
+                    className="font-sans text-[11px] font-light uppercase tracking-[0.16em]"
+                    style={{ color: "rgba(247,247,244,0.5)" }}
+                  >
+                    {item}
+                  </span>
+                </div>
+              ))}
+            </motion.div>
+          ) : null}
         </div>
       </section>
     );
