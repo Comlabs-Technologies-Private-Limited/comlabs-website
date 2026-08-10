@@ -56,13 +56,11 @@ export function ServicePageLayout({ service }: { service: ServicePageData }) {
           title={service.title}
           description={service.subheadline}
           backgroundImage={service.editorialImage}
-          compactSpacing
           proofItems={proofItems}
         >
           <PageBreadcrumbs
             currentPath={service.path}
             tone={service.editorialImage ? "dark" : "light"}
-            className="mb-3 md:mb-4"
             items={[
               { label: "Services", href: "/services" },
               { label: service.title },
