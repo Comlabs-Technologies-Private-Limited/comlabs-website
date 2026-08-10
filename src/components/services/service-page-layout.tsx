@@ -53,7 +53,7 @@ export function ServicePageLayout({ service }: { service: ServicePageData }) {
       <main>
         <MarketingPageHero
           eyebrow={service.eyebrow}
-          title={service.headline}
+          title={service.title}
           description={service.subheadline}
           backgroundImage={service.editorialImage}
           compactSpacing

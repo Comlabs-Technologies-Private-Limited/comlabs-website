@@ -7,8 +7,10 @@ import { canonicalPath } from "@/lib/site";
 /** Slugs whose editorial photos need a stronger flat wash for title legibility. */
 const STRONG_OVERLAY_SLUGS = new Set([
   "website-design-development",
-  "seo-aeo-copywriting",
+  "custom-software-development",
   "mobile-app-development",
+  "seo-aeo-copywriting",
+  "cloud-infrastructure-scaling",
 ]);
 
 type ServiceCardProps = {
