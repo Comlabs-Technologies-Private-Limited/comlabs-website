@@ -93,7 +93,7 @@ export default function AboutPage() {
                   Recent <MarketingOrangeHighlight>projects</MarketingOrangeHighlight>.
                 </>
               }
-              description="Explore case studies across website rebuilds, product onboarding, and brand-led marketing sites."
+              description="Explore case studies across website projects, product onboarding, and brand-led marketing sites."
             />
             <MarketingProjectCards />
             <Link

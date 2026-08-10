@@ -17,7 +17,7 @@ import { canonicalPath } from "@/lib/site";
 export const metadata: Metadata = buildPageMetadata({
   title: "Website & Product Development Case Studies",
   description:
-    "Case studies from Comlabs Technologies Pvt Ltd — website rebuilds, product onboarding, and marketing sites for companies that needed clearer positioning and better delivery.",
+    "Case studies from Comlabs Technologies Pvt Ltd — website projects, custom software, and product onboarding for companies that needed clearer positioning and better delivery.",
   path: "/work",
 });
 
@@ -38,7 +38,7 @@ export default function WorkIndexPage() {
               <MarketingOrangeHighlight>practice</MarketingOrangeHighlight>.
             </>
           }
-          description="Recent projects from Comlabs Technologies Pvt Ltd — from conversion-focused website rebuilds to custom software and product onboarding flows."
+          description="Recent projects from Comlabs Technologies Pvt Ltd — from conversion-focused websites to custom software and product onboarding flows."
         >
           <PageBreadcrumbs currentPath="/work" items={[{ label: "Work" }]} />
         </MarketingPageHero>
