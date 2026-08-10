@@ -35,7 +35,7 @@ export function ServiceCard({ service }: ServiceCardProps) {
       href={canonicalPath(service.path)}
       className="group relative block overflow-hidden rounded-2xl bg-neutral-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950"
     >
-      <div className="relative aspect-[4/5] sm:aspect-[3/4]">
+      <div className="relative aspect-[16/10] sm:aspect-[5/3]">
         <Image
           src={image.src}
           alt=""
@@ -69,7 +69,7 @@ export function ServiceCard({ service }: ServiceCardProps) {
             </p>
           </div>
 
-          <span className="absolute bottom-8 left-0 right-0 font-sans text-[10px] font-light uppercase tracking-[0.18em] text-white/0 motion-safe:transition-colors motion-safe:duration-700 motion-safe:ease-[cubic-bezier(0.16,1,0.3,1)] motion-safe:group-hover:text-white/70 motion-safe:group-focus-visible:text-white/70">
+          <span className="absolute bottom-5 left-0 right-0 font-sans text-[10px] font-light uppercase tracking-[0.18em] text-white/0 motion-safe:transition-colors motion-safe:duration-700 motion-safe:ease-[cubic-bezier(0.16,1,0.3,1)] motion-safe:group-hover:text-white/70 motion-safe:group-focus-visible:text-white/70">
             View service
           </span>
         </div>
