@@ -1,4 +1,4 @@
-import type { Post as PrismaPost } from "@/generated/prisma/client";
+import type { Post as PrismaPost } from "@prisma/client";
 import { calcReadingTime, slugify } from "@/lib/post-utils";
 import { getPrisma } from "@/lib/prisma";
 import type { Post, PostStatus, PostSummary } from "@/types/post";

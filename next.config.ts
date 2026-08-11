@@ -3,6 +3,13 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   trailingSlash: true,
   allowedDevOrigins: ["192.168.1.23", "192.168.1.4"],
+  serverExternalPackages: ["@prisma/client", "prisma"],
+  outputFileTracingIncludes: {
+    "/*": ["./node_modules/.prisma/client/**/*"],
+    "/admin/**": ["./node_modules/.prisma/client/**/*"],
+    "/api/**": ["./node_modules/.prisma/client/**/*"],
+    "/blog/**": ["./node_modules/.prisma/client/**/*"],
+  },
   images: {
     remotePatterns: [
       {
