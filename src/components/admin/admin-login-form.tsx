@@ -69,7 +69,8 @@ export function AdminLoginForm() {
       <button
         type="submit"
         disabled={loading}
-        className="inline-flex w-full items-center justify-center rounded-full bg-foreground px-5 py-3 text-sm font-medium text-background transition-opacity hover:opacity-90 disabled:opacity-60"
+        className="inline-flex w-full items-center justify-center rounded-full px-5 py-3 text-sm font-semibold text-background transition-opacity hover:opacity-90 disabled:opacity-60"
+        style={{ background: "var(--foreground)" }}
       >
         {loading ? "Signing in..." : "Sign in"}
       </button>
