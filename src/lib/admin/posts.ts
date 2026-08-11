@@ -1,6 +1,8 @@
 import type { Post as PrismaPost } from "@prisma/client";
 import { calcReadingTime, slugify } from "@/lib/post-utils";
 import { getPrisma } from "@/lib/prisma";
+import { buildPostSeo } from "@/lib/seo/auto-metadata";
+import { revalidateContentPaths } from "@/lib/seo/revalidate-content";
 import type { Post, PostStatus, PostSummary } from "@/types/post";
 
 export type PostInput = {
@@ -104,26 +106,34 @@ export async function createPost(input: PostInput): Promise<Post> {
   const slug = input.slug?.trim() || slugify(input.title);
   const status = input.status ?? "draft";
   const content = input.content ?? "";
+  const seo = buildPostSeo({
+    title: input.title,
+    content,
+    excerpt: input.excerpt,
+    metaTitle: input.metaTitle,
+    metaDescription: input.metaDescription,
+  });
 
   const record = await prisma.post.create({
     data: {
       title: input.title.trim(),
       slug,
-      excerpt: input.excerpt ?? "",
+      excerpt: seo.excerpt,
       content,
       coverImage: input.coverImage ?? "",
       tags: input.tags ?? [],
       status,
       author: input.author ?? "Comlabs Technologies Pvt Ltd",
       readingTime: calcReadingTime(content),
-      metaTitle: input.metaTitle ?? "",
-      metaDescription: input.metaDescription ?? "",
+      metaTitle: seo.metaTitle,
+      metaDescription: seo.metaDescription,
       ogImage: input.ogImage ?? "",
       canonicalUrl: input.canonicalUrl ?? "",
       publishedAt: resolvePublishedAt(status, null),
     },
   });
 
+  revalidateContentPaths({ type: "post", slug });
   return serializePost(record);
 }
 
@@ -134,20 +144,29 @@ export async function updatePost(id: string, input: PostInput): Promise<Post | n
 
   const status = input.status ?? (existing.status as PostStatus);
   const content = input.content ?? existing.content;
+  const title = input.title !== undefined ? input.title.trim() : existing.title;
+  const slug = input.slug !== undefined ? input.slug.trim() : existing.slug;
+  const seo = buildPostSeo({
+    title,
+    content,
+    excerpt: input.excerpt ?? existing.excerpt,
+    metaTitle: input.metaTitle ?? existing.metaTitle,
+    metaDescription: input.metaDescription ?? existing.metaDescription,
+  });
 
   const record = await prisma.post.update({
     where: { id },
     data: {
-      ...(input.title !== undefined ? { title: input.title.trim() } : {}),
-      ...(input.slug !== undefined ? { slug: input.slug.trim() } : {}),
-      ...(input.excerpt !== undefined ? { excerpt: input.excerpt } : {}),
+      ...(input.title !== undefined ? { title } : {}),
+      ...(input.slug !== undefined ? { slug } : {}),
+      excerpt: seo.excerpt,
       ...(input.content !== undefined ? { content: input.content } : {}),
       ...(input.coverImage !== undefined ? { coverImage: input.coverImage } : {}),
       ...(input.tags !== undefined ? { tags: input.tags } : {}),
       ...(input.status !== undefined ? { status: input.status } : {}),
       ...(input.author !== undefined ? { author: input.author } : {}),
-      ...(input.metaTitle !== undefined ? { metaTitle: input.metaTitle } : {}),
-      ...(input.metaDescription !== undefined ? { metaDescription: input.metaDescription } : {}),
+      metaTitle: seo.metaTitle,
+      metaDescription: seo.metaDescription,
       ...(input.ogImage !== undefined ? { ogImage: input.ogImage } : {}),
       ...(input.canonicalUrl !== undefined ? { canonicalUrl: input.canonicalUrl } : {}),
       readingTime: calcReadingTime(content),
@@ -155,13 +174,23 @@ export async function updatePost(id: string, input: PostInput): Promise<Post | n
     },
   });
 
+  revalidateContentPaths({ type: "post", slug: existing.slug });
+  if (slug !== existing.slug) {
+    revalidateContentPaths({ type: "post", slug });
+  }
   return serializePost(record);
 }
 
 export async function deletePost(id: string): Promise<boolean> {
   const prisma = getPrisma();
   try {
+    const existing = await prisma.post.findUnique({ where: { id }, select: { slug: true } });
     await prisma.post.delete({ where: { id } });
+    if (existing?.slug) {
+      revalidateContentPaths({ type: "post", slug: existing.slug });
+    } else {
+      revalidateContentPaths({ type: "post" });
+    }
     return true;
   } catch {
     return false;

@@ -5,6 +5,7 @@ import { FigmaNav } from "@/components/layout/figma-nav";
 import {
   type CaseStudyContent,
   type CaseStudySlug,
+  CASE_STUDY_ORDER,
   getNextCaseStudy,
   RELATED_SERVICE_BY_SLUG,
 } from "@/lib/case-studies";
@@ -21,9 +22,10 @@ export type { CaseStudyContent } from "@/lib/case-studies";
 
 export function CaseStudyLayout({ content }: { content: CaseStudyContent }) {
   const { slug, client, year, headline, standfirst, meta, leadImage, sections } = content;
+  const isKnownSlug = CASE_STUDY_ORDER.includes(slug as CaseStudySlug);
   const slugKey = slug as CaseStudySlug;
-  const relatedService = RELATED_SERVICE_BY_SLUG[slugKey];
-  const nextCaseStudy = getNextCaseStudy(slugKey);
+  const relatedService = isKnownSlug ? RELATED_SERVICE_BY_SLUG[slugKey] : undefined;
+  const nextCaseStudy = isKnownSlug ? getNextCaseStudy(slugKey) : null;
 
   return (
     <div
@@ -70,12 +72,14 @@ export function CaseStudyLayout({ content }: { content: CaseStudyContent }) {
           />
         ) : null}
 
-        <NextCaseStudy
-          client={nextCaseStudy.client}
-          headline={nextCaseStudy.headline}
-          href={nextCaseStudy.href}
-          thumbnail={nextCaseStudy.thumbnail}
-        />
+        {nextCaseStudy ? (
+          <NextCaseStudy
+            client={nextCaseStudy.client}
+            headline={nextCaseStudy.headline}
+            href={nextCaseStudy.href}
+            thumbnail={nextCaseStudy.thumbnail}
+          />
+        ) : null}
 
         <CaseStudyCta />
       </main>

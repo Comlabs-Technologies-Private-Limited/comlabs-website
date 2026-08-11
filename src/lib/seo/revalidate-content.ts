@@ -1,0 +1,20 @@
+import { revalidatePath } from "next/cache";
+
+type RevalidateContentInput = {
+  type: "post" | "case-study";
+  slug?: string;
+};
+
+/** Bust cached sitemap and public content routes after admin CRUD. */
+export function revalidateContentPaths({ type, slug }: RevalidateContentInput): void {
+  revalidatePath("/sitemap.xml");
+
+  if (type === "post") {
+    revalidatePath("/blog");
+    if (slug) revalidatePath(`/blog/${slug}`);
+    return;
+  }
+
+  revalidatePath("/work");
+  if (slug) revalidatePath(`/work/${slug}`);
+}
