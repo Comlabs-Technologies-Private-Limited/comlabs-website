@@ -86,7 +86,7 @@ export function registerComlabsMcpTools(server: McpServer): void {
     {
       title: "Create blog post",
       description:
-        "Create a blog post (draft by default). Content should be HTML. SEO fields are auto-generated when omitted.",
+        "Create a blog post in the Comlabs CMS via API (no browser login needed). Content should be HTML. SEO fields auto-generate when omitted. Defaults to draft.",
       inputSchema: z.object({
         title: z.string().describe("Post title"),
         slug: z.string().optional().describe("URL slug; auto-generated from title if omitted"),
