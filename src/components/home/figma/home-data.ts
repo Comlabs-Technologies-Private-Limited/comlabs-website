@@ -79,11 +79,12 @@ export const TESTIMONIALS: Testimonial[] = [
   {
     quote:
       "Honestly, I came to Comlabs with a messy idea and not much else. They figured out what I was actually trying to build and turned it into a dashboard that just works. Our users went from confused to comfortable. Felt less like hiring an agency and more like having someone on the team who cared.",
-    name: "Jeet Patel",
+    name: "Dr Jeet Patel",
     title: "Founder",
     company: "Formial Labs",
     initials: "JP",
-    // avatarSrc: — add founder photo URL
+    avatarSrc:
+      "https://res.cloudinary.com/p8osc4y4/image/upload/v1786453596/jeet-patel_hewm25.jpg",
     companyLogoSrc: "/logos/clients/formial-labs.png",
   },
   {
@@ -93,7 +94,8 @@ export const TESTIMONIALS: Testimonial[] = [
     title: "CEO",
     company: "Global Services",
     initials: "PM",
-    // avatarSrc: — add founder photo URL
+    avatarSrc:
+      "https://res.cloudinary.com/p8osc4y4/image/upload/v1786453596/pramod-mishra_rygkvp.jpg",
   },
   {
     quote:
@@ -102,6 +104,7 @@ export const TESTIMONIALS: Testimonial[] = [
     title: "Founder",
     company: "Vithub",
     initials: "HS",
-    // avatarSrc: — add founder photo URL
+    avatarSrc:
+      "https://res.cloudinary.com/p8osc4y4/image/upload/v1786453597/harsh-sihag_tdj4k7.jpg",
   },
 ];
