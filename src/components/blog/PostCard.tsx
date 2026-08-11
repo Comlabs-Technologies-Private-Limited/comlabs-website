@@ -1,5 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
+
+import { canonicalPath } from "@/lib/site";
 import type { PostSummary } from "@/types/post";
 
 type PostCardProps = {
@@ -18,11 +20,11 @@ export function PostCard({ post }: PostCardProps) {
   return (
     <article>
       <Link
-        href={`/blog/${post.slug}`}
-        className="group block rounded-3xl border border-border bg-card transition-colors hover:border-foreground/15"
+        href={canonicalPath(`/blog/${post.slug}`)}
+        className="group block overflow-hidden rounded-3xl border border-border bg-background transition-[border-color,box-shadow] duration-300 hover:border-foreground/20 hover:shadow-[0_8px_32px_rgba(28,25,23,0.06)]"
       >
         {post.coverImage ? (
-          <div className="relative aspect-[16/9] overflow-hidden rounded-t-3xl bg-secondary">
+          <div className="relative aspect-[16/9] overflow-hidden border-b border-border bg-secondary">
             <Image
               src={post.coverImage}
               alt={post.title}
@@ -34,7 +36,7 @@ export function PostCard({ post }: PostCardProps) {
         ) : null}
         <div className="p-6 md:p-7">
           {post.tags.length > 0 ? (
-            <p className="mb-3 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
+            <p className="mb-3 text-xs font-semibold tracking-widest uppercase" style={{ color: "var(--warm-orange)" }}>
               {post.tags[0]}
             </p>
           ) : null}
