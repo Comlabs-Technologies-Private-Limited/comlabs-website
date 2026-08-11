@@ -1,4 +1,4 @@
-import type { CaseStudy as PrismaCaseStudy, Prisma } from "@/generated/prisma/client";
+import type { CaseStudy as PrismaCaseStudy, Prisma } from "@prisma/client";
 import type {
   CaseStudyContent,
   CaseStudyHeadline,
