@@ -69,6 +69,7 @@ export type Testimonial = {
   title: string;
   company: string;
   initials: string;
+  /** Founder headshot URL — add when available */
   avatarSrc?: string;
   companyLogoSrc?: string;
   linkedinUrl?: string;
@@ -82,6 +83,7 @@ export const TESTIMONIALS: Testimonial[] = [
     title: "Founder",
     company: "Formial Labs",
     initials: "JP",
+    // avatarSrc: — add founder photo URL
     companyLogoSrc: "/logos/clients/formial-labs.png",
   },
   {
@@ -91,6 +93,7 @@ export const TESTIMONIALS: Testimonial[] = [
     title: "CEO",
     company: "Global Services",
     initials: "PM",
+    // avatarSrc: — add founder photo URL
   },
   {
     quote:
@@ -99,5 +102,6 @@ export const TESTIMONIALS: Testimonial[] = [
     title: "Founder",
     company: "Vithub",
     initials: "HS",
+    // avatarSrc: — add founder photo URL
   },
 ];
