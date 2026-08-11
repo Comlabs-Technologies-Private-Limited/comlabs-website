@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 
+import { listPosts } from "@/lib/admin/posts";
 import { canonicalUrl, indexableStaticPaths, isBlogEnabled } from "@/lib/site";
 
 function priorityForPath(path: string): number {
@@ -24,16 +25,10 @@ async function getBlogPostEntries(): Promise<MetadataRoute.Sitemap> {
   if (!isBlogEnabled()) return [];
 
   try {
-    const { connectDB } = await import("@/lib/db");
-    const { Post } = await import("@/models/post");
-    await connectDB();
-    const posts = await Post.find({ status: "published" })
-      .select("slug updatedAt")
-      .lean();
-
+    const posts = await listPosts({ status: "published" });
     return posts.map((post) => ({
       url: canonicalUrl(`/blog/${post.slug}`),
-      ...(post.updatedAt ? { lastModified: post.updatedAt as Date } : {}),
+      lastModified: new Date(post.updatedAt),
       changeFrequency: "weekly" as const,
       priority: 0.7,
     }));

@@ -5,8 +5,8 @@ import Link from "next/link";
 import { FigmaFooter } from "@/components/layout/figma-footer";
 import { FigmaNav } from "@/components/layout/figma-nav";
 import { PostCard } from "@/components/blog/PostCard";
+import { listPosts } from "@/lib/admin/posts";
 import { buildPageMetadata } from "@/lib/metadata";
-import { serializePostSummary } from "@/lib/post-utils";
 import { isBlogEnabled } from "@/lib/site";
 import type { PostSummary } from "@/types/post";
 
@@ -22,25 +22,10 @@ export const metadata: Metadata = buildPageMetadata({
 const PAGE_SIZE = 9;
 
 async function getPosts(page: number): Promise<{ posts: PostSummary[]; total: number }> {
-  const { connectDB } = await import("@/lib/db");
-  const { Post } = await import("@/models/post");
-  await connectDB();
-  const [docs, total] = await Promise.all([
-    Post.find({ status: "published" })
-      .select("-content")
-      .sort({ publishedAt: -1 })
-      .skip((page - 1) * PAGE_SIZE)
-      .limit(PAGE_SIZE)
-      .lean(),
-    Post.countDocuments({ status: "published" }),
-  ]);
-
-  return {
-    posts: docs.map((d) =>
-      serializePostSummary(d as Parameters<typeof serializePostSummary>[0]),
-    ),
-    total,
-  };
+  const allPosts = await listPosts({ status: "published" });
+  const total = allPosts.length;
+  const posts = allPosts.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  return { posts, total };
 }
 
 export default async function BlogIndexPage({

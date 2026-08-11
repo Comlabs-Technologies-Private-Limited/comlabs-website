@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 
 import { CaseStudyLayout } from "@/components/work/case-study-layout";
+import { getPublishedCaseStudy } from "@/lib/admin/case-studies";
 import { globalServicesCaseStudy } from "@/lib/case-studies/global-services";
 import { buildPageMetadata } from "@/lib/metadata";
 
@@ -11,6 +13,11 @@ export const metadata: Metadata = buildPageMetadata({
   path: "/work/global-services",
 });
 
-export default function GlobalServicesCaseStudy() {
-  return <CaseStudyLayout content={globalServicesCaseStudy} />;
+export default async function GlobalServicesCaseStudy() {
+  const content =
+    (await getPublishedCaseStudy("global-services")) ?? globalServicesCaseStudy;
+
+  if (!content) notFound();
+
+  return <CaseStudyLayout content={content} />;
 }

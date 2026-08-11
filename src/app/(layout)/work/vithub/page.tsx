@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 
 import { CaseStudyLayout } from "@/components/work/case-study-layout";
+import { getPublishedCaseStudy } from "@/lib/admin/case-studies";
 import { vithubCaseStudy } from "@/lib/case-studies/vithub";
 import { buildPageMetadata } from "@/lib/metadata";
 
@@ -11,6 +13,10 @@ export const metadata: Metadata = buildPageMetadata({
   path: "/work/vithub",
 });
 
-export default function VithubCaseStudy() {
-  return <CaseStudyLayout content={vithubCaseStudy} />;
+export default async function VithubCaseStudy() {
+  const content = (await getPublishedCaseStudy("vithub")) ?? vithubCaseStudy;
+
+  if (!content) notFound();
+
+  return <CaseStudyLayout content={content} />;
 }

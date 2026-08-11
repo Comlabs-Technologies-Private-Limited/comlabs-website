@@ -8,8 +8,8 @@ import { FigmaFooter } from "@/components/layout/figma-footer";
 import { FigmaNav } from "@/components/layout/figma-nav";
 import { PostBody } from "@/components/blog/PostBody";
 import { BreadcrumbJsonLd, PostJsonLd } from "@/components/blog/JsonLd";
+import { getPublishedPostBySlug, getPublishedPostSlugs } from "@/lib/admin/posts";
 import { buildPageMetadata } from "@/lib/metadata";
-import { serializePost } from "@/lib/post-utils";
 import { canonicalPath, canonicalUrl, isBlogEnabled, siteOgImagePath } from "@/lib/site";
 import type { Post as PostType } from "@/types/post";
 
@@ -17,12 +17,7 @@ export const revalidate = 60;
 
 async function getPost(slug: string): Promise<PostType | null> {
   try {
-    const { connectDB } = await import("@/lib/db");
-    const { Post } = await import("@/models/post");
-    await connectDB();
-    const doc = await Post.findOne({ slug, status: "published" });
-    if (!doc) return null;
-    return serializePost(doc);
+    return await getPublishedPostBySlug(slug);
   } catch {
     return null;
   }
@@ -32,11 +27,8 @@ export async function generateStaticParams() {
   if (!isBlogEnabled()) return [];
 
   try {
-    const { connectDB } = await import("@/lib/db");
-    const { Post } = await import("@/models/post");
-    await connectDB();
-    const slugs = await Post.find({ status: "published" }).select("slug").lean();
-    return slugs.map((s) => ({ slug: s.slug }));
+    const slugs = await getPublishedPostSlugs();
+    return slugs.map((slug) => ({ slug }));
   } catch {
     return [];
   }
