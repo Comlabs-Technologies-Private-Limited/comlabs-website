@@ -1,8 +1,10 @@
 "use client";
 
 import { Brain, Building2, Cloud, ShoppingBag, Wallet } from "lucide-react";
-import { motion } from "motion/react";
 import type { LucideIcon } from "lucide-react";
+
+import { MarketingFadeIn } from "@/components/marketing/marketing-motion";
+import { MarketingOrangeHighlight } from "@/components/marketing/marketing-section-header";
 
 type IndustryItem = {
   title: string;
@@ -42,7 +44,7 @@ export function FigmaIndustriesSection() {
   return (
     <section id="industries" className="border-y border-border bg-card px-6 py-24">
       <div className="mx-auto max-w-6xl">
-        <div className="mb-12 max-w-2xl">
+        <MarketingFadeIn className="mb-12 max-w-2xl">
           <p className="mb-4 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
             Industries we serve
           </p>
@@ -51,13 +53,13 @@ export function FigmaIndustriesSection() {
             style={{ letterSpacing: "-0.03em" }}
           >
             Built for teams shipping in{" "}
-            <span style={{ color: "var(--warm-orange)" }}>high-stakes</span> domains.
+            <MarketingOrangeHighlight>high-stakes</MarketingOrangeHighlight> domains.
           </h2>
           <p className="mt-5 text-sm leading-relaxed text-muted-foreground md:text-base">
             From regulated fintech to fast-moving commerce and AI-native products — we bring the
             same engineering discipline across every industry.
           </p>
-        </div>
+        </MarketingFadeIn>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-6">
           {INDUSTRIES.map((industry, i) => {
@@ -65,13 +67,9 @@ export function FigmaIndustriesSection() {
             const spanClass = i < 3 ? "lg:col-span-2" : "lg:col-span-3";
 
             return (
-              <motion.article
+              <article
                 key={industry.title}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.06 }}
-                className={`group flex flex-col rounded-3xl border border-border bg-background p-8 transition-all duration-300 hover:border-foreground/20 hover:shadow-[0_8px_32px_rgba(28,25,23,0.06)] ${spanClass}`}
+                className={`group flex flex-col rounded-3xl border border-border bg-background p-8 transition-[border-color,box-shadow] duration-300 hover:border-foreground/20 hover:shadow-[0_8px_32px_rgba(28,25,23,0.06)] ${spanClass}`}
               >
                 <div
                   className="mb-5 inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-border transition-colors group-hover:border-foreground/15"
@@ -81,7 +79,7 @@ export function FigmaIndustriesSection() {
                 </div>
                 <h3 className="mb-2 text-sm font-semibold">{industry.title}</h3>
                 <p className="text-sm leading-relaxed text-muted-foreground">{industry.description}</p>
-              </motion.article>
+              </article>
             );
           })}
         </div>

@@ -3,12 +3,39 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   trailingSlash: true,
   allowedDevOrigins: ["192.168.1.23", "192.168.1.4"],
+  serverExternalPackages: ["@prisma/client", "prisma"],
+  outputFileTracingIncludes: {
+    "/*": ["./node_modules/.prisma/client/**/*"],
+    "/admin/**": ["./node_modules/.prisma/client/**/*"],
+    "/api/**": ["./node_modules/.prisma/client/**/*"],
+    "/blog/**": ["./node_modules/.prisma/client/**/*"],
+  },
   images: {
     remotePatterns: [
       {
         protocol: "https",
         hostname: "res.cloudinary.com",
         pathname: "/p8osc4y4/image/upload/**",
+      },
+      {
+        protocol: "https",
+        hostname: "formial.in",
+        pathname: "/cdn/shop/files/**",
+      },
+      {
+        protocol: "https",
+        hostname: "vithub.in",
+        pathname: "/cdn/shop/files/**",
+      },
+      {
+        protocol: "https",
+        hostname: "media.licdn.com",
+        pathname: "/dms/image/**",
+      },
+      {
+        protocol: "https",
+        hostname: "*.public.blob.vercel-storage.com",
+        pathname: "/**",
       },
     ],
   },

@@ -44,14 +44,14 @@ export const PROJECTS = [
     desc: "Multi-page onboarding flow for an internal dashboard — built to cut drop-off and get users to activation fast.",
     href: "/work/formial-labs",
     liveSiteUrl: "https://formial.in",
-    image: SHOWCASE_IMAGES.primary,
+    logo: "https://formial.in/cdn/shop/files/Brand_Design-04_90b8501a-2715-48dc-934d-b45bba7f000b.png?v=1747823670&width=200",
   },
   {
     title: "Global Services",
     category: "Website Design & Development",
     desc: "Full website rebuild that lifted conversion and helped land JIO and Vodafone-Idea as enterprise clients.",
     href: "/work/global-services",
-    image: SHOWCASE_IMAGES.secondary,
+    logo: "https://media.licdn.com/dms/image/v2/D4D0BAQGQX5VqkCJ3Kw/company-logo_200_200/B4DZ_HUcVbK4AE-/0/1785755452993?e=1787788800&v=beta&t=0m0sb88g-MtInzITn26oE280SA6izWiywxQvtZIsbGo",
   },
   {
     title: "Vithub",
@@ -59,7 +59,7 @@ export const PROJECTS = [
     desc: "Design-led marketing website built to give Vithub a strong digital identity and a foundation for growth.",
     href: "/work/vithub",
     liveSiteUrl: "https://vithub.in",
-    image: SHOWCASE_IMAGES.primary,
+    logo: "https://vithub.in/cdn/shop/files/Vit_hub_web_logo_temp.png?height=100&v=1762338028",
   },
 ] as const;
 
@@ -69,6 +69,7 @@ export type Testimonial = {
   title: string;
   company: string;
   initials: string;
+  /** Founder headshot URL — add when available */
   avatarSrc?: string;
   companyLogoSrc?: string;
   linkedinUrl?: string;
@@ -80,24 +81,29 @@ export const TESTIMONIALS: Testimonial[] = [
       "Honestly, I came to Comlabs with a messy idea and not much else. They figured out what I was actually trying to build and turned it into a dashboard that just works. Our users went from confused to comfortable. Felt less like hiring an agency and more like having someone on the team who cared.",
     name: "Jeet Patel",
     title: "Founder",
-    company: "Formial Labs",
+    company: "Formial",
     initials: "JP",
-    companyLogoSrc: "/logos/clients/formial-labs.png",
+    avatarSrc:
+      "https://res.cloudinary.com/p8osc4y4/image/upload/v1786453596/jeet-patel_hewm25.jpg",
   },
   {
     quote:
       "We deal with companies like JIO and Vodafone, so I didn't want a website that looked small. Comlabs got that immediately. They rebuilt the whole thing and now it actually looks like a company at our level. No hand-holding, no chasing — they just got it done.",
     name: "Pramod Mishra",
-    title: "CEO",
-    company: "Global Services",
+    title: "Director",
+    company: "Global Services Enterprise",
     initials: "PM",
+    avatarSrc:
+      "https://res.cloudinary.com/p8osc4y4/image/upload/v1786453596/pramod-mishra_rygkvp.jpg",
   },
   {
     quote:
       "I'd been putting off the website for ages. Comlabs made it painless. The site finally looks like the brand I've had in my head, and people have actually noticed. Quick, easy to talk to, and they got Vithub in a way I didn't expect.",
     name: "Harsh Sihag",
-    title: "Founder",
+    title: "Director and Founder",
     company: "Vithub",
     initials: "HS",
+    avatarSrc:
+      "https://res.cloudinary.com/p8osc4y4/image/upload/v1786453597/harsh-sihag_tdj4k7.jpg",
   },
 ];

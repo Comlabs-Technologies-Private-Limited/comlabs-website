@@ -4,7 +4,11 @@ import type { ReactNode } from "react";
 import { motion } from "motion/react";
 
 import type { EditorialImage } from "@/lib/editorial-images";
-import { EDITORIAL_HERO_OVERLAY, editorialHeroText } from "@/lib/editorial-hero-styles";
+import {
+  EDITORIAL_HERO_OVERLAY,
+  EDITORIAL_HERO_OVERLAY_WARM,
+  editorialHeroText,
+} from "@/lib/editorial-hero-styles";
 
 const EASE = [0.25, 0.1, 0, 1] as const;
 
@@ -14,6 +18,8 @@ type MarketingPageHeroProps = {
   description: string;
   children?: ReactNode;
   backgroundImage?: EditorialImage;
+  /** Use a lighter wash when editorial photos are warm / high-key (service detail pages). */
+  editorialOverlay?: "default" | "warm";
   compactSpacing?: boolean;
   proofItems?: string[];
 };
@@ -24,10 +30,13 @@ export function MarketingPageHero({
   description,
   children,
   backgroundImage,
+  editorialOverlay = "default",
   compactSpacing = false,
   proofItems,
 }: MarketingPageHeroProps) {
   const isEditorial = Boolean(backgroundImage);
+  const overlayStyle =
+    editorialOverlay === "warm" ? EDITORIAL_HERO_OVERLAY_WARM : EDITORIAL_HERO_OVERLAY;
   const eyebrowMargin = compactSpacing ? "mb-3" : "mb-6";
   const titleMargin = compactSpacing ? "mt-0" : "";
 
@@ -42,7 +51,7 @@ export function MarketingPageHero({
         />
         <div
           className="absolute inset-0"
-          style={{ background: EDITORIAL_HERO_OVERLAY }}
+          style={{ background: overlayStyle }}
         />
 
         <div className="relative z-10 mx-auto max-w-6xl">

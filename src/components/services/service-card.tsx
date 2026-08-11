@@ -1,58 +1,87 @@
 import Image from "next/image";
 import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 
+import { MarketingOrangeHighlight } from "@/components/marketing/marketing-section-header";
+import { getCanonicalService } from "@/lib/canonical-services";
 import type { ServicePageData } from "@/lib/services-data";
 import { canonicalPath } from "@/lib/site";
 
-/** Slugs whose editorial photos need a stronger flat wash for title legibility. */
-const STRONG_OVERLAY_SLUGS = new Set([
-  "website-design-development",
-  "custom-software-development",
-  "mobile-app-development",
-  "seo-aeo-copywriting",
-  "cloud-infrastructure-scaling",
-]);
+type ServiceCardTitleProps = {
+  title: string;
+  highlight: string;
+};
+
+function ServiceCardTitle({ title, highlight }: ServiceCardTitleProps) {
+  const index = title.indexOf(highlight);
+  if (index === -1) {
+    return <>{title}</>;
+  }
+
+  return (
+    <>
+      {title.slice(0, index)}
+      <MarketingOrangeHighlight>{highlight}</MarketingOrangeHighlight>
+      {title.slice(index + highlight.length)}
+    </>
+  );
+}
 
 type ServiceCardProps = {
   service: ServicePageData;
+  /** Span both columns — used for the last tile when the count is odd. */
+  spanFull?: boolean;
 };
 
-export function ServiceCard({ service }: ServiceCardProps) {
+export function ServiceCard({ service, spanFull = false }: ServiceCardProps) {
   const image = service.editorialImage;
-  const strongOverlay = STRONG_OVERLAY_SLUGS.has(service.slug);
+  const canonical = getCanonicalService(service.slug);
+  const highlight = canonical?.cardTitleHighlight ?? service.title.split(" ")[0] ?? service.title;
 
   if (!image) {
     return null;
   }
 
-  const flatWash = strongOverlay ? "bg-neutral-950/55" : "bg-neutral-950/45";
-
   return (
     <Link
       href={canonicalPath(service.path)}
-      className="group relative block overflow-hidden rounded-2xl bg-neutral-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950"
+      className={`group relative block overflow-hidden bg-[#f7f7f4] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30 focus-visible:ring-offset-2 ${
+        spanFull ? "md:col-span-2" : ""
+      }`}
     >
-      <div className="relative aspect-[16/10] sm:aspect-[5/3]">
+      <div className="relative min-h-[12rem] sm:min-h-[14rem] md:min-h-[16rem] lg:min-h-[18rem]">
         <Image
           src={image.src}
           alt=""
           aria-hidden
           fill
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          className="object-cover motion-safe:transition-transform motion-safe:duration-[900ms] motion-safe:ease-[cubic-bezier(0.16,1,0.3,1)] motion-safe:group-hover:scale-[1.04] motion-safe:group-focus-visible:scale-[1.04]"
+          sizes={
+            spanFull
+              ? "(max-width: 768px) 100vw, 960px"
+              : "(max-width: 768px) 100vw, 50vw"
+          }
+          className="object-cover saturate-[0.92] motion-safe:transition-transform motion-safe:duration-[900ms] motion-safe:ease-[cubic-bezier(0.16,1,0.3,1)] motion-safe:group-hover:scale-[1.03] motion-safe:group-focus-visible:scale-[1.03]"
         />
 
-        <div className={`pointer-events-none absolute inset-0 ${flatWash}`} aria-hidden />
         <div
-          className="pointer-events-none absolute inset-0 bg-gradient-to-b from-neutral-950/40 via-neutral-950/10 to-neutral-950/60"
+          className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[#f7f7f4]/92 via-[#f7f7f4]/58 to-[#f7f7f4]/28"
           aria-hidden
         />
-        <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-white/10" aria-hidden />
 
-        <div className="absolute inset-0 flex items-center justify-center px-6 text-center">
-          <h3 className="max-w-[13ch] text-balance font-sans text-[15px] font-medium leading-snug tracking-[-0.01em] text-white md:text-base">
-            {service.title}
+        <div className="relative h-full p-6 sm:p-8 md:p-10 lg:p-12">
+          <h3 className="max-w-[16ch] text-pretty font-sans text-[1.0625rem] font-medium leading-[1.2] tracking-[-0.02em] text-neutral-900 sm:max-w-[18ch] sm:text-lg md:text-xl md:leading-tight">
+            <ServiceCardTitle title={service.title} highlight={highlight} />
           </h3>
+
+          <span className="absolute bottom-6 right-6 inline-flex items-center gap-1 text-[11px] font-normal tracking-tight text-neutral-500 transition-colors group-hover:text-neutral-700 sm:bottom-8 sm:right-8 sm:text-xs">
+            Read more
+            <ArrowUpRight
+              size={12}
+              strokeWidth={1.75}
+              className="shrink-0 opacity-60 motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover:translate-x-px motion-safe:group-hover:-translate-y-px motion-safe:group-hover:opacity-80"
+              aria-hidden
+            />
+          </span>
         </div>
       </div>
     </Link>
@@ -64,15 +93,17 @@ type ServicesGridProps = {
 };
 
 export function ServicesGrid({ services }: ServicesGridProps) {
+  const lastIndex = services.length - 1;
+  const lastSpansFull = services.length % 2 !== 0;
+
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-4 lg:grid-cols-6 lg:gap-5">
+    <div className="grid grid-cols-1 gap-0 md:grid-cols-2">
       {services.map((service, index) => (
-        <div
+        <ServiceCard
           key={service.slug}
-          className={index < 3 ? "lg:col-span-2" : "lg:col-span-3"}
-        >
-          <ServiceCard service={service} />
-        </div>
+          service={service}
+          spanFull={lastSpansFull && index === lastIndex}
+        />
       ))}
     </div>
   );

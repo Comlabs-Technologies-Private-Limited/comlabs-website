@@ -35,52 +35,62 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
-## MCP Server — Manage blog posts via claude.ai
+## MCP Server — Manage content via Claude and ChatGPT
 
-The site exposes a [Model Context Protocol](https://modelcontextprotocol.io) server at `/api/mcp` that lets you create, edit, publish, and delete blog posts directly from a Claude chat.
+The site exposes a [Model Context Protocol](https://modelcontextprotocol.io) server at `/api/mcp/` that lets AI assistants create, edit, publish, and delete blog posts and case studies — including image uploads — without opening the admin panel.
 
-### Environment variable
+### Required environment variables
 
-Add `MCP_API_KEY` to your Vercel project (or `.env.local`):
+Add these to Vercel (or `.env.local`):
 
 ```bash
-# generate a strong random secret
-openssl rand -base64 32
-```
+# MCP bearer token — generate with: openssl rand -base64 32
+MCP_API_KEY=
 
-Then set it in Vercel:
+# MongoDB — required for blog/case study CRUD
+MONGODB_URI=
 
-```
-MCP_API_KEY=<the value you generated>
+# Vercel Blob — required for upload_image tools
+BLOB_READ_WRITE_TOKEN=
 ```
 
 ### Connect in claude.ai
 
 1. Open **claude.ai → Settings → Integrations → Add custom integration**.
-2. Set the URL to `https://comlabstechnologies.com/api/mcp`.
-3. Under **Authentication**, choose **Bearer token** and paste the value of `MCP_API_KEY`.
-4. Save. Claude will now list five tools: `list_posts`, `create_draft_post`, `update_post`, `publish_post`, `delete_post`.
+2. Set the URL to `https://www.comlabstechnologies.com/api/mcp/`.
+3. Under **Authentication**, choose **Bearer token** and paste your `MCP_API_KEY`.
+4. Save. Claude will discover all tools listed below.
 
-### Available tools
+### Connect in ChatGPT
 
-| Tool | What it does |
-|------|-------------|
-| `list_posts` | List posts with optional status filter and keyword search |
-| `create_draft_post` | Create a new draft; content is HTML, sanitized server-side |
-| `update_post` | Update any fields of an existing post (by id or slug) |
-| `publish_post` | Publish a draft or revert a published post to draft |
-| `delete_post` | Permanently delete a post (irreversible) |
+ChatGPT’s **New Plugin** dialog uses **Server URL** (not Tunnel). Our server uses a static API key, **not OAuth**.
 
-### Connect in Claude Code (CLI)
+1. Open **Settings → Apps & Connectors → Create** (Developer mode must be on).
+2. Fill in:
+   - **Name:** `Comlabs Admin`
+   - **Server URL:** `https://www.comlabstechnologies.com/api/mcp/`
+   - **Authentication:** open the dropdown and choose **Token** (not OAuth)
+3. Paste your `MCP_API_KEY` when prompted.
+4. Check **“I understand and want to continue”**, then click **Create**.
 
-Add this to your `~/.claude/claude_code_config.json` (or the project-level `.mcp.json`):
+**If you only see OAuth** and no Token option, put the key in the URL instead:
+
+```
+https://www.comlabstechnologies.com/api/mcp/?api_key=YOUR_MCP_API_KEY
+```
+
+Use **Authentication: None** with that full URL. The key stays in the URL — only use this if Token auth isn’t available.
+
+### Connect in Cursor or Claude Code
+
+Copy `.mcp.json.example` to `.mcp.json` and set your key:
 
 ```json
 {
   "mcpServers": {
-    "comlabs-blog": {
+    "comlabs-admin": {
       "type": "http",
-      "url": "https://comlabstechnologies.com/api/mcp",
+      "url": "https://www.comlabstechnologies.com/api/mcp/",
       "headers": {
         "Authorization": "Bearer <MCP_API_KEY>"
       }
@@ -88,3 +98,46 @@ Add this to your `~/.claude/claude_code_config.json` (or the project-level `.mcp
   }
 }
 ```
+
+For local development, use `http://localhost:3000/api/mcp/`.
+
+### Available tools
+
+#### Blog posts
+
+| Tool | What it does |
+|------|-------------|
+| `list_posts` | List posts with optional status filter and keyword search |
+| `get_post` | Fetch a single post by id or slug |
+| `create_draft_post` | Create a post (draft by default); HTML content is sanitized |
+| `update_post` | Update any fields of an existing post |
+| `publish_post` | Set status to `published` or `draft` |
+| `delete_post` | Permanently delete a post |
+
+#### Case studies
+
+| Tool | What it does |
+|------|-------------|
+| `list_case_studies` | List case studies with optional status filter |
+| `get_case_study` | Fetch a single case study by id or slug |
+| `create_case_study` | Create a case study with structured headline, meta, sections |
+| `update_case_study` | Update any fields of an existing case study |
+| `publish_case_study` | Set status to `published` or `draft` |
+| `delete_case_study` | Permanently delete a case study |
+
+#### Images
+
+| Tool | What it does |
+|------|-------------|
+| `upload_image_from_url` | Download a public image URL and store it in Vercel Blob |
+| `upload_image` | Upload base64 image data and return a permanent URL |
+
+Use the returned URL in `coverImage`, `ogImage`, `leadImage.src`, or section `media.src` fields.
+
+### Example workflow
+
+1. `upload_image_from_url` — host a hero image → get blob URL
+2. `create_case_study` — pass the URL in `leadImage.src`
+3. `publish_case_study` — set status to `published`
+
+Changes appear on the live site and in `sitemap.xml` within ~60 seconds.

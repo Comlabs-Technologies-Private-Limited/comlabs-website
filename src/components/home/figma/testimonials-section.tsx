@@ -1,11 +1,13 @@
 "use client";
 
-import { motion } from "motion/react";
 import Image from "next/image";
+import Link from "next/link";
 
 import { TESTIMONIALS } from "@/components/home/figma/home-data";
+import { MarketingFadeIn } from "@/components/marketing/marketing-motion";
+import { MarketingOrangeHighlight } from "@/components/marketing/marketing-section-header";
 
-function TestimonialAvatar({
+function FounderAvatar({
   name,
   initials,
   avatarSrc,
@@ -19,17 +21,17 @@ function TestimonialAvatar({
       <Image
         src={avatarSrc}
         alt={name}
-        width={28}
-        height={28}
-        className="h-7 w-7 shrink-0 rounded-full object-cover"
+        width={40}
+        height={40}
+        className="h-10 w-10 shrink-0 rounded-full object-cover"
       />
     );
   }
 
   return (
     <div
-      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#d8d8d3] text-[10px] font-semibold text-[#4a4a4a]"
-      aria-hidden={!avatarSrc}
+      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border bg-secondary text-xs font-medium text-muted-foreground"
+      aria-hidden
     >
       {initials}
     </div>
@@ -38,9 +40,9 @@ function TestimonialAvatar({
 
 export function FigmaTestimonialsSection() {
   return (
-    <section id="testimonials" className="bg-[#f2f2ef] px-6 py-16 md:py-20">
+    <section id="testimonials" className="border-y border-border bg-card px-6 py-24 md:py-28">
       <div className="mx-auto max-w-6xl">
-        <div className="mb-10 md:mb-12">
+        <MarketingFadeIn className="mb-12 max-w-2xl md:mb-16">
           <p className="mb-4 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
             Testimonials
           </p>
@@ -48,59 +50,53 @@ export function FigmaTestimonialsSection() {
             className="text-2xl font-bold tracking-tight md:text-4xl"
             style={{ letterSpacing: "-0.03em" }}
           >
-            What founders say{" "}
-            <span style={{ color: "var(--warm-orange)" }}>about us</span>.
+            What founders say <MarketingOrangeHighlight>about us</MarketingOrangeHighlight>.
           </h2>
-        </div>
+          <p className="mt-4 text-sm leading-relaxed text-muted-foreground md:text-base">
+            Direct feedback from founders we&apos;ve shipped websites, products, and platforms with.
+          </p>
+        </MarketingFadeIn>
 
-        <div className="grid grid-cols-1 gap-2.5 md:grid-cols-3">
-          {TESTIMONIALS.map((t, i) => (
-            <motion.blockquote
-              key={t.name}
-              initial={{ opacity: 0, y: 8 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.05 }}
-              className="flex min-h-[182px] flex-col border border-[#ecece8] bg-[#f5f5f2] px-4 py-4 md:min-h-[190px]"
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          {TESTIMONIALS.map((testimonial) => (
+            <blockquote
+              key={testimonial.name}
+              className="flex min-h-[280px] flex-col rounded-3xl border border-border bg-background p-6 md:min-h-[300px] md:p-8"
             >
-              <p className="text-[14px] leading-[1.45] text-[#2c2c2c]">&ldquo;{t.quote}&rdquo;</p>
+              <p className="flex-1 text-base leading-[1.7] text-foreground">
+                &ldquo;{testimonial.quote}&rdquo;
+              </p>
 
-              <footer className="mt-auto flex items-center gap-2.5 pt-5">
-                <TestimonialAvatar name={t.name} initials={t.initials} avatarSrc={t.avatarSrc} />
+              <footer className="mt-8 flex items-center gap-3">
+                <FounderAvatar
+                  name={testimonial.name}
+                  initials={testimonial.initials}
+                  avatarSrc={testimonial.avatarSrc}
+                />
 
-                <div className="min-w-0 flex-1">
+                <div className="min-w-0">
                   <cite className="not-italic">
-                    {t.linkedinUrl ? (
-                      <a
-                        href={t.linkedinUrl}
+                    {testimonial.linkedinUrl ? (
+                      <Link
+                        href={testimonial.linkedinUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="truncate text-[13px] font-medium leading-none text-[#2b2b2b] transition-opacity hover:opacity-80"
+                        className="block truncate text-sm font-medium text-foreground transition-opacity hover:opacity-80"
                       >
-                        {t.name}
-                      </a>
+                        {testimonial.name}
+                      </Link>
                     ) : (
-                      <span className="truncate text-[13px] font-medium leading-none text-[#2b2b2b]">
-                        {t.name}
+                      <span className="block truncate text-sm font-medium text-foreground">
+                        {testimonial.name}
                       </span>
                     )}
                   </cite>
-                  <p className="mt-1 truncate text-[12px] leading-none text-[#777771]">
-                    {t.title}, {t.company}
+                  <p className="mt-0.5 truncate text-sm text-muted-foreground">
+                    {testimonial.title}, {testimonial.company}
                   </p>
                 </div>
-
-                {t.companyLogoSrc ? (
-                  <Image
-                    src={t.companyLogoSrc}
-                    alt={`${t.company} logo`}
-                    width={56}
-                    height={20}
-                    className="h-4 w-auto shrink-0 object-contain opacity-70"
-                  />
-                ) : null}
               </footer>
-            </motion.blockquote>
+            </blockquote>
           ))}
         </div>
       </div>

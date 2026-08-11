@@ -1,6 +1,11 @@
 import type { MetadataRoute } from "next";
 
+import { listCaseStudies } from "@/lib/admin/case-studies";
+import { listPosts } from "@/lib/admin/posts";
+import { CASE_STUDY_ORDER } from "@/lib/case-studies";
 import { canonicalUrl, indexableStaticPaths, isBlogEnabled } from "@/lib/site";
+
+export const revalidate = 60;
 
 function priorityForPath(path: string): number {
   if (path === "/") return 1;
@@ -20,20 +25,32 @@ function changeFrequencyForPath(
   return "monthly";
 }
 
+async function getCaseStudyEntries(): Promise<MetadataRoute.Sitemap> {
+  try {
+    const caseStudies = await listCaseStudies({ status: "published" });
+    return caseStudies.map((study) => ({
+      url: canonicalUrl(`/work/${study.slug}`),
+      lastModified: new Date(study.updatedAt),
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    }));
+  } catch {
+    return CASE_STUDY_ORDER.map((slug) => ({
+      url: canonicalUrl(`/work/${slug}`),
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    }));
+  }
+}
+
 async function getBlogPostEntries(): Promise<MetadataRoute.Sitemap> {
   if (!isBlogEnabled()) return [];
 
   try {
-    const { connectDB } = await import("@/lib/db");
-    const { Post } = await import("@/models/post");
-    await connectDB();
-    const posts = await Post.find({ status: "published" })
-      .select("slug updatedAt")
-      .lean();
-
+    const posts = await listPosts({ status: "published" });
     return posts.map((post) => ({
       url: canonicalUrl(`/blog/${post.slug}`),
-      ...(post.updatedAt ? { lastModified: post.updatedAt as Date } : {}),
+      lastModified: new Date(post.updatedAt),
       changeFrequency: "weekly" as const,
       priority: 0.7,
     }));
@@ -60,5 +77,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       ]
     : [];
 
-  return [...staticEntries, ...blogEntries];
+  const caseStudyEntries = await getCaseStudyEntries();
+
+  return [...staticEntries, ...blogEntries, ...caseStudyEntries];
 }

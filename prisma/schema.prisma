@@ -1,10 +1,11 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
   provider = "mongodb"
+  url      = env("MONGODB_URI")
 }
 
 model Post {
@@ -25,6 +26,25 @@ model Post {
   canonicalUrl    String    @default("")
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
+
+  @@index([status])
+}
+
+model CaseStudy {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  slug            String   @unique
+  client          String
+  year            String
+  headline        Json
+  standfirst      String   @default("")
+  meta            Json
+  leadImage       Json
+  sections        Json
+  status          String   @default("draft")
+  metaTitle       String   @default("")
+  metaDescription String   @default("")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   @@index([status])
 }
