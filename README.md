@@ -63,9 +63,23 @@ BLOB_READ_WRITE_TOKEN=
 
 ### Connect in ChatGPT
 
-1. Open **ChatGPT → Settings → Connectors → Create**.
-2. Set the MCP server URL to `https://www.comlabstechnologies.com/api/mcp/`.
-3. Choose **API key / Bearer token** authentication and paste `MCP_API_KEY`.
+ChatGPT’s **New Plugin** dialog uses **Server URL** (not Tunnel). Our server uses a static API key, **not OAuth**.
+
+1. Open **Settings → Apps & Connectors → Create** (Developer mode must be on).
+2. Fill in:
+   - **Name:** `Comlabs Admin`
+   - **Server URL:** `https://www.comlabstechnologies.com/api/mcp/`
+   - **Authentication:** open the dropdown and choose **Token** (not OAuth)
+3. Paste your `MCP_API_KEY` when prompted.
+4. Check **“I understand and want to continue”**, then click **Create**.
+
+**If you only see OAuth** and no Token option, put the key in the URL instead:
+
+```
+https://www.comlabstechnologies.com/api/mcp/?api_key=YOUR_MCP_API_KEY
+```
+
+Use **Authentication: None** with that full URL. The key stays in the URL — only use this if Token auth isn’t available.
 
 ### Connect in Cursor or Claude Code
 
