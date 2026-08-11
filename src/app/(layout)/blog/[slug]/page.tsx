@@ -122,30 +122,33 @@ export default async function BlogPostPage({
               <PageBreadcrumbs
                 currentPath={`/blog/${post.slug}`}
                 items={[{ label: "Blog", href: "/blog" }, { label: post.title }]}
+                className="mb-0"
               />
 
-              <Link
-                href={canonicalPath("/blog")}
-                className="mt-8 mb-8 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
-              >
-                <ArrowLeft size={14} /> All posts
-              </Link>
-
-              {post.tags.length > 0 ? (
-                <div
-                  className="mb-6 inline-flex items-center gap-2 rounded-full border border-border px-3.5 py-1.5 text-xs font-medium"
-                  style={{ color: "var(--warm-orange)", background: "var(--warm-orange-light)" }}
+              <div className="mt-6 flex flex-col items-start gap-4 md:mt-8">
+                <Link
+                  href={canonicalPath("/blog")}
+                  className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
                 >
-                  <span
-                    className="inline-block h-1.5 w-1.5 rounded-full"
-                    style={{ background: "var(--warm-orange)" }}
-                  />
-                  {post.tags[0]}
-                </div>
-              ) : null}
+                  <ArrowLeft size={14} /> All posts
+                </Link>
+
+                {post.tags.length > 0 ? (
+                  <div
+                    className="inline-flex items-center gap-2 rounded-full border border-border px-3.5 py-1.5 text-xs font-medium"
+                    style={{ color: "var(--warm-orange)", background: "var(--warm-orange-light)" }}
+                  >
+                    <span
+                      className="inline-block h-1.5 w-1.5 rounded-full"
+                      style={{ background: "var(--warm-orange)" }}
+                    />
+                    {post.tags[0]}
+                  </div>
+                ) : null}
+              </div>
 
               <h1
-                className="text-3xl leading-[1.08] font-bold tracking-tight md:text-4xl lg:text-[2.75rem]"
+                className="mt-8 text-3xl leading-[1.12] font-bold tracking-tight md:mt-10 md:text-4xl lg:text-[2.75rem]"
                 style={{ letterSpacing: "-0.03em" }}
               >
                 {post.title}
