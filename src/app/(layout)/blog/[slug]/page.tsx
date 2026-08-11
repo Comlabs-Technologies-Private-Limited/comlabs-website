@@ -4,10 +4,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 
-import { FigmaFooter } from "@/components/layout/figma-footer";
-import { FigmaNav } from "@/components/layout/figma-nav";
 import { PostBody } from "@/components/blog/PostBody";
 import { BreadcrumbJsonLd, PostJsonLd } from "@/components/blog/JsonLd";
+import { FigmaFooter } from "@/components/layout/figma-footer";
+import { FigmaNav } from "@/components/layout/figma-nav";
+import { PageBreadcrumbs } from "@/components/seo/page-breadcrumbs";
 import { getPublishedPostBySlug, getPublishedPostSlugs } from "@/lib/admin/posts";
 import { buildPageMetadata } from "@/lib/metadata";
 import { canonicalPath, canonicalUrl, isBlogEnabled, siteOgImagePath } from "@/lib/site";
@@ -92,7 +93,10 @@ export default async function BlogPostPage({
     : null;
 
   return (
-    <div className="min-h-screen bg-background text-foreground antialiased">
+    <div
+      className="min-h-screen bg-background text-foreground antialiased"
+      style={{ fontFamily: "var(--font-sans)" }}
+    >
       <PostJsonLd post={post} />
       <BreadcrumbJsonLd
         items={[
@@ -101,34 +105,54 @@ export default async function BlogPostPage({
           { name: post.title, url: canonicalUrl(`/blog/${post.slug}`) },
         ]}
       />
-      <FigmaNav showBlogLink={false} />
+      <FigmaNav />
 
       <main>
         <article>
-          <header className="px-6 pt-14 pb-10 md:pt-20 md:pb-14">
-            <div className="mx-auto max-w-3xl">
+          <header
+            className="relative overflow-hidden px-6 pt-12 pb-12 md:pt-16 md:pb-16"
+            style={{
+              backgroundImage:
+                "linear-gradient(180deg, rgba(247,247,244,0.86) 0%, rgba(247,247,244,0.78) 45%, rgba(247,247,244,0.92) 100%), url('/hero/hero-bg.png')",
+              backgroundSize: "cover",
+              backgroundPosition: "center right",
+            }}
+          >
+            <div className="relative mx-auto max-w-3xl">
+              <PageBreadcrumbs
+                currentPath={`/blog/${post.slug}`}
+                items={[{ label: "Blog", href: "/blog" }, { label: post.title }]}
+              />
+
               <Link
                 href={canonicalPath("/blog")}
-                className="mb-10 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                className="mt-8 mb-8 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
               >
                 <ArrowLeft size={14} /> All posts
               </Link>
 
               {post.tags.length > 0 ? (
-                <p className="mb-4 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
+                <div
+                  className="mb-6 inline-flex items-center gap-2 rounded-full border border-border px-3.5 py-1.5 text-xs font-medium"
+                  style={{ color: "var(--warm-orange)", background: "var(--warm-orange-light)" }}
+                >
+                  <span
+                    className="inline-block h-1.5 w-1.5 rounded-full"
+                    style={{ background: "var(--warm-orange)" }}
+                  />
                   {post.tags[0]}
-                </p>
+                </div>
               ) : null}
 
               <h1
-                className="text-3xl font-bold leading-tight tracking-tight md:text-4xl lg:text-5xl"
+                className="text-3xl leading-[1.08] font-bold tracking-tight md:text-4xl lg:text-[2.75rem]"
                 style={{ letterSpacing: "-0.03em" }}
               >
                 {post.title}
               </h1>
 
               {post.excerpt ? (
-                <p className="mt-5 text-lg leading-relaxed text-muted-foreground md:text-xl">
+                <p className="mt-5 text-base leading-[1.7] text-muted-foreground md:text-lg">
                   {post.excerpt}
                 </p>
               ) : null}
@@ -152,9 +176,9 @@ export default async function BlogPostPage({
           </header>
 
           {post.coverImage ? (
-            <div className="px-6 pb-10 md:pb-14">
+            <div className="border-b border-border bg-card px-6 py-10 md:py-14">
               <div className="mx-auto max-w-5xl">
-                <div className="relative aspect-[16/9] overflow-hidden rounded-3xl bg-secondary">
+                <div className="relative aspect-[16/9] overflow-hidden rounded-3xl border border-border bg-secondary">
                   <Image
                     src={post.coverImage}
                     alt={post.title}
@@ -168,7 +192,7 @@ export default async function BlogPostPage({
             </div>
           ) : null}
 
-          <div className="px-6 pb-24 md:pb-32">
+          <div className="border-b border-border bg-background px-6 py-16 md:py-24">
             <div className="mx-auto max-w-3xl">
               <PostBody html={post.content} />
 
@@ -189,7 +213,7 @@ export default async function BlogPostPage({
         </article>
       </main>
 
-      <FigmaFooter showBlogLink={false} />
+      <FigmaFooter />
     </div>
   );
 }
