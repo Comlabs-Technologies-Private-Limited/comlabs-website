@@ -6,10 +6,13 @@ import type {
   CaseStudyMetaItem,
   CaseStudySection,
 } from "@/lib/case-studies";
+import { CASE_STUDY_ORDER } from "@/lib/case-studies";
 import { formialLabsCaseStudy } from "@/lib/case-studies/formial-labs";
 import { globalServicesCaseStudy } from "@/lib/case-studies/global-services";
 import { vithubCaseStudy } from "@/lib/case-studies/vithub";
 import { getPrisma } from "@/lib/prisma";
+import { buildCaseStudySeo } from "@/lib/seo/auto-metadata";
+import { revalidateContentPaths } from "@/lib/seo/revalidate-content";
 
 export type CaseStudyRecord = CaseStudyContent & {
   id: string;
@@ -19,6 +22,25 @@ export type CaseStudyRecord = CaseStudyContent & {
   createdAt: string;
   updatedAt: string;
 };
+
+export type CaseStudyPageData = CaseStudyContent & {
+  metaTitle: string;
+  metaDescription: string;
+  updatedAt?: string;
+};
+
+function toCaseStudyContent(record: CaseStudyRecord): CaseStudyContent {
+  const {
+    id: _id,
+    status: _status,
+    metaTitle: _metaTitle,
+    metaDescription: _metaDescription,
+    createdAt: _createdAt,
+    updatedAt: _updatedAt,
+    ...content
+  } = record;
+  return content;
+}
 
 export type CaseStudyInput = {
   slug: string;
@@ -74,6 +96,13 @@ export function getStaticCaseStudy(slug: string): CaseStudyContent | null {
 }
 
 export async function getPublishedCaseStudy(slug: string): Promise<CaseStudyContent | null> {
+  const page = await getPublishedCaseStudyPage(slug);
+  if (!page) return null;
+  const { metaTitle: _mt, metaDescription: _md, updatedAt: _u, ...content } = page;
+  return content;
+}
+
+export async function getPublishedCaseStudyPage(slug: string): Promise<CaseStudyPageData | null> {
   try {
     const prisma = getPrisma();
     const record = await prisma.caseStudy.findFirst({
@@ -81,15 +110,54 @@ export async function getPublishedCaseStudy(slug: string): Promise<CaseStudyCont
     });
     if (record) {
       const serialized = serializeCaseStudy(record);
-      const { id: _id, status: _status, metaTitle: _mt, metaDescription: _md, createdAt: _c, updatedAt: _u, ...content } =
-        serialized;
-      return content;
+      const seo = buildCaseStudySeo({
+        client: serialized.client,
+        standfirst: serialized.standfirst,
+        headline: serialized.headline,
+        metaTitle: serialized.metaTitle,
+        metaDescription: serialized.metaDescription,
+      });
+      return {
+        ...toCaseStudyContent(serialized),
+        metaTitle: seo.metaTitle,
+        metaDescription: seo.metaDescription,
+        updatedAt: serialized.updatedAt,
+      };
     }
+
+    const existsInDb = await prisma.caseStudy.findFirst({ where: { slug } });
+    if (existsInDb) return null;
   } catch {
-    // fall through to static content
+    // fall through to static content when the database is unavailable
   }
 
-  return getStaticCaseStudy(slug);
+  const staticContent = getStaticCaseStudy(slug);
+  if (!staticContent) return null;
+
+  const seo = buildCaseStudySeo({
+    client: staticContent.client,
+    standfirst: staticContent.standfirst,
+    headline: staticContent.headline,
+  });
+
+  return {
+    ...staticContent,
+    metaTitle: seo.metaTitle,
+    metaDescription: seo.metaDescription,
+  };
+}
+
+export async function getPublishedCaseStudySlugs(): Promise<string[]> {
+  try {
+    const prisma = getPrisma();
+    const records = await prisma.caseStudy.findMany({
+      where: { status: "published" },
+      select: { slug: true },
+    });
+    return records.map((record) => record.slug);
+  } catch {
+    return [...CASE_STUDY_ORDER];
+  }
 }
 
 export async function listCaseStudies(options?: {
@@ -111,9 +179,18 @@ export async function getCaseStudyById(id: string): Promise<CaseStudyRecord | nu
 
 export async function createCaseStudy(input: CaseStudyInput): Promise<CaseStudyRecord> {
   const prisma = getPrisma();
+  const seo = buildCaseStudySeo({
+    client: input.client,
+    standfirst: input.standfirst,
+    headline: input.headline,
+    metaTitle: input.metaTitle,
+    metaDescription: input.metaDescription,
+  });
+  const slug = input.slug.trim();
+
   const record = await prisma.caseStudy.create({
     data: {
-      slug: input.slug.trim(),
+      slug,
       client: input.client.trim(),
       year: input.year.trim(),
       headline: input.headline as Prisma.InputJsonValue,
@@ -122,10 +199,12 @@ export async function createCaseStudy(input: CaseStudyInput): Promise<CaseStudyR
       leadImage: input.leadImage as Prisma.InputJsonValue,
       sections: input.sections as Prisma.InputJsonValue,
       status: input.status ?? "draft",
-      metaTitle: input.metaTitle ?? "",
-      metaDescription: input.metaDescription ?? "",
+      metaTitle: seo.metaTitle,
+      metaDescription: seo.metaDescription,
     },
   });
+
+  revalidateContentPaths({ type: "case-study", slug });
   return serializeCaseStudy(record);
 }
 
@@ -137,11 +216,25 @@ export async function updateCaseStudy(
   const existing = await prisma.caseStudy.findUnique({ where: { id } });
   if (!existing) return null;
 
+  const client = input.client !== undefined ? input.client.trim() : existing.client;
+  const slug = input.slug !== undefined ? input.slug.trim() : existing.slug;
+  const headline = input.headline ?? parseJsonField<CaseStudyHeadline>(existing.headline, {
+    highlight: existing.client,
+  });
+  const standfirst = input.standfirst ?? existing.standfirst;
+  const seo = buildCaseStudySeo({
+    client,
+    standfirst,
+    headline,
+    metaTitle: input.metaTitle ?? existing.metaTitle,
+    metaDescription: input.metaDescription ?? existing.metaDescription,
+  });
+
   const record = await prisma.caseStudy.update({
     where: { id },
     data: {
-      ...(input.slug !== undefined ? { slug: input.slug.trim() } : {}),
-      ...(input.client !== undefined ? { client: input.client.trim() } : {}),
+      ...(input.slug !== undefined ? { slug } : {}),
+      ...(input.client !== undefined ? { client } : {}),
       ...(input.year !== undefined ? { year: input.year.trim() } : {}),
       ...(input.headline !== undefined
         ? { headline: input.headline as Prisma.InputJsonValue }
@@ -155,18 +248,28 @@ export async function updateCaseStudy(
         ? { sections: input.sections as Prisma.InputJsonValue }
         : {}),
       ...(input.status !== undefined ? { status: input.status } : {}),
-      ...(input.metaTitle !== undefined ? { metaTitle: input.metaTitle } : {}),
-      ...(input.metaDescription !== undefined ? { metaDescription: input.metaDescription } : {}),
+      metaTitle: seo.metaTitle,
+      metaDescription: seo.metaDescription,
     },
   });
 
+  revalidateContentPaths({ type: "case-study", slug: existing.slug });
+  if (slug !== existing.slug) {
+    revalidateContentPaths({ type: "case-study", slug });
+  }
   return serializeCaseStudy(record);
 }
 
 export async function deleteCaseStudy(id: string): Promise<boolean> {
   const prisma = getPrisma();
   try {
+    const existing = await prisma.caseStudy.findUnique({ where: { id }, select: { slug: true } });
     await prisma.caseStudy.delete({ where: { id } });
+    if (existing?.slug) {
+      revalidateContentPaths({ type: "case-study", slug: existing.slug });
+    } else {
+      revalidateContentPaths({ type: "case-study" });
+    }
     return true;
   } catch {
     return false;

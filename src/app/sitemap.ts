@@ -1,7 +1,11 @@
 import type { MetadataRoute } from "next";
 
+import { listCaseStudies } from "@/lib/admin/case-studies";
 import { listPosts } from "@/lib/admin/posts";
+import { CASE_STUDY_ORDER } from "@/lib/case-studies";
 import { canonicalUrl, indexableStaticPaths, isBlogEnabled } from "@/lib/site";
+
+export const revalidate = 60;
 
 function priorityForPath(path: string): number {
   if (path === "/") return 1;
@@ -19,6 +23,24 @@ function changeFrequencyForPath(
   if (path.startsWith("/services")) return "monthly";
   if (path.startsWith("/work")) return "monthly";
   return "monthly";
+}
+
+async function getCaseStudyEntries(): Promise<MetadataRoute.Sitemap> {
+  try {
+    const caseStudies = await listCaseStudies({ status: "published" });
+    return caseStudies.map((study) => ({
+      url: canonicalUrl(`/work/${study.slug}`),
+      lastModified: new Date(study.updatedAt),
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    }));
+  } catch {
+    return CASE_STUDY_ORDER.map((slug) => ({
+      url: canonicalUrl(`/work/${slug}`),
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    }));
+  }
 }
 
 async function getBlogPostEntries(): Promise<MetadataRoute.Sitemap> {
@@ -55,5 +77,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       ]
     : [];
 
-  return [...staticEntries, ...blogEntries];
+  const caseStudyEntries = await getCaseStudyEntries();
+
+  return [...staticEntries, ...blogEntries, ...caseStudyEntries];
 }

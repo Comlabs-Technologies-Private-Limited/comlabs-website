@@ -92,9 +92,6 @@ export const indexableStaticPaths = [
   "/about",
   "/work",
   "/contact",
-  "/work/global-services",
-  "/work/formial-labs",
-  "/work/vithub",
 ] as const;
 
 /** Blog requires MongoDB on the server. */
