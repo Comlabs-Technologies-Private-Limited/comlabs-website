@@ -10,7 +10,9 @@ export function getPrisma(): PrismaClient {
   }
 
   if (!globalForPrisma.prisma) {
-    globalForPrisma.prisma = new PrismaClient();
+    globalForPrisma.prisma = new PrismaClient({
+      log: ["error"],
+    });
   }
 
   return globalForPrisma.prisma;
