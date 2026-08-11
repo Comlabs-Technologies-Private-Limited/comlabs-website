@@ -32,6 +32,11 @@ const nextConfig: NextConfig = {
         hostname: "media.licdn.com",
         pathname: "/dms/image/**",
       },
+      {
+        protocol: "https",
+        hostname: "*.public.blob.vercel-storage.com",
+        pathname: "/**",
+      },
     ],
   },
   async redirects() {

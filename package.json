@@ -13,8 +13,10 @@
     "admin:hash-password": "node scripts/hash-admin-password.mjs"
   },
   "dependencies": {
+    "@modelcontextprotocol/server": "^2.0.0",
     "@prisma/client": "^6.19.3",
     "@radix-ui/react-collapsible": "^1.1.12",
+    "@vercel/blob": "^0.27.3",
     "bcryptjs": "^3.0.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -22,6 +24,7 @@
     "framer-motion": "^12.38.0",
     "jose": "^6.2.8",
     "lucide-react": "^1.11.0",
+    "mcp-handler": "^2.1.0",
     "mongoose": "^9.7.3",
     "motion": "^12.40.0",
     "next": "16.2.4",
@@ -31,7 +34,8 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "simple-icons": "^16.19.0",
-    "tailwind-merge": "^3.5.0"
+    "tailwind-merge": "^3.5.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
