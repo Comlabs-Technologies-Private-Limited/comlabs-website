@@ -177,6 +177,18 @@ export async function getCaseStudyById(id: string): Promise<CaseStudyRecord | nu
   return record ? serializeCaseStudy(record) : null;
 }
 
+export async function getCaseStudyBySlug(slug: string): Promise<CaseStudyRecord | null> {
+  const prisma = getPrisma();
+  const record = await prisma.caseStudy.findFirst({ where: { slug } });
+  return record ? serializeCaseStudy(record) : null;
+}
+
+export async function resolveCaseStudy(idOrSlug: string): Promise<CaseStudyRecord | null> {
+  const byId = await getCaseStudyById(idOrSlug);
+  if (byId) return byId;
+  return getCaseStudyBySlug(idOrSlug);
+}
+
 export async function createCaseStudy(input: CaseStudyInput): Promise<CaseStudyRecord> {
   const prisma = getPrisma();
   const seo = buildCaseStudySeo({

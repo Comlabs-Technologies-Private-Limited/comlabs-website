@@ -6,7 +6,7 @@ import { revalidateContentPaths } from "@/lib/seo/revalidate-content";
 import type { Post, PostStatus, PostSummary } from "@/types/post";
 
 export type PostInput = {
-  title: string;
+  title?: string;
   slug?: string;
   excerpt?: string;
   content?: string;
@@ -84,6 +84,18 @@ export async function getPostById(id: string): Promise<Post | null> {
   return record ? serializePost(record) : null;
 }
 
+export async function getPostBySlug(slug: string): Promise<Post | null> {
+  const prisma = getPrisma();
+  const record = await prisma.post.findFirst({ where: { slug } });
+  return record ? serializePost(record) : null;
+}
+
+export async function resolvePost(idOrSlug: string): Promise<Post | null> {
+  const byId = await getPostById(idOrSlug);
+  if (byId) return byId;
+  return getPostBySlug(idOrSlug);
+}
+
 export async function getPublishedPostBySlug(slug: string): Promise<Post | null> {
   const prisma = getPrisma();
   const record = await prisma.post.findFirst({
@@ -103,11 +115,11 @@ export async function getPublishedPostSlugs(): Promise<string[]> {
 
 export async function createPost(input: PostInput): Promise<Post> {
   const prisma = getPrisma();
-  const slug = input.slug?.trim() || slugify(input.title);
+  const slug = input.slug?.trim() || slugify(input.title ?? "");
   const status = input.status ?? "draft";
   const content = input.content ?? "";
   const seo = buildPostSeo({
-    title: input.title,
+    title: input.title?.trim() ?? "",
     content,
     excerpt: input.excerpt,
     metaTitle: input.metaTitle,
@@ -116,7 +128,7 @@ export async function createPost(input: PostInput): Promise<Post> {
 
   const record = await prisma.post.create({
     data: {
-      title: input.title.trim(),
+      title: input.title?.trim() ?? "",
       slug,
       excerpt: seo.excerpt,
       content,
