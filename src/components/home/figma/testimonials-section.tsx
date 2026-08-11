@@ -7,39 +7,33 @@ import { TESTIMONIALS } from "@/components/home/figma/home-data";
 import { MarketingFadeIn } from "@/components/marketing/marketing-motion";
 import { MarketingOrangeHighlight } from "@/components/marketing/marketing-section-header";
 
-function FounderPhoto({
+function FounderAvatar({
   name,
   initials,
-  photoSrc,
+  avatarSrc,
 }: {
   name: string;
   initials: string;
-  photoSrc?: string;
+  avatarSrc?: string;
 }) {
+  if (avatarSrc) {
+    return (
+      <Image
+        src={avatarSrc}
+        alt={name}
+        width={40}
+        height={40}
+        className="h-10 w-10 shrink-0 rounded-full object-cover"
+      />
+    );
+  }
+
   return (
     <div
-      className="relative mb-6 aspect-[4/5] w-full overflow-hidden rounded-2xl border border-border"
-      style={{ background: "#FDF5E8" }}
+      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border bg-secondary text-xs font-medium text-muted-foreground"
+      aria-hidden
     >
-      {photoSrc ? (
-        <Image
-          src={photoSrc}
-          alt={name}
-          fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 360px"
-          className="object-cover object-center"
-        />
-      ) : (
-        <div className="flex h-full flex-col items-center justify-center gap-3 px-6">
-          <span
-            className="flex h-16 w-16 items-center justify-center rounded-full border border-border bg-background text-lg font-medium text-muted-foreground"
-            aria-hidden
-          >
-            {initials}
-          </span>
-          <span className="text-center text-xs text-muted-foreground">Photo coming soon</span>
-        </div>
-      )}
+      {initials}
     </div>
   );
 }
@@ -63,55 +57,43 @@ export function FigmaTestimonialsSection() {
           </p>
         </MarketingFadeIn>
 
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3 lg:gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {TESTIMONIALS.map((testimonial) => (
             <blockquote
               key={testimonial.name}
-              className="flex flex-col rounded-3xl border border-border bg-background p-6 md:p-8"
+              className="flex min-h-[280px] flex-col rounded-3xl border border-border bg-background p-6 md:min-h-[300px] md:p-8"
             >
-              <FounderPhoto
-                name={testimonial.name}
-                initials={testimonial.initials}
-                photoSrc={testimonial.avatarSrc}
-              />
-
               <p className="flex-1 text-base leading-[1.7] text-foreground">
                 &ldquo;{testimonial.quote}&rdquo;
               </p>
 
-              <footer className="mt-8 border-t border-border pt-6">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="min-w-0">
-                    <cite className="not-italic">
-                      {testimonial.linkedinUrl ? (
-                        <Link
-                          href={testimonial.linkedinUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="block truncate text-sm font-medium text-foreground transition-opacity hover:opacity-80"
-                        >
-                          {testimonial.name}
-                        </Link>
-                      ) : (
-                        <span className="block truncate text-sm font-medium text-foreground">
-                          {testimonial.name}
-                        </span>
-                      )}
-                    </cite>
-                    <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-                      {testimonial.title}, {testimonial.company}
-                    </p>
-                  </div>
+              <footer className="mt-8 flex items-center gap-3">
+                <FounderAvatar
+                  name={testimonial.name}
+                  initials={testimonial.initials}
+                  avatarSrc={testimonial.avatarSrc}
+                />
 
-                  {testimonial.companyLogoSrc ? (
-                    <Image
-                      src={testimonial.companyLogoSrc}
-                      alt={`${testimonial.company} logo`}
-                      width={72}
-                      height={28}
-                      className="h-5 w-auto shrink-0 object-contain opacity-70"
-                    />
-                  ) : null}
+                <div className="min-w-0">
+                  <cite className="not-italic">
+                    {testimonial.linkedinUrl ? (
+                      <Link
+                        href={testimonial.linkedinUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block truncate text-sm font-medium text-foreground transition-opacity hover:opacity-80"
+                      >
+                        {testimonial.name}
+                      </Link>
+                    ) : (
+                      <span className="block truncate text-sm font-medium text-foreground">
+                        {testimonial.name}
+                      </span>
+                    )}
+                  </cite>
+                  <p className="mt-0.5 truncate text-sm text-muted-foreground">
+                    {testimonial.title}, {testimonial.company}
+                  </p>
                 </div>
               </footer>
             </blockquote>

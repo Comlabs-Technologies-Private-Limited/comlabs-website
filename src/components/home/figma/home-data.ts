@@ -79,20 +79,19 @@ export const TESTIMONIALS: Testimonial[] = [
   {
     quote:
       "Honestly, I came to Comlabs with a messy idea and not much else. They figured out what I was actually trying to build and turned it into a dashboard that just works. Our users went from confused to comfortable. Felt less like hiring an agency and more like having someone on the team who cared.",
-    name: "Dr Jeet Patel",
+    name: "Jeet Patel",
     title: "Founder",
-    company: "Formial Labs",
+    company: "Formial",
     initials: "JP",
     avatarSrc:
       "https://res.cloudinary.com/p8osc4y4/image/upload/v1786453596/jeet-patel_hewm25.jpg",
-    companyLogoSrc: "/logos/clients/formial-labs.png",
   },
   {
     quote:
       "We deal with companies like JIO and Vodafone, so I didn't want a website that looked small. Comlabs got that immediately. They rebuilt the whole thing and now it actually looks like a company at our level. No hand-holding, no chasing — they just got it done.",
     name: "Pramod Mishra",
-    title: "CEO",
-    company: "Global Services",
+    title: "Director",
+    company: "Global Services Enterprise",
     initials: "PM",
     avatarSrc:
       "https://res.cloudinary.com/p8osc4y4/image/upload/v1786453596/pramod-mishra_rygkvp.jpg",
@@ -101,7 +100,7 @@ export const TESTIMONIALS: Testimonial[] = [
     quote:
       "I'd been putting off the website for ages. Comlabs made it painless. The site finally looks like the brand I've had in my head, and people have actually noticed. Quick, easy to talk to, and they got Vithub in a way I didn't expect.",
     name: "Harsh Sihag",
-    title: "Founder",
+    title: "Director and Founder",
     company: "Vithub",
     initials: "HS",
     avatarSrc:
