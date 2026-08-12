@@ -9,6 +9,7 @@ import type {
 import { CASE_STUDY_ORDER } from "@/lib/case-studies";
 import { formialLabsCaseStudy } from "@/lib/case-studies/formial-labs";
 import { globalServicesCaseStudy } from "@/lib/case-studies/global-services";
+import { radiantCaseStudy } from "@/lib/case-studies/radiant";
 import { vithubCaseStudy } from "@/lib/case-studies/vithub";
 import { getPrisma } from "@/lib/prisma";
 import { buildCaseStudySeo } from "@/lib/seo/auto-metadata";
@@ -57,6 +58,7 @@ export type CaseStudyInput = {
 };
 
 const STATIC_CASE_STUDIES: Record<string, CaseStudyContent> = {
+  radiant: radiantCaseStudy,
   "formial-labs": formialLabsCaseStudy,
   "global-services": globalServicesCaseStudy,
   vithub: vithubCaseStudy,
@@ -138,6 +140,8 @@ export async function getPublishedCaseStudyPage(slug: string): Promise<CaseStudy
     client: staticContent.client,
     standfirst: staticContent.standfirst,
     headline: staticContent.headline,
+    metaTitle: staticContent.metaTitle,
+    metaDescription: staticContent.metaDescription,
   });
 
   return {
@@ -154,7 +158,10 @@ export async function getPublishedCaseStudySlugs(): Promise<string[]> {
       where: { status: "published" },
       select: { slug: true },
     });
-    return records.map((record) => record.slug);
+    // Statically authored case studies stay available before they are seeded.
+    return [
+      ...new Set([...records.map((record) => record.slug), ...Object.keys(STATIC_CASE_STUDIES)]),
+    ];
   } catch {
     return [...CASE_STUDY_ORDER];
   }

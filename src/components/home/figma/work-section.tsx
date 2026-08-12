@@ -30,7 +30,7 @@ export function FigmaWorkSection() {
           </a>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {PROJECTS.map((project, i) => (
             <motion.a
               key={project.title}

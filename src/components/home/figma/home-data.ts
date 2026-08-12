@@ -34,6 +34,14 @@ export const PROCESS_STEPS = [
 
 export const PROJECTS = [
   {
+    title: "Radiant",
+    category: "Website Design & Development",
+    desc: "An editorial studio website built around bold work, expressive motion and clear conversion paths.",
+    href: "/work/radiant",
+    liveSiteUrl: "https://radiant-three-gamma.vercel.app/",
+    logo: "/work/radiant/radiant-mark.png",
+  },
+  {
     title: "Formial Labs",
     category: "Custom Software Development",
     desc: "Multi-page onboarding flow for an internal dashboard — built to cut drop-off and get users to activation fast.",

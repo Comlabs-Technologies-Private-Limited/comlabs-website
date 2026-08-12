@@ -1,4 +1,3 @@
-import { BreadcrumbJsonLd } from "@/components/blog/JsonLd";
 import type { CaseStudyContent } from "@/lib/case-studies";
 import { canonicalUrl, organizationId, siteName, siteUrl } from "@/lib/site";
 
@@ -46,21 +45,13 @@ export function CaseStudyJsonLd({
     },
   };
 
+  // The breadcrumb trail is emitted by PageBreadcrumbs inside the case-study hero.
   return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(articleJsonLd).replace(/</g, "\\u003c"),
-        }}
-      />
-      <BreadcrumbJsonLd
-        items={[
-          { name: "Home", url: canonicalUrl("/") },
-          { name: "Work", url: canonicalUrl("/work") },
-          { name: content.client, url: pageUrl },
-        ]}
-      />
-    </>
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(articleJsonLd).replace(/</g, "\\u003c"),
+      }}
+    />
   );
 }

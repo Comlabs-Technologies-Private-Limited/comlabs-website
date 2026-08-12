@@ -9,6 +9,8 @@ type PageMetadataInput = {
   path: string;
   /** Use for homepage and other pages that must not use the root title template. */
   absoluteTitle?: boolean;
+  /** Page-specific share image path or URL; falls back to the site image. */
+  image?: string;
 };
 
 export function buildPageMetadata({
@@ -16,8 +18,12 @@ export function buildPageMetadata({
   description,
   path,
   absoluteTitle = false,
+  image,
 }: PageMetadataInput): Metadata {
   const canonical = canonicalUrl(path);
+  const shareImage = image
+    ? { url: image.startsWith("http") ? image : canonicalUrl(image), alt: title }
+    : siteOgImage;
 
   return {
     title: absoluteTitle ? { absolute: title } : title,
@@ -32,13 +38,13 @@ export function buildPageMetadata({
       title,
       description,
       url: canonical,
-      images: [siteOgImage],
+      images: [shareImage],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: [siteOgImage.url],
+      images: [shareImage.url],
     },
   };
 }

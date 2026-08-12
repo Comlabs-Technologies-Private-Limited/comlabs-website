@@ -33,6 +33,7 @@ export async function generateMetadata({
     title: page.metaTitle,
     description: page.metaDescription,
     path: `/work/${slug}`,
+    image: page.ogImage,
   });
 }
 

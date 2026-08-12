@@ -23,6 +23,7 @@ const FOOTER_COLUMNS = [
     heading: "Work",
     links: [
       { label: "Case studies", href: "/work" },
+      { label: "Radiant", href: "/work/radiant" },
       { label: "Global Services", href: "/work/global-services" },
       { label: "Formial Labs", href: "/work/formial-labs" },
       { label: "Vithub", href: "/work/vithub" },
