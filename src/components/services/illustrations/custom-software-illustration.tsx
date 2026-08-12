@@ -44,10 +44,10 @@ export function CustomSoftwareIllustration() {
 
   return (
     <IllustrationStage>
-      <div className="flex h-full flex-col gap-2.5">
+      <div className="flex h-full flex-col gap-2.5 lg:gap-3.5">
         {/* Workflow + order detail — primary object */}
-        <Panel className="flex flex-1 flex-col p-2.5 lg:p-3" elevation="raised">
-          <div className="mb-2 flex items-center justify-between gap-2">
+        <Panel className="flex flex-1 flex-col p-2.5 lg:p-4" elevation="raised">
+          <div className="mb-2 flex items-center justify-between gap-2 lg:mb-3">
             <MicroLabel tone="muted">Purchase order · PO-4821</MicroLabel>
             <Chip tone={isLive ? "accent" : "quiet"}>
               {isLive ? <CheckGlyph /> : <StatusDot tone="idle" />}
@@ -56,7 +56,7 @@ export function CustomSoftwareIllustration() {
           </div>
 
           {/* Travelling record */}
-          <div className="grid grid-cols-5 pb-1.5">
+          <div className="grid grid-cols-5 pb-2 lg:pb-2.5">
             {STAGES.map((stage, index) => (
               <div key={stage} className="flex justify-center">
                 {index === recordIndex ? (
@@ -139,8 +139,8 @@ export function CustomSoftwareIllustration() {
             </div>
           </div>
 
-          {/* Order facts — real data rather than empty space */}
-          <div className="mt-2.5 grid grid-cols-2 gap-x-2 gap-y-[6px] lg:gap-y-[8px]">
+          {/* Order facts — a single row on desktop keeps the panel open */}
+          <div className="mt-3 grid grid-cols-2 gap-x-2 gap-y-[7px] lg:mt-5 lg:grid-cols-4 lg:gap-x-3">
             {[
               { label: "Vendor", value: "Sundaram Traders" },
               { label: "Requester", value: "Ops · Priya N." },
@@ -169,7 +169,7 @@ export function CustomSoftwareIllustration() {
 
           {/* Approval activity */}
           <div
-            className="mt-auto flex items-center gap-1.5 px-2 py-[6px]"
+            className="mt-auto flex items-center gap-1.5 px-2 py-[7px] lg:px-2.5 lg:py-[9px]"
             style={{
               borderRadius: illustrationRadius.control,
               background: approved
@@ -219,9 +219,9 @@ export function CustomSoftwareIllustration() {
         {/* Supporting panels */}
         <div className="flex shrink-0 items-stretch gap-2.5">
           {/* Rule configuration — labelled rows rather than raw lines */}
-          <Panel className="hidden min-w-0 flex-1 flex-col gap-[5px] p-2.5 lg:flex">
+          <Panel className="hidden min-w-0 flex-1 flex-col gap-[6px] p-3 lg:flex">
             <MicroLabel>Rule configuration</MicroLabel>
-            <div className="flex flex-col gap-[4px] pt-[2px]">
+            <div className="flex flex-col gap-[6px] pt-[2px]">
               {CONFIG_ROWS.map((row) => (
                 <div
                   key={row.key}
@@ -251,7 +251,7 @@ export function CustomSoftwareIllustration() {
           </Panel>
 
           {/* Deployment */}
-          <Panel className="flex w-full flex-col justify-between gap-2 p-2.5 lg:w-[46%]">
+          <Panel className="flex w-full flex-col justify-between gap-2 p-2.5 lg:w-[46%] lg:gap-2.5 lg:p-3">
             <div className="flex items-center justify-between gap-2">
               <MicroLabel>Deployment</MicroLabel>
               <span
