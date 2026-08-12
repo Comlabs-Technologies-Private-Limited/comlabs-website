@@ -28,6 +28,8 @@ export type CaseStudyPageData = CaseStudyContent & {
   metaTitle: string;
   metaDescription: string;
   updatedAt?: string;
+  /** The title was authored in full, so it should bypass the site title template. */
+  absoluteTitle?: boolean;
 };
 
 function toCaseStudyContent(record: CaseStudyRecord): CaseStudyContent {
@@ -148,6 +150,7 @@ export async function getPublishedCaseStudyPage(slug: string): Promise<CaseStudy
     ...staticContent,
     metaTitle: seo.metaTitle,
     metaDescription: seo.metaDescription,
+    absoluteTitle: Boolean(staticContent.metaTitle),
   };
 }
 

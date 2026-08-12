@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { canonicalUrl, siteName, siteOgImage } from "@/lib/site";
+import { canonicalUrl, siteName, siteOgImage, siteUrl } from "@/lib/site";
 
 type PageMetadataInput = {
   title: string;
@@ -21,8 +21,9 @@ export function buildPageMetadata({
   image,
 }: PageMetadataInput): Metadata {
   const canonical = canonicalUrl(path);
+  // Asset URLs must not pick up the trailing slash that canonicalUrl adds to routes.
   const shareImage = image
-    ? { url: image.startsWith("http") ? image : canonicalUrl(image), alt: title }
+    ? { url: image.startsWith("http") ? image : `${siteUrl}${image}`, alt: title }
     : siteOgImage;
 
   return {

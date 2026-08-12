@@ -34,6 +34,7 @@ export async function generateMetadata({
     description: page.metaDescription,
     path: `/work/${slug}`,
     image: page.ogImage,
+    absoluteTitle: page.absoluteTitle,
   });
 }
 
@@ -46,7 +47,7 @@ export default async function CaseStudyPage({
   const page = await getPublishedCaseStudyPage(slug);
   if (!page) notFound();
 
-  const { metaTitle, metaDescription, updatedAt, ...content } = page;
+  const { metaTitle, metaDescription, updatedAt, absoluteTitle: _absoluteTitle, ...content } = page;
 
   return (
     <>

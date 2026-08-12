@@ -137,18 +137,6 @@ export const radiantCaseStudy: CaseStudyContent = {
       paragraphs: [
         "Radiant contains multiple project narratives across technology, hospitality, architecture, fashion, publishing and climate. The portfolio system needed to give each project its own atmosphere while retaining consistent hierarchy, navigation and pacing.",
       ],
-      media: [
-        {
-          src: "/work/radiant/radiant-project-page.webp",
-          alt: "Aether project page on Radiant with the headline Making spatial computing feel human beside a spatial render",
-        },
-        {
-          src: "/work/radiant/radiant-project-nocturne.webp",
-          alt: "Nocturne project page on Radiant with the headline A hotel identity designed for life after dark beside a monochrome building photograph",
-          caption:
-            "Aether and Nocturne share a structure but not an atmosphere — the imagery carries the difference.",
-        },
-      ],
       principles: [
         { number: "01", text: "Consistent project metadata: discipline, year and a single-line premise." },
         { number: "02", text: "Flexible cinematic imagery that adapts to each subject." },
@@ -160,13 +148,29 @@ export const radiantCaseStudy: CaseStudyContent = {
         {
           title: "Range without inconsistency",
           paragraphs: [
-            "Architecture and publishing sit at opposite ends of the portfolio, yet both projects read as part of the same studio. The layout, metadata and typographic hierarchy stay fixed; only the subject and its treatment change.",
+            "Spatial technology, hospitality, architecture and publishing sit at different ends of the portfolio, yet every project reads as part of the same studio. The layout, metadata and typographic hierarchy stay fixed; only the subject and its treatment change.",
           ],
-          media: {
-            src: "/work/radiant/radiant-portfolio-range.webp",
-            alt: "Forma and Field Notes project pages side by side on Radiant, showing the same page structure with different subject matter",
-            variant: "wide",
-          },
+        },
+      ],
+      media: [
+        {
+          src: "/work/radiant/radiant-project-page.webp",
+          alt: "Aether project page on Radiant with the headline Making spatial computing feel human beside a spatial render",
+          variant: "wide",
+          caption: "Aether opens on a technical subject with a human sentence.",
+        },
+        {
+          src: "/work/radiant/radiant-project-nocturne.webp",
+          alt: "Nocturne project page on Radiant with the headline A hotel identity designed for life after dark beside a monochrome building photograph",
+          variant: "wide",
+          caption:
+            "Nocturne uses the same structure and a completely different atmosphere.",
+        },
+        {
+          src: "/work/radiant/radiant-portfolio-range.webp",
+          alt: "Forma and Field Notes project pages side by side on Radiant, showing the same page structure applied to architecture and publishing",
+          variant: "wide",
+          caption: "Forma and Field Notes carry the system further out.",
         },
       ],
     },
@@ -220,18 +224,6 @@ export const radiantCaseStudy: CaseStudyContent = {
       paragraphs: [
         "The experience balances visual ambition with commercial clarity. Service descriptions explain the offer, engagement models establish expectations, FAQs reduce friction and contextual calls to action give visitors a natural next step throughout the journey.",
       ],
-      media: [
-        {
-          src: "/work/radiant/radiant-engagement.webp",
-          alt: "Radiant engagement models section showing three ways of working with scope and starting ranges",
-        },
-        {
-          src: "/work/radiant/radiant-contact.webp",
-          alt: "Radiant contact page with the headline Tell us what is changing above the enquiry form",
-          caption:
-            "Engagement models qualify the enquiry before the form is ever reached.",
-        },
-      ],
       principles: [
         { number: "01", text: "Clear service categories across strategy, identity, digital and motion." },
         { number: "02", text: "Defined ways of working for each type of engagement." },
@@ -246,11 +238,26 @@ export const radiantCaseStudy: CaseStudyContent = {
           paragraphs: [
             "The services route expands each discipline into deliverables without turning the page into a specification sheet, so breadth reads as capability rather than as a list.",
           ],
-          media: {
-            src: "/work/radiant/radiant-services.webp",
-            alt: "Radiant services page with the headline One studio from first question to final build above discipline sections",
-            variant: "wide",
-          },
+        },
+      ],
+      media: [
+        {
+          src: "/work/radiant/radiant-engagement.webp",
+          alt: "Radiant engagement models section showing three ways of working with scope and starting ranges",
+          variant: "wide",
+          caption: "Engagement models qualify the enquiry before a form is ever reached.",
+        },
+        {
+          src: "/work/radiant/radiant-services.webp",
+          alt: "Radiant services page with the headline One studio from first question to final build above discipline sections",
+          variant: "wide",
+          caption: "Each discipline is expanded without fragmenting the offer.",
+        },
+        {
+          src: "/work/radiant/radiant-contact.webp",
+          alt: "Radiant contact page with the headline Tell us what is changing above the enquiry form",
+          variant: "wide",
+          caption: "The contact route opens with a sentence, not a field list.",
         },
       ],
     },
