@@ -338,7 +338,7 @@ function StatusBar({ compact = false }: { compact?: boolean }) {
       style={{ background: illustrationColors.surface }}
     >
       <span
-        className="text-[6.5px] leading-none font-semibold lg:text-[7.5px]"
+        className="text-[6px] leading-none font-semibold lg:text-[7px]"
         style={{ color: GRAPHITE }}
       >
         9:41
@@ -398,7 +398,7 @@ function JobCard({
       initial={false}
       animate={{ scale: live && !reduce ? 1 : 1 }}
       transition={fade}
-      className="flex items-start gap-1.5 px-1.5 py-[6px] lg:gap-2 lg:px-2 lg:py-[8px]"
+      className="flex items-start gap-1.5 px-1.5 py-[7px] lg:gap-2 lg:px-2 lg:py-[10px]"
       style={{
         borderRadius: 8,
         background: emphasised
@@ -447,7 +447,7 @@ function JobCard({
       <span className="flex min-w-0 flex-1 flex-col gap-[2px]">
         <span className="flex items-baseline justify-between gap-1">
           <span
-            className="truncate text-[8px] leading-none font-semibold lg:text-[9.5px]"
+            className="truncate text-[7.5px] leading-none font-semibold lg:text-[8.5px]"
             style={{
               color: done ? illustrationColors.inkMuted : illustrationColors.ink,
             }}
@@ -455,7 +455,7 @@ function JobCard({
             {job.area}
           </span>
           <span
-            className="shrink-0 text-[7px] leading-none font-medium tabular-nums lg:text-[8.5px]"
+            className="shrink-0 text-[6.5px] leading-none font-medium tabular-nums lg:text-[7.5px]"
             style={{
               color: live
                 ? illustrationColors.accent
@@ -467,14 +467,14 @@ function JobCard({
         </span>
         <span className="flex items-center gap-[3px]">
           <span
-            className="truncate text-[7px] leading-none lg:text-[8.5px]"
+            className="truncate text-[6.5px] leading-none lg:text-[7.5px]"
             style={{ color: illustrationColors.inkFaint }}
           >
             {job.task}
           </span>
         </span>
         <span
-          className="mt-[1px] text-[6.5px] leading-none font-medium tracking-[0.06em] uppercase lg:text-[7.5px]"
+          className="mt-[1px] text-[6px] leading-none font-medium tracking-[0.06em] uppercase lg:text-[7px]"
           style={{
             color: done
               ? illustrationColors.inkFaint
@@ -525,7 +525,7 @@ function FrontPhoneScreen({
           />
         </span>
         <span
-          className="text-[8px] leading-none font-semibold lg:text-[9.5px]"
+          className="text-[7.5px] leading-none font-semibold lg:text-[8.5px]"
           style={{ color: illustrationColors.ink }}
         >
           Field
@@ -539,7 +539,7 @@ function FrontPhoneScreen({
               animate={{ opacity: 1, y: 0 }}
               exit={reduce ? undefined : { opacity: 0, y: -2 }}
               transition={{ duration: 0.2, ease: illustrationEase }}
-              className="text-[6.5px] leading-none lg:text-[7.5px]"
+              className="text-[6px] leading-none lg:text-[7px]"
               style={{
                 color: syncedNow
                   ? illustrationColors.accent
@@ -561,16 +561,16 @@ function FrontPhoneScreen({
       </div>
 
       {/* Greeting */}
-      <div className="flex shrink-0 items-center gap-1.5 px-2 pb-[6px] lg:px-2.5">
+      <div className="flex shrink-0 items-center gap-1.5 px-2 pb-[7px] lg:px-2.5 lg:pb-[10px]">
         <span className="flex min-w-0 flex-1 flex-col gap-[2px]">
           <span
-            className="truncate text-[9px] leading-none font-semibold lg:text-[11px]"
+            className="truncate text-[8px] leading-none font-semibold lg:text-[9.5px]"
             style={{ color: illustrationColors.ink }}
           >
             Good morning, Arjun
           </span>
           <span
-            className="truncate text-[6.5px] leading-none lg:text-[8px]"
+            className="truncate text-[6px] leading-none lg:text-[7.5px]"
             style={{ color: illustrationColors.inkFaint }}
           >
             Tuesday, 12 August
@@ -578,7 +578,7 @@ function FrontPhoneScreen({
         </span>
         {/* Technician avatar */}
         <span
-          className="flex h-[16px] w-[16px] shrink-0 items-center justify-center text-[6.5px] leading-none font-semibold lg:h-[19px] lg:w-[19px] lg:text-[8px]"
+          className="flex h-[16px] w-[16px] shrink-0 items-center justify-center text-[6px] leading-none font-semibold lg:h-[19px] lg:w-[19px] lg:text-[7.5px]"
           style={{
             borderRadius: 999,
             background: illustrationColors.surfaceWarm,
@@ -591,16 +591,16 @@ function FrontPhoneScreen({
       </div>
 
       {/* Progress summary */}
-      <div className="flex shrink-0 flex-col gap-[4px] px-2 pb-[7px] lg:px-2.5">
+      <div className="flex shrink-0 flex-col gap-[5px] px-2 pb-[9px] lg:px-2.5 lg:pb-[12px]">
         <span className="flex items-baseline justify-between gap-1">
           <span
-            className="text-[7px] leading-none lg:text-[8.5px]"
+            className="text-[6.5px] leading-none lg:text-[7.5px]"
             style={{ color: illustrationColors.inkMuted }}
           >
             {completedCount} of 4 jobs completed
           </span>
           <span
-            className="text-[7px] leading-none font-semibold tabular-nums lg:text-[8.5px]"
+            className="text-[6.5px] leading-none font-semibold tabular-nums lg:text-[7.5px]"
             style={{ color: illustrationColors.ink }}
           >
             50%
@@ -626,7 +626,7 @@ function FrontPhoneScreen({
       </div>
 
       {/* Job list */}
-      <div className="flex min-h-0 flex-1 flex-col gap-[5px] px-2 lg:gap-[7px] lg:px-2.5">
+      <div className="flex min-h-0 flex-1 flex-col gap-[6px] px-2 lg:gap-[9px] lg:px-2.5">
         {JOBS.map((job, index) => {
           const status: JobStatus =
             index === 1 && activeJob ? "active" : job.status;
@@ -656,7 +656,7 @@ function FrontPhoneScreen({
             <span key={item} className="flex flex-col items-center gap-[2px]">
               <NavGlyph index={index} active={active} />
               <span
-                className="text-[6px] leading-none lg:text-[7px]"
+                className="text-[6px] leading-none lg:text-[6.5px]"
                 style={{
                   color: active
                     ? illustrationColors.accent
@@ -692,7 +692,7 @@ function FrontPhoneScreen({
               <IconTick size={6} />
             </span>
             <span
-              className="truncate text-[7px] leading-none font-medium lg:text-[8.5px]"
+              className="truncate text-[6.5px] leading-none font-medium lg:text-[7.5px]"
               style={{ color: "#F7F7F4" }}
             >
               Job updated
@@ -769,14 +769,14 @@ function RearPhoneScreen({
       >
         <IconChevronLeft size={8} />
         <span
-          className="truncate text-[8px] leading-none font-semibold lg:text-[9.5px]"
+          className="truncate text-[7.5px] leading-none font-semibold lg:text-[8.5px]"
           style={{ color: illustrationColors.ink }}
         >
           Job details
         </span>
       </div>
 
-      <div className="flex min-h-0 flex-1 flex-col gap-[6px] px-2 pt-[6px] lg:gap-[8px]">
+      <div className="flex min-h-0 flex-1 flex-col gap-[7px] px-2 pt-[7px] lg:gap-[10px]">
         <MapThumb />
 
         {/* Customer + address */}
@@ -791,7 +791,7 @@ function RearPhoneScreen({
               className="flex flex-col gap-[3px]"
             >
               <span
-                className="truncate text-[8px] leading-none font-semibold lg:text-[9.5px]"
+                className="truncate text-[7.5px] leading-none font-semibold lg:text-[8.5px]"
                 style={{ color: illustrationColors.ink }}
               >
                 {jobLoaded ? "Sterling Business Park" : "Kohinoor Residency"}
@@ -801,7 +801,7 @@ function RearPhoneScreen({
                   <IconPin size={7} />
                 </span>
                 <span
-                  className="text-[6.5px] leading-[1.35] lg:text-[8px]"
+                  className="text-[6px] leading-[1.35] lg:text-[7.5px]"
                   style={{ color: illustrationColors.inkFaint }}
                 >
                   {jobLoaded
@@ -825,7 +825,7 @@ function RearPhoneScreen({
           <span className="flex items-center gap-[4px]">
             <IconClock size={7} />
             <span
-              className="truncate text-[6.5px] leading-none lg:text-[8px]"
+              className="truncate text-[6px] leading-none lg:text-[7.5px]"
               style={{ color: illustrationColors.inkMuted }}
             >
               {jobLoaded ? "12:00 – 1:00 PM" : "10:30 – 11:30 AM"}
@@ -843,7 +843,7 @@ function RearPhoneScreen({
               RD
             </span>
             <span
-              className="truncate text-[6.5px] leading-none lg:text-[8px]"
+              className="truncate text-[6px] leading-none lg:text-[7.5px]"
               style={{ color: illustrationColors.inkMuted }}
             >
               Rohit Deshmukh
@@ -854,7 +854,7 @@ function RearPhoneScreen({
         {/* Visit checklist */}
         <div className="flex flex-col gap-[4px]">
           <span
-            className="text-[6px] leading-none font-medium tracking-[0.12em] uppercase lg:text-[7px]"
+            className="text-[6px] leading-none font-medium tracking-[0.12em] uppercase lg:text-[6.5px]"
             style={{ color: illustrationColors.inkFaint }}
           >
             Visit checklist
@@ -883,7 +883,7 @@ function RearPhoneScreen({
                   {done ? <IconTick size={6} /> : null}
                 </motion.span>
                 <span
-                  className="truncate text-[6.5px] leading-none lg:text-[8px]"
+                  className="truncate text-[6px] leading-none lg:text-[7.5px]"
                   style={{
                     color: done
                       ? illustrationColors.inkFaint
@@ -902,7 +902,7 @@ function RearPhoneScreen({
         <span className="flex items-center gap-[4px]">
           <IconDownload size={7} />
           <span
-            className="truncate text-[6px] leading-none lg:text-[7.5px]"
+            className="truncate text-[6px] leading-none lg:text-[7px]"
             style={{ color: illustrationColors.inkFaint }}
           >
             Available offline
@@ -922,7 +922,7 @@ function RearPhoneScreen({
         >
           <IconNavigate size={8} />
           <span
-            className="text-[7.5px] leading-none font-medium"
+            className="text-[7px] leading-none font-medium"
             style={{ color: illustrationColors.ink }}
           >
             Get directions
@@ -936,7 +936,7 @@ function RearPhoneScreen({
           }}
         >
           <span
-            className="text-[7px] leading-none font-semibold lg:text-[8.5px]"
+            className="text-[6.5px] leading-none font-semibold lg:text-[7.5px]"
             style={{ color: illustrationColors.surface }}
           >
             {checklistDone > 0 ? "Continue job" : "Start job"}
