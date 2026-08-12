@@ -1,0 +1,57 @@
+/**
+ * Shared visual + motion tokens for the homepage service illustrations.
+ * Values track the site CSS variables so the miniature interfaces read as
+ * native Comlabs surfaces rather than generic SaaS artwork.
+ */
+
+export const illustrationColors = {
+  surface: "#FFFFFF",
+  surfaceTranslucent: "rgba(255, 255, 255, 0.88)",
+  surfaceMuted: "#F7F7F4",
+  surfaceSunk: "#EFEFEA",
+  surfaceWarm: "#FDF7EF",
+  ink: "#1C1917",
+  inkMuted: "#78716C",
+  inkFaint: "#A8A29E",
+  border: "rgba(28, 25, 23, 0.10)",
+  borderStrong: "rgba(28, 25, 23, 0.20)",
+  wire: "#D8D5D0",
+  accent: "#C96442",
+  accentSoft: "#F5E6DF",
+  accentLine: "rgba(201, 100, 66, 0.42)",
+} as const;
+
+export const illustrationShadow = {
+  /** Base interface panel resting on the scene. */
+  panel:
+    "0 1px 2px rgba(28,25,23,0.04), 0 10px 28px -14px rgba(28,25,23,0.20)",
+  /** Foreground object that overlaps another panel. */
+  raised:
+    "0 2px 6px rgba(28,25,23,0.06), 0 20px 44px -18px rgba(28,25,23,0.28)",
+  /** Chips, toasts and small floating controls. */
+  chip: "0 1px 2px rgba(28,25,23,0.06)",
+} as const;
+
+export const illustrationRadius = {
+  chip: 5,
+  control: 7,
+  panel: 10,
+  device: 16,
+} as const;
+
+/** Site-wide easing — calm, mechanical, no overshoot. */
+export const illustrationEase = [0.25, 0.1, 0, 1] as const;
+
+export const illustrationTiming = {
+  /** Delay before a sequence begins once the frame enters the viewport. */
+  startDelayMs: 320,
+  /** Gap between narrative steps. */
+  stepMs: 900,
+  /** Standard element transition. */
+  transitionSec: 0.42,
+  /** Faster feedback transition for toggles and status flips. */
+  feedbackSec: 0.24,
+} as const;
+
+/** Viewport trigger shared by every illustration frame. */
+export const illustrationViewport = { amount: 0.4 } as const;
