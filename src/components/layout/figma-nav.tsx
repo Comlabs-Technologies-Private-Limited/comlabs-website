@@ -28,19 +28,26 @@ export function FigmaNav({ showBlogLink = true }: FigmaNavProps) {
   useEffect(() => {
     if (!menuOpen) return;
 
-    const previousOverflow = document.body.style.overflow;
+    const html = document.documentElement;
+    const previousHtmlOverflow = html.style.overflow;
+    const previousBodyOverflow = document.body.style.overflow;
+    html.style.overflow = "hidden";
     document.body.style.overflow = "hidden";
 
     return () => {
-      document.body.style.overflow = previousOverflow;
+      html.style.overflow = previousHtmlOverflow;
+      document.body.style.overflow = previousBodyOverflow;
     };
   }, [menuOpen]);
 
   return (
     <>
       <header
-        className="sticky top-0 z-50 border-b border-border"
-        style={{ background: "rgba(247,247,244,0.88)", backdropFilter: "blur(12px)" }}
+        className="relative sticky top-0 z-50 border-b border-border"
+        style={{
+          background: menuOpen ? "var(--background)" : "rgba(247,247,244,0.88)",
+          backdropFilter: menuOpen ? undefined : "blur(12px)",
+        }}
       >
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-6">
           <Link href="/" aria-label="Comlabs home">
@@ -78,26 +85,20 @@ export function FigmaNav({ showBlogLink = true }: FigmaNavProps) {
 
           <button
             type="button"
-            className="text-foreground md:hidden"
+            className="-mr-2 flex h-10 w-10 items-center justify-center text-foreground md:hidden"
             onClick={() => setMenuOpen(!menuOpen)}
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             aria-expanded={menuOpen}
+            aria-controls="mobile-navigation"
           >
             {menuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
-      </header>
 
-      {menuOpen ? (
-        <div className="fixed inset-0 z-40 md:hidden" role="presentation">
-          <button
-            type="button"
-            className="absolute inset-0 bg-foreground/20 backdrop-blur-[2px]"
-            aria-label="Close menu"
-            onClick={() => setMenuOpen(false)}
-          />
+        {menuOpen ? (
           <nav
-            className="absolute inset-x-0 top-14 flex flex-col gap-4 border-b border-border px-6 py-5 shadow-[0_16px_48px_rgba(28,25,23,0.08)]"
+            id="mobile-navigation"
+            className="absolute inset-x-0 top-full z-50 flex flex-col gap-4 border-b border-border px-6 py-5 md:hidden"
             style={{ background: "var(--background)" }}
             aria-label="Mobile"
           >
@@ -113,13 +114,22 @@ export function FigmaNav({ showBlogLink = true }: FigmaNavProps) {
             ))}
             <Link
               href={canonicalPath("/contact")}
-              className="rounded-full bg-foreground px-4 py-2 text-center text-sm font-semibold text-background"
+              className="rounded-full bg-foreground px-4 py-2.5 text-center text-sm font-semibold text-background"
               onClick={() => setMenuOpen(false)}
             >
               Get Started
             </Link>
           </nav>
-        </div>
+        ) : null}
+      </header>
+
+      {menuOpen ? (
+        <button
+          type="button"
+          className="fixed inset-0 top-14 z-40 overflow-hidden bg-foreground/20 backdrop-blur-[2px] md:hidden"
+          aria-label="Close menu"
+          onClick={() => setMenuOpen(false)}
+        />
       ) : null}
     </>
   );
