@@ -31,44 +31,39 @@ const PAGE_LAYERS = [
   "CTA",
 ] as const;
 
-const STEPS = 5;
+const CONTENT_CARDS = [
+  { title: "Custom software", meta: "Systems built to fit" },
+  { title: "Website & brand", meta: "Positioning to launch" },
+] as const;
+
+const STEPS = 4;
 
 const fade = {
   duration: illustrationTiming.transitionSec,
   ease: illustrationEase,
 };
 
-/** Dashed placeholder that resolves into a finished component. */
-function WireSurface({ height }: { height: number }) {
-  return (
-    <div
-      className="w-full"
-      style={{
-        height,
-        borderRadius: illustrationRadius.control,
-        border: `1px dashed ${illustrationColors.wire}`,
-        background:
-          "repeating-linear-gradient(135deg, rgba(28,25,23,0.028) 0 5px, transparent 5px 10px)",
-      }}
-    />
-  );
-}
-
 export function WebsiteDesignIllustration() {
   const { active, reduce } = useIllustrationState();
-  const step = useIllustrationSequence({ steps: STEPS, active, reduce });
+  // Fewer steps, so each is held longer — the finished page dominates the sequence.
+  const step = useIllustrationSequence({
+    steps: STEPS,
+    active,
+    reduce,
+    stepMs: 780,
+  });
 
-  const heroResolved = step >= 1;
+  // 0 hero live, cards drafting · 1 cards resolve + guides · 2 mobile syncs · 3 shipped
+  const cardsResolved = step >= 1;
   const guidesVisible = step === 1;
-  const bodyResolved = step >= 2;
-  const mobileResolved = step >= 3;
-  const complete = step >= 4;
+  const mobileResolved = step >= 2;
+  const complete = step >= 3;
 
   return (
     <IllustrationStage>
       <div className="flex h-full items-stretch gap-3">
         {/* Page layer rail — secondary layer, desktop only */}
-        <div className="hidden w-[82px] shrink-0 flex-col lg:flex">
+        <div className="hidden w-[84px] shrink-0 flex-col lg:flex">
           <MicroLabel className="mb-2 pl-[2px]">Page layers</MicroLabel>
           <Panel className="flex-1 p-1.5" elevation="flat">
             <div className="flex flex-col gap-[3px]">
@@ -100,7 +95,7 @@ export function WebsiteDesignIllustration() {
                       }}
                     />
                     <span
-                      className="truncate text-[9px] leading-none"
+                      className="truncate text-[9.5px] leading-none"
                       style={{
                         color: isSelected
                           ? illustrationColors.accent
@@ -137,7 +132,7 @@ export function WebsiteDesignIllustration() {
                 }}
               >
                 <span
-                  className="truncate text-[8px] leading-none lg:text-[10px]"
+                  className="truncate text-[8px] leading-none lg:text-[9.5px]"
                   style={{ color: illustrationColors.inkFaint }}
                 >
                   comlabstechnologies.com
@@ -160,54 +155,50 @@ export function WebsiteDesignIllustration() {
               </AnimatePresence>
             </div>
 
-            {/* Canvas */}
+            {/* Canvas — a real page from the first frame */}
             <div className="relative flex-1 p-2.5 lg:p-3.5">
               <div className="flex h-full flex-col gap-2 lg:gap-2.5">
-                {/* Hero component — selected, with alignment guides */}
+                {/* Hero */}
                 <div className="relative">
-                  <AnimatePresence mode="wait" initial={false}>
-                    {heroResolved ? (
-                      <motion.div
-                        key="hero-live"
-                        initial={reduce ? false : { opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={fade}
-                        className="flex flex-col gap-[6px] px-1 py-[6px]"
+                  <div className="flex flex-col gap-[6px] px-1 py-[5px]">
+                    <span
+                      className="block truncate text-[9px] leading-none font-semibold lg:text-[11px]"
+                      style={{ color: illustrationColors.ink }}
+                    >
+                      Design &amp; engineering studio
+                    </span>
+                    <Bar width="58%" height={3.5} />
+                    <div className="mt-[3px] flex items-center gap-1.5">
+                      <span
+                        className="flex items-center justify-center px-2 py-[3px]"
+                        style={{
+                          borderRadius: 999,
+                          background: illustrationColors.accent,
+                        }}
                       >
-                        <Bar width="72%" height={6} tone="strong" />
-                        <Bar width="52%" height={4} />
-                        <div className="mt-[3px] flex items-center gap-1.5">
-                          <span
-                            className="block"
-                            style={{
-                              width: 34,
-                              height: 9,
-                              borderRadius: 999,
-                              background: illustrationColors.accent,
-                            }}
-                          />
-                          <span
-                            className="block"
-                            style={{
-                              width: 26,
-                              height: 9,
-                              borderRadius: 999,
-                              border: `1px solid ${illustrationColors.border}`,
-                            }}
-                          />
-                        </div>
-                      </motion.div>
-                    ) : (
-                      <motion.div
-                        key="hero-wire"
-                        initial={false}
-                        exit={reduce ? undefined : { opacity: 0 }}
-                        transition={fade}
+                        <span
+                          className="text-[6.5px] leading-none font-semibold lg:text-[8px]"
+                          style={{ color: illustrationColors.surface }}
+                        >
+                          Start a project
+                        </span>
+                      </span>
+                      <span
+                        className="flex items-center justify-center px-2 py-[3px]"
+                        style={{
+                          borderRadius: 999,
+                          border: `1px solid ${illustrationColors.border}`,
+                        }}
                       >
-                        <WireSurface height={46} />
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                        <span
+                          className="text-[6.5px] leading-none lg:text-[8px]"
+                          style={{ color: illustrationColors.inkMuted }}
+                        >
+                          View work
+                        </span>
+                      </span>
+                    </div>
+                  </div>
 
                   {/* Selection outline + alignment guides */}
                   <AnimatePresence>
@@ -235,7 +226,7 @@ export function WebsiteDesignIllustration() {
                         ].map((position) => (
                           <span
                             key={position}
-                            className={`absolute ${position} block h-[3px] w-[3px] -translate-x-1/2 -translate-y-1/2`}
+                            className={`absolute ${position} block h-[3px] w-[3px]`}
                             style={{
                               background: illustrationColors.surface,
                               border: `1px solid ${illustrationColors.accent}`,
@@ -256,44 +247,45 @@ export function WebsiteDesignIllustration() {
                   </AnimatePresence>
                 </div>
 
-                {/* Trust bar */}
-                <div className="flex items-center gap-1.5">
+                {/* Trust row */}
+                <div
+                  className="flex items-center gap-1.5 border-y px-1 py-[6px]"
+                  style={{ borderColor: illustrationColors.border }}
+                >
+                  <span
+                    className="shrink-0 text-[6px] leading-none tracking-[0.1em] uppercase lg:text-[7px]"
+                    style={{ color: illustrationColors.inkFaint }}
+                  >
+                    Trusted by
+                  </span>
                   {[0, 1, 2, 3].map((item) => (
-                    <motion.span
+                    <span
                       key={item}
-                      initial={false}
-                      animate={{ opacity: bodyResolved ? 1 : 0.45 }}
-                      transition={fade}
                       className="block flex-1"
                       style={{
-                        height: 7,
+                        height: 6,
                         borderRadius: 2,
-                        background: bodyResolved
-                          ? "rgba(28,25,23,0.10)"
-                          : "transparent",
-                        border: bodyResolved
-                          ? "none"
-                          : `1px dashed ${illustrationColors.wire}`,
+                        background: "rgba(28,25,23,0.11)",
                       }}
                     />
                   ))}
                 </div>
 
-                {/* Services grid */}
-                <div className="grid flex-1 grid-cols-3 gap-1.5">
-                  {[0, 1, 2].map((card) => (
-                    <div key={card} className="relative h-full">
+                {/* Content cards */}
+                <div className="grid flex-1 grid-cols-2 gap-2">
+                  {CONTENT_CARDS.map((card, index) => (
+                    <div key={card.title} className="relative h-full">
                       <AnimatePresence mode="wait" initial={false}>
-                        {bodyResolved ? (
+                        {cardsResolved ? (
                           <motion.div
                             key="card-live"
                             initial={reduce ? false : { opacity: 0, y: 3 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{
                               ...fade,
-                              delay: reduce ? 0 : card * 0.06,
+                              delay: reduce ? 0 : index * 0.07,
                             }}
-                            className="flex h-full flex-col gap-[5px] p-1.5"
+                            className="flex h-full flex-col gap-[5px] p-1.5 lg:p-2"
                             style={{
                               borderRadius: illustrationRadius.control,
                               border: `1px solid ${illustrationColors.border}`,
@@ -301,15 +293,25 @@ export function WebsiteDesignIllustration() {
                             }}
                           >
                             <span
-                              className="block h-[8px] w-[8px]"
+                              className="block h-[9px] w-[9px]"
                               style={{
                                 borderRadius: 2,
                                 background: illustrationColors.accentSoft,
-                                border: "1px solid rgba(201,100,66,0.22)",
+                                border: "1px solid rgba(201,100,66,0.24)",
                               }}
                             />
-                            <Bar width="80%" height={3} tone="strong" />
-                            <Bar width="60%" height={3} />
+                            <span
+                              className="truncate text-[7px] leading-none font-semibold lg:text-[9px]"
+                              style={{ color: illustrationColors.ink }}
+                            >
+                              {card.title}
+                            </span>
+                            <span
+                              className="truncate text-[6.5px] leading-none lg:text-[8px]"
+                              style={{ color: illustrationColors.inkFaint }}
+                            >
+                              {card.meta}
+                            </span>
                           </motion.div>
                         ) : (
                           <motion.div
@@ -320,12 +322,21 @@ export function WebsiteDesignIllustration() {
                             className="h-full"
                           >
                             <div
-                              className="h-full w-full"
+                              className="flex h-full w-full items-center justify-center"
                               style={{
                                 borderRadius: illustrationRadius.control,
                                 border: `1px dashed ${illustrationColors.wire}`,
+                                background:
+                                  "repeating-linear-gradient(135deg, rgba(28,25,23,0.028) 0 5px, transparent 5px 10px)",
                               }}
-                            />
+                            >
+                              <span
+                                className="text-[6px] leading-none tracking-[0.1em] uppercase lg:text-[7px]"
+                                style={{ color: illustrationColors.inkFaint }}
+                              >
+                                Drafting
+                              </span>
+                            </div>
                           </motion.div>
                         )}
                       </AnimatePresence>
@@ -337,15 +348,7 @@ export function WebsiteDesignIllustration() {
           </Panel>
 
           {/* Mobile preview — offset in front of the browser */}
-          <motion.div
-            initial={false}
-            animate={{
-              opacity: 1,
-              y: mobileResolved && !reduce ? -2 : 0,
-            }}
-            transition={fade}
-            className="absolute right-1 -bottom-2 w-[52px] lg:right-3 lg:-bottom-3 lg:w-[64px]"
-          >
+          <div className="absolute right-1 -bottom-2 w-[54px] lg:right-3 lg:-bottom-3 lg:w-[66px]">
             <div
               className="overflow-hidden p-[3px]"
               style={{
@@ -360,7 +363,7 @@ export function WebsiteDesignIllustration() {
                 style={{
                   borderRadius: 12,
                   background: illustrationColors.surfaceMuted,
-                  minHeight: 62,
+                  minHeight: 64,
                 }}
               >
                 <span
@@ -372,51 +375,46 @@ export function WebsiteDesignIllustration() {
                     background: "rgba(28,25,23,0.16)",
                   }}
                 />
-                <AnimatePresence mode="wait" initial={false}>
-                  {mobileResolved ? (
-                    <motion.div
-                      key="phone-live"
-                      initial={reduce ? false : { opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={fade}
-                      className="flex flex-col gap-[4px] pt-[3px]"
-                    >
-                      <Bar width="82%" height={4} tone="strong" />
-                      <Bar width="60%" height={3} />
-                      <span
-                        className="mt-[2px] block"
-                        style={{
-                          width: 24,
-                          height: 6,
-                          borderRadius: 999,
-                          background: illustrationColors.accent,
-                        }}
-                      />
-                      <span
-                        className="mt-[2px] block w-full"
-                        style={{
-                          height: 12,
-                          borderRadius: 3,
-                          background: "rgba(28,25,23,0.07)",
-                        }}
-                      />
-                    </motion.div>
-                  ) : (
-                    <motion.div
-                      key="phone-wire"
-                      initial={false}
-                      exit={reduce ? undefined : { opacity: 0 }}
-                      transition={fade}
-                      className="flex flex-col gap-[4px] pt-[3px]"
-                    >
-                      <WireSurface height={14} />
-                      <WireSurface height={20} />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                <div className="flex flex-col gap-[4px] pt-[3px]">
+                  <Bar width="84%" height={4} tone="strong" />
+                  <Bar width="62%" height={3} />
+                  <span
+                    className="mt-[2px] block"
+                    style={{
+                      width: 26,
+                      height: 6,
+                      borderRadius: 999,
+                      background: illustrationColors.accent,
+                    }}
+                  />
+                  {/* Stacked cards confirm the responsive reflow */}
+                  <motion.span
+                    className="mt-[2px] flex flex-col gap-[3px]"
+                    initial={false}
+                    animate={{ opacity: mobileResolved ? 1 : 0.35 }}
+                    transition={fade}
+                  >
+                    <span
+                      className="block w-full"
+                      style={{
+                        height: 9,
+                        borderRadius: 2,
+                        background: "rgba(28,25,23,0.09)",
+                      }}
+                    />
+                    <span
+                      className="block w-full"
+                      style={{
+                        height: 9,
+                        borderRadius: 2,
+                        background: "rgba(28,25,23,0.09)",
+                      }}
+                    />
+                  </motion.span>
+                </div>
               </div>
             </div>
-          </motion.div>
+          </div>
 
           {/* Responsive confirmation */}
           <AnimatePresence>
@@ -424,7 +422,6 @@ export function WebsiteDesignIllustration() {
               <motion.div
                 initial={reduce ? false : { opacity: 0, y: 4 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={reduce ? undefined : { opacity: 0 }}
                 transition={fade}
                 className="absolute bottom-1 left-1 lg:bottom-2 lg:left-2"
               >

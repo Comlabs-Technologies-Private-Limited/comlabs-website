@@ -2,12 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 
-import {
-  CheckGlyph,
-  MicroLabel,
-  Panel,
-  StatusDot,
-} from "./illustration-primitives";
+import { CheckGlyph, MicroLabel, Panel } from "./illustration-primitives";
 import {
   IllustrationStage,
   useIllustrationState,
@@ -123,7 +118,19 @@ export function CloudScalingIllustration() {
       <Panel className="flex h-full flex-col p-2.5 lg:p-3.5" elevation="raised">
         {/* Traffic source */}
         <div className="flex shrink-0 items-center justify-between gap-2">
-          <MicroLabel tone="muted">Incoming requests</MicroLabel>
+          <span className="flex min-w-0 items-center gap-1.5">
+            <MicroLabel tone="muted">Incoming requests</MicroLabel>
+            <span
+              className="hidden shrink-0 px-1 py-[2px] text-[7.5px] leading-none font-medium lg:inline"
+              style={{
+                borderRadius: 3,
+                background: illustrationColors.surfaceSunk,
+                color: illustrationColors.inkMuted,
+              }}
+            >
+              ap-south-1
+            </span>
+          </span>
           <div className="flex items-center gap-1.5">
             <AnimatePresence mode="wait" initial={false}>
               <motion.span
@@ -267,12 +274,24 @@ export function CloudScalingIllustration() {
           }}
         >
           <div className="flex items-center gap-1.5">
-            {confirmed ? <CheckGlyph size={8} /> : <StatusDot tone="muted" />}
+            {confirmed ? (
+              <CheckGlyph size={9} />
+            ) : (
+              <svg width="9" height="9" viewBox="0 0 12 12" fill="none" aria-hidden>
+                <path
+                  d="M6 9.5V2.8m0 0L3.3 5.5M6 2.8l2.7 2.7"
+                  stroke={illustrationColors.accent}
+                  strokeWidth="1.4"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            )}
             <span
-              className="text-[8px] leading-none lg:text-[10px]"
+              className="text-[8px] leading-none font-medium lg:text-[10px]"
               style={{ color: illustrationColors.ink }}
             >
-              {confirmed ? "All targets healthy" : "Scaling"}
+              {confirmed ? "All targets healthy" : "Scaling out"}
             </span>
           </div>
           <div className="flex items-center gap-1.5">

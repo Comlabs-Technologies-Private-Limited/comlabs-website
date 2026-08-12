@@ -3,8 +3,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 
 import {
-  ArrowGlyph,
-  Bar,
   CheckGlyph,
   Chip,
   MicroLabel,
@@ -24,11 +22,11 @@ import { useIllustrationSequence } from "./use-illustration-sequence";
 
 const STAGES = ["Request", "Validate", "Process", "Approve", "Complete"] as const;
 
-const CONFIG_LINES = [
-  { indent: 0, text: "rule: purchase_order", tone: "key" },
-  { indent: 1, text: "limit: 250000", tone: "value" },
-  { indent: 1, text: "approver: founder", tone: "value" },
-  { indent: 0, text: "on_pass: provision", tone: "key" },
+const CONFIG_ROWS = [
+  { key: "rule", value: "purchase_order" },
+  { key: "limit", value: "₹2,50,000" },
+  { key: "approver", value: "founder" },
+  { key: "on_pass", value: "provision" },
 ] as const;
 
 const STEPS = 6;
@@ -37,20 +35,20 @@ export function CustomSoftwareIllustration() {
   const { active, reduce } = useIllustrationState();
   const step = useIllustrationSequence({ steps: STEPS, active, reduce });
 
-  // The record advances one stage per step, settling on "Complete".
-  const recordIndex = Math.min(Math.max(step - 1, 0), STAGES.length - 1);
+  // The record sits at Request from the first frame, then advances one stage per step.
+  const recordIndex = Math.min(step, STAGES.length - 1);
   const validationPassed = step >= 2;
-  const approvalReached = step >= 3;
+  const approved = step >= 3;
   const deployBuilding = step >= 4;
   const isLive = step >= 5;
 
   return (
     <IllustrationStage>
       <div className="flex h-full flex-col gap-2.5">
-        {/* Workflow rail — primary object */}
-        <Panel className="flex-1 p-2.5 lg:p-3" elevation="raised">
+        {/* Workflow + order detail — primary object */}
+        <Panel className="flex flex-1 flex-col p-2.5 lg:p-3" elevation="raised">
           <div className="mb-2 flex items-center justify-between gap-2">
-            <MicroLabel tone="muted">Purchase order workflow</MicroLabel>
+            <MicroLabel tone="muted">Purchase order · PO-4821</MicroLabel>
             <Chip tone={isLive ? "accent" : "quiet"}>
               {isLive ? <CheckGlyph /> : <StatusDot tone="idle" />}
               {isLive ? "Completed" : "Running"}
@@ -61,13 +59,13 @@ export function CustomSoftwareIllustration() {
           <div className="grid grid-cols-5 pb-1.5">
             {STAGES.map((stage, index) => (
               <div key={stage} className="flex justify-center">
-                {index === recordIndex && step >= 1 ? (
+                {index === recordIndex ? (
                   <motion.div
                     layoutId="software-record"
                     transition={
                       reduce
                         ? { duration: 0 }
-                        : { duration: 0.5, ease: illustrationEase }
+                        : { duration: 0.42, ease: illustrationEase }
                     }
                   >
                     <Chip tone="accent" className="shadow-none">
@@ -91,22 +89,17 @@ export function CustomSoftwareIllustration() {
               className="absolute top-[9px] left-[10%] block h-px origin-left"
               style={{ background: illustrationColors.accent, right: "10%" }}
               initial={false}
-              animate={{
-                scaleX: recordIndex / (STAGES.length - 1),
-              }}
+              animate={{ scaleX: recordIndex / (STAGES.length - 1) }}
               transition={
-                reduce ? { duration: 0 } : { duration: 0.5, ease: illustrationEase }
+                reduce ? { duration: 0 } : { duration: 0.42, ease: illustrationEase }
               }
             />
 
             <div className="relative grid grid-cols-5">
               {STAGES.map((stage, index) => {
-                const reached = step >= 1 && index <= recordIndex;
+                const reached = index <= recordIndex;
                 return (
-                  <div
-                    key={stage}
-                    className="flex flex-col items-center gap-1.5"
-                  >
+                  <div key={stage} className="flex flex-col items-center gap-1.5">
                     <span
                       className="flex h-[18px] w-[18px] items-center justify-center"
                       style={{
@@ -131,7 +124,7 @@ export function CustomSoftwareIllustration() {
                       )}
                     </span>
                     <span
-                      className="text-center text-[7.5px] leading-none lg:text-[10px]"
+                      className="text-center text-[7.5px] leading-none lg:text-[9px]"
                       style={{
                         color: reached
                           ? illustrationColors.ink
@@ -146,13 +139,46 @@ export function CustomSoftwareIllustration() {
             </div>
           </div>
 
-          {/* Stage detail line */}
+          {/* Order facts — real data rather than empty space */}
+          <div className="mt-2.5 grid grid-cols-2 gap-x-2 gap-y-[6px] lg:gap-y-[8px]">
+            {[
+              { label: "Vendor", value: "Sundaram Traders" },
+              { label: "Requester", value: "Ops · Priya N." },
+              { label: "Amount", value: "₹2,40,000" },
+              {
+                label: "Policy",
+                value: validationPassed ? "Within limit" : "Checking…",
+              },
+            ].map((fact) => (
+              <div key={fact.label} className="flex min-w-0 flex-col gap-[2px]">
+                <span
+                  className="text-[6.5px] leading-none tracking-[0.1em] uppercase lg:text-[7.5px]"
+                  style={{ color: illustrationColors.inkFaint }}
+                >
+                  {fact.label}
+                </span>
+                <span
+                  className="truncate text-[7.5px] leading-none font-medium lg:text-[9px]"
+                  style={{ color: illustrationColors.ink }}
+                >
+                  {fact.value}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          {/* Approval activity */}
           <div
-            className="mt-2.5 flex items-center gap-1.5 px-2 py-[6px]"
+            className="mt-auto flex items-center gap-1.5 px-2 py-[6px]"
             style={{
               borderRadius: illustrationRadius.control,
-              background: illustrationColors.surfaceMuted,
-              border: `1px solid ${illustrationColors.border}`,
+              background: approved
+                ? illustrationColors.surfaceWarm
+                : illustrationColors.surfaceMuted,
+              border: `1px solid ${
+                approved ? "rgba(201,100,66,0.18)" : illustrationColors.border
+              }`,
+              transition: "background 380ms ease, border-color 380ms ease",
             }}
           >
             <AnimatePresence mode="wait" initial={false}>
@@ -160,11 +186,11 @@ export function CustomSoftwareIllustration() {
                 key={
                   isLive
                     ? "live"
-                    : approvalReached
-                      ? "approval"
+                    : approved
+                      ? "approved"
                       : validationPassed
                         ? "passed"
-                        : "pending"
+                        : "received"
                 }
                 initial={reduce ? false : { opacity: 0, y: 2 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -172,22 +198,18 @@ export function CustomSoftwareIllustration() {
                 transition={{ duration: 0.2, ease: illustrationEase }}
                 className="flex min-w-0 items-center gap-1.5"
               >
-                {validationPassed ? (
-                  <CheckGlyph />
-                ) : (
-                  <StatusDot tone="muted" />
-                )}
+                {validationPassed ? <CheckGlyph /> : <StatusDot tone="muted" />}
                 <span
-                  className="truncate text-[8px] leading-none lg:text-[10px]"
+                  className="truncate text-[7.5px] leading-none lg:text-[9px]"
                   style={{ color: illustrationColors.inkMuted }}
                 >
                   {isLive
-                    ? "Order provisioned · vendor notified"
-                    : approvalReached
-                      ? "Founder approval · ₹2,40,000"
+                    ? "Provisioned · vendor notified 12:04"
+                    : approved
+                      ? "Approved by P. Mishra · 12:02"
                       : validationPassed
                         ? "Validation passed · budget in policy"
-                        : "Customer request received"}
+                        : "Submitted by Ops · 11:58"}
                 </span>
               </motion.span>
             </AnimatePresence>
@@ -196,38 +218,47 @@ export function CustomSoftwareIllustration() {
 
         {/* Supporting panels */}
         <div className="flex shrink-0 items-stretch gap-2.5">
-          {/* Config panel — secondary layer, desktop only */}
+          {/* Rule configuration — labelled rows rather than raw lines */}
           <Panel className="hidden min-w-0 flex-1 flex-col gap-[5px] p-2.5 lg:flex">
             <MicroLabel>Rule configuration</MicroLabel>
-            <div className="flex flex-col gap-[3px] pt-[2px]">
-              {CONFIG_LINES.map((line) => (
-                <span
-                  key={line.text}
-                  className="truncate text-[8.5px] leading-[1.3]"
-                  style={{
-                    paddingLeft: line.indent * 8,
-                    fontFamily: "var(--font-mono, monospace)",
-                    color:
-                      line.tone === "key"
-                        ? illustrationColors.ink
-                        : illustrationColors.inkMuted,
-                  }}
+            <div className="flex flex-col gap-[4px] pt-[2px]">
+              {CONFIG_ROWS.map((row) => (
+                <div
+                  key={row.key}
+                  className="flex items-baseline justify-between gap-2"
                 >
-                  {line.text}
-                </span>
+                  <span
+                    className="shrink-0 text-[8.5px] leading-none"
+                    style={{
+                      fontFamily: "var(--font-mono, monospace)",
+                      color: illustrationColors.inkFaint,
+                    }}
+                  >
+                    {row.key}
+                  </span>
+                  <span
+                    className="truncate text-[8.5px] leading-none font-medium"
+                    style={{
+                      fontFamily: "var(--font-mono, monospace)",
+                      color: illustrationColors.ink,
+                    }}
+                  >
+                    {row.value}
+                  </span>
+                </div>
               ))}
             </div>
           </Panel>
 
-          {/* Deployment panel */}
+          {/* Deployment */}
           <Panel className="flex w-full flex-col justify-between gap-2 p-2.5 lg:w-[46%]">
             <div className="flex items-center justify-between gap-2">
               <MicroLabel>Deployment</MicroLabel>
               <span
-                className="text-[8px] leading-none lg:text-[10px]"
+                className="text-[8px] leading-none lg:text-[9px]"
                 style={{ color: illustrationColors.inkFaint }}
               >
-                #248
+                build #248
               </span>
             </div>
 
@@ -240,20 +271,19 @@ export function CustomSoftwareIllustration() {
                 }}
               >
                 <motion.span
-                  className="absolute inset-y-0 left-0 block origin-left"
+                  className="absolute inset-y-0 left-0 block w-full origin-left"
                   style={{
                     borderRadius: 999,
                     background: illustrationColors.accent,
-                    width: "100%",
                   }}
                   initial={false}
                   animate={{
-                    scaleX: isLive ? 1 : deployBuilding ? 0.62 : 0.12,
+                    scaleX: isLive ? 1 : deployBuilding ? 0.62 : 0.18,
                   }}
                   transition={
                     reduce
                       ? { duration: 0 }
-                      : { duration: 0.6, ease: illustrationEase }
+                      : { duration: 0.5, ease: illustrationEase }
                   }
                 />
               </span>
@@ -263,10 +293,14 @@ export function CustomSoftwareIllustration() {
               </Chip>
             </div>
 
-            <div className="flex items-center gap-1">
-              <ArrowGlyph />
-              <Bar width="52%" height={3} />
-            </div>
+            <span
+              className="truncate text-[7.5px] leading-none lg:text-[8.5px]"
+              style={{ color: illustrationColors.inkFaint }}
+            >
+              {isLive
+                ? "ap-south-1 · 2 instances healthy"
+                : "Awaiting approval gate"}
+            </span>
           </Panel>
         </div>
       </div>
