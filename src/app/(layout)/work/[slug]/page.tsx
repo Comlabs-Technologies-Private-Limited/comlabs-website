@@ -47,7 +47,7 @@ export default async function CaseStudyPage({
   const page = await getPublishedCaseStudyPage(slug);
   if (!page) notFound();
 
-  const { metaTitle, metaDescription, updatedAt, absoluteTitle: _absoluteTitle, ...content } = page;
+  const { metaTitle, metaDescription, updatedAt, ...content } = page;
 
   return (
     <>
