@@ -45,10 +45,10 @@ export const illustrationRadius = {
 export const illustrationEase = [0.25, 0.1, 0, 1] as const;
 
 export const illustrationTiming = {
-  /** Delay before a sequence begins once the frame enters the viewport. */
-  startDelayMs: 320,
-  /** Gap between narrative steps. */
-  stepMs: 900,
+  /** Sequences begin almost immediately so nothing sits in a holding state. */
+  startDelayMs: 160,
+  /** Gap between narrative steps — a six-step story resolves in ~3s. */
+  stepMs: 560,
   /** Standard element transition. */
   transitionSec: 0.42,
   /** Faster feedback transition for toggles and status flips. */

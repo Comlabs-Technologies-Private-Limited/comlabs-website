@@ -4,7 +4,6 @@ import { AnimatePresence, motion } from "framer-motion";
 
 import {
   ArrowGlyph,
-  Bar,
   CheckGlyph,
   Chip,
   MicroLabel,
@@ -24,18 +23,18 @@ import {
 import { useIllustrationSequence } from "./use-illustration-sequence";
 
 const CONTEXT_RECORDS = [
+  "Contract MSA-118",
   "Invoice INV-2291",
-  "MSA · clause 7",
-  "Email thread",
+  "Renewal thread",
 ] as const;
 
 const LOG_ENTRIES = [
-  { time: "09:41", text: "Draft prepared", step: 2 },
-  { time: "09:43", text: "Approved by operator", step: 4 },
-  { time: "09:43", text: "Recorded to CRM", step: 5 },
+  { time: "09:41", text: "Draft prepared from 3 records", step: 0 },
+  { time: "09:43", text: "Approved by P. Mishra", step: 2 },
+  { time: "09:43", text: "Recorded to CRM", step: 3 },
 ] as const;
 
-const STEPS = 6;
+const STEPS = 5;
 
 const fade = {
   duration: illustrationTiming.transitionSec,
@@ -44,134 +43,101 @@ const fade = {
 
 export function AppliedAiIllustration() {
   const { active, reduce } = useIllustrationState();
-  const step = useIllustrationSequence({ steps: STEPS, active, reduce });
+  const step = useIllustrationSequence({
+    steps: STEPS,
+    active,
+    reduce,
+    stepMs: 640,
+  });
 
-  const contextGathered = step >= 1;
-  const draftPrepared = step >= 2;
-  const reviewRequired = step >= 3;
-  const approved = step >= 4;
-  const recorded = step >= 5;
+  // 0 draft ready · 1 review required · 2 approved · 3 recorded · 4 settled
+  const reviewRequired = step >= 1;
+  const approved = step >= 2;
+  const recorded = step >= 3;
 
   return (
     <IllustrationStage>
-      <Panel className="flex h-full flex-col gap-2 p-2.5 lg:gap-2.5 lg:p-3.5" elevation="raised">
-        {/* Stage 1 + 2 — context feeding AI preparation */}
+      <Panel
+        className="flex h-full flex-col gap-2 p-2.5 lg:gap-2.5 lg:p-3.5"
+        elevation="raised"
+      >
+        {/* Context feeding the prepared action */}
         <div className="flex min-h-0 shrink-0 items-stretch gap-1.5 lg:gap-2">
-          {/* Relevant context */}
-          <div className="flex w-[38%] shrink-0 flex-col gap-1">
+          <div className="flex w-[36%] shrink-0 flex-col gap-1">
             <MicroLabel>Relevant context</MicroLabel>
             <div className="flex flex-col gap-1">
-              {CONTEXT_RECORDS.map((record, index) => (
-                <motion.div
+              {CONTEXT_RECORDS.map((record) => (
+                <div
                   key={record}
-                  initial={false}
-                  animate={{
-                    opacity: contextGathered ? 1 : 0.45,
-                    x: contextGathered || reduce ? 0 : -2,
-                  }}
-                  transition={{
-                    ...fade,
-                    delay: reduce ? 0 : index * 0.08,
-                  }}
                   className="flex items-center gap-1 px-1.5 py-[5px]"
                   style={{
                     borderRadius: illustrationRadius.chip,
-                    background: contextGathered
-                      ? illustrationColors.surfaceWarm
-                      : illustrationColors.surfaceMuted,
-                    border: `1px solid ${
-                      contextGathered
-                        ? "rgba(201,100,66,0.18)"
-                        : illustrationColors.border
-                    }`,
+                    background: illustrationColors.surfaceWarm,
+                    border: "1px solid rgba(201,100,66,0.18)",
                   }}
                 >
                   <span
                     className="block h-[6px] w-[6px] shrink-0"
                     style={{
                       borderRadius: 1.5,
-                      background: contextGathered
-                        ? illustrationColors.accent
-                        : illustrationColors.wire,
+                      background: illustrationColors.accent,
                     }}
                   />
                   <span
-                    className="truncate text-[7px] leading-none lg:text-[9.5px]"
+                    className="truncate text-[7px] leading-none lg:text-[8.5px]"
                     style={{ color: illustrationColors.inkMuted }}
                   >
                     {record}
                   </span>
-                </motion.div>
+                </div>
               ))}
             </div>
           </div>
 
           <div className="flex shrink-0 items-center pt-3">
-            <ArrowGlyph
-              size={9}
-              color={
-                draftPrepared
-                  ? illustrationColors.accent
-                  : illustrationColors.inkFaint
-              }
-            />
+            <ArrowGlyph size={9} color={illustrationColors.accent} />
           </div>
 
-          {/* AI preparation */}
+          {/* Prepared action — specific from the first frame */}
           <div className="flex min-w-0 flex-1 flex-col gap-1">
             <MicroLabel>Prepared action</MicroLabel>
             <div
-              className="flex flex-1 flex-col justify-center gap-[5px] px-2 py-[7px]"
+              className="flex flex-1 flex-col justify-center gap-[4px] px-2 py-[7px]"
               style={{
                 borderRadius: illustrationRadius.control,
                 background: illustrationColors.surfaceMuted,
                 border: `1px solid ${illustrationColors.border}`,
               }}
             >
-              <AnimatePresence mode="wait" initial={false}>
-                {draftPrepared ? (
-                  <motion.div
-                    key="draft"
-                    initial={reduce ? false : { opacity: 0, y: 3 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={fade}
-                    className="flex flex-col gap-[5px]"
-                  >
-                    <span
-                      className="truncate text-[8px] leading-none font-medium lg:text-[11px]"
-                      style={{ color: illustrationColors.ink }}
-                    >
-                      Renewal quote · ₹4,20,000
-                    </span>
-                    <Bar width="86%" height={2.5} />
-                    <Bar width="62%" height={2.5} />
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="drafting"
-                    initial={false}
-                    exit={reduce ? undefined : { opacity: 0 }}
-                    transition={fade}
-                    className="flex flex-col gap-[5px]"
-                  >
-                    <Bar width="70%" height={2.5} tone="wire" />
-                    <Bar width="52%" height={2.5} tone="wire" />
-                    <Bar width="60%" height={2.5} tone="wire" />
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              <span
+                className="truncate text-[8px] leading-none font-semibold lg:text-[10px]"
+                style={{ color: illustrationColors.ink }}
+              >
+                Renewal quote · ₹4,20,000
+              </span>
+              <span
+                className="truncate text-[6.5px] leading-none lg:text-[8.5px]"
+                style={{ color: illustrationColors.inkMuted }}
+              >
+                14-month term · 8% uplift
+              </span>
+              <span
+                className="truncate text-[6.5px] leading-none lg:text-[8.5px]"
+                style={{ color: illustrationColors.inkFaint }}
+              >
+                Matches clause 7 pricing band
+              </span>
             </div>
           </div>
         </div>
 
-        {/* Stage 3 — explicit human checkpoint */}
+        {/* Explicit human checkpoint with reviewer identity */}
         <div
           className="flex shrink-0 items-center justify-between gap-2 px-2 py-[7px]"
           style={{
             borderRadius: illustrationRadius.control,
-            background: approved
-              ? illustrationColors.surfaceMuted
-              : reviewRequired
+            background:
+              reviewRequired && !approved
                 ? illustrationColors.accentSoft
                 : illustrationColors.surfaceMuted,
             border: `1px solid ${
@@ -184,31 +150,51 @@ export function AppliedAiIllustration() {
         >
           <div className="flex min-w-0 items-center gap-1.5">
             {approved ? (
-              <CheckGlyph size={9} />
+              <span
+                className="flex h-[13px] w-[13px] shrink-0 items-center justify-center text-[6.5px] leading-none font-semibold lg:h-[15px] lg:w-[15px] lg:text-[8px]"
+                style={{
+                  borderRadius: 999,
+                  background: illustrationColors.accentSoft,
+                  border: "1px solid rgba(201,100,66,0.28)",
+                  color: illustrationColors.accent,
+                }}
+              >
+                PM
+              </span>
             ) : (
               <StatusDot tone={reviewRequired ? "accent" : "idle"} />
             )}
             <AnimatePresence mode="wait" initial={false}>
               <motion.span
-                key={approved ? "approved" : reviewRequired ? "review" : "idle"}
+                key={approved ? "approved" : reviewRequired ? "review" : "queued"}
                 initial={reduce ? false : { opacity: 0, y: 2 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={reduce ? undefined : { opacity: 0, y: -2 }}
                 transition={{ duration: 0.2, ease: illustrationEase }}
-                className="truncate text-[8px] leading-none font-medium lg:text-[11px]"
-                style={{
-                  color: approved
-                    ? illustrationColors.ink
-                    : reviewRequired
-                      ? illustrationColors.accent
-                      : illustrationColors.inkFaint,
-                }}
+                className="flex min-w-0 flex-col gap-[2px]"
               >
-                {approved
-                  ? "Approved by operator"
-                  : reviewRequired
-                    ? "Review required"
-                    : "Awaiting draft"}
+                <span
+                  className="truncate text-[8px] leading-none font-semibold lg:text-[9.5px]"
+                  style={{
+                    color: approved
+                      ? illustrationColors.ink
+                      : reviewRequired
+                        ? illustrationColors.accent
+                        : illustrationColors.inkMuted,
+                  }}
+                >
+                  {approved
+                    ? "Approved by P. Mishra"
+                    : reviewRequired
+                      ? "Review required"
+                      : "Queued for review"}
+                </span>
+                <span
+                  className="truncate text-[6.5px] leading-none lg:text-[8px]"
+                  style={{ color: illustrationColors.inkFaint }}
+                >
+                  {approved ? "Ops lead · 09:43" : "Operator sign-off needed"}
+                </span>
               </motion.span>
             </AnimatePresence>
           </div>
@@ -216,6 +202,7 @@ export function AppliedAiIllustration() {
           <div className="flex shrink-0 items-center gap-1">
             {approved ? (
               <Chip tone="quiet" className="px-1">
+                <CheckGlyph size={7} />
                 Signed off
               </Chip>
             ) : (
@@ -225,13 +212,13 @@ export function AppliedAiIllustration() {
                   style={{
                     borderRadius: illustrationRadius.chip,
                     border: `1px solid ${illustrationColors.border}`,
-                    color: illustrationColors.inkFaint,
+                    color: illustrationColors.inkMuted,
                   }}
                 >
                   Decline
                 </span>
                 <span
-                  className="px-1.5 py-[3px] text-[7.5px] leading-none font-medium lg:text-[9.5px]"
+                  className="px-1.5 py-[3px] text-[7.5px] leading-none font-semibold lg:text-[8.5px]"
                   style={{
                     borderRadius: illustrationRadius.chip,
                     background: reviewRequired
@@ -248,10 +235,10 @@ export function AppliedAiIllustration() {
           </div>
         </div>
 
-        {/* Activity log */}
+        {/* Audit log — every row legible, state carried by dot and colour */}
         <div className="flex min-h-0 flex-1 flex-col gap-1">
           <div className="flex items-center justify-between gap-2">
-            <MicroLabel>Activity log</MicroLabel>
+            <MicroLabel>Audit log</MicroLabel>
             <AnimatePresence>
               {recorded ? (
                 <motion.span
@@ -277,36 +264,41 @@ export function AppliedAiIllustration() {
             }}
           >
             {LOG_ENTRIES.map((entry) => {
-              const visible = step >= entry.step;
+              const written = step >= entry.step;
               return (
-                <motion.div
-                  key={entry.text}
-                  initial={false}
-                  animate={{ opacity: visible ? 1 : 0.22 }}
-                  transition={fade}
-                  className="flex items-center gap-1.5"
-                >
+                <div key={entry.text} className="flex items-center gap-1.5">
                   <span
-                    className="shrink-0 text-[7px] leading-none tabular-nums lg:text-[9.5px]"
-                    style={{ color: illustrationColors.inkFaint }}
+                    className="shrink-0 text-[7px] leading-none tabular-nums lg:text-[8.5px]"
+                    style={{
+                      color: written
+                        ? illustrationColors.inkMuted
+                        : illustrationColors.inkFaint,
+                    }}
                   >
-                    {entry.time}
+                    {written ? entry.time : "--:--"}
                   </span>
                   <span
-                    className="block h-[3px] w-[3px] shrink-0 rounded-full"
+                    className="block h-[4px] w-[4px] shrink-0 rounded-full"
                     style={{
-                      background: visible
+                      background: written
                         ? illustrationColors.accent
-                        : illustrationColors.wire,
+                        : "transparent",
+                      border: written
+                        ? "none"
+                        : `1px solid ${illustrationColors.wire}`,
                     }}
                   />
                   <span
-                    className="truncate text-[7.5px] leading-none lg:text-[10px]"
-                    style={{ color: illustrationColors.inkMuted }}
+                    className="truncate text-[7px] leading-none lg:text-[9px]"
+                    style={{
+                      color: written
+                        ? illustrationColors.ink
+                        : illustrationColors.inkFaint,
+                    }}
                   >
                     {entry.text}
                   </span>
-                </motion.div>
+                </div>
               );
             })}
           </div>
