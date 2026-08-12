@@ -125,19 +125,19 @@ export function ServiceIllustrationFrame({
           aria-hidden
           className={cn(
             "object-cover object-center",
-            isDark ? "opacity-[0.30]" : "opacity-[0.22]",
+            isDark ? "opacity-[0.30]" : "opacity-100",
           )}
         />
       ) : null}
 
-      {/* Ivory scrim keeps the scenery as distant atmosphere behind the interface. */}
+      {/* Light scrim only — the painterly scenery stays legible behind the interface. */}
       <div
         aria-hidden
         className="absolute inset-0"
         style={{
           background: isDark
             ? "linear-gradient(165deg, rgba(26,23,21,0.82) 0%, rgba(26,23,21,0.90) 55%, rgba(26,23,21,0.95) 100%)"
-            : "linear-gradient(165deg, rgba(247,247,244,0.86) 0%, rgba(247,247,244,0.93) 52%, rgba(244,243,239,0.97) 100%)",
+            : "linear-gradient(160deg, rgba(247,247,244,0.30) 0%, rgba(247,247,244,0.42) 45%, rgba(244,243,239,0.56) 100%)",
         }}
       />
 
@@ -170,6 +170,6 @@ export function IllustrationStage({
   className?: string;
 }) {
   return (
-    <div className={cn("absolute inset-0 p-4 lg:p-6", className)}>{children}</div>
+    <div className={cn("absolute inset-0 p-4 lg:p-7", className)}>{children}</div>
   );
 }

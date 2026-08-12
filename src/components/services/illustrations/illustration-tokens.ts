@@ -6,6 +6,8 @@
 
 export const illustrationColors = {
   surface: "#FFFFFF",
+  /** Base panel fill — slightly translucent so the scenic backdrop stays present. */
+  surfacePanel: "rgba(255, 255, 255, 0.94)",
   surfaceTranslucent: "rgba(255, 255, 255, 0.88)",
   surfaceMuted: "#F7F7F4",
   surfaceSunk: "#EFEFEA",
