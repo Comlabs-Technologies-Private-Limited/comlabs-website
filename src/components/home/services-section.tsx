@@ -9,6 +9,10 @@ import { useRef } from "react";
 import { SectionHeader } from "@/components/home/section-header";
 import { SectionContainer } from "@/components/layout/section-container";
 import { MOCK_VIEWPORT, ServiceMockup } from "@/components/home/services-mockups";
+import {
+  ServiceIllustrationFrame,
+  serviceIllustrations,
+} from "@/components/services/illustrations";
 import { buildHomeServiceCards, type HomeServiceCard } from "@/lib/canonical-services";
 import { servicesEyebrow, servicesSubtitle, servicesTitle } from "@/lib/page-styles";
 import { cn } from "@/lib/utils";
@@ -47,6 +51,22 @@ function ServiceVisual({
   const reduceMotion = useReducedMotion();
   const inView = useInView(visualRef, MOCK_VIEWPORT);
   const mockupActive = inView;
+
+  // Code-native product illustrations replace the static artwork where available.
+  const illustration = serviceIllustrations[id];
+  if (illustration) {
+    const { Component, label } = illustration;
+    return (
+      <ServiceIllustrationFrame
+        label={label}
+        background={background}
+        priority={index === 0}
+        className={visualClassName}
+      >
+        <Component />
+      </ServiceIllustrationFrame>
+    );
+  }
 
   return (
     <div
