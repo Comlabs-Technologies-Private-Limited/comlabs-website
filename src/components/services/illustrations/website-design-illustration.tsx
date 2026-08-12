@@ -50,7 +50,7 @@ export function WebsiteDesignIllustration() {
     steps: STEPS,
     active,
     reduce,
-    stepMs: 780,
+    stepMs: 1150,
   });
 
   // 0 hero live, cards drafting · 1 cards resolve + guides · 2 mobile syncs · 3 shipped
