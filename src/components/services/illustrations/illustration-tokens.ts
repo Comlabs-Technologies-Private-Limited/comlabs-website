@@ -46,13 +46,13 @@ export const illustrationEase = [0.25, 0.1, 0, 1] as const;
 
 export const illustrationTiming = {
   /** Sequences begin almost immediately so nothing sits in a holding state. */
-  startDelayMs: 160,
-  /** Gap between narrative steps — a six-step story resolves in ~3s. */
-  stepMs: 560,
+  startDelayMs: 200,
+  /** Gap between narrative steps — paced so each change is read before the next. */
+  stepMs: 900,
   /** Standard element transition. */
-  transitionSec: 0.42,
+  transitionSec: 0.5,
   /** Faster feedback transition for toggles and status flips. */
-  feedbackSec: 0.24,
+  feedbackSec: 0.3,
 } as const;
 
 /** Viewport trigger shared by every illustration frame. */

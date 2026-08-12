@@ -47,7 +47,7 @@ export function AppliedAiIllustration() {
     steps: STEPS,
     active,
     reduce,
-    stepMs: 640,
+    stepMs: 1000,
   });
 
   // 0 draft ready · 1 review required · 2 approved · 3 recorded · 4 settled

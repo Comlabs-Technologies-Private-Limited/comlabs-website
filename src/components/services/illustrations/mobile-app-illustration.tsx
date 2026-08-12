@@ -253,7 +253,7 @@ function PhoneShell({
 function StatusBar({ compact = false }: { compact?: boolean }) {
   return (
     <div
-      className="relative flex h-[14px] shrink-0 items-center justify-between px-2.5 lg:h-[16px]"
+      className="relative flex h-[14px] shrink-0 items-center justify-between pr-2.5 pl-4 lg:h-[16px] lg:pl-[18px]"
       style={{ background: illustrationColors.surface }}
     >
       <span
