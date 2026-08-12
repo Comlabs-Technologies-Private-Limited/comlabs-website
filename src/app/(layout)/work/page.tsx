@@ -61,7 +61,7 @@ export default function WorkIndexPage() {
                   Recent <MarketingOrangeHighlight>projects</MarketingOrangeHighlight>.
                 </>
               }
-              description="Explore case studies across website projects, product onboarding, and brand-led marketing sites."
+              description="Explore selected work across digital products, conversion-focused websites, product onboarding and brand-led digital experiences."
             />
             <MarketingWorkGrid />
           </div>

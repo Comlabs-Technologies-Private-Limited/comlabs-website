@@ -5,10 +5,16 @@ dotenv.config();
 
 import { formialLabsCaseStudy } from "@/lib/case-studies/formial-labs";
 import { globalServicesCaseStudy } from "@/lib/case-studies/global-services";
+import { radiantCaseStudy } from "@/lib/case-studies/radiant";
 import { vithubCaseStudy } from "@/lib/case-studies/vithub";
 import { getPrisma } from "@/lib/prisma";
 
-const STATIC_CASE_STUDIES = [formialLabsCaseStudy, globalServicesCaseStudy, vithubCaseStudy];
+const STATIC_CASE_STUDIES = [
+  radiantCaseStudy,
+  formialLabsCaseStudy,
+  globalServicesCaseStudy,
+  vithubCaseStudy,
+];
 
 async function main() {
   if (!process.env.MONGODB_URI) {
@@ -41,8 +47,8 @@ async function main() {
         leadImage: caseStudy.leadImage,
         sections: caseStudy.sections,
         status: "published",
-        metaTitle: `${caseStudy.client} — Case Study`,
-        metaDescription: caseStudy.standfirst,
+        metaTitle: caseStudy.metaTitle ?? `${caseStudy.client} — Case Study`,
+        metaDescription: caseStudy.metaDescription ?? caseStudy.standfirst,
       },
     });
     console.log(`Seeded case study: ${caseStudy.slug}`);

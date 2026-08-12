@@ -13,11 +13,11 @@ type MarketingWorkGridProps = {
 
 export function MarketingWorkGrid({ showLiveSite = true }: MarketingWorkGridProps) {
   return (
-    <div className="mx-auto grid max-w-6xl gap-5 md:grid-cols-2 md:gap-6 lg:grid-cols-3">
+    <div className="mx-auto grid max-w-6xl gap-5 md:grid-cols-2 md:gap-6">
       {PROJECTS.map((project, index) => (
-        <MarketingFadeIn key={project.href} delay={index * 0.06}>
-          <article className="group overflow-hidden rounded-3xl border border-border bg-card transition-all duration-300 hover:border-foreground/20 hover:shadow-[0_8px_32px_rgba(28,25,23,0.06)]">
-            <Link href={canonicalPath(project.href)} className="block">
+        <MarketingFadeIn key={project.href} delay={index * 0.06} className="h-full">
+          <article className="group flex h-full flex-col overflow-hidden rounded-3xl border border-border bg-card transition-all duration-300 hover:border-foreground/20 hover:shadow-[0_8px_32px_rgba(28,25,23,0.06)]">
+            <Link href={canonicalPath(project.href)} className="block flex-1">
               <div
                 className="relative flex aspect-video items-center justify-center"
                 style={{ backgroundColor: "#FDF5E8" }}
@@ -44,7 +44,7 @@ export function MarketingWorkGrid({ showLiveSite = true }: MarketingWorkGridProp
               </div>
             </Link>
             {showLiveSite && "liveSiteUrl" in project && project.liveSiteUrl ? (
-              <div className="border-t border-border px-6 py-3">
+              <div className="mt-auto border-t border-border px-6 py-3">
                 <a
                   href={project.liveSiteUrl}
                   target="_blank"
@@ -68,7 +68,7 @@ type MarketingProjectCardsProps = {
 
 export function MarketingProjectCards({ compact }: MarketingProjectCardsProps) {
   return (
-    <div className="grid gap-4 md:grid-cols-3">
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       {PROJECTS.map((project, index) => (
         <MarketingFadeIn key={project.href} delay={index * 0.06}>
           <Link

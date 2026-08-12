@@ -25,21 +25,30 @@ function changeFrequencyForPath(
   return "monthly";
 }
 
+function caseStudyFallbackEntries(exclude: Set<string> = new Set()): MetadataRoute.Sitemap {
+  return CASE_STUDY_ORDER.filter((slug) => !exclude.has(slug)).map((slug) => ({
+    url: canonicalUrl(`/work/${slug}`),
+    changeFrequency: "monthly" as const,
+    priority: 0.8,
+  }));
+}
+
 async function getCaseStudyEntries(): Promise<MetadataRoute.Sitemap> {
   try {
     const caseStudies = await listCaseStudies({ status: "published" });
-    return caseStudies.map((study) => ({
+    const entries = caseStudies.map((study) => ({
       url: canonicalUrl(`/work/${study.slug}`),
       lastModified: new Date(study.updatedAt),
       changeFrequency: "monthly" as const,
       priority: 0.8,
     }));
+    // Statically authored case studies are listed even before they are seeded.
+    return [
+      ...entries,
+      ...caseStudyFallbackEntries(new Set(caseStudies.map((study) => study.slug))),
+    ];
   } catch {
-    return CASE_STUDY_ORDER.map((slug) => ({
-      url: canonicalUrl(`/work/${slug}`),
-      changeFrequency: "monthly" as const,
-      priority: 0.8,
-    }));
+    return caseStudyFallbackEntries();
   }
 }
 

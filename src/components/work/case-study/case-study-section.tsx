@@ -5,6 +5,8 @@ import { MarketingFadeIn } from "@/components/marketing/marketing-motion";
 import { CaseStudyMedia } from "./case-study-media";
 import { CaseStudyOutcomeRows } from "./case-study-outcome-rows";
 import { CaseStudyPrinciples } from "./case-study-principles";
+import { CaseStudySequence } from "./case-study-sequence";
+import { CaseStudySpecs } from "./case-study-specs";
 import { CaseStudyTransformation } from "./case-study-transformation";
 
 type CaseStudySectionProps = {
@@ -44,8 +46,11 @@ export function CaseStudySection({ section }: CaseStudySectionProps) {
   const {
     number,
     title,
+    lede,
     paragraphs,
     principles,
+    sequence,
+    specs,
     subsections,
     media,
     transformation,
@@ -62,6 +67,15 @@ export function CaseStudySection({ section }: CaseStudySectionProps) {
           </h2>
         </div>
 
+        {lede ? (
+          <p
+            className="mb-8 max-w-[36rem] text-2xl leading-[1.15] font-medium tracking-tight text-foreground md:text-[2rem]"
+            style={{ letterSpacing: "-0.03em" }}
+          >
+            {lede}
+          </p>
+        ) : null}
+
         {paragraphs?.map((paragraph) => (
           <p
             key={paragraph}
@@ -71,7 +85,11 @@ export function CaseStudySection({ section }: CaseStudySectionProps) {
           </p>
         ))}
 
+        {sequence ? <CaseStudySequence steps={sequence} /> : null}
+
         {principles ? <CaseStudyPrinciples principles={principles} /> : null}
+
+        {specs ? <CaseStudySpecs specs={specs} /> : null}
 
         {subsections?.map((subsection) => (
           <div key={subsection.title} className="mt-12 md:mt-16">

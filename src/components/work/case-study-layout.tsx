@@ -4,7 +4,9 @@ import { FigmaFooter } from "@/components/layout/figma-footer";
 import { FigmaNav } from "@/components/layout/figma-nav";
 import {
   type CaseStudyContent,
+  type CaseStudyServiceLink,
   type CaseStudySlug,
+  CASE_STUDY_EXTRAS,
   CASE_STUDY_ORDER,
   getNextCaseStudy,
   RELATED_SERVICE_BY_SLUG,
@@ -25,7 +27,13 @@ export function CaseStudyLayout({ content }: { content: CaseStudyContent }) {
   const isKnownSlug = CASE_STUDY_ORDER.includes(slug as CaseStudySlug);
   const slugKey = slug as CaseStudySlug;
   const relatedService = isKnownSlug ? RELATED_SERVICE_BY_SLUG[slugKey] : undefined;
+  const relatedServices: CaseStudyServiceLink[] = relatedService
+    ? Array.isArray(relatedService)
+      ? relatedService
+      : [relatedService]
+    : [];
   const nextCaseStudy = isKnownSlug ? getNextCaseStudy(slugKey) : null;
+  const extras = isKnownSlug ? CASE_STUDY_EXTRAS[slugKey] : undefined;
 
   return (
     <div
@@ -36,10 +44,13 @@ export function CaseStudyLayout({ content }: { content: CaseStudyContent }) {
 
       <main>
         <CaseStudyHero
+          slug={slug}
           client={client}
           year={year}
           headline={headline}
           standfirst={standfirst}
+          eyebrow={extras?.eyebrow}
+          liveSite={extras?.liveSite}
         />
 
         <div className="border-t border-border px-6 pb-8 md:pb-12">
@@ -64,12 +75,8 @@ export function CaseStudyLayout({ content }: { content: CaseStudyContent }) {
           </div>
         </div>
 
-        {relatedService ? (
-          <RelatedService
-            label={relatedService.label}
-            href={relatedService.href}
-            description={relatedService.description}
-          />
+        {relatedServices.length > 0 ? (
+          <RelatedService services={relatedServices} />
         ) : null}
 
         {nextCaseStudy ? (
@@ -81,7 +88,12 @@ export function CaseStudyLayout({ content }: { content: CaseStudyContent }) {
           />
         ) : null}
 
-        <CaseStudyCta />
+        <CaseStudyCta
+          heading={extras?.cta?.heading}
+          body={extras?.cta?.body}
+          primaryLabel={extras?.cta?.primaryLabel}
+          secondary={extras?.cta?.secondary}
+        />
       </main>
 
       <FigmaFooter />
