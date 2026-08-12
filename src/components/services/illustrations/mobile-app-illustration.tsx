@@ -37,6 +37,35 @@ const fade = {
   ease: illustrationEase,
 };
 
+const BEZEL = "#231F1D";
+
+/** Slim hardware button on the phone edge. */
+function SideButton({
+  side,
+  top,
+  height,
+}: {
+  side: "left" | "right";
+  top: string;
+  height: number;
+}) {
+  return (
+    <span
+      aria-hidden
+      className="absolute block"
+      style={{
+        [side]: -1,
+        top,
+        width: 1.5,
+        height,
+        background: "#453E3A",
+        borderRadius: side === "left" ? "2px 0 0 2px" : "0 2px 2px 0",
+      }}
+    />
+  );
+}
+
+/** Sleek iPhone frame: thin titanium bezel, Dynamic Island, home indicator. */
 function PhoneShell({
   children,
   className,
@@ -48,24 +77,56 @@ function PhoneShell({
 }) {
   return (
     <div
-      className={className}
+      className={`relative ${className ?? ""}`}
       style={{
-        borderRadius: 18,
-        background: illustrationColors.surface,
-        border: `1px solid ${illustrationColors.borderStrong}`,
+        borderRadius: 24,
+        background: `linear-gradient(155deg, #4A423E 0%, ${BEZEL} 38%, ${BEZEL} 68%, #443C38 100%)`,
         boxShadow: illustrationShadow.raised,
-        padding: 4,
+        padding: 3,
         ...style,
       }}
     >
+      <SideButton side="left" top="24%" height={9} />
+      <SideButton side="left" top="35%" height={9} />
+      <SideButton side="right" top="29%" height={13} />
+
       <div
         className="relative flex h-full w-full flex-col overflow-hidden"
         style={{
-          borderRadius: 14,
+          borderRadius: 21,
           background: illustrationColors.surfaceMuted,
         }}
       >
+        {/* Status bar reserving space for the Dynamic Island */}
+        <div
+          className="relative flex h-[13px] shrink-0 items-center justify-center"
+          style={{ background: illustrationColors.surface }}
+        >
+          <span
+            aria-hidden
+            className="block"
+            style={{
+              width: 24,
+              height: 6.5,
+              borderRadius: 999,
+              background: BEZEL,
+            }}
+          />
+        </div>
+
         {children}
+
+        {/* Home indicator floats above sheets, as it does on iOS */}
+        <span
+          aria-hidden
+          className="pointer-events-none absolute bottom-[3px] left-1/2 z-30 block -translate-x-1/2"
+          style={{
+            width: 30,
+            height: 2,
+            borderRadius: 999,
+            background: "rgba(28,25,23,0.28)",
+          }}
+        />
       </div>
     </div>
   );
@@ -85,7 +146,7 @@ export function MobileAppIllustration() {
     <IllustrationStage>
       <div className="relative flex h-full items-stretch justify-center">
         {/* Primary phone */}
-        <PhoneShell className="relative z-10 h-full w-[124px] shrink-0 lg:w-[150px]">
+        <PhoneShell className="relative z-10 h-full w-[128px] shrink-0 lg:w-[156px]">
           {/* App bar */}
           <div
             className="flex items-center justify-between gap-1 border-b px-2 py-[7px]"
@@ -193,7 +254,7 @@ export function MobileAppIllustration() {
 
           {/* Bottom navigation */}
           <div
-            className="flex items-center justify-around border-t px-2 py-[6px]"
+            className="flex items-center justify-around border-t px-2 pt-[6px] pb-[10px]"
             style={{
               borderColor: illustrationColors.border,
               background: illustrationColors.surface,
@@ -225,7 +286,7 @@ export function MobileAppIllustration() {
                 animate={{ y: 0 }}
                 exit={reduce ? undefined : { y: "100%" }}
                 transition={{ duration: 0.34, ease: illustrationEase }}
-                className="absolute inset-x-0 bottom-0 flex flex-col gap-1.5 p-2"
+                className="absolute inset-x-0 bottom-0 flex flex-col gap-1.5 p-2 pb-[11px]"
                 style={{
                   borderTopLeftRadius: 12,
                   borderTopRightRadius: 12,
@@ -308,14 +369,14 @@ export function MobileAppIllustration() {
           </AnimatePresence>
         </PhoneShell>
 
-        {/* Secondary phone — tucked behind the primary for depth, desktop only */}
+        {/* Secondary phone — tucked behind the primary for depth */}
         <PhoneShell
-          className="relative -ml-5 hidden h-[88%] w-[142px] shrink-0 self-center lg:block"
+          className="relative -ml-4 h-[88%] w-[112px] shrink-0 self-center lg:-ml-6 lg:w-[138px]"
           style={{ opacity: 0.94, zIndex: 0 }}
         >
           {/* Inset from the left so the overlap with the primary phone never hides content. */}
           <div
-            className="flex items-center justify-between border-b py-[7px] pr-2 pl-6"
+            className="flex items-center justify-between border-b py-[7px] pr-2 pl-5 lg:pl-7"
             style={{
               borderColor: illustrationColors.border,
               background: illustrationColors.surface,
@@ -328,7 +389,7 @@ export function MobileAppIllustration() {
               Job detail
             </span>
           </div>
-          <div className="flex flex-1 flex-col gap-2 py-2 pr-2 pl-6">
+          <div className="flex flex-1 flex-col gap-2 pt-2 pr-2 pb-3 pl-5 lg:pl-7">
             <span
               className="block w-full"
               style={{
