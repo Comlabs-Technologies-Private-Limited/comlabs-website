@@ -18,7 +18,6 @@ import { useIllustrationSequence } from "./use-illustration-sequence";
 /* Device tokens                                                              */
 /* -------------------------------------------------------------------------- */
 
-/** Graphite rather than pure black — reads as titanium against warm ivory. */
 const GRAPHITE = "#332E2B";
 const GRAPHITE_EDGE = "#4E4642";
 
@@ -33,36 +32,19 @@ const fade = {
 /* Content                                                                    */
 /* -------------------------------------------------------------------------- */
 
-type JobStatus = "completed" | "next" | "scheduled" | "active";
-
-const JOBS = [
-  {
-    area: "Baner",
-    task: "Router installation",
-    time: "10:30 AM",
-    status: "completed" as JobStatus,
-  },
-  {
-    area: "Hinjawadi Phase 2",
-    task: "Service visit",
-    time: "12:00 PM",
-    status: "next" as JobStatus,
-  },
-  {
-    area: "Kharadi",
-    task: "Site survey",
-    time: "3:45 PM",
-    status: "scheduled" as JobStatus,
-  },
+const TASKS = [
+  { title: "Review homepage", label: "9:00 AM" },
+  { title: "Review mobile flow", label: "Next" },
+  { title: "Client feedback", label: "2:00 PM" },
 ] as const;
 
 const CHECKLIST = [
-  "Verify line signal",
-  "Replace ONT unit",
-  "Customer sign-off",
+  "Review wireframes",
+  "Check navigation",
+  "Confirm copy",
 ] as const;
 
-const NAV_ITEMS = ["Today", "Jobs", "Map", "Profile"] as const;
+const NAV_ITEMS = ["Today", "Projects", "Profile"] as const;
 
 /* -------------------------------------------------------------------------- */
 /* Icons                                                                      */
@@ -137,37 +119,8 @@ function IconBattery({ size = 12, color = GRAPHITE }: IconProps) {
   );
 }
 
-function IconClock({ size = 8, color = illustrationColors.inkFaint }: IconProps) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 12 12" fill="none" aria-hidden>
-      <circle cx="6" cy="6" r="4.4" stroke={color} strokeWidth="1.1" />
-      <path
-        d="M6 3.6V6l1.7 1"
-        stroke={color}
-        strokeWidth="1.1"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-function IconPin({ size = 8, color = illustrationColors.inkFaint }: IconProps) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 12 12" fill="none" aria-hidden>
-      <path
-        d="M6 10.5s3.4-3 3.4-5.4a3.4 3.4 0 1 0-6.8 0C2.6 7.5 6 10.5 6 10.5Z"
-        stroke={color}
-        strokeWidth="1.1"
-        strokeLinejoin="round"
-      />
-      <circle cx="6" cy="5" r="1.15" fill={color} />
-    </svg>
-  );
-}
-
 function IconChevronLeft({
-  size = 9,
+  size = 10,
   color = illustrationColors.ink,
 }: IconProps) {
   return (
@@ -197,54 +150,22 @@ function IconTick({ size = 8, color = illustrationColors.surface }: IconProps) {
   );
 }
 
-function IconDownload({
-  size = 8,
-  color = illustrationColors.inkFaint,
-}: IconProps) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 12 12" fill="none" aria-hidden>
-      <path
-        d="M6 2v5m0 0L4 5m2 2 2-2M2.6 9.4h6.8"
-        stroke={color}
-        strokeWidth="1.1"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-function IconNavigate({ size = 8, color = illustrationColors.ink }: IconProps) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 12 12" fill="none" aria-hidden>
-      <path
-        d="M10 2 2 5.4l3.3 1.3L6.6 10 10 2Z"
-        stroke={color}
-        strokeWidth="1.1"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-/** Bottom-navigation glyphs — filled when active. */
 function NavGlyph({ index, active }: { index: number; active: boolean }) {
   const color = active ? illustrationColors.accent : illustrationColors.inkFaint;
   const paths = [
     "M2 5.6 6 2.4l4 3.2V10H2V5.6Z",
     "M2.6 3.2h6.8M2.6 6h6.8M2.6 8.8h4.4",
-    "M4.4 2.6 1.8 3.8v5.6l2.6-1.2 3.2 1.2 2.6-1.2V2.6L7.6 3.8 4.4 2.6Z",
     "M6 5.9a1.9 1.9 0 1 0 0-3.8 1.9 1.9 0 0 0 0 3.8ZM2.4 10c.5-1.8 1.9-2.7 3.6-2.7S9.1 8.2 9.6 10",
   ];
   return (
-    <svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden>
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
       <path
         d={paths[index]}
         stroke={color}
         strokeWidth="1.15"
         strokeLinecap="round"
         strokeLinejoin="round"
-        fill={active && index === 0 ? "rgba(201,100,66,0.16)" : "none"}
+        fill={active && index === 0 ? "rgba(201,100,66,0.14)" : "none"}
       />
     </svg>
   );
@@ -268,9 +189,9 @@ function SideButton({
       aria-hidden
       className="absolute block"
       style={{
-        [side]: -1,
+        [side]: -0.75,
         top,
-        width: 1.5,
+        width: 1.25,
         height,
         background: GRAPHITE_EDGE,
         borderRadius: side === "left" ? "2px 0 0 2px" : "0 2px 2px 0",
@@ -279,7 +200,6 @@ function SideButton({
   );
 }
 
-/** Slim graphite iPhone frame with Dynamic Island and home indicator. */
 function PhoneShell({
   children,
   className,
@@ -295,34 +215,34 @@ function PhoneShell({
     <div
       className={`relative ${className ?? ""}`}
       style={{
-        borderRadius: compact ? 20 : 23,
-        background: `linear-gradient(155deg, ${GRAPHITE_EDGE} 0%, ${GRAPHITE} 34%, ${GRAPHITE} 70%, #443C38 100%)`,
+        borderRadius: compact ? 19 : 22,
+        background: `linear-gradient(155deg, ${GRAPHITE_EDGE} 0%, ${GRAPHITE} 40%, ${GRAPHITE} 100%)`,
         boxShadow:
-          "0 1px 2px rgba(28,25,23,0.10), 0 16px 34px -18px rgba(28,25,23,0.40)",
-        padding: 1.75,
+          "0 1px 2px rgba(28,25,23,0.08), 0 14px 30px -16px rgba(28,25,23,0.36)",
+        padding: 1.5,
         ...style,
       }}
     >
-      <SideButton side="left" top="25%" height={8} />
-      <SideButton side="left" top="35%" height={8} />
-      <SideButton side="right" top="29%" height={12} />
+      <SideButton side="left" top="26%" height={7} />
+      <SideButton side="left" top="36%" height={7} />
+      <SideButton side="right" top="30%" height={11} />
 
       <div
         className="relative flex h-full w-full flex-col overflow-hidden"
         style={{
-          borderRadius: compact ? 18.5 : 21.5,
+          borderRadius: compact ? 17.5 : 20.5,
           background: illustrationColors.surface,
         }}
       >
         {children}
         <span
           aria-hidden
-          className="pointer-events-none absolute bottom-[2.5px] left-1/2 z-30 block -translate-x-1/2"
+          className="pointer-events-none absolute bottom-[3px] left-1/2 z-30 block -translate-x-1/2"
           style={{
-            width: compact ? 24 : 30,
+            width: compact ? 22 : 28,
             height: 2,
             borderRadius: 999,
-            background: "rgba(28,25,23,0.26)",
+            background: "rgba(28,25,23,0.22)",
           }}
         />
       </div>
@@ -330,15 +250,14 @@ function PhoneShell({
   );
 }
 
-/** iOS status bar: time, then signal / Wi-Fi / battery around the island. */
 function StatusBar({ compact = false }: { compact?: boolean }) {
   return (
     <div
-      className="relative flex h-[13px] shrink-0 items-center justify-between px-2 lg:h-[15px]"
+      className="relative flex h-[14px] shrink-0 items-center justify-between px-2.5 lg:h-[16px]"
       style={{ background: illustrationColors.surface }}
     >
       <span
-        className="text-[6px] leading-none font-semibold lg:text-[7px]"
+        className="text-[7px] leading-none font-semibold lg:text-[8px]"
         style={{ color: GRAPHITE }}
       >
         9:41
@@ -348,8 +267,8 @@ function StatusBar({ compact = false }: { compact?: boolean }) {
         aria-hidden
         className="absolute left-1/2 block -translate-x-1/2"
         style={{
-          width: compact ? 20 : 24,
-          height: compact ? 5.5 : 6.5,
+          width: compact ? 18 : 22,
+          height: compact ? 5 : 6,
           borderRadius: 999,
           background: GRAPHITE,
         }}
@@ -358,7 +277,7 @@ function StatusBar({ compact = false }: { compact?: boolean }) {
       {compact ? (
         <IconBattery size={10} />
       ) : (
-        <span className="flex items-center gap-[2.5px]">
+        <span className="flex items-center gap-[3px]">
           <IconSignal size={7} />
           <IconWifi size={7} />
           <IconBattery size={11} />
@@ -369,282 +288,118 @@ function StatusBar({ compact = false }: { compact?: boolean }) {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Front phone — today's schedule                                             */
+/* Front phone — Today                                                        */
 /* -------------------------------------------------------------------------- */
 
-function statusLabel(status: JobStatus): string {
-  if (status === "completed") return "Completed";
-  if (status === "active") return "In progress";
-  if (status === "next") return "Next";
-  return "Scheduled";
-}
-
-function JobCard({
-  job,
-  status,
-  emphasised,
-  reduce,
+function TaskCard({
+  title,
+  label,
+  selected,
 }: {
-  job: (typeof JOBS)[number];
-  status: JobStatus;
-  emphasised: boolean;
-  reduce: boolean;
+  title: string;
+  label: string;
+  selected: boolean;
 }) {
-  const done = status === "completed";
-  const live = status === "active";
-
   return (
-    <motion.div
-      initial={false}
-      animate={{ scale: live && !reduce ? 1 : 1 }}
-      transition={fade}
-      className="flex items-start gap-1.5 px-1.5 py-[7px] lg:gap-2 lg:px-2 lg:py-[10px]"
+    <div
+      className="flex items-center justify-between gap-2 px-2.5 py-3 lg:px-3 lg:py-3.5"
       style={{
-        borderRadius: 8,
-        background: emphasised
-          ? "rgba(201,100,66,0.07)"
-          : illustrationColors.surface,
+        borderRadius: 9,
+        background: selected ? "rgba(201,100,66,0.06)" : illustrationColors.surface,
         border: `1px solid ${
-          emphasised ? "rgba(201,100,66,0.30)" : "rgba(28,25,23,0.09)"
+          selected ? "rgba(201,100,66,0.26)" : "rgba(28,25,23,0.09)"
         }`,
         transition: "background 380ms ease, border-color 380ms ease",
       }}
     >
-      {/* Status marker doubles as the job-type indicator */}
       <span
-        className="mt-[1px] flex h-[13px] w-[13px] shrink-0 items-center justify-center lg:h-[15px] lg:w-[15px]"
+        className="min-w-0 truncate text-[8.5px] leading-none font-medium lg:text-[10px]"
+        style={{ color: illustrationColors.ink }}
+      >
+        {title}
+      </span>
+      <span
+        className="shrink-0 text-[7.5px] leading-none lg:text-[8.5px]"
         style={{
-          borderRadius: 999,
-          background: done
-            ? illustrationColors.accent
-            : live
-              ? "rgba(201,100,66,0.14)"
-              : illustrationColors.surfaceSunk,
-          border: `1px solid ${
-            done
-              ? illustrationColors.accent
-              : live
-                ? "rgba(201,100,66,0.42)"
-                : "rgba(28,25,23,0.12)"
-          }`,
+          color: selected ? illustrationColors.accent : illustrationColors.inkFaint,
+          fontWeight: selected ? 500 : 400,
         }}
       >
-        {done ? (
-          <IconTick size={7} />
-        ) : live ? (
-          <span
-            className="block h-[4px] w-[4px] rounded-full"
-            style={{ background: illustrationColors.accent }}
-          />
-        ) : (
-          <span
-            className="block h-[3.5px] w-[3.5px] rounded-full"
-            style={{ background: illustrationColors.inkFaint }}
-          />
-        )}
+        {label}
       </span>
-
-      <span className="flex min-w-0 flex-1 flex-col gap-[2px]">
-        <span className="flex items-baseline justify-between gap-1">
-          <span
-            className="truncate text-[7.5px] leading-none font-semibold lg:text-[8.5px]"
-            style={{
-              color: done ? illustrationColors.inkMuted : illustrationColors.ink,
-            }}
-          >
-            {job.area}
-          </span>
-          <span
-            className="shrink-0 text-[6.5px] leading-none font-medium tabular-nums lg:text-[7.5px]"
-            style={{
-              color: live
-                ? illustrationColors.accent
-                : illustrationColors.inkFaint,
-            }}
-          >
-            {job.time}
-          </span>
-        </span>
-        <span className="flex items-center gap-[3px]">
-          <span
-            className="truncate text-[6.5px] leading-none lg:text-[7.5px]"
-            style={{ color: illustrationColors.inkFaint }}
-          >
-            {job.task}
-          </span>
-        </span>
-        <span
-          className="mt-[1px] text-[6px] leading-none font-medium tracking-[0.06em] uppercase lg:text-[7px]"
-          style={{
-            color: done
-              ? illustrationColors.inkFaint
-              : live
-                ? illustrationColors.accent
-                : illustrationColors.inkFaint,
-          }}
-        >
-          {statusLabel(status)}
-        </span>
-      </span>
-    </motion.div>
+    </div>
   );
 }
 
 function FrontPhoneScreen({
-  activeJob,
-  syncedNow,
+  selectedTask,
   toastVisible,
   reduce,
 }: {
-  activeJob: boolean;
-  syncedNow: boolean;
+  selectedTask: boolean;
   toastVisible: boolean;
   reduce: boolean;
 }) {
-  const completedCount = activeJob ? 2 : 2;
-
   return (
     <>
       <StatusBar />
 
-      {/* App identity + sync state */}
-      <div className="flex shrink-0 items-center gap-1.5 px-2 pt-[3px] pb-[5px] lg:px-2.5">
+      {/* App mark + section */}
+      <div className="flex shrink-0 items-center gap-2 px-3 pt-2 pb-3 lg:px-3.5 lg:pt-2.5 lg:pb-4">
         <span
-          className="flex h-[13px] w-[13px] shrink-0 items-center justify-center lg:h-[15px] lg:w-[15px]"
+          className="flex h-[15px] w-[15px] shrink-0 items-center justify-center lg:h-[17px] lg:w-[17px]"
           style={{
             borderRadius: 5,
             background: illustrationColors.accent,
           }}
         >
           <span
-            className="block h-[5px] w-[5px] lg:h-[6px] lg:w-[6px]"
+            className="block h-[6px] w-[6px] lg:h-[7px] lg:w-[7px]"
             style={{
-              borderRadius: 1.5,
+              borderRadius: 2,
               background: illustrationColors.surface,
             }}
           />
         </span>
         <span
-          className="text-[7.5px] leading-none font-semibold lg:text-[8.5px]"
+          className="text-[9px] leading-none font-medium lg:text-[10.5px]"
           style={{ color: illustrationColors.ink }}
         >
-          Field
-        </span>
-
-        <span className="ml-auto flex items-center gap-[3px]">
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.span
-              key={syncedNow ? "now" : "ago"}
-              initial={reduce ? false : { opacity: 0, y: 2 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={reduce ? undefined : { opacity: 0, y: -2 }}
-              transition={{ duration: 0.2, ease: illustrationEase }}
-              className="text-[6px] leading-none lg:text-[7px]"
-              style={{
-                color: syncedNow
-                  ? illustrationColors.accent
-                  : illustrationColors.inkFaint,
-              }}
-            >
-              {syncedNow ? "Synced just now" : "Synced 4m ago"}
-            </motion.span>
-          </AnimatePresence>
-          <span
-            className="block h-[3px] w-[3px] rounded-full"
-            style={{
-              background: syncedNow
-                ? illustrationColors.accent
-                : illustrationColors.inkFaint,
-            }}
-          />
+          Today
         </span>
       </div>
 
-      {/* Greeting */}
-      <div className="flex shrink-0 items-center gap-1.5 px-2 pb-[7px] lg:px-2.5 lg:pb-[10px]">
-        <span className="flex min-w-0 flex-1 flex-col gap-[2px]">
-          <span
-            className="truncate text-[8px] leading-none font-semibold lg:text-[9.5px]"
-            style={{ color: illustrationColors.ink }}
-          >
-            Good morning, Arjun
-          </span>
-          <span
-            className="truncate text-[6px] leading-none lg:text-[7.5px]"
-            style={{ color: illustrationColors.inkFaint }}
-          >
-            Tuesday, 12 August
-          </span>
-        </span>
-        {/* Technician avatar */}
+      {/* Greeting + progress */}
+      <div className="flex shrink-0 flex-col gap-2 px-3 pb-4 lg:gap-2.5 lg:px-3.5 lg:pb-5">
         <span
-          className="flex h-[16px] w-[16px] shrink-0 items-center justify-center text-[6px] leading-none font-semibold lg:h-[19px] lg:w-[19px] lg:text-[7.5px]"
-          style={{
-            borderRadius: 999,
-            background: illustrationColors.surfaceWarm,
-            border: "1px solid rgba(28,25,23,0.10)",
-            color: illustrationColors.inkMuted,
-          }}
+          className="text-[10px] leading-none font-medium lg:text-[11.5px]"
+          style={{ color: illustrationColors.ink }}
         >
-          AR
-        </span>
-      </div>
-
-      {/* Progress summary */}
-      <div className="flex shrink-0 flex-col gap-[5px] px-2 pb-[9px] lg:px-2.5 lg:pb-[12px]">
-        <span className="flex items-baseline justify-between gap-1">
-          <span
-            className="text-[6.5px] leading-none lg:text-[7.5px]"
-            style={{ color: illustrationColors.inkMuted }}
-          >
-            {completedCount} of 4 jobs completed
-          </span>
-          <span
-            className="text-[6.5px] leading-none font-semibold tabular-nums lg:text-[7.5px]"
-            style={{ color: illustrationColors.ink }}
-          >
-            50%
-          </span>
+          Good morning, Arjun
         </span>
         <span
-          className="relative block h-[3px] overflow-hidden"
-          style={{
-            borderRadius: 999,
-            background: illustrationColors.surfaceSunk,
-          }}
+          className="text-[8px] leading-none lg:text-[9px]"
+          style={{ color: illustrationColors.inkMuted }}
         >
-          <motion.span
-            className="absolute inset-y-0 left-0 block w-full origin-left"
-            style={{ borderRadius: 999, background: illustrationColors.accent }}
-            initial={false}
-            animate={{ scaleX: 0.5 }}
-            transition={
-              reduce ? { duration: 0 } : { duration: 0.7, ease: illustrationEase }
-            }
-          />
+          2 of 4 tasks complete
         </span>
       </div>
 
-      {/* Job list */}
-      <div className="flex min-h-0 flex-1 flex-col gap-[6px] px-2 lg:gap-[9px] lg:px-2.5">
-        {JOBS.map((job, index) => {
-          const status: JobStatus =
-            index === 1 && activeJob ? "active" : job.status;
-          return (
-            <JobCard
-              key={job.area}
-              job={job}
-              status={status}
-              emphasised={index === 1 && activeJob}
-              reduce={reduce}
-            />
-          );
-        })}
+      {/* Task cards */}
+      <div className="flex min-h-0 flex-1 flex-col gap-2.5 px-3 lg:gap-3 lg:px-3.5">
+        {TASKS.map((task, index) => (
+          <TaskCard
+            key={task.title}
+            title={task.title}
+            label={task.label}
+            selected={index === 1 && selectedTask}
+          />
+        ))}
       </div>
 
       {/* Bottom navigation */}
       <div
-        className="mt-auto flex shrink-0 items-start justify-around border-t px-1 pt-[5px] pb-[9px] lg:pt-[6px] lg:pb-[10px]"
+        className="mt-auto flex shrink-0 items-start justify-around border-t px-2 pt-2.5 pb-[10px] lg:pt-3 lg:pb-[11px]"
         style={{
           borderColor: "rgba(28,25,23,0.08)",
           background: illustrationColors.surface,
@@ -653,15 +408,15 @@ function FrontPhoneScreen({
         {NAV_ITEMS.map((item, index) => {
           const active = index === 0;
           return (
-            <span key={item} className="flex flex-col items-center gap-[2px]">
+            <span key={item} className="flex flex-col items-center gap-1">
               <NavGlyph index={index} active={active} />
               <span
-                className="text-[6px] leading-none lg:text-[6.5px]"
+                className="text-[7px] leading-none lg:text-[8px]"
                 style={{
                   color: active
                     ? illustrationColors.accent
                     : illustrationColors.inkFaint,
-                  fontWeight: active ? 600 : 400,
+                  fontWeight: active ? 500 : 400,
                 }}
               >
                 {item}
@@ -671,31 +426,31 @@ function FrontPhoneScreen({
         })}
       </div>
 
-      {/* Success toast */}
+      {/* Toast */}
       <AnimatePresence>
         {toastVisible ? (
           <motion.div
             initial={reduce ? false : { opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             transition={fade}
-            className="absolute inset-x-2 bottom-[34px] z-20 flex items-center gap-1.5 px-2 py-[6px]"
+            className="absolute inset-x-3 bottom-[38px] z-20 flex items-center gap-2 px-2.5 py-2 lg:bottom-[42px]"
             style={{
-              borderRadius: 7,
+              borderRadius: 8,
               background: GRAPHITE,
-              boxShadow: "0 8px 20px -8px rgba(28,25,23,0.45)",
+              boxShadow: "0 8px 20px -8px rgba(28,25,23,0.42)",
             }}
           >
             <span
-              className="flex h-[10px] w-[10px] shrink-0 items-center justify-center"
+              className="flex h-[12px] w-[12px] shrink-0 items-center justify-center"
               style={{ borderRadius: 999, background: illustrationColors.accent }}
             >
-              <IconTick size={6} />
+              <IconTick size={7} />
             </span>
             <span
-              className="truncate text-[6.5px] leading-none font-medium lg:text-[7.5px]"
+              className="truncate text-[8px] leading-none font-medium lg:text-[9px]"
               style={{ color: "#F7F7F4" }}
             >
-              Job updated
+              Task updated
             </span>
           </motion.div>
         ) : null}
@@ -705,185 +460,122 @@ function FrontPhoneScreen({
 }
 
 /* -------------------------------------------------------------------------- */
-/* Rear phone — job details                                                   */
+/* Rear phone — task detail                                                   */
 /* -------------------------------------------------------------------------- */
 
-/** Code-native site thumbnail: abstract street grid with a located pin. */
-function MapThumb() {
+function ProductThumb() {
   return (
     <div
       className="relative w-full overflow-hidden"
       style={{
-        height: 34,
-        borderRadius: 7,
+        height: 40,
+        borderRadius: 8,
         background: illustrationColors.surfaceWarm,
         border: "1px solid rgba(28,25,23,0.08)",
       }}
     >
       <svg
-        viewBox="0 0 120 46"
+        viewBox="0 0 120 48"
         preserveAspectRatio="xMidYMid slice"
         className="h-full w-full"
         aria-hidden
       >
-        <rect x="8" y="6" width="30" height="16" rx="2" fill="rgba(28,25,23,0.05)" />
-        <rect x="74" y="4" width="34" height="14" rx="2" fill="rgba(28,25,23,0.05)" />
-        <rect x="16" y="30" width="26" height="14" rx="2" fill="rgba(28,25,23,0.05)" />
-        <rect x="80" y="28" width="30" height="16" rx="2" fill="rgba(28,25,23,0.05)" />
-        <path
-          d="M0 26h120M56 0v46"
-          stroke="rgba(28,25,23,0.13)"
-          strokeWidth="3"
-          strokeLinecap="round"
-        />
-        <path
-          d="M0 26h120"
-          stroke="rgba(201,100,66,0.5)"
-          strokeWidth="1.4"
-          strokeDasharray="4 3"
-        />
-        <circle cx="56" cy="26" r="5.5" fill="rgba(201,100,66,0.16)" />
-        <circle cx="56" cy="26" r="2.6" fill="#C96442" />
+        <rect x="0" y="0" width="120" height="48" fill="#F5F0E8" />
+        <rect x="12" y="10" width="36" height="22" rx="3" fill="rgba(28,25,23,0.06)" />
+        <rect x="54" y="14" width="48" height="4" rx="2" fill="rgba(28,25,23,0.10)" />
+        <rect x="54" y="22" width="36" height="3" rx="1.5" fill="rgba(28,25,23,0.06)" />
+        <rect x="54" y="28" width="28" height="3" rx="1.5" fill="rgba(28,25,23,0.05)" />
+        <rect x="12" y="36" width="90" height="3" rx="1.5" fill="rgba(201,100,66,0.22)" />
       </svg>
     </div>
   );
 }
 
 function RearPhoneScreen({
-  jobLoaded,
+  detailVisible,
   checklistDone,
-  reduce,
 }: {
-  jobLoaded: boolean;
+  detailVisible: boolean;
   checklistDone: number;
-  reduce: boolean;
 }) {
+  if (!detailVisible) {
+    return (
+      <>
+        <StatusBar compact />
+        <div className="flex flex-1 items-center justify-center px-3">
+          <span
+            className="text-[8px] leading-none lg:text-[9px]"
+            style={{ color: illustrationColors.inkFaint }}
+          >
+            Select a task
+          </span>
+        </div>
+      </>
+    );
+  }
+
   return (
     <>
       <StatusBar compact />
 
-      {/* Header */}
       <div
-        className="flex shrink-0 items-center gap-1.5 border-b px-2 pt-[3px] pb-[6px]"
+        className="flex shrink-0 items-center gap-2 border-b px-3 pt-2 pb-3 lg:px-3.5"
         style={{ borderColor: "rgba(28,25,23,0.08)" }}
       >
-        <IconChevronLeft size={8} />
+        <IconChevronLeft size={9} />
         <span
-          className="truncate text-[7.5px] leading-none font-semibold lg:text-[8.5px]"
+          className="truncate text-[9px] leading-none font-medium lg:text-[10.5px]"
           style={{ color: illustrationColors.ink }}
         >
-          Job details
+          Review mobile flow
         </span>
       </div>
 
-      <div className="flex min-h-0 flex-1 flex-col gap-[7px] px-2 pt-[7px] lg:gap-[10px]">
-        <MapThumb />
+      <div className="flex min-h-0 flex-1 flex-col gap-3 px-3 pt-3 lg:gap-3.5 lg:px-3.5 lg:pt-4">
+        <ProductThumb />
 
-        {/* Customer + address */}
-        <div className="flex flex-col gap-[3px]">
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.span
-              key={jobLoaded ? "hinjawadi" : "baner"}
-              initial={reduce ? false : { opacity: 0, y: 3 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={reduce ? undefined : { opacity: 0, y: -3 }}
-              transition={{ duration: 0.24, ease: illustrationEase }}
-              className="flex flex-col gap-[3px]"
-            >
-              <span
-                className="truncate text-[7.5px] leading-none font-semibold lg:text-[8.5px]"
-                style={{ color: illustrationColors.ink }}
-              >
-                {jobLoaded ? "Sterling Business Park" : "Kohinoor Residency"}
-              </span>
-              <span className="flex items-start gap-[3px]">
-                <span className="mt-[0.5px] shrink-0">
-                  <IconPin size={7} />
-                </span>
-                <span
-                  className="text-[6px] leading-[1.35] lg:text-[7.5px]"
-                  style={{ color: illustrationColors.inkFaint }}
-                >
-                  {jobLoaded
-                    ? "Hinjawadi Phase 2, Pune 411057"
-                    : "Baner Road, Pune 411045"}
-                </span>
-              </span>
-            </motion.span>
-          </AnimatePresence>
-        </div>
-
-        {/* Time window + contact */}
-        <div
-          className="flex flex-col gap-[4px] px-1.5 py-[5px]"
-          style={{
-            borderRadius: 6,
-            background: illustrationColors.surfaceMuted,
-            border: "1px solid rgba(28,25,23,0.07)",
-          }}
-        >
-          <span className="flex items-center gap-[4px]">
-            <IconClock size={7} />
-            <span
-              className="truncate text-[6px] leading-none lg:text-[7.5px]"
-              style={{ color: illustrationColors.inkMuted }}
-            >
-              {jobLoaded ? "12:00 – 1:00 PM" : "10:30 – 11:30 AM"}
-            </span>
-          </span>
-          <span className="flex items-center gap-[4px]">
-            <span
-              className="flex h-[9px] w-[9px] shrink-0 items-center justify-center text-[5.5px] leading-none font-semibold"
-              style={{
-                borderRadius: 999,
-                background: illustrationColors.surfaceSunk,
-                color: illustrationColors.inkFaint,
-              }}
-            >
-              RD
-            </span>
-            <span
-              className="truncate text-[6px] leading-none lg:text-[7.5px]"
-              style={{ color: illustrationColors.inkMuted }}
-            >
-              Rohit Deshmukh
-            </span>
-          </span>
-        </div>
-
-        {/* Visit checklist */}
-        <div className="flex flex-col gap-[4px]">
+        <div className="flex flex-col gap-1.5">
           <span
-            className="text-[6px] leading-none font-medium tracking-[0.12em] uppercase lg:text-[6.5px]"
+            className="text-[8px] leading-none lg:text-[9px]"
             style={{ color: illustrationColors.inkFaint }}
           >
-            Visit checklist
+            Project
           </span>
+          <span
+            className="text-[9px] leading-none font-medium lg:text-[10.5px]"
+            style={{ color: illustrationColors.ink }}
+          >
+            Comlabs Mobile
+          </span>
+        </div>
+
+        <span
+          className="text-[8px] leading-none lg:text-[9px]"
+          style={{ color: illustrationColors.accent }}
+        >
+          Due today
+        </span>
+
+        <div className="flex flex-col gap-2.5 pt-1">
           {CHECKLIST.map((item, index) => {
             const done = index < checklistDone;
             return (
-              <span key={item} className="flex items-center gap-[4px]">
-                <motion.span
-                  className="flex h-[9px] w-[9px] shrink-0 items-center justify-center lg:h-[10px] lg:w-[10px]"
-                  initial={false}
-                  animate={{ scale: 1 }}
-                  transition={fade}
+              <span key={item} className="flex items-center gap-2.5">
+                <span
+                  className="flex h-[12px] w-[12px] shrink-0 items-center justify-center lg:h-[13px] lg:w-[13px]"
                   style={{
-                    borderRadius: 2.5,
-                    background: done
-                      ? illustrationColors.accent
-                      : "transparent",
+                    borderRadius: 3,
+                    background: done ? illustrationColors.accent : "transparent",
                     border: `1px solid ${
                       done ? illustrationColors.accent : "rgba(28,25,23,0.16)"
                     }`,
-                    transition:
-                      "background 320ms ease, border-color 320ms ease",
+                    transition: "background 320ms ease, border-color 320ms ease",
                   }}
                 >
-                  {done ? <IconTick size={6} /> : null}
-                </motion.span>
+                  {done ? <IconTick size={7} /> : null}
+                </span>
                 <span
-                  className="truncate text-[6px] leading-none lg:text-[7.5px]"
+                  className="truncate text-[8px] leading-none lg:text-[9.5px]"
                   style={{
                     color: done
                       ? illustrationColors.inkFaint
@@ -897,49 +589,21 @@ function RearPhoneScreen({
             );
           })}
         </div>
-
-        {/* Offline availability */}
-        <span className="flex items-center gap-[4px]">
-          <IconDownload size={7} />
-          <span
-            className="truncate text-[6px] leading-none lg:text-[7px]"
-            style={{ color: illustrationColors.inkFaint }}
-          >
-            Available offline
-          </span>
-        </span>
       </div>
 
-      {/* Actions */}
-      <div className="mt-auto flex shrink-0 flex-col gap-[4px] px-2 pt-[5px] pb-[9px]">
+      <div className="mt-auto shrink-0 px-3 pt-2 pb-[10px] lg:px-3.5 lg:pb-[11px]">
         <span
-          className="hidden items-center justify-center gap-[4px] py-[5px] lg:flex"
+          className="flex items-center justify-center py-2.5 lg:py-3"
           style={{
-            borderRadius: 6,
-            border: "1px solid rgba(28,25,23,0.14)",
-            background: illustrationColors.surface,
-          }}
-        >
-          <IconNavigate size={8} />
-          <span
-            className="text-[7px] leading-none font-medium"
-            style={{ color: illustrationColors.ink }}
-          >
-            Get directions
-          </span>
-        </span>
-        <span
-          className="flex items-center justify-center py-[5px] lg:py-[6px]"
-          style={{
-            borderRadius: 6,
+            borderRadius: 8,
             background: illustrationColors.accent,
           }}
         >
           <span
-            className="text-[6.5px] leading-none font-semibold lg:text-[7.5px]"
+            className="text-[8.5px] leading-none font-medium lg:text-[9.5px]"
             style={{ color: illustrationColors.surface }}
           >
-            {checklistDone > 0 ? "Continue job" : "Start job"}
+            Mark complete
           </span>
         </span>
       </div>
@@ -955,66 +619,61 @@ export function MobileAppIllustration() {
   const { active, reduce } = useIllustrationState();
   const step = useIllustrationSequence({ steps: STEPS, active, reduce });
 
-  // 0 populated · 1 job active · 2 rear updates · 3 checklist · 4 synced · 5 toast
-  const activeJob = step >= 1;
-  const jobLoaded = step >= 2;
-  const checklistDone = step >= 3 ? 2 : 1;
-  const syncedNow = step >= 4;
-  const toastVisible = step >= 5;
+  // 0 populated · 1 task selected · 2 detail · 3 checklist · 4 toast · 5 hold
+  const selectedTask = step >= 1;
+  const detailVisible = step >= 2;
+  const checklistDone = step >= 3 ? 1 : 0;
+  const toastVisible = step >= 4;
 
   return (
     <IllustrationStage className="px-4 py-3 lg:px-7 lg:py-4">
-      {/* Local scrim: hold the scenery back so the product reads first */}
       <span
         aria-hidden
         className="absolute inset-0"
-        style={{ background: "rgba(247,247,244,0.38)" }}
+        style={{ background: "rgba(247,247,244,0.48)" }}
       />
-      {/* Warm key light behind the primary device */}
       <span
         aria-hidden
         className="absolute inset-0"
         style={{
           background:
-            "radial-gradient(58% 52% at 38% 46%, rgba(255,246,236,0.85) 0%, rgba(253,247,239,0.34) 46%, rgba(247,247,244,0) 74%)",
+            "radial-gradient(56% 50% at 36% 44%, rgba(255,246,236,0.88) 0%, rgba(253,247,239,0.30) 44%, rgba(247,247,244,0) 72%)",
         }}
       />
 
-      <div className="relative flex h-full items-end justify-center gap-2 lg:gap-3">
-        {/* Contact shadows */}
+      <div className="relative flex h-full items-end justify-center">
         <span
           aria-hidden
-          className="pointer-events-none absolute bottom-[1px] left-1/2 block h-[10px] w-[76%] -translate-x-1/2"
+          className="pointer-events-none absolute bottom-[2px] left-[42%] block h-[12px] w-[55%] -translate-x-1/2"
           style={{
             background:
-              "radial-gradient(50% 50% at 50% 50%, rgba(28,25,23,0.20) 0%, rgba(28,25,23,0) 72%)",
+              "radial-gradient(50% 50% at 50% 50%, rgba(28,25,23,0.18) 0%, rgba(28,25,23,0) 72%)",
           }}
         />
 
-        {/* Front phone — today's schedule */}
-        <PhoneShell className="relative z-10 h-[97%] w-[130px] shrink-0 lg:w-[170px]">
+        {/* Front phone — dominant */}
+        <PhoneShell className="relative z-10 h-[98%] w-[132px] shrink-0 lg:w-[172px]">
           <FrontPhoneScreen
-            activeJob={activeJob}
-            syncedNow={syncedNow}
+            selectedTask={selectedTask}
             toastVisible={toastVisible}
             reduce={reduce}
           />
         </PhoneShell>
 
-        {/* Rear phone — job details, set back and slightly turned */}
+        {/* Rear phone — smaller, offset up and right */}
         <PhoneShell
           compact
-          className="relative h-[85%] w-[108px] shrink-0 lg:w-[136px]"
+          className="relative -ml-3 h-[84%] w-[108px] shrink-0 lg:-ml-4 lg:w-[138px]"
           style={{
             zIndex: 0,
-            opacity: 0.97,
-            transform: "perspective(900px) rotateY(3deg)",
+            opacity: 0.96,
+            transform:
+              "translateX(8px) translateY(-12px) perspective(900px) rotateY(2.5deg)",
           }}
         >
           <RearPhoneScreen
-            jobLoaded={jobLoaded}
+            detailVisible={detailVisible}
             checklistDone={checklistDone}
-            reduce={reduce}
           />
         </PhoneShell>
       </div>
