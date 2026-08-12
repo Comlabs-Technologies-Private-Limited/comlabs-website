@@ -1,4 +1,7 @@
-import { SHOWCASE_IMAGES } from "@/components/home/figma/home-data";
+import {
+  customCraftIllustration,
+  ServiceIllustrationFrame,
+} from "@/components/services/illustrations";
 
 const SPECIALTY_ITEMS = [
   "React, Next.js, and TypeScript by default",
@@ -8,6 +11,8 @@ const SPECIALTY_ITEMS = [
 ] as const;
 
 export function FigmaSpecialtySection() {
+  const { Component: CustomCraftVisual, label } = customCraftIllustration;
+
   return (
     <section className="px-6 py-24">
       <div className="mx-auto grid max-w-6xl items-center gap-16 md:grid-cols-2">
@@ -38,16 +43,13 @@ export function FigmaSpecialtySection() {
           </ul>
         </div>
 
-        <div
-          className="relative aspect-[4/3] overflow-hidden rounded-3xl border border-border bg-card"
-          style={{ boxShadow: "0 2px 24px rgba(28,25,23,0.07)" }}
+        <ServiceIllustrationFrame
+          label={label}
+          background="/services-bg/service-bg-1.png"
+          className="shadow-[0_2px_24px_rgba(28,25,23,0.07)]"
         >
-          <img
-            src={SHOWCASE_IMAGES.primary}
-            alt="Custom development showcase"
-            className="h-full w-full object-cover"
-          />
-        </div>
+          <CustomCraftVisual />
+        </ServiceIllustrationFrame>
       </div>
     </section>
   );

@@ -1,8 +1,3 @@
-export const SHOWCASE_IMAGES = {
-  primary: "/imports/image.png",
-  secondary: "/imports/image-1.png",
-} as const;
-
 export const TRUST_STATS = [
   { value: "12+", label: "Years in business" },
   { value: "83%", label: "Clients who return" },

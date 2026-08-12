@@ -2,6 +2,7 @@ import type { ComponentType } from "react";
 
 import { AppliedAiIllustration } from "./applied-ai-illustration";
 import { CloudScalingIllustration } from "./cloud-scaling-illustration";
+import { CustomCraftIllustration } from "./custom-craft-illustration";
 import { CustomSoftwareIllustration } from "./custom-software-illustration";
 import { MobileAppIllustration } from "./mobile-app-illustration";
 import { SeoAeoIllustration } from "./seo-aeo-illustration";
@@ -40,6 +41,13 @@ export const serviceIllustrations: Record<string, ServiceIllustration> = {
     label:
       "Cloud infrastructure illustration: rising request volume routed through an edge load balancer to application instances that scale out, with the database layer and health targets staying stable.",
   },
+};
+
+/** Homepage "Our specialty" section — custom code held to explicit quality gates. */
+export const customCraftIllustration: ServiceIllustration = {
+  Component: CustomCraftIllustration,
+  label:
+    "Custom development illustration: a TypeScript component being written in an editor alongside quality gates for type safety, performance budget and accessibility that each pass, ending in a handoff-ready state.",
 };
 
 export const appliedAiIllustration: ServiceIllustration = {

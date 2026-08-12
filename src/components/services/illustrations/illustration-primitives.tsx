@@ -28,7 +28,7 @@ export function Panel({
     <div
       className={cn("border", className)}
       style={{
-        background: illustrationColors.surface,
+        background: illustrationColors.surfacePanel,
         borderColor: illustrationColors.border,
         borderRadius: radius,
         boxShadow:
