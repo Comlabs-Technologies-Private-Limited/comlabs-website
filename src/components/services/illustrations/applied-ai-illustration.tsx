@@ -96,7 +96,7 @@ export function AppliedAiIllustration() {
                     }}
                   />
                   <span
-                    className="truncate text-[7px] leading-none lg:text-[8.5px]"
+                    className="truncate text-[7px] leading-none lg:text-[9.5px]"
                     style={{ color: illustrationColors.inkMuted }}
                   >
                     {record}
@@ -138,7 +138,7 @@ export function AppliedAiIllustration() {
                     className="flex flex-col gap-[5px]"
                   >
                     <span
-                      className="truncate text-[8px] leading-none font-medium lg:text-[9.5px]"
+                      className="truncate text-[8px] leading-none font-medium lg:text-[11px]"
                       style={{ color: illustrationColors.ink }}
                     >
                       Renewal quote · ₹4,20,000
@@ -195,7 +195,7 @@ export function AppliedAiIllustration() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={reduce ? undefined : { opacity: 0, y: -2 }}
                 transition={{ duration: 0.2, ease: illustrationEase }}
-                className="truncate text-[8px] leading-none font-medium lg:text-[9.5px]"
+                className="truncate text-[8px] leading-none font-medium lg:text-[11px]"
                 style={{
                   color: approved
                     ? illustrationColors.ink
@@ -231,7 +231,7 @@ export function AppliedAiIllustration() {
                   Decline
                 </span>
                 <span
-                  className="px-1.5 py-[3px] text-[7.5px] leading-none font-medium lg:text-[8px]"
+                  className="px-1.5 py-[3px] text-[7.5px] leading-none font-medium lg:text-[9.5px]"
                   style={{
                     borderRadius: illustrationRadius.chip,
                     background: reviewRequired
@@ -287,7 +287,7 @@ export function AppliedAiIllustration() {
                   className="flex items-center gap-1.5"
                 >
                   <span
-                    className="shrink-0 text-[7px] leading-none tabular-nums lg:text-[8.5px]"
+                    className="shrink-0 text-[7px] leading-none tabular-nums lg:text-[9.5px]"
                     style={{ color: illustrationColors.inkFaint }}
                   >
                     {entry.time}
@@ -301,7 +301,7 @@ export function AppliedAiIllustration() {
                     }}
                   />
                   <span
-                    className="truncate text-[7.5px] leading-none lg:text-[9px]"
+                    className="truncate text-[7.5px] leading-none lg:text-[10px]"
                     style={{ color: illustrationColors.inkMuted }}
                   >
                     {entry.text}

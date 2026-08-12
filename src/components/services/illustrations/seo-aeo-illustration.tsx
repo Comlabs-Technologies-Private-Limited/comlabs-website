@@ -106,7 +106,7 @@ export function SeoAeoIllustration() {
             />
           </svg>
           <span
-            className="truncate text-[8px] leading-none lg:text-[9.5px]"
+            className="truncate text-[8px] leading-none lg:text-[11px]"
             style={{ color: illustrationColors.inkMuted }}
           >
             custom software development company in Pune
@@ -153,7 +153,7 @@ export function SeoAeoIllustration() {
                   }}
                 >
                   <span
-                    className="truncate text-[7.5px] leading-none font-medium lg:text-[9px]"
+                    className="truncate text-[7.5px] leading-none font-medium lg:text-[10px]"
                     style={{ color: illustrationColors.ink }}
                   >
                     {section.label}
@@ -169,7 +169,7 @@ export function SeoAeoIllustration() {
                             ...fade,
                             delay: reduce ? 0 : index * 0.07,
                           }}
-                          className="ml-auto shrink-0 text-[7px] leading-none lg:text-[8px]"
+                          className="ml-auto shrink-0 text-[7px] leading-none lg:text-[9.5px]"
                           style={{ color: illustrationColors.accent }}
                         >
                           {section.schema}
@@ -202,7 +202,7 @@ export function SeoAeoIllustration() {
                     className="flex flex-col gap-[4px]"
                   >
                     <span
-                      className="truncate text-[7.5px] leading-none lg:text-[9px]"
+                      className="truncate text-[7.5px] leading-none lg:text-[10px]"
                       style={{ color: illustrationColors.inkFaint }}
                     >
                       comlabstechnologies.com › services
@@ -246,7 +246,7 @@ export function SeoAeoIllustration() {
                       className="flex items-center gap-1 pt-[2px]"
                     >
                       <span
-                        className="flex h-[11px] w-[11px] shrink-0 items-center justify-center text-[7px] leading-none font-medium"
+                        className="flex h-[11px] w-[11px] shrink-0 items-center justify-center text-[7px] leading-none font-medium lg:h-[13px] lg:w-[13px] lg:text-[8.5px]"
                         style={{
                           borderRadius: 3,
                           background: illustrationColors.accentSoft,
@@ -257,7 +257,7 @@ export function SeoAeoIllustration() {
                         1
                       </span>
                       <span
-                        className="truncate text-[7.5px] leading-none lg:text-[8.5px]"
+                        className="truncate text-[7.5px] leading-none lg:text-[9.5px]"
                         style={{ color: illustrationColors.inkMuted }}
                       >
                         Cited · comlabstechnologies.com

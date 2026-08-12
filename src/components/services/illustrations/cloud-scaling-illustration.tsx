@@ -86,7 +86,7 @@ function LayerNode({
     >
       <div className="flex items-center justify-center gap-1 px-1.5 py-[6px]">
         <span
-          className="truncate text-[7.5px] leading-none font-medium lg:text-[9px]"
+          className="truncate text-[7.5px] leading-none font-medium lg:text-[10px]"
           style={{
             color: active ? illustrationColors.accent : illustrationColors.ink,
           }}
@@ -139,7 +139,7 @@ export function CloudScalingIllustration() {
               </motion.span>
             </AnimatePresence>
             <span
-              className="text-[7.5px] leading-none lg:text-[9px]"
+              className="text-[7.5px] leading-none lg:text-[10px]"
               style={{ color: illustrationColors.inkFaint }}
             >
               req/min
@@ -229,7 +229,7 @@ export function CloudScalingIllustration() {
                     }}
                   />
                   <span
-                    className="truncate text-[7px] leading-none lg:text-[8.5px]"
+                    className="truncate text-[7px] leading-none lg:text-[9.5px]"
                     style={{
                       color: visible
                         ? illustrationColors.inkMuted
@@ -269,7 +269,7 @@ export function CloudScalingIllustration() {
           <div className="flex items-center gap-1.5">
             {confirmed ? <CheckGlyph size={8} /> : <StatusDot tone="muted" />}
             <span
-              className="text-[8px] leading-none lg:text-[9px]"
+              className="text-[8px] leading-none lg:text-[10px]"
               style={{ color: illustrationColors.ink }}
             >
               {confirmed ? "All targets healthy" : "Scaling"}
@@ -283,7 +283,7 @@ export function CloudScalingIllustration() {
               p95
             </span>
             <span
-              className="text-[8px] leading-none font-medium tabular-nums lg:text-[9px]"
+              className="text-[8px] leading-none font-medium tabular-nums lg:text-[10px]"
               style={{ color: illustrationColors.inkMuted }}
             >
               128 ms

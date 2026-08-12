@@ -131,7 +131,7 @@ export function CustomSoftwareIllustration() {
                       )}
                     </span>
                     <span
-                      className="text-center text-[7.5px] leading-none lg:text-[9px]"
+                      className="text-center text-[7.5px] leading-none lg:text-[10px]"
                       style={{
                         color: reached
                           ? illustrationColors.ink
@@ -178,7 +178,7 @@ export function CustomSoftwareIllustration() {
                   <StatusDot tone="muted" />
                 )}
                 <span
-                  className="truncate text-[8px] leading-none lg:text-[9px]"
+                  className="truncate text-[8px] leading-none lg:text-[10px]"
                   style={{ color: illustrationColors.inkMuted }}
                 >
                   {isLive
@@ -224,7 +224,7 @@ export function CustomSoftwareIllustration() {
             <div className="flex items-center justify-between gap-2">
               <MicroLabel>Deployment</MicroLabel>
               <span
-                className="text-[8px] leading-none lg:text-[9px]"
+                className="text-[8px] leading-none lg:text-[10px]"
                 style={{ color: illustrationColors.inkFaint }}
               >
                 #248

@@ -83,9 +83,9 @@ export function MobileAppIllustration() {
 
   return (
     <IllustrationStage>
-      <div className="relative flex h-full items-stretch justify-center gap-3 lg:justify-start lg:pl-2">
+      <div className="relative flex h-full items-stretch justify-center">
         {/* Primary phone */}
-        <PhoneShell className="relative z-10 h-full w-[116px] shrink-0 lg:w-[136px]">
+        <PhoneShell className="relative z-10 h-full w-[124px] shrink-0 lg:w-[150px]">
           {/* App bar */}
           <div
             className="flex items-center justify-between gap-1 border-b px-2 py-[7px]"
@@ -95,7 +95,7 @@ export function MobileAppIllustration() {
             }}
           >
             <span
-              className="text-[8.5px] leading-none font-medium lg:text-[9.5px]"
+              className="text-[8.5px] leading-none font-medium lg:text-[11px]"
               style={{ color: illustrationColors.ink }}
             >
               Today
@@ -174,13 +174,13 @@ export function MobileAppIllustration() {
                   </span>
                   <span className="flex min-w-0 flex-1 flex-col gap-[3px]">
                     <span
-                      className="truncate text-[8px] leading-none font-medium lg:text-[9px]"
+                      className="truncate text-[8px] leading-none font-medium lg:text-[10px]"
                       style={{ color: illustrationColors.ink }}
                     >
                       {job.id}
                     </span>
                     <span
-                      className="truncate text-[7.5px] leading-none lg:text-[8.5px]"
+                      className="truncate text-[7.5px] leading-none lg:text-[9.5px]"
                       style={{ color: illustrationColors.inkFaint }}
                     >
                       {done ? "Completed · synced" : job.detail}
@@ -263,7 +263,7 @@ export function MobileAppIllustration() {
                       }}
                     >
                       <span
-                        className="text-[8px] leading-none lg:text-[9px]"
+                        className="text-[8px] leading-none lg:text-[10px]"
                         style={{
                           color: isChosen
                             ? illustrationColors.accent
@@ -298,7 +298,7 @@ export function MobileAppIllustration() {
               >
                 <CheckGlyph size={8} color="#F7F7F4" />
                 <span
-                  className="truncate text-[7.5px] leading-none lg:text-[8.5px]"
+                  className="truncate text-[7.5px] leading-none lg:text-[9.5px]"
                   style={{ color: "#F7F7F4" }}
                 >
                   Job updated
@@ -308,26 +308,27 @@ export function MobileAppIllustration() {
           </AnimatePresence>
         </PhoneShell>
 
-        {/* Secondary phone — partially cropped, desktop only */}
+        {/* Secondary phone — tucked behind the primary for depth, desktop only */}
         <PhoneShell
-          className="relative hidden h-[86%] w-[112px] shrink-0 self-center lg:block"
-          style={{ opacity: 0.9 }}
+          className="relative -ml-5 hidden h-[88%] w-[142px] shrink-0 self-center lg:block"
+          style={{ opacity: 0.94, zIndex: 0 }}
         >
+          {/* Inset from the left so the overlap with the primary phone never hides content. */}
           <div
-            className="flex items-center justify-between border-b px-2 py-[7px]"
+            className="flex items-center justify-between border-b py-[7px] pr-2 pl-6"
             style={{
               borderColor: illustrationColors.border,
               background: illustrationColors.surface,
             }}
           >
             <span
-              className="text-[9px] leading-none font-medium"
+              className="text-[10px] leading-none font-medium"
               style={{ color: illustrationColors.ink }}
             >
               Job detail
             </span>
           </div>
-          <div className="flex flex-1 flex-col gap-2 p-2">
+          <div className="flex flex-1 flex-col gap-2 py-2 pr-2 pl-6">
             <span
               className="block w-full"
               style={{

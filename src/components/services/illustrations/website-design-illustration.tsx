@@ -137,7 +137,7 @@ export function WebsiteDesignIllustration() {
                 }}
               >
                 <span
-                  className="truncate text-[8px] leading-none lg:text-[9px]"
+                  className="truncate text-[8px] leading-none lg:text-[10px]"
                   style={{ color: illustrationColors.inkFaint }}
                 >
                   comlabstechnologies.com

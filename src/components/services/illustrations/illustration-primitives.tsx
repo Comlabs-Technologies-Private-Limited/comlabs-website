@@ -61,7 +61,7 @@ export function MicroLabel({
   return (
     <span
       className={cn(
-        "block text-[8px] font-medium tracking-[0.14em] uppercase lg:text-[9px]",
+        "block text-[8px] font-medium tracking-[0.14em] uppercase lg:text-[9.5px]",
         className,
       )}
       style={{ color }}
@@ -105,7 +105,7 @@ export function Chip({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 border px-1.5 py-[3px] text-[8px] leading-none font-medium whitespace-nowrap lg:text-[9px]",
+        "inline-flex items-center gap-1 border px-1.5 py-[3px] text-[8px] leading-none font-medium whitespace-nowrap lg:text-[9.5px]",
         className,
       )}
       style={{ borderRadius: illustrationRadius.chip, ...palette, ...style }}
