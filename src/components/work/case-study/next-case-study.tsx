@@ -25,15 +25,12 @@ export function NextCaseStudy({ client, headline, href, thumbnail }: NextCaseStu
                 href={canonicalPath(href)}
                 className="group flex flex-col gap-8 sm:flex-row sm:items-center sm:gap-12"
               >
-                <div
-                  className="flex h-24 w-full shrink-0 items-center justify-center rounded-2xl border border-border sm:h-28 sm:w-40"
-                  style={{ backgroundColor: "#FDF5E8" }}
-                >
+                <div className="relative h-24 w-full shrink-0 overflow-hidden rounded-2xl border border-border bg-secondary sm:h-28 sm:w-44">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={thumbnail}
                     alt=""
-                    className="max-h-12 max-w-[80%] object-contain object-center"
+                    className="h-full w-full object-cover object-top"
                     loading="lazy"
                   />
                 </div>

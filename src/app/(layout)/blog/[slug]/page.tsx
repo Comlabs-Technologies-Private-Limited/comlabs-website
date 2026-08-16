@@ -8,6 +8,7 @@ import { PostBody } from "@/components/blog/PostBody";
 import { BreadcrumbJsonLd, PostJsonLd } from "@/components/blog/JsonLd";
 import { FigmaFooter } from "@/components/layout/figma-footer";
 import { FigmaNav } from "@/components/layout/figma-nav";
+import { MarketingCtaSection } from "@/components/marketing/marketing-cta-section";
 import { PageBreadcrumbs } from "@/components/seo/page-breadcrumbs";
 import { getPublishedPostBySlug, getPublishedPostSlugs } from "@/lib/admin/posts";
 import { buildPageMetadata } from "@/lib/metadata";
@@ -148,7 +149,7 @@ export default async function BlogPostPage({
               </div>
 
               <h1
-                className="mt-8 text-3xl leading-[1.12] font-bold tracking-tight md:mt-10 md:text-4xl lg:text-[2.75rem]"
+                className="mt-8 text-3xl leading-[1.12] font-medium tracking-tight md:mt-10 md:text-4xl lg:text-[2.75rem]"
                 style={{ letterSpacing: "-0.03em" }}
               >
                 {post.title}
@@ -188,7 +189,7 @@ export default async function BlogPostPage({
                     fill
                     priority
                     sizes="(max-width: 1280px) 100vw, 1280px"
-                    className="object-cover"
+                    className="object-cover object-center"
                   />
                 </div>
               </div>
@@ -211,9 +212,24 @@ export default async function BlogPostPage({
                   ))}
                 </div>
               ) : null}
+
+              <div className="mt-10">
+                <Link
+                  href={canonicalPath("/blog")}
+                  className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  <ArrowLeft size={14} /> All notes
+                </Link>
+              </div>
             </div>
           </div>
         </article>
+
+        <MarketingCtaSection
+          title="Have a looping workflow to untangle?"
+          description="We design and engineer product software with stop conditions, budgets, and traces you can actually read."
+          ctaLabel="Start a conversation"
+        />
       </main>
 
       <FigmaFooter />

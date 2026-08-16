@@ -19,13 +19,17 @@ export function MarketingWorkGrid({ showLiveSite = true }: MarketingWorkGridProp
           <article className="group flex h-full flex-col overflow-hidden rounded-3xl border border-border bg-card transition-all duration-300 hover:border-foreground/20 hover:shadow-[0_8px_32px_rgba(28,25,23,0.06)]">
             <Link href={canonicalPath(project.href)} className="block flex-1">
               <div
-                className="relative flex aspect-video items-center justify-center"
-                style={{ backgroundColor: "#FDF5E8" }}
+                className="relative flex aspect-video items-center justify-center overflow-hidden bg-secondary"
+                style={project.image ? undefined : { backgroundColor: "#FDF5E8" }}
               >
                 <img
-                  src={project.logo}
-                  alt={`${project.title} logo`}
-                  className="h-16 w-16 object-contain object-center md:h-20 md:w-20"
+                  src={project.image ?? project.logo}
+                  alt={project.image ? `${project.title} website` : `${project.title} logo`}
+                  className={
+                    project.image
+                      ? "h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.02]"
+                      : "h-16 w-16 object-contain object-center md:h-20 md:w-20"
+                  }
                 />
               </div>
               <div className="p-6">

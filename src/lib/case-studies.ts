@@ -186,13 +186,10 @@ export const NEXT_CASE_STUDY_CLIENT: Record<CaseStudySlug, string> = {
 };
 
 export const NEXT_CASE_STUDY_THUMBNAIL: Record<CaseStudySlug, string> = {
-  radiant:
-    "https://formial.in/cdn/shop/files/Brand_Design-04_90b8501a-2715-48dc-934d-b45bba7f000b.png?v=1747823670&width=200",
-  "formial-labs":
-    "https://media.licdn.com/dms/image/v2/D4D0BAQGQX5VqkCJ3Kw/company-logo_200_200/B4DZ_HUcVbK4AE-/0/1785755452993?e=1787788800&v=beta&t=0m0sb88g-MtInzITn26oE280SA6izWiywxQvtZIsbGo",
-  "global-services":
-    "https://vithub.in/cdn/shop/files/Vit_hub_web_logo_temp.png?height=100&v=1762338028",
-  vithub: "/work/radiant/radiant-mark.png",
+  radiant: "/work/formial-labs/formial-case-study-hero.webp",
+  "formial-labs": "/work/global-services/global-services-case-study-hero.webp",
+  "global-services": "/work/vithub/vithub-case-study-hero.webp",
+  vithub: "/work/radiant/radiant-case-study-hero.webp",
 };
 
 export function getNextCaseStudy(slug: CaseStudySlug): {

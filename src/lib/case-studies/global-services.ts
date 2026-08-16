@@ -1,8 +1,5 @@
 import type { CaseStudyContent } from "@/lib/case-studies";
 
-const GLOBAL_SERVICES_LOGO =
-  "https://media.licdn.com/dms/image/v2/D4D0BAQGQX5VqkCJ3Kw/company-logo_200_200/B4DZ_HUcVbK4AE-/0/1785755452993?e=1787788800&v=beta&t=0m0sb88g-MtInzITn26oE280SA6izWiywxQvtZIsbGo";
-
 export const globalServicesCaseStudy: CaseStudyContent = {
   slug: "global-services",
   client: "Global Services",
@@ -14,6 +11,7 @@ export const globalServicesCaseStudy: CaseStudyContent = {
   },
   standfirst:
     "We rebuilt Global Services' website to close the gap between their capability in the field and how they appeared online — with clearer positioning, stronger structure and conversion paths built for enterprise buyers.",
+  ogImage: "/work/global-services/global-services-case-study-hero.webp",
   meta: [
     { label: "Client", value: "Global Services" },
     { label: "Service", value: "Website Design & Development" },
@@ -23,14 +21,18 @@ export const globalServicesCaseStudy: CaseStudyContent = {
       label: "Clients served",
       value: "JIO · Vodafone-Idea",
     },
+    {
+      label: "Website",
+      value: "global-services-website.vercel.app",
+      href: "https://global-services-website.vercel.app",
+    },
   ],
   leadImage: {
-    src: GLOBAL_SERVICES_LOGO,
-    alt: "Global Services company logo",
+    src: "/work/global-services/global-services-case-study-hero.webp",
+    alt: "Global Services homepage hero with the headline Infrastructure delivered with discipline beside a tower-work photograph",
     variant: "wide",
-    padded: true,
     caption:
-      "Global Services was doing serious infrastructure work — but their website did not reflect that credibility at first glance.",
+      "The opening frame now reads at enterprise scale: category, claim, proof of field work, and a direct path to consultation.",
   },
   sections: [
     {
@@ -49,11 +51,10 @@ export const globalServicesCaseStudy: CaseStudyContent = {
         "Enterprise buyers evaluate credibility quickly. Messaging, structure and visual tone all need to align — otherwise a capable company reads as smaller or less established than it actually is.",
       ],
       media: {
-        src: GLOBAL_SERVICES_LOGO,
-        alt: "Global Services brand identity",
-        padded: true,
+        src: "/work/global-services/global-services-about.webp",
+        alt: "Global Services about page with Field experience that shows in every handover beside a tower technician photograph",
         caption:
-          "The company needed a digital presence that matched the level of clients they were pursuing.",
+          "About is written for buyers who need to know the company has been on site since 2005 — not for a generic corporate bio.",
       },
     },
     {
@@ -75,20 +76,13 @@ export const globalServicesCaseStudy: CaseStudyContent = {
         "We started with positioning and information architecture — understanding what enterprise buyers needed to see, in what order, before they would trust Global Services with a conversation.",
         "The site structure was rebuilt around clarity: who Global Services works with, what they deliver, and why a buyer should take the next step. Every section needed to earn the one after it.",
       ],
-      media: [
-        {
-          src: "/logos/clients/jio.svg",
-          alt: "JIO logo",
-          padded: true,
-          caption:
-            "Enterprise wins with JIO and Vodafone-Idea followed once the site could carry the pitch.",
-        },
-        {
-          src: "/logos/clients/vodafone.svg",
-          alt: "Vodafone Idea logo",
-          padded: true,
-        },
-      ],
+      media: {
+        src: "/work/global-services/global-services-work.webp",
+        alt: "Homepage project modules for Reliance Jio OFC rollout and Pune Municipal Corporation water-supply infrastructure",
+        variant: "wide",
+        caption:
+          "Named clients and scoped work sit on the homepage, so credibility is evidence rather than a logo row.",
+      },
     },
     {
       number: "05",
@@ -99,12 +93,24 @@ export const globalServicesCaseStudy: CaseStudyContent = {
           paragraphs: [
             "The homepage and core pages needed to speak to enterprise decision-makers in language that felt direct and credible — not generic agency copy.",
           ],
+          media: {
+            src: "/work/global-services/global-services-services.webp",
+            alt: "Services page opening with Capabilities across the infrastructure lifecycle and Telecom Installation and Commissioning",
+            caption:
+              "Services open with the lifecycle, then unpack each capability with scope a buyer can recognise.",
+          },
         },
         {
           title: "Structure and navigation",
           paragraphs: [
             "We reorganised the site's information architecture so visitors could understand Global Services' scope without hunting for it. Services, credibility signals and contact paths were placed where buyers naturally look.",
           ],
+          media: {
+            src: "/work/global-services/global-services-capabilities.webp",
+            alt: "Services page sections for OFC Construction and FTTx Deployment with field photography",
+            caption:
+              "OFC, FTTx and adjacent disciplines are separate stories with the same page grammar.",
+          },
         },
         {
           title: "Conversion paths",
@@ -112,11 +118,11 @@ export const globalServicesCaseStudy: CaseStudyContent = {
             "Conversion was treated as a design problem, not an afterthought. Enquiry flows and calls to action were built to convert interest into conversations — not just decorate the page.",
           ],
           media: {
-            src: GLOBAL_SERVICES_LOGO,
-            alt: "Global Services brand mark representing the rebuilt digital presence",
+            src: "/work/global-services/global-services-contact.webp",
+            alt: "Project consultation page with what to include guidance beside a structured enquiry form",
             variant: "wide",
             caption:
-              "The finished site positions Global Services as a partner enterprise buyers can take seriously.",
+              "Contact is a project briefing, not a generic message box — the form asks for the details a sales conversation actually needs.",
           },
         },
       ],
@@ -139,6 +145,13 @@ export const globalServicesCaseStudy: CaseStudyContent = {
       transformation: {
         before: ["Weak digital credibility", "Unclear positioning", "Leads lost before contact"],
         after: ["Enterprise-ready presence", "Clear messaging and structure", "Conversion paths that convert"],
+      },
+      media: {
+        src: "/work/global-services/global-services-projects.webp",
+        alt: "Projects page featuring Reliance Jio OFC Infrastructure Rollout with scope of work",
+        variant: "wide",
+        caption:
+          "Selected projects name the client, the discipline and the scope — the evidence enterprise buyers look for.",
       },
     },
     {

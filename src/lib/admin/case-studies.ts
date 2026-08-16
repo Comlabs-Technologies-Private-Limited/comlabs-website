@@ -107,6 +107,24 @@ export async function getPublishedCaseStudy(slug: string): Promise<CaseStudyCont
 }
 
 export async function getPublishedCaseStudyPage(slug: string): Promise<CaseStudyPageData | null> {
+  const staticContent = getStaticCaseStudy(slug);
+  if (staticContent) {
+    const seo = buildCaseStudySeo({
+      client: staticContent.client,
+      standfirst: staticContent.standfirst,
+      headline: staticContent.headline,
+      metaTitle: staticContent.metaTitle,
+      metaDescription: staticContent.metaDescription,
+    });
+
+    return {
+      ...staticContent,
+      metaTitle: seo.metaTitle,
+      metaDescription: seo.metaDescription,
+      absoluteTitle: Boolean(staticContent.metaTitle),
+    };
+  }
+
   try {
     const prisma = getPrisma();
     const record = await prisma.caseStudy.findFirst({
@@ -128,30 +146,11 @@ export async function getPublishedCaseStudyPage(slug: string): Promise<CaseStudy
         updatedAt: serialized.updatedAt,
       };
     }
-
-    const existsInDb = await prisma.caseStudy.findFirst({ where: { slug } });
-    if (existsInDb) return null;
   } catch {
-    // fall through to static content when the database is unavailable
+    // fall through when the database is unavailable
   }
 
-  const staticContent = getStaticCaseStudy(slug);
-  if (!staticContent) return null;
-
-  const seo = buildCaseStudySeo({
-    client: staticContent.client,
-    standfirst: staticContent.standfirst,
-    headline: staticContent.headline,
-    metaTitle: staticContent.metaTitle,
-    metaDescription: staticContent.metaDescription,
-  });
-
-  return {
-    ...staticContent,
-    metaTitle: seo.metaTitle,
-    metaDescription: seo.metaDescription,
-    absoluteTitle: Boolean(staticContent.metaTitle),
-  };
+  return null;
 }
 
 export async function getPublishedCaseStudySlugs(): Promise<string[]> {
