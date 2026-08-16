@@ -41,18 +41,11 @@ export function FigmaWorkSection() {
               transition={{ delay: i * 0.06 }}
               className="group block overflow-hidden rounded-3xl border border-border bg-background transition-colors hover:border-foreground/20"
             >
-              <div
-                className="relative flex aspect-video items-center justify-center overflow-hidden bg-secondary"
-                style={project.image ? undefined : { backgroundColor: "#FDF5E8" }}
-              >
+              <div className="relative aspect-video overflow-hidden bg-secondary">
                 <img
-                  src={project.image ?? project.logo}
-                  alt={project.image ? `${project.title} website` : `${project.title} logo`}
-                  className={
-                    project.image
-                      ? "h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.02]"
-                      : "h-16 w-16 object-contain object-center md:h-20 md:w-20"
-                  }
+                  src={project.image}
+                  alt={`${project.title} website`}
+                  className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.02]"
                 />
               </div>
               <div className="p-6">
