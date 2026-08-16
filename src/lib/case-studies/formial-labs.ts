@@ -1,8 +1,5 @@
 import type { CaseStudyContent } from "@/lib/case-studies";
 
-const FORMIAL_BRAND =
-  "https://formial.in/cdn/shop/files/Brand_Design-04_90b8501a-2715-48dc-934d-b45bba7f000b.png?v=1747823670&width=1200";
-
 export const formialLabsCaseStudy: CaseStudyContent = {
   slug: "formial-labs",
   client: "Formial Labs",
@@ -14,6 +11,7 @@ export const formialLabsCaseStudy: CaseStudyContent = {
   },
   standfirst:
     "We redesigned and developed Formial Labs' multi-step onboarding experience, creating a guided journey from account creation through setup and into the product.",
+  ogImage: "/work/formial-labs/formial-case-study-hero.webp",
   meta: [
     { label: "Client", value: "Formial Labs" },
     { label: "Service", value: "Custom Software Development" },
@@ -22,11 +20,11 @@ export const formialLabsCaseStudy: CaseStudyContent = {
     { label: "Website", value: "formial.in", href: "https://formial.in" },
   ],
   leadImage: {
-    src: "/card-bg/product-ui-mockup.png",
-    alt: "Formial Labs product interface showing a structured onboarding and dashboard preview flow",
+    src: "/work/formial-labs/formial-case-study-hero.webp",
+    alt: "Formial Labs onboarding welcome screen with a Get Started action beside a live feed of before-and-after results",
     variant: "wide",
     caption:
-      "The onboarding work focused on turning a capable product into a journey new users could actually complete.",
+      "The first product screen greets the user by name and shows real outcomes before asking them to configure anything.",
   },
   sections: [
     {
@@ -45,10 +43,10 @@ export const formialLabsCaseStudy: CaseStudyContent = {
         "The problem was not simply visual polish. It was sequencing: what information users saw, what action they were expected to take, and when complexity was introduced.",
       ],
       media: {
-        src: "/card-bg/product-ui-mockup.png",
-        alt: "Product interface with a preview panel and task checklist showing onboarding progression",
+        src: "/work/formial-labs/formial-marketing.webp",
+        alt: "Formial Labs marketing homepage with the headline Skincare that's made for you and a consult call to action",
         caption:
-          "The onboarding experience needed to introduce complexity progressively instead of exposing the entire setup at once.",
+          "The consumer site already promised a personalised path. The product had to deliver that promise from the first signed-in screen.",
       },
     },
     {
@@ -71,11 +69,11 @@ export const formialLabsCaseStudy: CaseStudyContent = {
         "Continuity mattered as much as clarity. Validation, progression and feedback needed to feel consistent from the first screen through to the active product state.",
       ],
       media: {
-        src: "/card-bg/product-ui-mockup.png",
-        alt: "Wide view of the product interface with preview, tasks, and feedback panels",
+        src: "/work/formial-labs/formial-onboarding.webp",
+        alt: "Formial onboarding step with a three-stage progress rail and a verify-your-details form",
         variant: "wide",
         caption:
-          "Each step was designed to carry one decision forward, with the full journey still visible in context.",
+          "A persistent progress rail keeps the journey visible: verify details, upload pictures, then arrive in the product.",
       },
     },
     {
@@ -88,10 +86,9 @@ export const formialLabsCaseStudy: CaseStudyContent = {
             "The first screen needed to establish trust and set expectations without front-loading configuration. Users should understand what they were signing up for and what would happen next.",
           ],
           media: {
-            src: FORMIAL_BRAND,
-            alt: "Formial Labs brand mark",
-            padded: true,
-            caption: "The entry point needed to feel considered before users entered setup.",
+            src: "/work/formial-labs/formial-case-study-hero.webp",
+            alt: "Formial welcome state with Get Started and a scrolling results feed",
+            caption: "Arrival is a welcome, not a form. Proof sits beside the first action.",
           },
         },
         {
@@ -100,10 +97,10 @@ export const formialLabsCaseStudy: CaseStudyContent = {
             "Visible progress matters when a journey spans multiple pages. Users should always understand where they are, what remains, and why the current step exists.",
           ],
           media: {
-            src: "/card-bg/product-ui-mockup.png",
-            alt: "Task checklist and progress indicator within the product interface",
+            src: "/work/formial-labs/formial-onboarding.webp",
+            alt: "Verify details step with editable name and WhatsApp fields, OTP entry, and Verify and Continue",
             caption:
-              "Progress remains visible throughout setup so users always understand where they are in the journey.",
+              "One decision per screen — confirm identity, then continue — with the remaining steps still in view.",
           },
         },
         {
@@ -112,11 +109,11 @@ export const formialLabsCaseStudy: CaseStudyContent = {
             "The final transition needed to feel like arrival, not completion of paperwork. The journey should land users in a state where the product's value is immediately within reach.",
           ],
           media: {
-            src: "https://formial.in/cdn/shop/files/Website-03.png?height=628&pad_color=ffffff&v=1734611574&width=1200",
-            alt: "Formial Labs digital presence showing the consumer-facing product experience",
+            src: "/work/formial-labs/formial-marketing-body.webp",
+            alt: "Formial marketing section showing three steps from consultation to ongoing customisation",
             variant: "wide",
             caption:
-              "The onboarding path connects account creation to an active product state users can begin using immediately.",
+              "The same three-step logic appears on the public site, so the product journey matches the promise made before signup.",
           },
         },
       ],
@@ -140,11 +137,11 @@ export const formialLabsCaseStudy: CaseStudyContent = {
         after: ["Signup", "Guided setup", "First useful action"],
       },
       media: {
-        src: "/card-bg/product-ui-mockup.png",
-        alt: "Completed product interface showing preview approval and active project state",
+        src: "/work/formial-labs/formial-onboarding.webp",
+        alt: "Completed onboarding interface with progress, review fields, and a primary Verify and Continue action",
         variant: "wide",
         caption:
-          "The finished flow moves users from signup through setup into a product state that feels ready to use.",
+          "The finished flow moves users from a named welcome through guided setup into a product state that feels ready to use.",
       },
     },
     {

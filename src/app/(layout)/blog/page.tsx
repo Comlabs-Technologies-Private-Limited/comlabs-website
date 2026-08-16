@@ -5,6 +5,7 @@ import Link from "next/link";
 import { PostCard } from "@/components/blog/PostCard";
 import { FigmaFooter } from "@/components/layout/figma-footer";
 import { FigmaNav } from "@/components/layout/figma-nav";
+import { MarketingCtaSection } from "@/components/marketing/marketing-cta-section";
 import { MarketingPageHero } from "@/components/marketing/marketing-page-hero";
 import {
   MarketingOrangeHighlight,
@@ -21,11 +22,11 @@ export const revalidate = 60;
 export const metadata: Metadata = buildPageMetadata({
   title: "Blog",
   description:
-    "Strategy, design, and development insights from Comlabs Technologies Pvt Ltd on websites, product UI, and shipping reliable software.",
+    "Notes from Comlabs Technologies on product engineering, agentic software, websites, and shipping work that holds up in production.",
   path: "/blog",
 });
 
-const PAGE_SIZE = 9;
+const PAGE_SIZE = 8;
 
 async function getPosts(page: number): Promise<{ posts: PostSummary[]; total: number }> {
   const allPosts = await listPosts({ status: "published" });
@@ -58,6 +59,8 @@ export default async function BlogIndexPage({
   }
 
   const totalPages = Math.ceil(total / PAGE_SIZE);
+  const featured = page === 1 ? posts[0] : undefined;
+  const remaining = page === 1 ? posts.slice(1) : posts;
 
   return (
     <div
@@ -68,14 +71,14 @@ export default async function BlogIndexPage({
 
       <main>
         <MarketingPageHero
-          eyebrow="Blog"
+          eyebrow="Studio notes"
           title={
             <>
-              Insights on building things that{" "}
-              <MarketingOrangeHighlight>work</MarketingOrangeHighlight>.
+              Practical writing on building things that{" "}
+              <MarketingOrangeHighlight>hold</MarketingOrangeHighlight>.
             </>
           }
-          description="Strategy, design, and development from Comlabs Technologies Pvt Ltd — websites, product UI, and shipping reliable software."
+          description="Product engineering, agentic software, and the decisions that show up once a system leaves the demo."
         >
           <PageBreadcrumbs currentPath="/blog" items={[{ label: "Blog" }]} />
         </MarketingPageHero>
@@ -84,9 +87,9 @@ export default async function BlogIndexPage({
           <div className="mx-auto max-w-6xl">
             <MarketingSectionHeader
               className="mb-10 md:mb-12"
-              eyebrow="Latest posts"
-              title="Practical notes from the studio."
-              description="Product thinking, engineering decisions, and lessons from client work."
+              eyebrow="Latest"
+              title="From the studio."
+              description="Short notes from client work and internal builds — written for people who have to ship."
             />
 
             {posts.length === 0 ? (
@@ -94,10 +97,15 @@ export default async function BlogIndexPage({
                 No posts yet — check back soon.
               </p>
             ) : (
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {posts.map((post) => (
-                  <PostCard key={post._id} post={post} />
-                ))}
+              <div className="flex flex-col gap-8">
+                {featured ? <PostCard post={featured} featured /> : null}
+                {remaining.length > 0 ? (
+                  <div className="grid gap-6 md:grid-cols-2">
+                    {remaining.map((post) => (
+                      <PostCard key={post._id} post={post} />
+                    ))}
+                  </div>
+                ) : null}
               </div>
             )}
 
@@ -129,6 +137,12 @@ export default async function BlogIndexPage({
             ) : null}
           </div>
         </section>
+
+        <MarketingCtaSection
+          title="Building with agents, or around them?"
+          description="If a workflow is looping, stalling, or costing more than it returns, we can help you put a stop condition on it."
+          ctaLabel="Start a conversation"
+        />
       </main>
 
       <FigmaFooter />

@@ -274,7 +274,7 @@
 .post-body h2,
 .post-body h3,
 .post-body h4 {
-  font-weight: 700;
+  font-weight: 500;
   line-height: 1.2;
   letter-spacing: -0.025em;
   color: var(--foreground);

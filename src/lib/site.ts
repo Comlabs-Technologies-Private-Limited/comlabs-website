@@ -94,12 +94,12 @@ export const indexableStaticPaths = [
   "/contact",
 ] as const;
 
-/** Blog requires MongoDB on the server. */
+/** Blog ships with statically authored posts; hide with NEXT_PUBLIC_BLOG_ENABLED=false. */
 export function isBlogEnabled(): boolean {
-  return Boolean(process.env.MONGODB_URI);
+  return process.env.NEXT_PUBLIC_BLOG_ENABLED !== "false";
 }
 
-/** Client-safe flag — set NEXT_PUBLIC_BLOG_ENABLED=true when the blog is live in production. */
+/** Client-safe flag — the blog is public unless explicitly disabled. */
 export function isBlogPublic(): boolean {
-  return process.env.NEXT_PUBLIC_BLOG_ENABLED === "true";
+  return isBlogEnabled();
 }

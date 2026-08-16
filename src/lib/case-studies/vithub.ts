@@ -1,14 +1,5 @@
 import type { CaseStudyContent } from "@/lib/case-studies";
 
-const VITHUB_LOGO =
-  "https://vithub.in/cdn/shop/files/Vit_hub_web_logo_temp.png?height=100&v=1762338028";
-
-const VITHUB_PRODUCT =
-  "https://vithub.in/cdn/shop/files/Vithub_Product_images_2_large.jpg";
-
-const VITHUB_HERO =
-  "https://vithub.in/cdn/shop/files/Productimages_1be403da-ebe7-4d79-9ddf-7f70b7bf5f94_large.jpg";
-
 export const vithubCaseStudy: CaseStudyContent = {
   slug: "vithub",
   client: "Vithub",
@@ -20,6 +11,7 @@ export const vithubCaseStudy: CaseStudyContent = {
   },
   standfirst:
     "We designed and built Vithub's marketing website — a design-led digital identity and campaign-ready foundation for a brand that needed somewhere credible to send traffic.",
+  ogImage: "/work/vithub/vithub-case-study-hero.webp",
   meta: [
     { label: "Client", value: "Vithub" },
     { label: "Service", value: "Website Design & Development" },
@@ -28,11 +20,11 @@ export const vithubCaseStudy: CaseStudyContent = {
     { label: "Website", value: "vithub.in", href: "https://vithub.in" },
   ],
   leadImage: {
-    src: VITHUB_HERO,
-    alt: "Vithub product photography featured on the marketing website homepage",
+    src: "/work/vithub/vithub-case-study-hero.webp",
+    alt: "Vithub homepage hero with Unleash Your Power over product photography and a Shop Now action",
     variant: "wide",
     caption:
-      "Vithub needed a digital presence that could carry the brand — not just hold a URL.",
+      "The homepage leads with product, campaign photography and a single next step — not a placeholder brand page.",
   },
   sections: [
     {
@@ -51,9 +43,8 @@ export const vithubCaseStudy: CaseStudyContent = {
         "Vithub needed a presence that felt considered from the first interaction — a site that reflected the brand they were building, not one they were still figuring out.",
       ],
       media: {
-        src: VITHUB_LOGO,
-        alt: "Vithub wordmark",
-        padded: true,
+        src: "/work/vithub/vithub-catalog.webp",
+        alt: "Vithub homepage Complete Health Range module with lifestyle photography and product pouches",
         caption:
           "The brand needed a website that felt as intentional as the products themselves.",
       },
@@ -78,11 +69,11 @@ export const vithubCaseStudy: CaseStudyContent = {
         "Every section was designed to earn attention and point somewhere — whether that was product discovery, brand story or purchase.",
       ],
       media: {
-        src: VITHUB_PRODUCT,
-        alt: "Vithub product imagery used across the marketing website",
+        src: "/work/vithub/vithub-shop.webp",
+        alt: "Vithub All Products collection page with a product grid and add-to-cart pricing",
         variant: "wide",
         caption:
-          "Product presentation was designed to feel premium and consistent across the site.",
+          "Collections present the range as a shoppable system, not a gallery of disconnected SKUs.",
       },
     },
     {
@@ -95,8 +86,8 @@ export const vithubCaseStudy: CaseStudyContent = {
             "The site's visual language needed to make Vithub feel established at a glance — clean product photography, consistent spacing and a tone that matched the brand's positioning in wellness.",
           ],
           media: {
-            src: VITHUB_HERO,
-            alt: "Homepage hero section with Vithub product photography",
+            src: "/work/vithub/vithub-case-study-hero.webp",
+            alt: "Homepage hero with campaign photography, product pouches and certification marks",
             caption: "The homepage leads with product and brand clarity, not generic marketing filler.",
           },
         },
@@ -106,10 +97,10 @@ export const vithubCaseStudy: CaseStudyContent = {
             "We built a structure that supports both discovery and conversion — product collections, campaign-ready pages and clear paths from first visit to purchase.",
           ],
           media: {
-            src: VITHUB_PRODUCT,
-            alt: "Vithub product range displayed on the website",
+            src: "/work/vithub/vithub-product.webp",
+            alt: "Vithub product page for 3 in 1 Gummies with gallery, benefits, pack size and add to cart",
             caption:
-              "The site gives growth efforts a credible destination — not just a link in a bio.",
+              "Product pages carry the campaign look through to a complete purchase decision.",
           },
         },
         {
@@ -117,6 +108,11 @@ export const vithubCaseStudy: CaseStudyContent = {
           paragraphs: [
             "The website was built as a foundation for ongoing marketing, not a single launch moment. Sections, templates and visual patterns can support future campaigns without rebuilding from scratch.",
           ],
+          media: {
+            src: "/work/vithub/vithub-range.webp",
+            alt: "Vithub homepage wellness banner with product pouches and a Shop Now action",
+            caption: "Campaign modules sit inside the same system as the catalogue.",
+          },
         },
       ],
     },
@@ -139,11 +135,11 @@ export const vithubCaseStudy: CaseStudyContent = {
         after: ["Design-led marketing site", "Campaign-ready foundation", "Credible identity at first glance"],
       },
       media: {
-        src: VITHUB_HERO,
-        alt: "Final Vithub website homepage view with product hero imagery",
+        src: "/work/vithub/vithub-mobile.webp",
+        alt: "Vithub homepage on two mobile screens showing the hero campaign and product modules",
         variant: "wide",
         caption:
-          "The finished site gives Vithub a presence they can build on — visually, structurally and commercially.",
+          "The finished site holds together on a phone as clearly as it does on a campaign landing page.",
       },
     },
     {

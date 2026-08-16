@@ -40,6 +40,7 @@ export const PROJECTS = [
     href: "/work/radiant",
     liveSiteUrl: "https://radiant-three-gamma.vercel.app/",
     logo: "/work/radiant/radiant-mark.png",
+    image: "/work/radiant/radiant-case-study-hero.webp",
   },
   {
     title: "Formial Labs",
@@ -48,13 +49,16 @@ export const PROJECTS = [
     href: "/work/formial-labs",
     liveSiteUrl: "https://formial.in",
     logo: "https://formial.in/cdn/shop/files/Brand_Design-04_90b8501a-2715-48dc-934d-b45bba7f000b.png?v=1747823670&width=200",
+    image: "/work/formial-labs/formial-case-study-hero.webp",
   },
   {
     title: "Global Services",
     category: "Website Design & Development",
     desc: "Full website rebuild that lifted conversion and helped land JIO and Vodafone-Idea as enterprise clients.",
     href: "/work/global-services",
+    liveSiteUrl: "https://global-services-website.vercel.app",
     logo: "https://media.licdn.com/dms/image/v2/D4D0BAQGQX5VqkCJ3Kw/company-logo_200_200/B4DZ_HUcVbK4AE-/0/1785755452993?e=1787788800&v=beta&t=0m0sb88g-MtInzITn26oE280SA6izWiywxQvtZIsbGo",
+    image: "/work/global-services/global-services-case-study-hero.webp",
   },
   {
     title: "Vithub",
@@ -63,6 +67,7 @@ export const PROJECTS = [
     href: "/work/vithub",
     liveSiteUrl: "https://vithub.in",
     logo: "https://vithub.in/cdn/shop/files/Vit_hub_web_logo_temp.png?height=100&v=1762338028",
+    image: "/work/vithub/vithub-case-study-hero.webp",
   },
 ] as const;
 
