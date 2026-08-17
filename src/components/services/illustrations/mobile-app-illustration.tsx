@@ -8,8 +8,15 @@ import {
   useIllustrationState,
 } from "./service-illustration-frame";
 import {
+  illustrationBlurHidden,
+  illustrationBlurShown,
   illustrationColors,
   illustrationEase,
+  illustrationPopHidden,
+  illustrationPopShown,
+  illustrationTextSwapExit,
+  illustrationTextSwapHidden,
+  illustrationTextSwapShown,
   illustrationTiming,
 } from "./illustration-tokens";
 import { useIllustrationSequence } from "./use-illustration-sequence";
@@ -28,23 +35,59 @@ const fade = {
   ease: illustrationEase,
 };
 
+const swap = {
+  duration: illustrationTiming.feedbackSec,
+  ease: illustrationEase,
+};
+
 /* -------------------------------------------------------------------------- */
 /* Content                                                                    */
 /* -------------------------------------------------------------------------- */
 
-const TASKS = [
-  { title: "Review homepage", label: "9:00 AM" },
-  { title: "Review mobile flow", label: "Next" },
-  { title: "Client feedback", label: "2:00 PM" },
+const SCREEN = "#F8F8F6";
+
+const TODAY = [
+  {
+    title: "Production deploy",
+    meta: "Live · api.comlabs",
+    icon: "layers" as const,
+  },
+  {
+    title: "Seat request · Acme",
+    meta: "Review · Billing",
+    icon: "spinner" as const,
+  },
+  {
+    title: "Usage limit alert",
+    meta: "Watching · 82% of plan",
+    icon: "pulse" as const,
+  },
+  {
+    title: "Webhook retry failed",
+    meta: "Payments · 3 attempts",
+    icon: "branch" as const,
+  },
+] as const;
+
+const YESTERDAY = [
+  {
+    title: "Invoice #1842 paid",
+    meta: "Billing · ₹2.4L",
+    icon: "doc" as const,
+  },
+  {
+    title: "Workspace created",
+    meta: "Northstar · 4 members",
+    icon: "layers" as const,
+  },
 ] as const;
 
 const CHECKLIST = [
-  "Review wireframes",
-  "Check navigation",
-  "Confirm copy",
+  "Verify workspace domain",
+  "Assign 12 seats",
+  "Attach Business plan",
+  "Notify workspace admin",
 ] as const;
-
-const NAV_ITEMS = ["Today", "Projects", "Profile"] as const;
 
 /* -------------------------------------------------------------------------- */
 /* Icons                                                                      */
@@ -150,25 +193,132 @@ function IconTick({ size = 8, color = illustrationColors.surface }: IconProps) {
   );
 }
 
-function NavGlyph({ index, active }: { index: number; active: boolean }) {
-  const color = active ? illustrationColors.accent : illustrationColors.inkFaint;
-  const paths = [
-    "M2 5.6 6 2.4l4 3.2V10H2V5.6Z",
-    "M2.6 3.2h6.8M2.6 6h6.8M2.6 8.8h4.4",
-    "M6 5.9a1.9 1.9 0 1 0 0-3.8 1.9 1.9 0 0 0 0 3.8ZM2.4 10c.5-1.8 1.9-2.7 3.6-2.7S9.1 8.2 9.6 10",
-  ];
+function IconLayers({ size = 10, color = illustrationColors.inkFaint }: IconProps) {
   return (
-    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
+    <svg width={size} height={size} viewBox="0 0 12 12" fill="none" aria-hidden>
       <path
-        d={paths[index]}
+        d="M6 1.8 10.2 4.1 6 6.4 1.8 4.1Z"
+        stroke={color}
+        strokeWidth="1.05"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M2.2 5.8 6 8 9.8 5.8"
+        stroke={color}
+        strokeWidth="1.05"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M2.2 7.6 6 9.8 9.8 7.6"
+        stroke={color}
+        strokeWidth="1.05"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function IconBranch({ size = 10, color = illustrationColors.inkFaint }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 12 12" fill="none" aria-hidden>
+      <circle cx="3.2" cy="3" r="1.3" stroke={color} strokeWidth="1.1" />
+      <circle cx="3.2" cy="9" r="1.3" stroke={color} strokeWidth="1.1" />
+      <circle cx="8.8" cy="6" r="1.3" stroke={color} strokeWidth="1.1" />
+      <path
+        d="M3.2 4.3v3.4M4.4 3.4c2.2 0 3.2 1.2 3.2 2.6"
+        stroke={color}
+        strokeWidth="1.1"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function IconSpinner({
+  size = 10,
+  color = illustrationColors.inkFaint,
+  spin = false,
+}: IconProps & { spin?: boolean }) {
+  return (
+    <motion.svg
+      width={size}
+      height={size}
+      viewBox="0 0 12 12"
+      fill="none"
+      aria-hidden
+      animate={spin ? { rotate: 360 } : undefined}
+      transition={spin ? { duration: 1.4, repeat: Infinity, ease: "linear" } : undefined}
+    >
+      {Array.from({ length: 8 }, (_, index) => {
+        const angle = (index / 8) * Math.PI * 2 - Math.PI / 2;
+        return (
+          <circle
+            key={index}
+            cx={6 + Math.cos(angle) * 3.6}
+            cy={6 + Math.sin(angle) * 3.6}
+            r="0.75"
+            fill={color}
+            opacity={(index + 1) / 8}
+          />
+        );
+      })}
+    </motion.svg>
+  );
+}
+
+function IconPulse({ size = 10, color = illustrationColors.inkFaint }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 12 12" fill="none" aria-hidden>
+      <path
+        d="M1.5 6.5H3.2L4.4 3.6 6.2 8.8 7.5 5.4 8.6 6.5H10.5"
         stroke={color}
         strokeWidth="1.15"
         strokeLinecap="round"
         strokeLinejoin="round"
-        fill={active && index === 0 ? "rgba(201,100,66,0.14)" : "none"}
       />
     </svg>
   );
+}
+
+function IconDoc({ size = 10, color = illustrationColors.inkFaint }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 12 12" fill="none" aria-hidden>
+      <path
+        d="M3.2 1.8h4.2L9.2 3.6v6.6H3.2V1.8Z"
+        stroke={color}
+        strokeWidth="1.1"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M7.2 1.8V3.8H9.2M4.4 6.2h3.2M4.4 8.2h2.4"
+        stroke={color}
+        strokeWidth="1.1"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+type InboxIcon = "layers" | "spinner" | "branch" | "pulse" | "doc";
+
+function TaskIcon({
+  name,
+  active,
+  spin,
+}: {
+  name: InboxIcon;
+  active: boolean;
+  spin: boolean;
+}) {
+  const color = active ? illustrationColors.inkMuted : illustrationColors.inkFaint;
+  if (name === "spinner") return <IconSpinner color={color} spin={spin} />;
+  if (name === "branch") return <IconBranch color={color} />;
+  if (name === "pulse") return <IconPulse color={color} />;
+  if (name === "doc") return <IconDoc color={color} />;
+  return <IconLayers color={color} />;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -231,7 +381,7 @@ function PhoneShell({
         className="relative flex h-full w-full flex-col overflow-hidden"
         style={{
           borderRadius: compact ? 17.5 : 20.5,
-          background: illustrationColors.surface,
+          background: SCREEN,
         }}
       >
         {children}
@@ -254,10 +404,10 @@ function StatusBar({ compact = false }: { compact?: boolean }) {
   return (
     <div
       className="relative flex h-[14px] shrink-0 items-center justify-between pr-2.5 pl-4 lg:h-[16px] lg:pl-[18px]"
-      style={{ background: illustrationColors.surface }}
+      style={{ background: SCREEN }}
     >
       <span
-        className="text-[7px] leading-none font-semibold lg:text-[8px]"
+        className="text-[7px] leading-none font-medium lg:text-[8px]"
         style={{ color: GRAPHITE }}
       >
         9:41
@@ -291,43 +441,86 @@ function StatusBar({ compact = false }: { compact?: boolean }) {
 /* Front phone — Today                                                        */
 /* -------------------------------------------------------------------------- */
 
-function TaskCard({
+function InboxRow({
   title,
-  label,
+  meta,
+  icon,
   selected,
+  spin,
+  index,
+  reduce,
 }: {
   title: string;
-  label: string;
+  meta: string;
+  icon: InboxIcon;
   selected: boolean;
+  spin: boolean;
+  index: number;
+  reduce: boolean;
 }) {
   return (
-    <div
-      className="flex items-center justify-between gap-2 px-2.5 py-3 lg:px-3 lg:py-3.5"
-      style={{
-        borderRadius: 9,
-        background: selected ? "rgba(201,100,66,0.06)" : illustrationColors.surface,
-        border: `1px solid ${
-          selected ? "rgba(201,100,66,0.26)" : "rgba(28,25,23,0.09)"
-        }`,
-        transition: "background 380ms ease, border-color 380ms ease",
+    <motion.div
+      initial={reduce ? false : { ...illustrationBlurHidden, y: 6 }}
+      animate={{ ...illustrationBlurShown, y: 0 }}
+      transition={{
+        ...fade,
+        delay: reduce ? 0 : index * illustrationTiming.staggerSec,
       }}
+      className="flex items-start gap-2.5 px-3 py-2.5 lg:gap-3 lg:px-4 lg:py-3"
+    >
+      <span className="mt-[1px] flex h-3 w-3 shrink-0 items-center justify-center lg:h-3.5 lg:w-3.5">
+        <TaskIcon name={icon} active={selected} spin={spin} />
+      </span>
+      <span className="flex min-w-0 flex-1 flex-col gap-1">
+        <span
+          className="truncate text-[8.5px] leading-none lg:text-[10px]"
+          style={{ color: illustrationColors.ink }}
+        >
+          {title}
+        </span>
+        <span className="relative h-[8px] overflow-hidden lg:h-[9px]">
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.span
+              key={meta}
+              initial={reduce ? false : illustrationTextSwapHidden}
+              animate={illustrationTextSwapShown}
+              exit={reduce ? undefined : illustrationTextSwapExit}
+              transition={swap}
+              className="absolute inset-0 truncate text-[7px] leading-none lg:text-[8px]"
+              style={{ color: illustrationColors.inkFaint }}
+            >
+              {meta}
+            </motion.span>
+          </AnimatePresence>
+        </span>
+      </span>
+    </motion.div>
+  );
+}
+
+function SegmentedControl() {
+  return (
+    <span
+      className="flex items-center rounded-full p-[2px]"
+      style={{ background: "rgba(28,25,23,0.06)" }}
     >
       <span
-        className="min-w-0 truncate text-[8.5px] leading-none font-medium lg:text-[10px]"
-        style={{ color: illustrationColors.ink }}
-      >
-        {title}
-      </span>
-      <span
-        className="shrink-0 text-[7.5px] leading-none lg:text-[8.5px]"
+        className="rounded-full px-2 py-[3px] text-[7px] leading-none lg:px-2.5 lg:text-[8px]"
         style={{
-          color: selected ? illustrationColors.accent : illustrationColors.inkFaint,
-          fontWeight: selected ? 500 : 400,
+          background: illustrationColors.surface,
+          color: illustrationColors.ink,
+          boxShadow: "0 1px 1px rgba(28,25,23,0.06)",
         }}
       >
-        {label}
+        Inbox
       </span>
-    </div>
+      <span
+        className="px-2 py-[3px] text-[7px] leading-none lg:px-2.5 lg:text-[8px]"
+        style={{ color: illustrationColors.inkFaint }}
+      >
+        Board
+      </span>
+    </span>
   );
 }
 
@@ -344,113 +537,103 @@ function FrontPhoneScreen({
     <>
       <StatusBar />
 
-      {/* App mark + section */}
-      <div className="flex shrink-0 items-center gap-2 px-3 pt-2 pb-3 lg:px-3.5 lg:pt-2.5 lg:pb-4">
+      <div className="grid shrink-0 grid-cols-[1fr_auto_1fr] items-center px-3 pt-1 pb-3 lg:px-4 lg:pb-4">
         <span
-          className="flex h-[15px] w-[15px] shrink-0 items-center justify-center lg:h-[17px] lg:w-[17px]"
+          className="flex h-[14px] w-[14px] items-center justify-center lg:h-4 lg:w-4"
           style={{
-            borderRadius: 5,
-            background: illustrationColors.accent,
+            borderRadius: 4,
+            background: GRAPHITE,
           }}
         >
           <span
-            className="block h-[6px] w-[6px] lg:h-[7px] lg:w-[7px]"
+            className="block h-[5px] w-[5px] lg:h-1.5 lg:w-1.5"
             style={{
-              borderRadius: 2,
-              background: illustrationColors.surface,
+              borderRadius: 1,
+              background: SCREEN,
             }}
           />
         </span>
+        <SegmentedControl />
         <span
-          className="text-[9px] leading-none font-medium lg:text-[10.5px]"
-          style={{ color: illustrationColors.ink }}
+          className="h-[14px] w-[14px] justify-self-end rounded-full lg:h-4 lg:w-4"
+          style={{
+            background: "rgba(28,25,23,0.10)",
+            boxShadow: "inset 0 0 0 0.5px rgba(28,25,23,0.08)",
+          }}
+        />
+      </div>
+
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+        <span
+          className="shrink-0 px-3 pb-1 text-[7.5px] leading-none lg:px-4 lg:text-[8.5px]"
+          style={{ color: illustrationColors.inkFaint }}
         >
           Today
         </span>
-      </div>
-
-      {/* Greeting + progress */}
-      <div className="flex shrink-0 flex-col gap-2 px-3 pb-4 lg:gap-2.5 lg:px-3.5 lg:pb-5">
+        {TODAY.map((item, index) => {
+          const selected = index === 1 && selectedTask;
+          return (
+            <InboxRow
+              key={item.title}
+              title={item.title}
+              meta={selected ? "Reviewing access · Acme" : item.meta}
+              icon={item.icon}
+              selected={selected}
+              spin={selected && !reduce}
+              index={index}
+              reduce={reduce}
+            />
+          );
+        })}
         <span
-          className="text-[10px] leading-none font-medium lg:text-[11.5px]"
-          style={{ color: illustrationColors.ink }}
+          className="shrink-0 px-3 pt-2 pb-1 text-[7.5px] leading-none lg:px-4 lg:pt-3 lg:text-[8.5px]"
+          style={{ color: illustrationColors.inkFaint }}
         >
-          Good morning, Arjun
+          Yesterday
         </span>
-        <span
-          className="text-[8px] leading-none lg:text-[9px]"
-          style={{ color: illustrationColors.inkMuted }}
-        >
-          2 of 4 tasks complete
-        </span>
-      </div>
-
-      {/* Task cards */}
-      <div className="flex min-h-0 flex-1 flex-col gap-2.5 px-3 lg:gap-3 lg:px-3.5">
-        {TASKS.map((task, index) => (
-          <TaskCard
-            key={task.title}
-            title={task.title}
-            label={task.label}
-            selected={index === 1 && selectedTask}
+        {YESTERDAY.map((item, index) => (
+          <InboxRow
+            key={item.title}
+            title={item.title}
+            meta={item.meta}
+            icon={item.icon}
+            selected={false}
+            spin={false}
+            index={TODAY.length + index}
+            reduce={reduce}
           />
         ))}
       </div>
 
-      {/* Bottom navigation */}
-      <div
-        className="mt-auto flex shrink-0 items-start justify-around border-t px-2 pt-2.5 pb-[10px] lg:pt-3 lg:pb-[11px]"
-        style={{
-          borderColor: "rgba(28,25,23,0.08)",
-          background: illustrationColors.surface,
-        }}
-      >
-        {NAV_ITEMS.map((item, index) => {
-          const active = index === 0;
-          return (
-            <span key={item} className="flex flex-col items-center gap-1">
-              <NavGlyph index={index} active={active} />
-              <span
-                className="text-[7px] leading-none lg:text-[8px]"
-                style={{
-                  color: active
-                    ? illustrationColors.accent
-                    : illustrationColors.inkFaint,
-                  fontWeight: active ? 500 : 400,
-                }}
-              >
-                {item}
-              </span>
-            </span>
-          );
-        })}
-      </div>
-
-      {/* Toast */}
       <AnimatePresence>
         {toastVisible ? (
           <motion.div
-            initial={reduce ? false : { opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={reduce ? false : { ...illustrationBlurHidden, y: 8 }}
+            animate={{ ...illustrationBlurShown, y: 0 }}
+            exit={reduce ? undefined : { ...illustrationBlurHidden, y: 8 }}
             transition={fade}
-            className="absolute inset-x-3 bottom-[38px] z-20 flex items-center gap-2 px-2.5 py-2 lg:bottom-[42px]"
+            className="absolute inset-x-3 bottom-3 z-20 flex items-center gap-2 px-2.5 py-2 lg:bottom-4"
             style={{
-              borderRadius: 8,
-              background: GRAPHITE,
-              boxShadow: "0 8px 20px -8px rgba(28,25,23,0.42)",
+              borderRadius: 10,
+              background: illustrationColors.surface,
+              border: `1px solid ${illustrationColors.border}`,
+              boxShadow: "0 8px 20px -10px rgba(28,25,23,0.28)",
             }}
           >
-            <span
+            <motion.span
+              initial={reduce ? false : illustrationPopHidden}
+              animate={illustrationPopShown}
+              transition={swap}
               className="flex h-[12px] w-[12px] shrink-0 items-center justify-center"
-              style={{ borderRadius: 999, background: illustrationColors.accent }}
+              style={{ borderRadius: 999, background: GRAPHITE }}
             >
               <IconTick size={7} />
-            </span>
+            </motion.span>
             <span
-              className="truncate text-[8px] leading-none font-medium lg:text-[9px]"
-              style={{ color: "#F7F7F4" }}
+              className="truncate text-[8px] leading-none lg:text-[9px]"
+              style={{ color: illustrationColors.ink }}
             >
-              Task updated
+              Request approved
             </span>
           </motion.div>
         ) : null}
@@ -463,40 +646,14 @@ function FrontPhoneScreen({
 /* Rear phone — task detail                                                   */
 /* -------------------------------------------------------------------------- */
 
-function ProductThumb() {
-  return (
-    <div
-      className="relative w-full overflow-hidden"
-      style={{
-        height: 40,
-        borderRadius: 8,
-        background: illustrationColors.surfaceWarm,
-        border: "1px solid rgba(28,25,23,0.08)",
-      }}
-    >
-      <svg
-        viewBox="0 0 120 48"
-        preserveAspectRatio="xMidYMid slice"
-        className="h-full w-full"
-        aria-hidden
-      >
-        <rect x="0" y="0" width="120" height="48" fill="#F5F0E8" />
-        <rect x="12" y="10" width="36" height="22" rx="3" fill="rgba(28,25,23,0.06)" />
-        <rect x="54" y="14" width="48" height="4" rx="2" fill="rgba(28,25,23,0.10)" />
-        <rect x="54" y="22" width="36" height="3" rx="1.5" fill="rgba(28,25,23,0.06)" />
-        <rect x="54" y="28" width="28" height="3" rx="1.5" fill="rgba(28,25,23,0.05)" />
-        <rect x="12" y="36" width="90" height="3" rx="1.5" fill="rgba(201,100,66,0.22)" />
-      </svg>
-    </div>
-  );
-}
-
 function RearPhoneScreen({
   detailVisible,
   checklistDone,
+  reduce,
 }: {
   detailVisible: boolean;
   checklistDone: number;
+  reduce: boolean;
 }) {
   if (!detailVisible) {
     return (
@@ -507,7 +664,7 @@ function RearPhoneScreen({
             className="text-[8px] leading-none lg:text-[9px]"
             style={{ color: illustrationColors.inkFaint }}
           >
-            Select a task
+            Open a request
           </span>
         </div>
       </>
@@ -518,92 +675,113 @@ function RearPhoneScreen({
     <>
       <StatusBar compact />
 
-      <div
-        className="flex shrink-0 items-center gap-2 border-b px-3 pt-2 pb-3 lg:px-3.5"
-        style={{ borderColor: "rgba(28,25,23,0.08)" }}
-      >
-        <IconChevronLeft size={9} />
+      <div className="flex shrink-0 items-center gap-2 px-3 pt-2 pb-3 lg:px-3.5">
+        <IconChevronLeft size={9} color={illustrationColors.inkMuted} />
         <span
-          className="truncate text-[9px] leading-none font-medium lg:text-[10.5px]"
+          className="truncate text-[9px] leading-none lg:text-[10px]"
           style={{ color: illustrationColors.ink }}
         >
-          Review mobile flow
+          Seat request
         </span>
       </div>
 
-      <div className="flex min-h-0 flex-1 flex-col gap-3 px-3 pt-3 lg:gap-3.5 lg:px-3.5 lg:pt-4">
-        <ProductThumb />
-
-        <div className="flex flex-col gap-1.5">
+      <motion.div
+        initial={reduce ? false : illustrationBlurHidden}
+        animate={illustrationBlurShown}
+        transition={fade}
+        className="flex min-h-0 flex-1 flex-col"
+      >
+        <div className="flex flex-col gap-1 px-3 pb-2 lg:px-3.5">
           <span
             className="text-[8px] leading-none lg:text-[9px]"
-            style={{ color: illustrationColors.inkFaint }}
-          >
-            Project
-          </span>
-          <span
-            className="text-[9px] leading-none font-medium lg:text-[10.5px]"
             style={{ color: illustrationColors.ink }}
           >
-            Comlabs Mobile
+            Acme Corp
+          </span>
+          <span
+            className="text-[7px] leading-none lg:text-[8px]"
+            style={{ color: illustrationColors.inkFaint }}
+          >
+            In review · 12 seats
           </span>
         </div>
 
-        <span
-          className="text-[8px] leading-none lg:text-[9px]"
-          style={{ color: illustrationColors.accent }}
-        >
-          Due today
-        </span>
-
-        <div className="flex flex-col gap-2.5 pt-1">
-          {CHECKLIST.map((item, index) => {
-            const done = index < checklistDone;
-            return (
-              <span key={item} className="flex items-center gap-2.5">
-                <span
-                  className="flex h-[12px] w-[12px] shrink-0 items-center justify-center lg:h-[13px] lg:w-[13px]"
-                  style={{
-                    borderRadius: 3,
-                    background: done ? illustrationColors.accent : "transparent",
-                    border: `1px solid ${
-                      done ? illustrationColors.accent : "rgba(28,25,23,0.16)"
-                    }`,
-                    transition: "background 320ms ease, border-color 320ms ease",
-                  }}
-                >
-                  {done ? <IconTick size={7} /> : null}
-                </span>
-                <span
-                  className="truncate text-[8px] leading-none lg:text-[9.5px]"
-                  style={{
-                    color: done
-                      ? illustrationColors.inkFaint
-                      : illustrationColors.inkMuted,
-                    textDecoration: done ? "line-through" : "none",
-                  }}
-                >
-                  {item}
-                </span>
-              </span>
-            );
-          })}
+        <div className="flex flex-col gap-1 px-3 pb-3 lg:px-3.5">
+          <span
+            className="text-[7px] leading-none lg:text-[8px]"
+            style={{ color: illustrationColors.inkMuted }}
+          >
+            A. Rao · Owner
+          </span>
+          <span
+            className="text-[7.5px] leading-none lg:text-[8.5px]"
+            style={{ color: illustrationColors.inkFaint }}
+          >
+            Business plan · Monthly
+          </span>
         </div>
-      </div>
 
-      <div className="mt-auto shrink-0 px-3 pt-2 pb-[10px] lg:px-3.5 lg:pb-[11px]">
+        {CHECKLIST.map((item, index) => {
+          const done = index < checklistDone;
+          return (
+            <motion.span
+              key={item}
+              initial={reduce ? false : { ...illustrationBlurHidden, y: 4 }}
+              animate={{ ...illustrationBlurShown, y: 0 }}
+              transition={{
+                ...fade,
+                delay: reduce ? 0 : 0.08 + index * illustrationTiming.staggerSec,
+              }}
+              className="flex items-center gap-2.5 px-3 py-2 lg:px-3.5 lg:py-2.5"
+            >
+              <span
+                className="flex h-[11px] w-[11px] shrink-0 items-center justify-center lg:h-3 lg:w-3"
+                style={{
+                  borderRadius: 999,
+                  background: done ? GRAPHITE : "transparent",
+                  border: `1px solid ${done ? GRAPHITE : "rgba(28,25,23,0.16)"}`,
+                  transition: "background 200ms ease, border-color 200ms ease",
+                }}
+              >
+                <AnimatePresence>
+                  {done ? (
+                    <motion.span
+                      initial={reduce ? false : illustrationPopHidden}
+                      animate={illustrationPopShown}
+                      transition={swap}
+                      className="flex"
+                    >
+                      <IconTick size={6} />
+                    </motion.span>
+                  ) : null}
+                </AnimatePresence>
+              </span>
+              <span
+                className="truncate text-[8px] leading-none lg:text-[9px]"
+                style={{
+                  color: done ? illustrationColors.inkFaint : illustrationColors.ink,
+                }}
+              >
+                {item}
+              </span>
+            </motion.span>
+          );
+        })}
+      </motion.div>
+
+      <div className="mt-auto shrink-0 px-3 pt-2 pb-3 lg:px-3.5 lg:pb-3.5">
         <span
-          className="flex h-[22px] items-center justify-center lg:h-[24px]"
+          className="flex h-[22px] items-center justify-center lg:h-6"
           style={{
-            borderRadius: 6,
-            background: illustrationColors.accent,
+            borderRadius: 999,
+            background: GRAPHITE,
           }}
         >
           <span
-            className="text-[8px] leading-none font-medium lg:text-[9px]"
-            style={{ color: illustrationColors.surface }}
+            className="text-[8px] leading-none lg:text-[9px]"
+            style={{ color: SCREEN }}
           >
-            Mark complete
+            Approve
           </span>
         </span>
       </div>
@@ -674,6 +852,7 @@ export function MobileAppIllustration() {
           <RearPhoneScreen
             detailVisible={detailVisible}
             checklistDone={checklistDone}
+            reduce={reduce}
           />
         </PhoneShell>
       </div>

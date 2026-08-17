@@ -20,10 +20,17 @@ import {
   useIllustrationState,
 } from "./service-illustration-frame";
 import {
+  illustrationBlurHidden,
+  illustrationBlurShown,
   illustrationColors,
   illustrationEase,
+  illustrationPopHidden,
+  illustrationPopShown,
   illustrationRadius,
   illustrationShadow,
+  illustrationTextSwapExit,
+  illustrationTextSwapHidden,
+  illustrationTextSwapShown,
   illustrationTiming,
 } from "./illustration-tokens";
 import { useIllustrationSequence } from "./use-illustration-sequence";
@@ -157,8 +164,8 @@ export function AppliedAiIllustration() {
             <AnimatePresence>
               {draftReady ? (
                 <motion.div
-                  initial={reduce ? false : { opacity: 0, y: 3 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  initial={reduce ? false : { ...illustrationBlurHidden, y: 3 }}
+                  animate={{ ...illustrationBlurShown, y: 0 }}
                   transition={fade}
                   className="flex flex-col gap-[3px] border-t pt-1.5"
                   style={{ borderColor: "rgba(201,100,66,0.14)" }}
@@ -217,10 +224,10 @@ export function AppliedAiIllustration() {
             <AnimatePresence mode="wait" initial={false}>
               <motion.span
                 key={approved ? "approved" : reviewRequired ? "review" : "queued"}
-                initial={reduce ? false : { opacity: 0, y: 2 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={reduce ? undefined : { opacity: 0, y: -2 }}
-                transition={{ duration: 0.2, ease: illustrationEase }}
+                initial={reduce ? false : illustrationTextSwapHidden}
+                animate={illustrationTextSwapShown}
+                exit={reduce ? undefined : illustrationTextSwapExit}
+                transition={{ duration: illustrationTiming.feedbackSec, ease: illustrationEase }}
                 className="flex min-w-0 flex-col gap-[2px]"
               >
                 <span
@@ -289,8 +296,8 @@ export function AppliedAiIllustration() {
             <AnimatePresence>
               {executed ? (
                 <motion.span
-                  initial={reduce ? false : { opacity: 0 }}
-                  animate={{ opacity: 1 }}
+                  initial={reduce ? false : illustrationPopHidden}
+                  animate={illustrationPopShown}
                   transition={fade}
                 >
                   <Chip tone="accent" size="compact">
@@ -314,7 +321,7 @@ export function AppliedAiIllustration() {
                   animate={{
                     opacity: approved || executed ? 1 : 0.45,
                   }}
-                  transition={{ duration: 0.3, ease: illustrationEase }}
+                  transition={{ duration: illustrationTiming.feedbackSec, ease: illustrationEase }}
                   className="flex items-center gap-1.5 px-2 py-[5px]"
                   style={{
                     borderRadius: illustrationRadius.chip,

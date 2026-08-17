@@ -17,6 +17,8 @@ import {
 import {
   illustrationColors,
   illustrationEase,
+  illustrationPopHidden,
+  illustrationPopShown,
   illustrationRadius,
   illustrationTiming,
 } from "./illustration-tokens";
@@ -160,10 +162,13 @@ export function CustomCraftIllustration() {
                     <motion.div
                       key={lineIndex}
                       initial={false}
-                      animate={{ opacity: shown ? 1 : 0 }}
+                      animate={{
+                        opacity: shown ? 1 : 0,
+                        filter: shown ? "blur(0px)" : "blur(2px)",
+                      }}
                       transition={{
                         ...fade,
-                        delay: reduce ? 0 : (lineIndex - 1) * 0.07,
+                        delay: reduce ? 0 : (lineIndex - 1) * illustrationTiming.staggerSec,
                       }}
                       className="flex items-center gap-1.5"
                     >
@@ -218,8 +223,8 @@ export function CustomCraftIllustration() {
             <AnimatePresence>
               {handoffReady ? (
                 <motion.span
-                  initial={reduce ? false : { opacity: 0, scale: 0.94 }}
-                  animate={{ opacity: 1, scale: 1 }}
+                  initial={reduce ? false : illustrationPopHidden}
+                  animate={illustrationPopShown}
                   transition={fade}
                 >
                   <Chip tone="accent">

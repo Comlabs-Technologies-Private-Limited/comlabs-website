@@ -20,8 +20,12 @@ import {
   useIllustrationState,
 } from "./service-illustration-frame";
 import {
+  illustrationBlurHidden,
+  illustrationBlurShown,
   illustrationColors,
   illustrationEase,
+  illustrationPopHidden,
+  illustrationPopShown,
   illustrationRadius,
   illustrationShadow,
   illustrationTiming,
@@ -158,8 +162,8 @@ export function CustomSoftwareIllustration() {
               <AnimatePresence>
                 {isLive ? (
                   <motion.span
-                    initial={reduce ? false : { opacity: 0, scale: 0.94 }}
-                    animate={{ opacity: 1, scale: 1 }}
+                    initial={reduce ? false : illustrationPopHidden}
+                    animate={illustrationPopShown}
                     transition={fade}
                     className="flex shrink-0 items-center"
                   >
@@ -209,7 +213,7 @@ export function CustomSoftwareIllustration() {
                     initial={false}
                     animate={{ scaleX: stageIndex / (STAGES.length - 1) }}
                     transition={
-                      reduce ? { duration: 0 } : { duration: 0.42, ease: illustrationEase }
+                      reduce ? { duration: 0 } : fade
                     }
                   />
 
@@ -219,12 +223,12 @@ export function CustomSoftwareIllustration() {
                         {index === stageIndex ? (
                           <motion.div
                             layoutId="workflow-record"
-                            initial={reduce ? false : { opacity: 0, y: 4 }}
-                            animate={{ opacity: 1, y: 0 }}
+                            initial={reduce ? false : { ...illustrationBlurHidden, y: 4 }}
+                            animate={{ ...illustrationBlurShown, y: 0 }}
                             transition={
                               reduce
                                 ? { duration: 0 }
-                                : { duration: 0.42, ease: illustrationEase }
+                                : fade
                             }
                             className="inline-flex max-w-full items-center gap-1 px-1.5 py-1 lg:gap-1.5 lg:px-2 lg:py-1.5"
                             style={{
@@ -394,9 +398,9 @@ export function CustomSoftwareIllustration() {
             <AnimatePresence>
               {toastVisible ? (
                 <motion.div
-                  initial={reduce ? false : { opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={reduce ? undefined : { opacity: 0, y: 4 }}
+                  initial={reduce ? false : { ...illustrationBlurHidden, y: 8 }}
+                  animate={{ ...illustrationBlurShown, y: 0 }}
+                  exit={reduce ? undefined : { ...illustrationBlurHidden, y: 8 }}
                   transition={fade}
                   className="absolute bottom-2 left-1/2 z-20 flex max-w-[calc(100%-16px)] -translate-x-1/2 items-center gap-2 border border-white/60 bg-white/50 px-2.5 py-1.5 shadow-[0_8px_24px_-8px_rgba(28,25,23,0.18),inset_0_1px_0_rgba(255,255,255,0.72)] backdrop-blur-md backdrop-saturate-150 lg:bottom-2.5 lg:px-3 lg:py-2"
                   style={{ borderRadius: illustrationRadius.control }}

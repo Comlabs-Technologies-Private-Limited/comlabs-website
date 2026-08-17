@@ -19,6 +19,10 @@ import {
   illustrationEase,
   illustrationRadius,
   illustrationShadow,
+  illustrationSwap,
+  illustrationTextSwapExit,
+  illustrationTextSwapHidden,
+  illustrationTextSwapShown,
 } from "./illustration-tokens";
 import { useIllustrationSequence } from "./use-illustration-sequence";
 
@@ -191,10 +195,10 @@ export function CloudScalingIllustration() {
               <AnimatePresence mode="wait" initial={false}>
                 <motion.span
                   key={trafficHigh ? "high" : "base"}
-                  initial={reduce ? false : { opacity: 0, y: 3 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={reduce ? undefined : { opacity: 0, y: -3 }}
-                  transition={{ duration: 0.24, ease: illustrationEase }}
+                  initial={reduce ? false : illustrationTextSwapHidden}
+                  animate={illustrationTextSwapShown}
+                  exit={reduce ? undefined : illustrationTextSwapExit}
+                  transition={illustrationSwap}
                   className="text-[9px] leading-none font-medium tabular-nums lg:text-[11px]"
                   style={{ color: illustrationColors.ink }}
                 >
@@ -218,13 +222,15 @@ export function CloudScalingIllustration() {
                   key={index}
                   className="block flex-1"
                   initial={false}
-                  animate={{ height: filled ? 6 : 2 }}
+                  animate={{ scaleY: filled ? 1 : 1 / 3 }}
                   transition={{
-                    duration: reduce ? 0 : 0.4,
+                    duration: reduce ? 0 : illustrationSwap.duration,
                     delay: reduce ? 0 : index * 0.012,
                     ease: illustrationEase,
                   }}
                   style={{
+                    height: 6,
+                    originY: 1,
                     borderRadius: 999,
                     background: filled
                       ? illustrationColors.accent
@@ -271,10 +277,11 @@ export function CloudScalingIllustration() {
                   initial={false}
                   animate={{
                     opacity: visible ? 1 : 0.3,
-                    scale: visible ? 1 : 0.96,
+                    scale: visible ? 1 : 0.95,
+                    filter: visible ? "blur(0px)" : "blur(2px)",
                   }}
                   transition={{
-                    duration: reduce ? 0 : 0.42,
+                    duration: reduce ? 0 : illustrationSwap.duration,
                     ease: illustrationEase,
                   }}
                 >

@@ -49,10 +49,68 @@ export const illustrationTiming = {
   startDelayMs: 200,
   /** Gap between narrative steps — paced so each change is read before the next. */
   stepMs: 900,
-  /** Standard element transition. */
-  transitionSec: 0.5,
-  /** Faster feedback transition for toggles and status flips. */
-  feedbackSec: 0.3,
+  /** Standard element transition (marketing/explanatory). */
+  transitionSec: 0.4,
+  /** Status flips and in-place swaps — stay under 300ms. */
+  feedbackSec: 0.2,
+  /** Delay between staggered siblings. */
+  staggerSec: 0.05,
+} as const;
+
+export const illustrationFade = {
+  duration: illustrationTiming.transitionSec,
+  ease: illustrationEase,
+} as const;
+
+export const illustrationSwap = {
+  duration: illustrationTiming.feedbackSec,
+  ease: illustrationEase,
+} as const;
+
+/**
+ * Crossfade with a 2px blur so old/new states don't read as two overlapping
+ * objects (Emil: blur masks imperfect transitions; transitions.dev skeleton reveal).
+ */
+export const illustrationBlurHidden = {
+  opacity: 0,
+  filter: "blur(2px)",
+} as const;
+
+export const illustrationBlurShown = {
+  opacity: 1,
+  filter: "blur(0px)",
+} as const;
+
+/** Status text swap — old exits up, new enters from below. */
+export const illustrationTextSwapHidden = {
+  opacity: 0,
+  y: 4,
+  filter: "blur(2px)",
+} as const;
+
+export const illustrationTextSwapShown = {
+  opacity: 1,
+  y: 0,
+  filter: "blur(0px)",
+} as const;
+
+export const illustrationTextSwapExit = {
+  opacity: 0,
+  y: -4,
+  filter: "blur(2px)",
+} as const;
+
+/** Chip / pill entrance. Never scale(0) — start from a visible 0.95. */
+export const illustrationPopHidden = {
+  opacity: 0,
+  scale: 0.95,
+  filter: "blur(2px)",
+} as const;
+
+export const illustrationPopShown = {
+  opacity: 1,
+  scale: 1,
+  filter: "blur(0px)",
 } as const;
 
 /** Viewport trigger shared by every illustration frame. */

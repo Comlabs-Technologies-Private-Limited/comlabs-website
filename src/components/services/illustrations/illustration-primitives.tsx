@@ -61,7 +61,7 @@ export function MicroLabel({
   return (
     <span
       className={cn(
-        "block text-[8px] font-medium tracking-[0.14em] uppercase lg:text-[9.5px]",
+        "block text-[8px] font-medium lg:text-[9.5px]",
         className,
       )}
       style={{ color }}

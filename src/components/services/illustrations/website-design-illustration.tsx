@@ -15,10 +15,16 @@ import {
   useIllustrationState,
 } from "./service-illustration-frame";
 import {
+  illustrationBlurHidden,
+  illustrationBlurShown,
   illustrationColors,
   illustrationEase,
+  illustrationPopHidden,
+  illustrationPopShown,
   illustrationRadius,
   illustrationShadow,
+  illustrationTextSwapHidden,
+  illustrationTextSwapShown,
   illustrationTiming,
 } from "./illustration-tokens";
 import { useIllustrationSequence } from "./use-illustration-sequence";
@@ -141,8 +147,8 @@ export function WebsiteDesignIllustration() {
               <AnimatePresence>
                 {complete ? (
                   <motion.span
-                    initial={reduce ? false : { opacity: 0, scale: 0.94 }}
-                    animate={{ opacity: 1, scale: 1 }}
+                    initial={reduce ? false : illustrationPopHidden}
+                    animate={illustrationPopShown}
                     transition={fade}
                     className="hidden lg:block"
                   >
@@ -205,10 +211,10 @@ export function WebsiteDesignIllustration() {
                     {guidesVisible ? (
                       <motion.div
                         key="guides"
-                        initial={reduce ? false : { opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={reduce ? undefined : { opacity: 0 }}
-                        transition={{ duration: 0.22, ease: illustrationEase }}
+                        initial={reduce ? false : illustrationBlurHidden}
+                        animate={illustrationBlurShown}
+                        exit={reduce ? undefined : illustrationBlurHidden}
+                        transition={{ duration: illustrationTiming.feedbackSec, ease: illustrationEase }}
                         className="pointer-events-none absolute -inset-1"
                       >
                         <span
@@ -279,11 +285,11 @@ export function WebsiteDesignIllustration() {
                         {cardsResolved ? (
                           <motion.div
                             key="card-live"
-                            initial={reduce ? false : { opacity: 0, y: 3 }}
-                            animate={{ opacity: 1, y: 0 }}
+                            initial={reduce ? false : illustrationTextSwapHidden}
+                            animate={illustrationTextSwapShown}
                             transition={{
                               ...fade,
-                              delay: reduce ? 0 : index * 0.07,
+                              delay: reduce ? 0 : index * illustrationTiming.staggerSec,
                             }}
                             className="flex h-full flex-col gap-[5px] p-1.5 lg:p-2"
                             style={{
@@ -317,7 +323,7 @@ export function WebsiteDesignIllustration() {
                           <motion.div
                             key="card-wire"
                             initial={false}
-                            exit={reduce ? undefined : { opacity: 0 }}
+                            exit={reduce ? undefined : illustrationBlurHidden}
                             transition={fade}
                             className="h-full"
                           >
@@ -420,8 +426,8 @@ export function WebsiteDesignIllustration() {
           <AnimatePresence>
             {complete ? (
               <motion.div
-                initial={reduce ? false : { opacity: 0, y: 4 }}
-                animate={{ opacity: 1, y: 0 }}
+                initial={reduce ? false : { ...illustrationPopHidden, y: 4 }}
+                animate={{ ...illustrationPopShown, y: 0 }}
                 transition={fade}
                 className="absolute bottom-1 left-1 lg:bottom-2 lg:left-2"
               >

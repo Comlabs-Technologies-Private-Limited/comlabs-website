@@ -29,7 +29,7 @@ export const serviceIllustrations: Record<string, ServiceIllustration> = {
   "mobile-app": {
     Component: MobileAppIllustration,
     label:
-      "Mobile app illustration: a field operations app where a technician updates a job status from a bottom sheet, confirms it, and the record syncs.",
+      "Mobile app illustration: a SaaS inbox where a seat request is reviewed, approved, and confirmed across a list and detail view.",
   },
   "seo-aeo": {
     Component: SeoAeoIllustration,

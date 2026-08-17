@@ -16,9 +16,16 @@ import {
   useIllustrationState,
 } from "./service-illustration-frame";
 import {
+  illustrationBlurHidden,
+  illustrationBlurShown,
   illustrationColors,
   illustrationEase,
+  illustrationPopHidden,
+  illustrationPopShown,
   illustrationShadow,
+  illustrationTextSwapExit,
+  illustrationTextSwapHidden,
+  illustrationTextSwapShown,
   illustrationTiming,
 } from "./illustration-tokens";
 import { useIllustrationSequence } from "./use-illustration-sequence";
@@ -404,6 +411,208 @@ function CitationSearchBar({
   );
 }
 
+/** Search Console sidebar icons, drawn to read at 8px. */
+function GscIcon({
+  name,
+}: {
+  name: "vitals" | "lock" | "layers" | "links";
+}) {
+  const stroke = illustrationColors.inkMuted;
+  const props = {
+    width: 8,
+    height: 8,
+    viewBox: "0 0 12 12",
+    fill: "none" as const,
+    className: "shrink-0",
+    "aria-hidden": true as const,
+  };
+
+  if (name === "vitals") {
+    return (
+      <svg {...props}>
+        <path
+          d="M2.8 8.6a3.8 3.8 0 1 1 6.4 0"
+          stroke={stroke}
+          strokeWidth="1.15"
+          strokeLinecap="round"
+        />
+        <path
+          d="M6 7.4 7.8 5.2"
+          stroke={stroke}
+          strokeWidth="1.15"
+          strokeLinecap="round"
+        />
+      </svg>
+    );
+  }
+
+  if (name === "lock") {
+    return (
+      <svg {...props}>
+        <rect
+          x="3"
+          y="5.4"
+          width="6"
+          height="4.4"
+          rx="1"
+          stroke={stroke}
+          strokeWidth="1.15"
+        />
+        <path
+          d="M4.4 5.4V4.2a1.6 1.6 0 0 1 3.2 0v1.2"
+          stroke={stroke}
+          strokeWidth="1.15"
+          strokeLinecap="round"
+        />
+      </svg>
+    );
+  }
+
+  if (name === "layers") {
+    return (
+      <svg {...props}>
+        <path
+          d="M6 1.6 10.2 4 6 6.4 1.8 4Z"
+          stroke={stroke}
+          strokeWidth="1.05"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M2.2 5.8 6 8 9.8 5.8"
+          stroke={stroke}
+          strokeWidth="1.05"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M2.2 7.6 6 9.8 9.8 7.6"
+          stroke={stroke}
+          strokeWidth="1.05"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    );
+  }
+
+  return (
+    <svg {...props}>
+      <path
+        d="M4.8 7.4 3.6 8.6a1.6 1.6 0 1 1-2.2-2.2L2.6 5.2"
+        stroke={stroke}
+        strokeWidth="1.15"
+        strokeLinecap="round"
+      />
+      <path
+        d="M7.2 4.6 8.4 3.4a1.6 1.6 0 1 1 2.2 2.2L9.4 6.8"
+        stroke={stroke}
+        strokeWidth="1.15"
+        strokeLinecap="round"
+      />
+      <path
+        d="M5 7 7 5"
+        stroke={stroke}
+        strokeWidth="1.15"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function NavChevron({ expanded }: { expanded: boolean }) {
+  return (
+    <svg width="6" height="6" viewBox="0 0 12 12" fill="none" aria-hidden className="shrink-0">
+      <path
+        d={expanded ? "M2.5 8 6 4.5 9.5 8" : "M2.5 4.5 6 8 9.5 4.5"}
+        stroke={illustrationColors.inkFaint}
+        strokeWidth="1.4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+const GSC_GROUPS = [
+  {
+    label: "Experience",
+    expanded: true,
+    items: [
+      { label: "Core Web Vitals", icon: "vitals" as const },
+      { label: "HTTPS", icon: "lock" as const },
+    ],
+  },
+  {
+    label: "Enhancements",
+    expanded: true,
+    items: [{ label: "Breadcrumbs", icon: "layers" as const }],
+  },
+  {
+    label: "Security & Manual Actions",
+    expanded: false,
+    items: [] as { label: string; icon: "vitals" | "lock" | "layers" | "links" }[],
+  },
+] as const;
+
+/** Search Console sidebar — Experience, Enhancements, Security, Links. */
+function SearchConsoleNav() {
+  return (
+    <div
+      className="flex min-h-0 flex-1 flex-col overflow-hidden border-t pt-1"
+      style={{ borderColor: illustrationColors.border }}
+    >
+      {GSC_GROUPS.map((group) => (
+        <div
+          key={group.label}
+          className="border-b"
+          style={{ borderColor: illustrationColors.border }}
+        >
+          <div className="flex items-center justify-between gap-1.5 px-2 py-1.5 lg:px-2.5">
+            <span
+              className="min-w-0 truncate text-[6.5px] leading-none lg:text-[7.5px]"
+              style={{ color: illustrationColors.inkMuted }}
+            >
+              {group.label}
+            </span>
+            <NavChevron expanded={group.expanded} />
+          </div>
+          {group.expanded ? (
+            <div className="flex flex-col gap-1 pb-1.5">
+              {group.items.map((item) => (
+                <div
+                  key={item.label}
+                  className="flex items-center gap-1.5 py-1 pr-2 pl-4 lg:pr-2.5 lg:pl-5"
+                >
+                  <span className="flex h-2 w-2 shrink-0 items-center justify-center">
+                    <GscIcon name={item.icon} />
+                  </span>
+                  <span
+                    className="min-w-0 truncate text-[6.5px] leading-none lg:text-[7.5px]"
+                    style={{ color: illustrationColors.ink }}
+                  >
+                    {item.label}
+                  </span>
+                </div>
+              ))}
+            </div>
+          ) : null}
+        </div>
+      ))}
+      <div className="flex items-center gap-1.5 px-2 py-1.5 lg:px-2.5">
+        <span className="flex h-2 w-2 shrink-0 items-center justify-center">
+          <GscIcon name="links" />
+        </span>
+        <span
+          className="min-w-0 truncate text-[6.5px] leading-none lg:text-[7.5px]"
+          style={{ color: illustrationColors.ink }}
+        >
+          Links
+        </span>
+      </div>
+    </div>
+  );
+}
+
 export function SeoAeoIllustration() {
   const { active, reduce } = useIllustrationState();
   const step = useIllustrationSequence({
@@ -493,9 +702,9 @@ export function SeoAeoIllustration() {
               <AnimatePresence mode="wait" initial={false}>
                 <motion.span
                   key={indexed ? "indexed" : "crawled"}
-                  initial={reduce ? false : { opacity: 0, y: 2 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={reduce ? undefined : { opacity: 0, y: -2 }}
+                  initial={reduce ? false : illustrationTextSwapHidden}
+                  animate={illustrationTextSwapShown}
+                  exit={reduce ? undefined : illustrationTextSwapExit}
                   transition={{ duration: 0.2, ease: illustrationEase }}
                   className="flex shrink-0 items-center"
                 >
@@ -507,38 +716,50 @@ export function SeoAeoIllustration() {
               </AnimatePresence>
             </div>
 
-            <div className="flex flex-1 flex-col gap-1.5 p-2 lg:p-2.5">
-              <MicroLabel tone="faint">Structured coverage</MicroLabel>
-              {DOC_SECTIONS.map((section, index) => (
-                <div key={section.label} className="flex items-center justify-between gap-2">
-                  <span
-                    className="min-w-0 truncate text-[7.5px] leading-none lg:text-[9px]"
-                    style={{ color: illustrationColors.ink }}
+            <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+              <div className="flex shrink-0 flex-col p-2 pb-2.5 lg:p-2.5 lg:pb-3">
+                <MicroLabel tone="faint" className="mb-1.5 leading-none">
+                  Structured coverage
+                </MicroLabel>
+                <div className="flex flex-col gap-1">
+                {DOC_SECTIONS.map((section, index) => (
+                  <div
+                    key={section.label}
+                    className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2"
                   >
-                    {section.label}
-                  </span>
-                  <AnimatePresence>
-                    {optimised ? (
-                      <motion.span
-                        initial={reduce ? false : { opacity: 0, scale: 0.96 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{
-                          ...fade,
-                          delay: reduce ? 0 : index * 0.06,
-                        }}
-                        className="shrink-0"
-                      >
-                        <SchemaPill>{section.schema}</SchemaPill>
-                      </motion.span>
-                    ) : (
-                      <span
-                        className="block h-[3px] w-6 shrink-0 rounded-full"
-                        style={{ background: illustrationColors.wire }}
-                      />
-                    )}
-                  </AnimatePresence>
+                    <span
+                      className="min-w-0 truncate text-[7.5px] leading-none lg:text-[9px]"
+                      style={{ color: illustrationColors.ink }}
+                    >
+                      {section.label}
+                    </span>
+                    <span className="flex h-4 shrink-0 items-center justify-end">
+                      <AnimatePresence>
+                        {optimised ? (
+                          <motion.span
+                            initial={reduce ? false : illustrationPopHidden}
+                            animate={illustrationPopShown}
+                            transition={{
+                              ...fade,
+                              delay: reduce ? 0 : index * illustrationTiming.staggerSec,
+                            }}
+                            className="flex items-center"
+                          >
+                            <SchemaPill>{section.schema}</SchemaPill>
+                          </motion.span>
+                        ) : (
+                          <span
+                            className="block h-[3px] w-6 rounded-full"
+                            style={{ background: illustrationColors.wire }}
+                          />
+                        )}
+                      </AnimatePresence>
+                    </span>
+                  </div>
+                ))}
                 </div>
-              ))}
+              </div>
+              <SearchConsoleNav />
             </div>
           </Panel>
 
@@ -586,9 +807,9 @@ export function SeoAeoIllustration() {
                   {optimised ? (
                     <motion.div
                       key="result"
-                      initial={reduce ? false : { opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={reduce ? undefined : { opacity: 0 }}
+                      initial={reduce ? false : illustrationBlurHidden}
+                      animate={illustrationBlurShown}
+                      exit={reduce ? undefined : illustrationBlurHidden}
                       transition={fade}
                       className="absolute inset-2 lg:inset-2.5"
                     >
@@ -636,7 +857,7 @@ export function SeoAeoIllustration() {
                     <motion.div
                       key="loader"
                       initial={false}
-                      exit={reduce ? undefined : { opacity: 0 }}
+                      exit={reduce ? undefined : illustrationBlurHidden}
                       transition={swap}
                       className="absolute inset-2 flex items-center lg:inset-2.5"
                     >
@@ -666,16 +887,32 @@ export function SeoAeoIllustration() {
                 >
                   ChatGPT
                 </span>
-                <span
-                  className="ml-auto text-[6px] leading-none lg:text-[7.5px]"
-                  style={{
-                    color: illustrationColors.inkFaint,
-                    opacity: answerLoading ? 1 : 0,
-                    transition: "opacity 400ms ease",
-                  }}
-                >
-                  Responding…
-                </span>
+                {answerLoading && !reduce ? (
+                  <motion.span
+                    className="ml-auto text-[6px] leading-none lg:text-[7.5px]"
+                    style={{
+                      backgroundImage: `linear-gradient(90deg, ${illustrationColors.inkFaint} 0%, ${illustrationColors.ink} 50%, ${illustrationColors.inkFaint} 100%)`,
+                      backgroundSize: "200% 100%",
+                      WebkitBackgroundClip: "text",
+                      backgroundClip: "text",
+                      color: "transparent",
+                    }}
+                    animate={{ backgroundPosition: ["200% 0%", "-200% 0%"] }}
+                    transition={{ duration: 1.6, repeat: Infinity, ease: "linear" }}
+                  >
+                    Responding…
+                  </motion.span>
+                ) : (
+                  <span
+                    className="ml-auto text-[6px] leading-none lg:text-[7.5px]"
+                    style={{
+                      color: illustrationColors.inkFaint,
+                      opacity: answerLoading ? 1 : 0,
+                    }}
+                  >
+                    Responding…
+                  </span>
+                )}
               </div>
               <div className="flex min-h-0 flex-1 flex-col gap-1 p-2 lg:gap-1.5 lg:p-2.5">
                 <div className="relative min-h-0 flex-1 overflow-hidden">
@@ -683,9 +920,9 @@ export function SeoAeoIllustration() {
                     {answerVisible ? (
                       <motion.span
                         key="answer"
-                        initial={reduce ? false : { opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={reduce ? undefined : { opacity: 0 }}
+                        initial={reduce ? false : illustrationBlurHidden}
+                        animate={illustrationBlurShown}
+                        exit={reduce ? undefined : illustrationBlurHidden}
                         transition={fade}
                         className="absolute inset-0 block text-[6.5px] leading-[1.4] lg:text-[7.5px]"
                         style={{ color: illustrationColors.inkMuted }}
@@ -695,9 +932,9 @@ export function SeoAeoIllustration() {
                     ) : answerLoading ? (
                       <motion.div
                         key="answer-loading"
-                        initial={reduce ? false : { opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={reduce ? undefined : { opacity: 0 }}
+                        initial={reduce ? false : illustrationBlurHidden}
+                        animate={illustrationBlurShown}
+                        exit={reduce ? undefined : illustrationBlurHidden}
                         transition={swap}
                         className="absolute inset-0 flex items-center"
                       >
@@ -715,23 +952,6 @@ export function SeoAeoIllustration() {
             </Panel>
           </div>
         </div>
-
-        {/* Resolution */}
-        <AnimatePresence>
-          {complete ? (
-            <motion.div
-              initial={reduce ? false : { opacity: 0, y: 4 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={fade}
-              className="shrink-0"
-            >
-              <Chip tone="accent" size="compact">
-                <CheckGlyph size={6} />
-                Visible across search & AI
-              </Chip>
-            </motion.div>
-          ) : null}
-        </AnimatePresence>
       </div>
     </IllustrationStage>
   );

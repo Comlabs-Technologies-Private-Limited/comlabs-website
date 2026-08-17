@@ -15,7 +15,12 @@ import { motion, useInView, useMotionValue, useReducedMotion, useSpring } from "
 
 import { cn } from "@/lib/utils";
 
-import { illustrationEase, illustrationViewport } from "./illustration-tokens";
+import {
+  illustrationBlurHidden,
+  illustrationBlurShown,
+  illustrationEase,
+  illustrationViewport,
+} from "./illustration-tokens";
 
 type IllustrationState = {
   /** Frame is currently inside the viewport. */
@@ -149,8 +154,12 @@ export function ServiceIllustrationFrame({
           rotateY: reduce ? 0 : springY,
           transformStyle: "preserve-3d",
         }}
-        initial={reduce ? false : { opacity: 0, y: 8 }}
-        animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
+        initial={reduce ? false : { ...illustrationBlurHidden, y: 8 }}
+        animate={
+          inView
+            ? { ...illustrationBlurShown, y: 0 }
+            : { ...illustrationBlurHidden, y: 8 }
+        }
         transition={{ duration: reduce ? 0 : 0.5, ease: illustrationEase }}
       >
         <IllustrationStateContext.Provider value={{ active: inView, reduce }}>
