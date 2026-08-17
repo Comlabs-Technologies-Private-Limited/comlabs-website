@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
@@ -23,18 +24,18 @@ export function NextCaseStudy({ client, headline, href, thumbnail }: NextCaseStu
             <div className="col-span-12 lg:col-span-7">
               <Link
                 href={canonicalPath(href)}
-                className="group flex flex-col gap-8 sm:flex-row sm:items-center sm:gap-12"
+                className="group flex flex-col gap-6 sm:flex-row sm:items-center sm:gap-10"
               >
-                <div className="relative h-24 w-full shrink-0 overflow-hidden rounded-2xl border border-border bg-secondary sm:h-28 sm:w-44">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
+                <div className="relative aspect-[16/10] w-full min-h-0 shrink-0 overflow-hidden rounded-2xl border border-border bg-secondary sm:aspect-auto sm:h-28 sm:w-44">
+                  <Image
                     src={thumbnail}
                     alt=""
-                    className="h-full w-full object-cover object-top"
-                    loading="lazy"
+                    fill
+                    sizes="(max-width: 640px) calc(100vw - 48px), 176px"
+                    className="object-cover object-top"
                   />
                 </div>
-                <div className="flex-1">
+                <div className="min-w-0 flex-1">
                   <p className="text-sm text-muted-foreground">{client}</p>
                   <p
                     className="mt-2 text-xl font-medium tracking-tight text-foreground md:text-2xl"
