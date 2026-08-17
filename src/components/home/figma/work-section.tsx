@@ -45,7 +45,7 @@ export function FigmaWorkSection() {
                 <img
                   src={project.image}
                   alt={`${project.title} website`}
-                  className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.02]"
+                  className="absolute inset-0 h-full w-full max-w-none object-cover object-top transition-transform duration-500 group-hover:scale-[1.02]"
                 />
               </div>
               <div className="p-6">
