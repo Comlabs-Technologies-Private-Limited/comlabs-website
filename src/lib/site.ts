@@ -71,7 +71,9 @@ export function canonicalPath(href: string): string {
 }
 
 /** Default brand assets served from /public */
-export const siteFaviconPath = "/favicon.png";
+export const siteFaviconPath = "/favicon.svg";
+export const siteFaviconPngPath = "/favicon.png";
+export const siteAppleIconPath = "/apple-touch-icon.png";
 export const siteOgImagePath = "/opengraph.png";
 
 export const siteOgImage = {
