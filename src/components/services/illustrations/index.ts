@@ -24,7 +24,7 @@ export const serviceIllustrations: Record<string, ServiceIllustration> = {
   "custom-software": {
     Component: CustomSoftwareIllustration,
     label:
-      "Custom software illustration: a purchase order moving through a request, validate, process, approve and complete workflow, alongside rule configuration and a deployment that goes live.",
+      "Custom software illustration: a customer onboarding workflow moving from a Slack request through Claude review and Comlabs build to a live Salesforce and Outlook deployment across connected enterprise systems.",
   },
   "mobile-app": {
     Component: MobileAppIllustration,
@@ -39,7 +39,7 @@ export const serviceIllustrations: Record<string, ServiceIllustration> = {
   "cloud-infrastructure": {
     Component: CloudScalingIllustration,
     label:
-      "Cloud infrastructure illustration: rising request volume routed through an edge load balancer to application instances that scale out, with the database layer and health targets staying stable.",
+      "Cloud infrastructure illustration: AWS CloudFront, Application Load Balancer and EC2 instances scaling under traffic in ap-south-1, with RDS Aurora and CloudWatch metrics confirming target group health.",
   },
 };
 
@@ -53,7 +53,7 @@ export const customCraftIllustration: ServiceIllustration = {
 export const appliedAiIllustration: ServiceIllustration = {
   Component: AppliedAiIllustration,
   label:
-    "Applied AI illustration: relevant business records feeding an AI-prepared renewal quote that pauses for human review, is approved by an operator, and is recorded to the activity log.",
+    "Applied AI illustration: signals from Slack, Outlook and Salesforce feeding a Claude agent that prepares a renewal quote, pauses for operator approval, then executes actions back to CRM and email.",
 };
 
 export { ServiceIllustrationFrame } from "./service-illustration-frame";

@@ -48,7 +48,7 @@ const clients: ClientLogo[] = [
 
 function LogoBox({ client }: { client: ClientLogo }) {
   return (
-    <li className="flex min-w-[120px] flex-1 items-center justify-center border border-border px-8 py-5 sm:min-w-[140px]">
+    <li className="flex min-w-[120px] flex-1 items-center justify-center px-8 py-5 sm:min-w-[140px]">
       <img
         src={client.src}
         alt={client.alt}

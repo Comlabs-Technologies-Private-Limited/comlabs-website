@@ -1,10 +1,13 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
+import { GoogleMark } from "./brand-marks";
 import {
   CheckGlyph,
   Chip,
+  MicroLabel,
   Panel,
   StatusDot,
 } from "./illustration-primitives";
@@ -15,18 +18,54 @@ import {
 import {
   illustrationColors,
   illustrationEase,
-  illustrationRadius,
+  illustrationShadow,
   illustrationTiming,
 } from "./illustration-tokens";
 import { useIllustrationSequence } from "./use-illustration-sequence";
 
 const DOC_SECTIONS = [
-  { label: "H1 · Custom software", schema: "Service" },
-  { label: "Scope & process", schema: "HowTo" },
-  { label: "Pricing questions", schema: "FAQ" },
+  { label: "Service page", schema: "Service" },
+  { label: "Process guide", schema: "HowTo" },
+  { label: "FAQ block", schema: "FAQ" },
+  { label: "Local presence", schema: "LocalBusiness" },
 ] as const;
 
 const STEPS = 7;
+
+const CHATGPT_PROMPT = "what does comlabs do?";
+const CHATGPT_ANSWER =
+  "Comlabs Technologies builds custom software for teams in Pune, covering design through deployment.";
+
+/** Types a prompt into the ChatGPT composer, then snaps to complete when the step moves on. */
+function useTypedText(text: string, enabled: boolean, reduce: boolean, snap: boolean): string {
+  const [count, setCount] = useState(reduce || snap ? text.length : 0);
+
+  useEffect(() => {
+    if (reduce || snap) {
+      setCount(text.length);
+      return;
+    }
+    if (!enabled) {
+      setCount(0);
+      return;
+    }
+
+    setCount(0);
+    const intervalId = window.setInterval(() => {
+      setCount((current) => {
+        if (current >= text.length) {
+          window.clearInterval(intervalId);
+          return current;
+        }
+        return current + 1;
+      });
+    }, 36);
+
+    return () => window.clearInterval(intervalId);
+  }, [enabled, reduce, snap, text]);
+
+  return text.slice(0, count);
+}
 
 const fade = {
   duration: illustrationTiming.transitionSec,
@@ -40,10 +79,14 @@ const swap = {
 };
 
 /** Google Search Console product icon — identifies the indexing surface. */
-function SearchConsoleMark() {
+function SearchConsoleMark({
+  className = "h-[13px] w-[13px] shrink-0 lg:h-[15px] lg:w-[15px]",
+}: {
+  className?: string;
+}) {
   return (
     <svg
-      className="h-[13px] w-[13px] shrink-0 lg:h-[15px] lg:w-[15px]"
+      className={className}
       viewBox="0 0 192 192"
       fill="none"
       aria-hidden
@@ -101,7 +144,7 @@ function ChatGptMark() {
   return (
     <span className="flex shrink-0 items-center justify-center">
       <svg
-        className="h-[13px] w-[13px] lg:h-[15px] lg:w-[15px]"
+        className="h-[10px] w-[10px] lg:h-[11px] lg:w-[11px]"
         viewBox="0 0 24 24"
         fill={illustrationColors.ink}
         fillRule="evenodd"
@@ -113,25 +156,21 @@ function ChatGptMark() {
   );
 }
 
-/** Response-in-progress state: pulsing caret with two settling text lines. */
+/** ChatGPT-style thinking dots while a response is generating. */
 function AnswerLoading() {
   return (
-    <div className="flex flex-col gap-[5px]">
-      {["86%", "62%"].map((width, index) => (
+    <div className="flex items-center gap-[3px]">
+      {[0, 1, 2].map((index) => (
         <motion.span
-          key={width}
-          className="block h-[5px] lg:h-[6px]"
-          style={{
-            width,
-            borderRadius: 999,
-            background: illustrationColors.wire,
-          }}
-          animate={{ opacity: [0.5, 1, 0.5] }}
+          key={index}
+          className="h-[4px] w-[4px] rounded-full"
+          style={{ background: illustrationColors.ink }}
+          animate={{ opacity: [0.2, 1, 0.2] }}
           transition={{
-            duration: 1.1,
+            duration: 0.9,
             ease: "easeInOut",
             repeat: Infinity,
-            delay: index * 0.18,
+            delay: index * 0.14,
           }}
         />
       ))}
@@ -141,6 +180,7 @@ function AnswerLoading() {
 
 /** Branch connector linking the source document to both discovery surfaces. */
 function Connectors({ activated }: { activated: boolean }) {
+  const stroke = activated ? illustrationColors.accentLine : illustrationColors.border;
   return (
     <svg
       viewBox="0 0 20 100"
@@ -148,7 +188,7 @@ function Connectors({ activated }: { activated: boolean }) {
       className="h-full w-full"
       aria-hidden
     >
-      {["M0,50 H7", "M7,50 V20 H20", "M7,50 V80 H20"].map((d) => (
+      {["M0,50 H8", "M8,50 V22 H20", "M8,50 V78 H20"].map((d) => (
         <path
           key={d}
           d={d}
@@ -156,13 +196,211 @@ function Connectors({ activated }: { activated: boolean }) {
           vectorEffect="non-scaling-stroke"
           strokeWidth="1"
           strokeLinecap="round"
-          stroke={
-            activated ? illustrationColors.accentLine : illustrationColors.border
-          }
+          stroke={stroke}
           style={{ transition: "stroke 400ms ease" }}
         />
       ))}
+      {[22, 78].map((cy) => (
+        <circle
+          key={cy}
+          cx="20"
+          cy={cy}
+          r="1.5"
+          fill={activated ? illustrationColors.accent : illustrationColors.wire}
+          style={{ transition: "fill 400ms ease" }}
+        />
+      ))}
     </svg>
+  );
+}
+
+const SCHEMA_DOT_COLORS: Record<(typeof DOC_SECTIONS)[number]["schema"], string> = {
+  Service: "#A8A29E",
+  HowTo: "#78716C",
+  FAQ: illustrationColors.accent,
+  LocalBusiness: "#57534E",
+};
+
+/** Linear-style label — bordered chip with a leading status dot. */
+function SchemaPill({ children }: { children: (typeof DOC_SECTIONS)[number]["schema"] }) {
+  return (
+    <span
+      className="inline-flex shrink-0 items-center gap-1 border px-1.5 py-[3px] text-[7px] leading-none lg:px-2 lg:text-[8px]"
+      style={{
+        borderRadius: 6,
+        background: illustrationColors.surface,
+        borderColor: "rgba(28, 25, 23, 0.12)",
+        color: illustrationColors.inkMuted,
+      }}
+    >
+      <span
+        className="h-[5px] w-[5px] shrink-0 rounded-full lg:h-1.5 lg:w-1.5"
+        style={{ background: SCHEMA_DOT_COLORS[children] }}
+      />
+      {children}
+    </span>
+  );
+}
+
+/** Skeleton lines while the Google result is indexing. */
+function SearchResultLoader() {
+  return (
+    <div className="flex flex-col gap-[5px]">
+      <div className="flex items-center gap-1">
+        <span
+          className="block h-[12px] w-[12px] shrink-0 rounded-full lg:h-[14px] lg:w-[14px]"
+          style={{ background: illustrationColors.surfaceSunk }}
+        />
+        <div className="flex min-w-0 flex-1 flex-col gap-[3px]">
+          <span
+            className="block h-[4px] w-[52%] rounded-full"
+            style={{ background: illustrationColors.wire }}
+          />
+          <span
+            className="block h-[3px] w-[68%] rounded-full"
+            style={{ background: illustrationColors.surfaceSunk }}
+          />
+        </div>
+      </div>
+      <span
+        className="block h-[4px] w-[74%] rounded-full"
+        style={{ background: illustrationColors.wire }}
+      />
+      {["100%", "88%", "72%"].map((width) => (
+        <span
+          key={width}
+          className="block h-[3px] rounded-full"
+          style={{ width, background: illustrationColors.surfaceSunk }}
+        />
+      ))}
+    </div>
+  );
+}
+
+/** ChatGPT-style mic — outline microphone for the search bar. */
+function MicIcon() {
+  return (
+    <svg width="8" height="8" viewBox="0 0 16 16" fill="none" aria-hidden className="shrink-0">
+      <rect
+        x="5.5"
+        y="2.5"
+        width="5"
+        height="7"
+        rx="2.5"
+        stroke={illustrationColors.inkMuted}
+        strokeWidth="1.2"
+      />
+      <path
+        d="M3.5 8a4.5 4.5 0 0 0 9 0"
+        stroke={illustrationColors.inkMuted}
+        strokeWidth="1.2"
+        strokeLinecap="round"
+      />
+      <path
+        d="M8 12.5v2"
+        stroke={illustrationColors.inkMuted}
+        strokeWidth="1.2"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+/** ChatGPT voice mode — equalizer bars inside the blue action button. */
+function VoiceModeIcon() {
+  return (
+    <svg width="8" height="8" viewBox="0 0 16 16" fill="none" aria-hidden>
+      {[3.5, 6, 4.5, 7.5].map((height, index) => (
+        <rect
+          key={index}
+          x={3 + index * 2.8}
+          y={(16 - height) / 2}
+          width="1.6"
+          height={height}
+          rx="0.8"
+          fill="#fff"
+        />
+      ))}
+    </svg>
+  );
+}
+
+function SendIcon() {
+  return (
+    <svg width="7" height="7" viewBox="0 0 12 12" fill="none" aria-hidden>
+      <path
+        d="M6 9.5V2.5M3.2 5.2 6 2.5 8.8 5.2"
+        stroke="#fff"
+        strokeWidth="1.3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function ComposerCaret() {
+  return (
+    <motion.span
+      className="ml-px inline-block h-[8px] w-[1px] shrink-0 align-middle"
+      style={{ background: illustrationColors.ink }}
+      animate={{ opacity: [1, 0] }}
+      transition={{ duration: 0.55, repeat: Infinity, repeatType: "reverse", ease: "linear" }}
+    />
+  );
+}
+
+type ComposerMode = "compose" | "citation";
+
+/** ChatGPT composer — types a prompt, then becomes a citation chip after the answer. */
+function CitationSearchBar({
+  text,
+  caret = false,
+  mode = "compose",
+}: {
+  text: string;
+  caret?: boolean;
+  mode?: ComposerMode;
+}) {
+  const isCitation = mode === "citation";
+  const hasPrompt = !isCitation && text.length > 0;
+
+  return (
+    <div
+      className="flex items-center gap-1 px-1.5 py-[4px] lg:gap-1.5 lg:px-2 lg:py-[5px]"
+      style={{
+        borderRadius: 999,
+        background: illustrationColors.surface,
+        border: `1px solid ${illustrationColors.border}`,
+        boxShadow: illustrationShadow.chip,
+      }}
+    >
+      <svg width="7" height="7" viewBox="0 0 12 12" fill="none" aria-hidden className="shrink-0">
+        <path
+          d="M6 2.5v7M2.5 6h7"
+          stroke={illustrationColors.inkMuted}
+          strokeWidth="1.3"
+          strokeLinecap="round"
+        />
+      </svg>
+      <span
+        className="flex min-w-0 flex-1 items-center text-[6.5px] leading-none lg:text-[7.5px]"
+        style={{ color: hasPrompt || isCitation ? illustrationColors.ink : illustrationColors.inkFaint }}
+      >
+        <span className="truncate">{text || (isCitation ? "" : "Ask anything")}</span>
+        {caret ? <ComposerCaret /> : null}
+      </span>
+      <MicIcon />
+      <span
+        className="flex h-[14px] w-[14px] shrink-0 items-center justify-center lg:h-[15px] lg:w-[15px]"
+        style={{
+          borderRadius: 999,
+          background: hasPrompt ? illustrationColors.ink : "#0084FF",
+        }}
+      >
+        {hasPrompt ? <SendIcon /> : <VoiceModeIcon />}
+      </span>
+    </div>
   );
 }
 
@@ -175,55 +413,76 @@ export function SeoAeoIllustration() {
     stepMs: 800,
   });
 
-  // 0 crawled · 1 indexed · 2–3 ChatGPT responding · 4 answer · 5 citation · 6 confirmed
+  // 0–1 type prompt · 2–3 responding · 4 answer · 5 citation · 6 confirmed
   const optimised = step >= 1;
   const indexed = step >= 1;
+  const composing = step < 2;
   const answerLoading = step === 2 || step === 3;
   const answerVisible = step >= 4;
   const citationVisible = step >= 5;
   const complete = step >= 6;
 
+  const typedPrompt = useTypedText(
+    CHATGPT_PROMPT,
+    active && composing,
+    reduce,
+    !composing,
+  );
+  const composerText = citationVisible
+    ? "comlabstechnologies.com"
+    : composing
+      ? typedPrompt
+      : "";
+  const showCaret = composing && !reduce && typedPrompt.length < CHATGPT_PROMPT.length;
+
   return (
     <IllustrationStage>
-      <div className="flex h-full flex-col gap-2.5">
+      <div className="flex h-full flex-col gap-2">
         {/* Search query */}
         <div
-          className="flex shrink-0 items-center gap-1.5 px-2.5 py-[7px]"
+          className="flex shrink-0 items-center gap-1.5 px-2.5 py-[6px]"
           style={{
             borderRadius: 999,
             background: illustrationColors.surface,
             border: `1px solid ${illustrationColors.border}`,
+            boxShadow: illustrationShadow.chip,
           }}
         >
-          <svg width="9" height="9" viewBox="0 0 12 12" fill="none" aria-hidden>
+          <svg width="8" height="8" viewBox="0 0 12 12" fill="none" aria-hidden>
             <circle
               cx="5.2"
               cy="5.2"
               r="3.4"
-              stroke={illustrationColors.inkMuted}
+              stroke={illustrationColors.inkFaint}
               strokeWidth="1.2"
             />
             <path
               d="M7.8 7.8 10 10"
-              stroke={illustrationColors.inkMuted}
+              stroke={illustrationColors.inkFaint}
               strokeWidth="1.2"
               strokeLinecap="round"
             />
           </svg>
           <span
-            className="truncate text-[8px] leading-none lg:text-[10px]"
+            className="truncate text-[7.5px] leading-none lg:text-[9px]"
             style={{ color: illustrationColors.ink }}
           >
             custom software development company in Pune
           </span>
         </div>
 
-        <div className="flex min-h-0 flex-1 items-stretch">
+        <div className="flex min-h-0 flex-1 items-stretch gap-0">
           {/* Source document */}
-          <Panel className="flex w-[42%] shrink-0 flex-col p-2 lg:p-2.5">
-            <div className="mb-1.5 flex items-center justify-between gap-1">
+          <Panel className="flex w-[40%] shrink-0 flex-col overflow-hidden" elevation="raised">
+            <div
+              className="flex shrink-0 items-center justify-between gap-1.5 border-b px-2 py-[7px] lg:px-2.5"
+              style={{
+                borderColor: illustrationColors.border,
+                background: illustrationColors.surfaceMuted,
+              }}
+            >
               <span className="flex min-w-0 items-center gap-1">
-                <SearchConsoleMark />
+                <SearchConsoleMark className="h-[10px] w-[10px] lg:h-[11px] lg:w-[11px]" />
                 <span
                   className="truncate text-[7px] leading-none font-medium lg:text-[8.5px]"
                   style={{ color: illustrationColors.ink }}
@@ -238,35 +497,22 @@ export function SeoAeoIllustration() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={reduce ? undefined : { opacity: 0, y: -2 }}
                   transition={{ duration: 0.2, ease: illustrationEase }}
+                  className="flex shrink-0 items-center"
                 >
-                  <Chip tone={indexed ? "accent" : "quiet"} className="px-1">
-                    {indexed ? <CheckGlyph size={7} /> : <StatusDot tone="idle" />}
+                  <Chip tone={indexed ? "accent" : "quiet"} size="compact">
+                    {indexed ? <CheckGlyph size={6} /> : <StatusDot tone="idle" />}
                     {indexed ? "Indexed" : "Crawled"}
                   </Chip>
                 </motion.span>
               </AnimatePresence>
             </div>
 
-            <div className="flex flex-1 flex-col gap-1.5">
+            <div className="flex flex-1 flex-col gap-1.5 p-2 lg:p-2.5">
+              <MicroLabel tone="faint">Structured coverage</MicroLabel>
               {DOC_SECTIONS.map((section, index) => (
-                <div
-                  key={section.label}
-                  className="flex items-center justify-between gap-1 px-1.5 py-[6px]"
-                  style={{
-                    borderRadius: illustrationRadius.chip,
-                    background: optimised
-                      ? illustrationColors.surfaceWarm
-                      : illustrationColors.surfaceMuted,
-                    border: `1px solid ${
-                      optimised
-                        ? "rgba(201,100,66,0.16)"
-                        : illustrationColors.border
-                    }`,
-                    transition: "background 400ms ease, border-color 400ms ease",
-                  }}
-                >
+                <div key={section.label} className="flex items-center justify-between gap-2">
                   <span
-                    className="truncate text-[7.5px] leading-none font-medium lg:text-[9px]"
+                    className="min-w-0 truncate text-[7.5px] leading-none lg:text-[9px]"
                     style={{ color: illustrationColors.ink }}
                   >
                     {section.label}
@@ -274,18 +520,22 @@ export function SeoAeoIllustration() {
                   <AnimatePresence>
                     {optimised ? (
                       <motion.span
-                        initial={reduce ? false : { opacity: 0, scale: 0.9 }}
+                        initial={reduce ? false : { opacity: 0, scale: 0.96 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{
                           ...fade,
                           delay: reduce ? 0 : index * 0.06,
                         }}
-                        className="shrink-0 text-[7px] leading-none font-medium lg:text-[8.5px]"
-                        style={{ color: illustrationColors.accent }}
+                        className="shrink-0"
                       >
-                        {section.schema}
+                        <SchemaPill>{section.schema}</SchemaPill>
                       </motion.span>
-                    ) : null}
+                    ) : (
+                      <span
+                        className="block h-[3px] w-6 shrink-0 rounded-full"
+                        style={{ background: illustrationColors.wire }}
+                      />
+                    )}
                   </AnimatePresence>
                 </div>
               ))}
@@ -293,59 +543,122 @@ export function SeoAeoIllustration() {
           </Panel>
 
           {/* Connectors */}
-          <div className="w-3 shrink-0 lg:w-5">
+          <div className="w-2.5 shrink-0 lg:w-4">
             <Connectors activated={answerLoading || answerVisible} />
           </div>
 
           {/* Discovery surfaces */}
-          <div className="flex min-w-0 flex-1 flex-col justify-between gap-2">
-            {/* Search result with full anatomy */}
-            <Panel className="p-2 lg:p-2.5">
-              <div className="mb-1 flex items-center gap-1">
-                {/* Favicon */}
-                <span
-                  className="flex h-[15px] w-[15px] shrink-0 items-center justify-center lg:h-[17px] lg:w-[17px]"
-                  style={{
-                    borderRadius: 999,
-                    background: illustrationColors.surface,
-                    border: `1px solid ${illustrationColors.border}`,
-                  }}
-                >
-                  <ComlabsMark />
-                </span>
-                <span className="flex min-w-0 flex-col gap-[1px]">
+          <div className="flex min-w-0 flex-1 flex-col justify-between gap-1.5">
+            {/* Search result — fixed height locked to completed state */}
+            <Panel
+              className="flex h-[96px] shrink-0 flex-col overflow-hidden lg:h-[104px]"
+              elevation="raised"
+            >
+              <div
+                className="flex shrink-0 items-center justify-between gap-1.5 border-b px-2 py-[7px] lg:px-2.5"
+                style={{
+                  borderColor: illustrationColors.border,
+                  background: illustrationColors.surfaceMuted,
+                }}
+              >
+                <span className="flex min-w-0 items-center gap-1">
+                  <GoogleMark className="h-[10px] w-[10px] lg:h-[11px] lg:w-[11px]" />
                   <span
-                    className="truncate text-[6.5px] leading-none font-medium lg:text-[8px]"
+                    className="truncate text-[7px] leading-none font-medium lg:text-[8.5px]"
                     style={{ color: illustrationColors.ink }}
                   >
-                    Comlabs Technologies
-                  </span>
-                  <span
-                    className="truncate text-[6px] leading-none lg:text-[7.5px]"
-                    style={{ color: illustrationColors.inkFaint }}
-                  >
-                    comlabstechnologies.com › services
+                    Google
                   </span>
                 </span>
+                <span
+                  className="shrink-0 text-[6px] leading-none lg:text-[7px]"
+                  style={{
+                    color: illustrationColors.accent,
+                    opacity: complete ? 1 : 0,
+                    transition: "opacity 400ms ease",
+                  }}
+                >
+                  Position 1
+                </span>
               </div>
-              <span
-                className="mb-[3px] block truncate text-[8.5px] leading-none font-medium lg:text-[10px]"
-                style={{ color: illustrationColors.accent }}
-              >
-                Custom Software Development
-              </span>
-              <span
-                className="block text-[6.5px] leading-[1.45] lg:text-[8px]"
-                style={{ color: illustrationColors.inkMuted }}
-              >
-                Web applications, SaaS products and internal systems built around
-                how your business actually works.
-              </span>
+              <div className="relative min-h-0 flex-1 overflow-hidden p-2 lg:p-2.5">
+                <AnimatePresence mode="wait" initial={false}>
+                  {optimised ? (
+                    <motion.div
+                      key="result"
+                      initial={reduce ? false : { opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={reduce ? undefined : { opacity: 0 }}
+                      transition={fade}
+                      className="absolute inset-2 lg:inset-2.5"
+                    >
+                      <div className="mb-1 flex items-center gap-1">
+                        <span
+                          className="flex h-[14px] w-[14px] shrink-0 items-center justify-center lg:h-[16px] lg:w-[16px]"
+                          style={{
+                            borderRadius: 999,
+                            background: illustrationColors.surfaceMuted,
+                            border: `1px solid ${illustrationColors.border}`,
+                          }}
+                        >
+                          <ComlabsMark />
+                        </span>
+                        <span className="flex min-w-0 flex-col gap-[1px]">
+                          <span
+                            className="truncate text-[6.5px] leading-none font-medium lg:text-[8px]"
+                            style={{ color: illustrationColors.ink }}
+                          >
+                            Comlabs Technologies
+                          </span>
+                          <span
+                            className="truncate text-[6px] leading-none lg:text-[7px]"
+                            style={{ color: illustrationColors.inkFaint }}
+                          >
+                            comlabstechnologies.com › services
+                          </span>
+                        </span>
+                      </div>
+                      <span
+                        className="mb-1 block truncate text-[8px] leading-none font-medium lg:text-[9.5px]"
+                        style={{ color: illustrationColors.accent }}
+                      >
+                        Custom Software Development
+                      </span>
+                      <span
+                        className="block text-[6.5px] leading-[1.4] lg:text-[7.5px]"
+                        style={{ color: illustrationColors.inkMuted }}
+                      >
+                        Web applications, SaaS products and internal systems built around
+                        how your business actually works.
+                      </span>
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="loader"
+                      initial={false}
+                      exit={reduce ? undefined : { opacity: 0 }}
+                      transition={swap}
+                      className="absolute inset-2 flex items-center lg:inset-2.5"
+                    >
+                      <SearchResultLoader />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             </Panel>
 
-            {/* ChatGPT answer + explicit citation */}
-            <Panel className="p-2 lg:p-2.5">
-              <div className="mb-1.5 flex items-center gap-1">
+            {/* ChatGPT answer — fixed height locked to completed state */}
+            <Panel
+              className="flex h-[100px] shrink-0 flex-col overflow-hidden lg:h-[108px]"
+              elevation="raised"
+            >
+              <div
+                className="flex shrink-0 items-center gap-1 border-b px-2 py-[7px] lg:px-2.5"
+                style={{
+                  borderColor: illustrationColors.border,
+                  background: illustrationColors.surfaceMuted,
+                }}
+              >
                 <ChatGptMark />
                 <span
                   className="text-[7px] leading-none font-medium lg:text-[8.5px]"
@@ -353,94 +666,52 @@ export function SeoAeoIllustration() {
                 >
                   ChatGPT
                 </span>
-                <AnimatePresence initial={false}>
-                  {answerLoading ? (
-                    <motion.span
-                      key="thinking"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.2, ease: illustrationEase }}
-                      className="ml-auto text-[6.5px] leading-none lg:text-[8px]"
-                      style={{ color: illustrationColors.inkFaint }}
-                    >
-                      Responding…
-                    </motion.span>
-                  ) : null}
-                </AnimatePresence>
+                <span
+                  className="ml-auto text-[6px] leading-none lg:text-[7.5px]"
+                  style={{
+                    color: illustrationColors.inkFaint,
+                    opacity: answerLoading ? 1 : 0,
+                    transition: "opacity 400ms ease",
+                  }}
+                >
+                  Responding…
+                </span>
               </div>
-              <AnimatePresence mode="wait" initial={false}>
-                {answerVisible ? (
-                  <motion.div
-                    key="answer"
-                    initial={reduce ? false : { opacity: 0, y: 3 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={fade}
-                    className="flex flex-col gap-[5px]"
-                  >
-                    <span
-                      className="block text-[6.5px] leading-[1.45] lg:text-[8px]"
-                      style={{ color: illustrationColors.inkMuted }}
-                    >
-                      Comlabs Technologies builds custom software for teams in
-                      Pune, covering design through deployment.
-                    </span>
-                    <AnimatePresence>
-                      {citationVisible ? (
-                        <motion.span
-                          initial={reduce ? false : { opacity: 0, y: 3 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={fade}
-                          className="flex items-center gap-1 px-1.5 py-[3px]"
-                          style={{
-                            borderRadius: illustrationRadius.chip,
-                            background: illustrationColors.accentSoft,
-                            border: "1px solid rgba(201,100,66,0.24)",
-                          }}
-                        >
-                          <span
-                            className="flex h-[10px] w-[10px] shrink-0 items-center justify-center text-[6.5px] leading-none font-semibold lg:h-[12px] lg:w-[12px] lg:text-[8px]"
-                            style={{
-                              borderRadius: 999,
-                              background: illustrationColors.accent,
-                              color: illustrationColors.surface,
-                            }}
-                          >
-                            1
-                          </span>
-                          <span
-                            className="truncate text-[6.5px] leading-none font-medium lg:text-[8px]"
-                            style={{ color: illustrationColors.accent }}
-                          >
-                            comlabstechnologies.com
-                          </span>
-                        </motion.span>
-                      ) : null}
-                    </AnimatePresence>
-                  </motion.div>
-                ) : answerLoading ? (
-                  <motion.div
-                    key="answer-loading"
-                    initial={reduce ? false : { opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={reduce ? undefined : { opacity: 0 }}
-                    transition={swap}
-                  >
-                    <AnswerLoading />
-                  </motion.div>
-                ) : (
-                  <motion.span
-                    key="answer-prompt"
-                    initial={false}
-                    exit={reduce ? undefined : { opacity: 0 }}
-                    transition={swap}
-                    className="block text-[6.5px] leading-[1.45] lg:text-[8px]"
-                    style={{ color: illustrationColors.inkFaint }}
-                  >
-                    Who builds custom software for businesses in Pune?
-                  </motion.span>
-                )}
-              </AnimatePresence>
+              <div className="flex min-h-0 flex-1 flex-col gap-1 p-2 lg:gap-1.5 lg:p-2.5">
+                <div className="relative min-h-0 flex-1 overflow-hidden">
+                  <AnimatePresence mode="wait" initial={false}>
+                    {answerVisible ? (
+                      <motion.span
+                        key="answer"
+                        initial={reduce ? false : { opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={reduce ? undefined : { opacity: 0 }}
+                        transition={fade}
+                        className="absolute inset-0 block text-[6.5px] leading-[1.4] lg:text-[7.5px]"
+                        style={{ color: illustrationColors.inkMuted }}
+                      >
+                        {CHATGPT_ANSWER}
+                      </motion.span>
+                    ) : answerLoading ? (
+                      <motion.div
+                        key="answer-loading"
+                        initial={reduce ? false : { opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={reduce ? undefined : { opacity: 0 }}
+                        transition={swap}
+                        className="absolute inset-0 flex items-center"
+                      >
+                        <AnswerLoading />
+                      </motion.div>
+                    ) : null}
+                  </AnimatePresence>
+                </div>
+                <CitationSearchBar
+                  text={composerText}
+                  caret={showCaret}
+                  mode={citationVisible ? "citation" : "compose"}
+                />
+              </div>
             </Panel>
           </div>
         </div>
@@ -454,9 +725,9 @@ export function SeoAeoIllustration() {
               transition={fade}
               className="shrink-0"
             >
-              <Chip tone="accent">
-                <CheckGlyph size={8} />
-                Visible across search
+              <Chip tone="accent" size="compact">
+                <CheckGlyph size={6} />
+                Visible across search & AI
               </Chip>
             </motion.div>
           ) : null}

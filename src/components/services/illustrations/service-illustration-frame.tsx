@@ -143,7 +143,7 @@ export function ServiceIllustrationFrame({
 
       <motion.div
         aria-hidden
-        className="absolute inset-0"
+        className="absolute inset-0 overflow-hidden"
         style={{
           rotateX: reduce ? 0 : springX,
           rotateY: reduce ? 0 : springY,
@@ -170,6 +170,6 @@ export function IllustrationStage({
   className?: string;
 }) {
   return (
-    <div className={cn("absolute inset-0 p-4 lg:p-7", className)}>{children}</div>
+    <div className={cn("absolute inset-0 overflow-hidden p-4 lg:p-7", className)}>{children}</div>
   );
 }

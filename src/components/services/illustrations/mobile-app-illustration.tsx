@@ -593,14 +593,14 @@ function RearPhoneScreen({
 
       <div className="mt-auto shrink-0 px-3 pt-2 pb-[10px] lg:px-3.5 lg:pb-[11px]">
         <span
-          className="flex items-center justify-center py-2.5 lg:py-3"
+          className="flex h-[22px] items-center justify-center lg:h-[24px]"
           style={{
-            borderRadius: 8,
+            borderRadius: 6,
             background: illustrationColors.accent,
           }}
         >
           <span
-            className="text-[8.5px] leading-none font-medium lg:text-[9.5px]"
+            className="text-[8px] leading-none font-medium lg:text-[9px]"
             style={{ color: illustrationColors.surface }}
           >
             Mark complete

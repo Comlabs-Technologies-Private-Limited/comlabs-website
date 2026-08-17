@@ -75,11 +75,13 @@ export function MicroLabel({
 export function Chip({
   children,
   tone = "neutral",
+  size = "default",
   className,
   style,
 }: {
   children: ReactNode;
   tone?: "neutral" | "accent" | "quiet";
+  size?: "default" | "compact";
   className?: string;
   style?: CSSProperties;
 }) {
@@ -88,7 +90,7 @@ export function Chip({
       ? {
           background: illustrationColors.accentSoft,
           color: illustrationColors.accent,
-          borderColor: "rgba(201, 100, 66, 0.24)",
+          borderColor: "rgba(201, 100, 66, 0.20)",
         }
       : tone === "quiet"
         ? {
@@ -105,7 +107,10 @@ export function Chip({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 border px-1.5 py-[3px] text-[8px] leading-none font-medium whitespace-nowrap lg:text-[9.5px]",
+        "inline-flex items-center self-center border font-medium whitespace-nowrap",
+        size === "compact"
+          ? "gap-0.5 px-1 py-[2px] text-[6.5px] leading-none tracking-[0.02em] lg:text-[7.5px]"
+          : "gap-1 px-1.5 py-[3px] text-[8px] leading-none lg:text-[9.5px]",
         className,
       )}
       style={{ borderRadius: illustrationRadius.chip, ...palette, ...style }}
