@@ -50,27 +50,28 @@ async function loadVisual(props: DeferredHomeVisualProps): Promise<ReactNode> {
 
 export function DeferredHomeVisual(props: DeferredHomeVisualProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const propsRef = useRef(props);
   const [visual, setVisual] = useState<ReactNode>(null);
 
-  propsRef.current = props;
-
-  const loadKey =
-    props.name === "service"
-      ? `${props.name}:${props.id}:${props.background}:${props.visualClassName ?? ""}`
-      : props.name;
+  const name = props.name;
+  const serviceId = props.name === "service" ? props.id : "";
+  const background = props.name === "service" ? props.background : "";
+  const visualClassName = props.name === "service" ? props.visualClassName : undefined;
 
   useEffect(() => {
     const node = ref.current;
     if (!node) return;
 
     let cancelled = false;
+    const request: DeferredHomeVisualProps =
+      name === "service"
+        ? { name, id: serviceId, background, visualClassName }
+        : { name };
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (!entry?.isIntersecting) return;
         observer.disconnect();
-        void loadVisual(propsRef.current).then((next) => {
+        void loadVisual(request).then((next) => {
           if (!cancelled) setVisual(next);
         });
       },
@@ -82,7 +83,7 @@ export function DeferredHomeVisual(props: DeferredHomeVisualProps) {
       cancelled = true;
       observer.disconnect();
     };
-  }, [loadKey]);
+  }, [name, serviceId, background, visualClassName]);
 
   return (
     <div ref={ref} className="aspect-[5/4] md:aspect-[4/3]">
