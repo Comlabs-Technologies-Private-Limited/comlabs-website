@@ -5,7 +5,7 @@ import { canonicalPath } from "@/lib/site";
 
 export function FigmaHeroSection() {
   return (
-    <section className="relative overflow-hidden px-6 pt-16 pb-16 md:pt-24 md:pb-20">
+    <section className="hero-shell relative overflow-hidden px-6 pt-16 pb-16 md:pt-24 md:pb-20">
       <link
         rel="preload"
         as="image"
@@ -21,38 +21,6 @@ export function FigmaHeroSection() {
         type="image/avif"
         media="(min-width: 768px)"
         fetchPriority="high"
-      />
-      <picture>
-        <source
-          media="(max-width: 767px)"
-          type="image/avif"
-          srcSet="/hero/hero-bg-mobile.avif"
-        />
-        <source
-          media="(max-width: 767px)"
-          type="image/webp"
-          srcSet="/hero/hero-bg-mobile.webp"
-        />
-        <source type="image/avif" srcSet="/hero/hero-bg.avif" />
-        <source type="image/webp" srcSet="/hero/hero-bg.webp" />
-        <img
-          src="/hero/hero-bg.webp"
-          alt=""
-          fetchPriority="high"
-          decoding="sync"
-          width={1600}
-          height={900}
-          className="absolute inset-0 h-full w-full object-cover object-right"
-          aria-hidden
-        />
-      </picture>
-      <div
-        aria-hidden
-        className="absolute inset-0"
-        style={{
-          background:
-            "linear-gradient(180deg, rgba(247,247,244,0.86) 0%, rgba(247,247,244,0.78) 45%, rgba(247,247,244,0.88) 100%)",
-        }}
       />
       <div
         aria-hidden
