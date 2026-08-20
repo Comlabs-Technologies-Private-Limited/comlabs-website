@@ -18,7 +18,7 @@ const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-plus-jakarta",
   subsets: ["latin"],
   style: "normal",
-  display: "swap",
+  display: "optional",
   preload: true,
   adjustFontFallback: true,
 });
@@ -26,7 +26,8 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
   subsets: ["latin"],
-  display: "swap",
+  style: "normal",
+  display: "optional",
   preload: false,
   adjustFontFallback: true,
 });
