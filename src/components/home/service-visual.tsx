@@ -1,7 +1,16 @@
 "use client";
 
-import { ServiceIllustrationFrame } from "@/components/services/illustrations";
+import dynamic from "next/dynamic";
+
 import { lazyServiceVisuals } from "@/components/services/illustrations/lazy-visuals";
+
+const ServiceIllustrationFrame = dynamic(
+  () =>
+    import("@/components/services/illustrations/service-illustration-frame").then(
+      (mod) => mod.ServiceIllustrationFrame,
+    ),
+  { ssr: false },
+);
 
 export function ServiceVisual({
   background,

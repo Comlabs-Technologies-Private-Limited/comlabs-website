@@ -414,6 +414,10 @@
   }
 }
 
+html:has(#mobile-nav-toggle:checked) {
+  overflow: hidden;
+}
+
 /* Tiptap placeholder */
 .tiptap p.is-editor-empty:first-child::before {
   content: attr(data-placeholder);
