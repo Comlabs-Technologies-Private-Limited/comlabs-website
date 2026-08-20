@@ -133,7 +133,7 @@ export function AppNavbar() {
             href="/"
             className="relative inline-flex shrink-0 items-center justify-self-start outline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-600/60"
           >
-            <ComlabsLogo decorative className="h-7 w-auto md:h-8" />
+            <ComlabsLogo decorative className="h-5 w-auto" />
           </Link>
 
           <LayoutGroup id="main-nav">

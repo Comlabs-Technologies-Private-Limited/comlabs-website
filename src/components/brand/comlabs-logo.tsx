@@ -15,7 +15,7 @@ export function ComlabsLogo({ className, decorative = false }: ComlabsLogoProps)
       alt={decorative ? "" : "Comlabs Technologies"}
       width={1132}
       height={242}
-      className={cn("h-8 w-auto", className)}
+      className={cn("block h-5 w-auto", className)}
       decoding="async"
     />
   );
