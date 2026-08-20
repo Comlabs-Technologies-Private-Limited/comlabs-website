@@ -7,7 +7,6 @@ import { FooterBar } from "@/components/layout/footer-bar";
 import { ScrollProgress } from "@/components/layout/scroll-progress";
 
 type RootShellProps = {
-  fontClassName: string;
   children: React.ReactNode;
 };
 
@@ -31,21 +30,20 @@ function usesFigmaChromePath(pathname: string): boolean {
   );
 }
 
-export function RootShell({ fontClassName, children }: RootShellProps) {
+export function RootShell({ children }: RootShellProps) {
   const pathname = usePathname();
   const usesFigmaChrome = usesFigmaChromePath(pathname);
   const showLegacyChrome = !usesFigmaChrome;
 
   return (
-    <html lang="en" className={`${fontClassName} h-full antialiased`} suppressHydrationWarning>
-      <body
-        suppressHydrationWarning
-        className={
-          usesFigmaChrome
-            ? "flex min-h-full max-w-full flex-col overflow-x-clip bg-background text-foreground"
-            : "flex min-h-full max-w-full flex-col overflow-x-clip bg-[var(--bg-primary)] text-[var(--fg-primary)]"
-        }
-      >
+    <body
+      suppressHydrationWarning
+      className={
+        usesFigmaChrome
+          ? "flex min-h-full max-w-full flex-col overflow-x-clip bg-background text-foreground"
+          : "flex min-h-full max-w-full flex-col overflow-x-clip bg-[var(--bg-primary)] text-[var(--fg-primary)]"
+      }
+    >
         {showLegacyChrome ? <ScrollProgress /> : null}
         {showLegacyChrome ? <AppNavbar /> : null}
         <div className="relative flex min-w-0 flex-1 flex-col overflow-x-clip">{children}</div>
@@ -61,7 +59,6 @@ export function RootShell({ fontClassName, children }: RootShellProps) {
           </div>
         ) : null}
         {showLegacyChrome ? <FooterBar /> : null}
-      </body>
-    </html>
+    </body>
   );
 }
