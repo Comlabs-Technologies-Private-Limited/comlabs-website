@@ -1,3 +1,7 @@
+"use client";
+
+import { motion } from "motion/react";
+
 import { PROCESS_STEPS } from "@/components/home/figma/home-data";
 
 export function FigmaProcessSection() {
@@ -18,20 +22,23 @@ export function FigmaProcessSection() {
 
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
           {PROCESS_STEPS.map((step, i) => (
-            <div
+            <motion.div
               key={step.step}
-              className="home-fade-up relative"
-              style={{ animationDelay: `${i * 70}ms` }}
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.07 }}
+              className="relative"
             >
               <div
                 className="mb-4 text-xs font-medium tabular-nums"
-                style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace", color: "var(--warm-orange)" }}
+                style={{ fontFamily: "var(--font-mono)", color: "var(--warm-orange)" }}
               >
                 {step.step}
               </div>
               <h3 className="mb-2 text-sm font-semibold">{step.title}</h3>
               <p className="text-sm leading-relaxed text-muted-foreground">{step.description}</p>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>

@@ -1,6 +1,9 @@
+"use client";
+
 import { Brain, Building2, Cloud, ShoppingBag, Wallet } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
+import { MarketingFadeIn } from "@/components/marketing/marketing-motion";
 import { MarketingOrangeHighlight } from "@/components/marketing/marketing-section-header";
 
 type IndustryItem = {
@@ -41,7 +44,7 @@ export function FigmaIndustriesSection() {
   return (
     <section id="industries" className="border-y border-border bg-card px-6 py-24">
       <div className="mx-auto max-w-6xl">
-        <div className="mb-12 max-w-2xl">
+        <MarketingFadeIn className="mb-12 max-w-2xl">
           <p className="mb-4 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
             Industries we serve
           </p>
@@ -56,7 +59,7 @@ export function FigmaIndustriesSection() {
             From regulated fintech to fast-moving commerce and AI-native products — we bring the
             same engineering discipline across every industry.
           </p>
-        </div>
+        </MarketingFadeIn>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-6">
           {INDUSTRIES.map((industry, i) => {

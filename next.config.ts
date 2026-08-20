@@ -4,10 +4,6 @@ const nextConfig: NextConfig = {
   trailingSlash: true,
   allowedDevOrigins: ["192.168.1.23", "192.168.1.4"],
   serverExternalPackages: ["@prisma/client", "prisma"],
-  compress: true,
-  experimental: {
-    optimizePackageImports: ["lucide-react", "framer-motion", "motion"],
-  },
   outputFileTracingIncludes: {
     "/*": ["./node_modules/.prisma/client/**/*"],
     "/admin/**": ["./node_modules/.prisma/client/**/*"],
@@ -15,10 +11,6 @@ const nextConfig: NextConfig = {
     "/blog/**": ["./node_modules/.prisma/client/**/*"],
   },
   images: {
-    formats: ["image/avif", "image/webp"],
-    minimumCacheTTL: 60 * 60 * 24 * 30,
-    deviceSizes: [640, 750, 828, 1080, 1200, 1440, 1920, 2048],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     remotePatterns: [
       {
         protocol: "https",
@@ -46,52 +38,6 @@ const nextConfig: NextConfig = {
         pathname: "/**",
       },
     ],
-  },
-  async headers() {
-    return [
-      {
-        source: "/hero/:path*",
-        headers: [
-          { key: "Cache-Control", value: "public, max-age=31536000, stale-while-revalidate=86400" },
-        ],
-      },
-      {
-        source: "/logos/:path*",
-        headers: [
-          { key: "Cache-Control", value: "public, max-age=31536000, stale-while-revalidate=86400" },
-        ],
-      },
-      {
-        source: "/work/:path*",
-        headers: [
-          { key: "Cache-Control", value: "public, max-age=31536000, stale-while-revalidate=86400" },
-        ],
-      },
-      {
-        source: "/editorial/:path*",
-        headers: [
-          { key: "Cache-Control", value: "public, max-age=31536000, stale-while-revalidate=86400" },
-        ],
-      },
-      {
-        source: "/services-bg/:path*",
-        headers: [
-          { key: "Cache-Control", value: "public, max-age=31536000, stale-while-revalidate=86400" },
-        ],
-      },
-      {
-        source: "/fonts/:path*",
-        headers: [
-          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
-        ],
-      },
-      {
-        source: "/logo.png",
-        headers: [
-          { key: "Cache-Control", value: "public, max-age=31536000, stale-while-revalidate=86400" },
-        ],
-      },
-    ];
   },
   async redirects() {
     return [
