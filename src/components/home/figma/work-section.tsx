@@ -41,6 +41,7 @@ export function FigmaWorkSection() {
                   alt={`${project.title} website`}
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"
+                  loading="lazy"
                   className="object-cover object-top transition-transform duration-500 group-hover:scale-[1.02]"
                 />
               </div>

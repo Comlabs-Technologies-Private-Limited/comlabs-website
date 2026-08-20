@@ -1,7 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
-import { HydrateOnView } from "@/components/media/hydrate-on-view";
 import { ServiceVisual } from "@/components/home/service-visual";
 import { buildHomeServiceCards, type HomeServiceCard } from "@/lib/canonical-services";
 import { cn } from "@/lib/utils";
@@ -65,9 +64,7 @@ export function ServiceRow({
       </div>
 
       <div className={cn(reversed && "md:order-1")}>
-        <HydrateOnView minHeightClassName="aspect-[5/4] md:aspect-[4/3]">
-          <ServiceVisual background={background} id={id} visualClassName={visualClassName} />
-        </HydrateOnView>
+        <ServiceVisual background={background} id={id} visualClassName={visualClassName} />
       </div>
     </article>
   );

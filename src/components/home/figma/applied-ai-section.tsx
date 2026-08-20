@@ -1,16 +1,8 @@
-import dynamic from "next/dynamic";
 import Image from "next/image";
 
-import { HydrateOnView } from "@/components/media/hydrate-on-view";
-import { ServiceIllustrationFrame } from "@/components/services/illustrations";
+import { DeferredHomeVisual } from "@/components/media/deferred-home-visual";
 import { editorialImages } from "@/lib/editorial-images";
 import { EDITORIAL_HERO_OVERLAY } from "@/lib/editorial-hero-styles";
-
-const AppliedAiVisual = dynamic(() =>
-  import("@/components/services/illustrations/applied-ai-illustration").then(
-    (mod) => mod.AppliedAiIllustration,
-  ),
-);
 
 const APPLIED_AI_CAPABILITIES = [
   "AI Search",
@@ -20,8 +12,6 @@ const APPLIED_AI_CAPABILITIES = [
 ] as const;
 
 const APPLIED_AI_IMAGE = editorialImages.appliedAi;
-const APPLIED_AI_LABEL =
-  "Applied AI illustration: signals from Slack, Outlook and Salesforce feeding a Claude agent that prepares a renewal quote, pauses for operator approval, then executes actions back to CRM and email.";
 
 export function FigmaAppliedAiSection() {
   return (
@@ -32,6 +22,7 @@ export function FigmaAppliedAiSection() {
         fill
         sizes="100vw"
         loading="lazy"
+        fetchPriority="low"
         className="object-cover object-center"
         aria-hidden
       />
@@ -72,14 +63,7 @@ export function FigmaAppliedAiSection() {
           </ul>
         </div>
 
-        <HydrateOnView minHeightClassName="aspect-[5/4] md:aspect-[4/3]">
-          <ServiceIllustrationFrame
-            label={APPLIED_AI_LABEL}
-            className="shadow-[0_28px_70px_-30px_rgba(0,0,0,0.65)] ring-1 ring-white/10"
-          >
-            <AppliedAiVisual />
-          </ServiceIllustrationFrame>
-        </HydrateOnView>
+        <DeferredHomeVisual name="applied-ai" />
       </div>
     </section>
   );

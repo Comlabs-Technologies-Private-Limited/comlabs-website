@@ -1,16 +1,4 @@
-"use client";
-
-import dynamic from "next/dynamic";
-
-import { lazyServiceVisuals } from "@/components/services/illustrations/lazy-visuals";
-
-const ServiceIllustrationFrame = dynamic(
-  () =>
-    import("@/components/services/illustrations/service-illustration-frame").then(
-      (mod) => mod.ServiceIllustrationFrame,
-    ),
-  { ssr: false },
-);
+import { DeferredHomeVisual } from "@/components/media/deferred-home-visual";
 
 export function ServiceVisual({
   background,
@@ -21,13 +9,12 @@ export function ServiceVisual({
   visualClassName?: string;
   id: string;
 }) {
-  const illustration = lazyServiceVisuals[id];
-  if (!illustration) return null;
-
-  const { Component, label } = illustration;
   return (
-    <ServiceIllustrationFrame label={label} background={background} className={visualClassName}>
-      <Component />
-    </ServiceIllustrationFrame>
+    <DeferredHomeVisual
+      name="service"
+      id={id}
+      background={background}
+      visualClassName={visualClassName}
+    />
   );
 }

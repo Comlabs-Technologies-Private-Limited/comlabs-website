@@ -59,7 +59,6 @@ type ServiceIllustrationFrameProps = {
   children: ReactNode;
   /** Distant scenic backdrop, held far back behind an ivory scrim. */
   background?: string;
-  priority?: boolean;
   className?: string;
   /** Renders on the dark Applied AI band instead of the light service rows. */
   tone?: "light" | "dark";
@@ -69,7 +68,6 @@ export function ServiceIllustrationFrame({
   label,
   children,
   background,
-  priority = false,
   className,
   tone = "light",
 }: ServiceIllustrationFrameProps) {

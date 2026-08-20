@@ -34,6 +34,7 @@ export function FigmaNav({ showBlogLink = true }: FigmaNavProps) {
             height={88}
             width={112}
             sizes="112px"
+            priority
             style={{ mixBlendMode: "multiply" }}
           />
         </Link>

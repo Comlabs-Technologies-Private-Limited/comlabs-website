@@ -1,13 +1,4 @@
-import dynamic from "next/dynamic";
-
-import { HydrateOnView } from "@/components/media/hydrate-on-view";
-import { ServiceIllustrationFrame } from "@/components/services/illustrations";
-
-const CustomCraftVisual = dynamic(() =>
-  import("@/components/services/illustrations/custom-craft-illustration").then(
-    (mod) => mod.CustomCraftIllustration,
-  ),
-);
+import { DeferredHomeVisual } from "@/components/media/deferred-home-visual";
 
 const SPECIALTY_ITEMS = [
   "React, Next.js, and TypeScript by default",
@@ -15,9 +6,6 @@ const SPECIALTY_ITEMS = [
   "Accessibility baked in, not bolted on",
   "Full code handoff with documentation",
 ] as const;
-
-const SPECIALTY_LABEL =
-  "Custom development illustration: a TypeScript component being written in an editor alongside quality gates for type safety, performance budget and accessibility that each pass, ending in a handoff-ready state.";
 
 export function FigmaSpecialtySection() {
   return (
@@ -50,15 +38,7 @@ export function FigmaSpecialtySection() {
           </ul>
         </div>
 
-        <HydrateOnView minHeightClassName="aspect-[5/4] md:aspect-[4/3]">
-          <ServiceIllustrationFrame
-            label={SPECIALTY_LABEL}
-            background="/services-bg/service-bg-1.png"
-            className="shadow-[0_2px_24px_rgba(28,25,23,0.07)]"
-          >
-            <CustomCraftVisual />
-          </ServiceIllustrationFrame>
-        </HydrateOnView>
+        <DeferredHomeVisual name="specialty" />
       </div>
     </section>
   );

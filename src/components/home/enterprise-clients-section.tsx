@@ -73,6 +73,8 @@ function LogoBox({ client }: { client: ClientLogo }) {
         width={client.width}
         height={client.height}
         sizes="140px"
+        loading="lazy"
+        fetchPriority="low"
         className={cn("h-6 w-auto object-contain opacity-55", client.imageClassName)}
       />
     </li>

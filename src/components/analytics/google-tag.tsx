@@ -8,8 +8,6 @@ export const GA_MEASUREMENT_ID = "G-Q09S8Z84WP";
 export function GoogleTag() {
   return (
     <>
-      <link rel="preconnect" href="https://www.googletagmanager.com" />
-      <link rel="dns-prefetch" href="https://www.google-analytics.com" />
       {/* Google tag (gtag.js) */}
       <script
         dangerouslySetInnerHTML={{
