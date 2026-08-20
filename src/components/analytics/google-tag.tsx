@@ -1,28 +1,26 @@
-import Script from "next/script";
-
 /** Google Analytics 4 measurement ID — one tag for the whole site. */
 export const GA_MEASUREMENT_ID = "G-Q09S8Z84WP";
 
 /**
- * Loads the Google tag once from the root layout so every page is measured
- * without duplicating the snippet.
+ * Google's gtag snippet as plain script tags so the tag is present in the
+ * HTML source (Tag Assistant / Google's detector). Do not use next/script.
  */
 export function GoogleTag() {
   return (
     <>
-      <Script
+      {/* Google tag (gtag.js) */}
+      <script
+        async
         src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
-        strategy="beforeInteractive"
       />
-      <Script
-        id="google-gtag"
-        strategy="beforeInteractive"
+      <script
         dangerouslySetInnerHTML={{
           __html: `
-window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', '${GA_MEASUREMENT_ID}');
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', '${GA_MEASUREMENT_ID}');
 `,
         }}
       />

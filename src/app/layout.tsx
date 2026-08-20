@@ -68,9 +68,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <RootShell fontClassName={`${plusJakartaSans.variable} ${jetbrainsMono.variable}`}>
-      <GoogleTag />
-      {children}
-    </RootShell>
+    <html
+      lang="en"
+      className={`${plusJakartaSans.variable} ${jetbrainsMono.variable} h-full antialiased`}
+      suppressHydrationWarning
+    >
+      {/* eslint-disable-next-line @next/next/no-head-element -- gtag must be in the document head so Tag Assistant can detect it */}
+      <head>
+        <GoogleTag />
+      </head>
+      <RootShell>{children}</RootShell>
+    </html>
   );
 }
