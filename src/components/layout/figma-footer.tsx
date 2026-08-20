@@ -56,7 +56,8 @@ export function FigmaFooter({ showBlogLink = true }: FigmaFooterProps) {
                 src="/logo.png"
                 alt="Comlabs Technologies Pvt Ltd"
                 width={112}
-                height={40}
+                height={88}
+                sizes="112px"
                 className="h-22 -ml-4 w-auto"
                 style={{ mixBlendMode: "multiply" }}
               />

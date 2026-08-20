@@ -1,10 +1,7 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
 
 import { TESTIMONIALS } from "@/components/home/figma/home-data";
-import { MarketingFadeIn } from "@/components/marketing/marketing-motion";
 import { MarketingOrangeHighlight } from "@/components/marketing/marketing-section-header";
 
 function FounderAvatar({
@@ -23,6 +20,7 @@ function FounderAvatar({
         alt={name}
         width={40}
         height={40}
+        sizes="40px"
         className="h-10 w-10 shrink-0 rounded-full object-cover"
       />
     );
@@ -42,7 +40,7 @@ export function FigmaTestimonialsSection() {
   return (
     <section id="testimonials" className="border-y border-border bg-card px-6 py-24 md:py-28">
       <div className="mx-auto max-w-6xl">
-        <MarketingFadeIn className="mb-12 max-w-2xl md:mb-16">
+        <div className="mb-12 max-w-2xl md:mb-16">
           <p className="mb-4 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
             Testimonials
           </p>
@@ -55,7 +53,7 @@ export function FigmaTestimonialsSection() {
           <p className="mt-4 text-sm leading-relaxed text-muted-foreground md:text-base">
             Direct feedback from founders we&apos;ve shipped websites, products, and platforms with.
           </p>
-        </MarketingFadeIn>
+        </div>
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {TESTIMONIALS.map((testimonial) => (

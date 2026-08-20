@@ -139,9 +139,14 @@
 
   html {
     font-size: var(--font-size);
-    scroll-behavior: smooth;
     overflow-x: clip;
     max-width: 100%;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
   }
 
   body {
@@ -348,6 +353,61 @@
   border: none;
   border-top: 1px solid var(--border);
   margin: 2em 0;
+}
+
+@keyframes home-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.home-fade-up {
+  animation: home-fade-up 0.55s cubic-bezier(0.25, 0.1, 0, 1) both;
+}
+
+@keyframes hero-orb-pulse {
+  0%,
+  100% {
+    opacity: 0.2;
+    transform: scale(0.95);
+  }
+  50% {
+    opacity: 0.38;
+    transform: scale(1.03);
+  }
+}
+
+@keyframes hero-orb-pulse-delayed {
+  0%,
+  100% {
+    opacity: 0.16;
+    transform: scale(0.98);
+  }
+  50% {
+    opacity: 0.28;
+    transform: scale(1.06);
+  }
+}
+
+.hero-orb {
+  animation: hero-orb-pulse 8s ease-in-out infinite;
+}
+
+.hero-orb-delayed {
+  animation: hero-orb-pulse-delayed 10s ease-in-out 0.5s infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-fade-up,
+  .hero-orb,
+  .hero-orb-delayed {
+    animation: none;
+  }
 }
 
 /* Tiptap placeholder */

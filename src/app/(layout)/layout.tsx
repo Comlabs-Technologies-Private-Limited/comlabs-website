@@ -8,7 +8,7 @@ export function MarketingLayout({
   return (
     <>
       {children}
-      <AgentationGate />
+      {process.env.NODE_ENV === "development" ? <AgentationGate /> : null}
     </>
   );
 }

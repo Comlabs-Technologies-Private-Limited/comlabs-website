@@ -1,16 +1,39 @@
-"use client";
+import dynamic from "next/dynamic";
 
-import { FigmaAppliedAiSection } from "@/components/home/figma/applied-ai-section";
 import { FigmaCtaSection } from "@/components/home/figma/cta-section";
-import { FigmaIndustriesSection } from "@/components/home/figma/industries-section";
 import { FigmaHeroSection } from "@/components/home/figma/hero-section";
-import { FigmaProcessSection } from "@/components/home/figma/process-section";
-import { FigmaServicesSection } from "@/components/home/figma/services-section";
-import { FigmaSpecialtySection } from "@/components/home/figma/specialty-section";
-import { FigmaTestimonialsSection } from "@/components/home/figma/testimonials-section";
-import { FigmaWorkSection } from "@/components/home/figma/work-section";
 import { FigmaFooter } from "@/components/layout/figma-footer";
 import { FigmaNav } from "@/components/layout/figma-nav";
+
+const FigmaServicesSection = dynamic(
+  () =>
+    import("@/components/home/figma/services-section").then((mod) => mod.FigmaServicesSection),
+);
+const FigmaAppliedAiSection = dynamic(
+  () =>
+    import("@/components/home/figma/applied-ai-section").then((mod) => mod.FigmaAppliedAiSection),
+);
+const FigmaProcessSection = dynamic(
+  () =>
+    import("@/components/home/figma/process-section").then((mod) => mod.FigmaProcessSection),
+);
+const FigmaSpecialtySection = dynamic(
+  () =>
+    import("@/components/home/figma/specialty-section").then((mod) => mod.FigmaSpecialtySection),
+);
+const FigmaWorkSection = dynamic(
+  () => import("@/components/home/figma/work-section").then((mod) => mod.FigmaWorkSection),
+);
+const FigmaIndustriesSection = dynamic(
+  () =>
+    import("@/components/home/figma/industries-section").then((mod) => mod.FigmaIndustriesSection),
+);
+const FigmaTestimonialsSection = dynamic(
+  () =>
+    import("@/components/home/figma/testimonials-section").then(
+      (mod) => mod.FigmaTestimonialsSection,
+    ),
+);
 
 export function FigmaHomePage() {
   return (

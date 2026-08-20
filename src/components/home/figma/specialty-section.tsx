@@ -1,7 +1,12 @@
-import {
-  customCraftIllustration,
-  ServiceIllustrationFrame,
-} from "@/components/services/illustrations";
+import dynamic from "next/dynamic";
+
+import { ServiceIllustrationFrame } from "@/components/services/illustrations";
+
+const CustomCraftVisual = dynamic(() =>
+  import("@/components/services/illustrations/custom-craft-illustration").then(
+    (mod) => mod.CustomCraftIllustration,
+  ),
+);
 
 const SPECIALTY_ITEMS = [
   "React, Next.js, and TypeScript by default",
@@ -10,9 +15,10 @@ const SPECIALTY_ITEMS = [
   "Full code handoff with documentation",
 ] as const;
 
-export function FigmaSpecialtySection() {
-  const { Component: CustomCraftVisual, label } = customCraftIllustration;
+const SPECIALTY_LABEL =
+  "Custom development illustration: a TypeScript component being written in an editor alongside quality gates for type safety, performance budget and accessibility that each pass, ending in a handoff-ready state.";
 
+export function FigmaSpecialtySection() {
   return (
     <section className="px-6 py-24">
       <div className="mx-auto grid max-w-6xl items-center gap-16 md:grid-cols-2">
@@ -44,7 +50,7 @@ export function FigmaSpecialtySection() {
         </div>
 
         <ServiceIllustrationFrame
-          label={label}
+          label={SPECIALTY_LABEL}
           background="/services-bg/service-bg-1.png"
           className="shadow-[0_2px_24px_rgba(28,25,23,0.07)]"
         >

@@ -1,11 +1,15 @@
-"use client";
+import dynamic from "next/dynamic";
+import Image from "next/image";
 
-import {
-  appliedAiIllustration,
-  ServiceIllustrationFrame,
-} from "@/components/services/illustrations";
+import { ServiceIllustrationFrame } from "@/components/services/illustrations";
 import { editorialImages } from "@/lib/editorial-images";
 import { EDITORIAL_HERO_OVERLAY } from "@/lib/editorial-hero-styles";
+
+const AppliedAiVisual = dynamic(() =>
+  import("@/components/services/illustrations/applied-ai-illustration").then(
+    (mod) => mod.AppliedAiIllustration,
+  ),
+);
 
 const APPLIED_AI_CAPABILITIES = [
   "AI Search",
@@ -14,23 +18,22 @@ const APPLIED_AI_CAPABILITIES = [
   "Model Integrations",
 ] as const;
 
-const APPLIED_AI_IMAGE = editorialImages.appliedAi.src;
+const APPLIED_AI_IMAGE = editorialImages.appliedAi;
+const APPLIED_AI_LABEL =
+  "Applied AI illustration: signals from Slack, Outlook and Salesforce feeding a Claude agent that prepares a renewal quote, pauses for operator approval, then executes actions back to CRM and email.";
 
 export function FigmaAppliedAiSection() {
-  const { Component: AppliedAiVisual, label } = appliedAiIllustration;
-
   return (
     <section id="applied-ai" className="relative overflow-hidden px-6 py-24 md:py-28">
-      <img
-        src={APPLIED_AI_IMAGE}
+      <Image
+        src={APPLIED_AI_IMAGE.src}
         alt=""
+        fill
+        sizes="100vw"
+        className="object-cover object-center"
         aria-hidden
-        className="absolute inset-0 h-full w-full object-cover object-center"
       />
-      <div
-        className="absolute inset-0"
-        style={{ background: EDITORIAL_HERO_OVERLAY }}
-      />
+      <div className="absolute inset-0" style={{ background: EDITORIAL_HERO_OVERLAY }} />
 
       <div className="relative z-10 mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-2 lg:gap-16">
         <div className="max-w-2xl">
@@ -68,7 +71,7 @@ export function FigmaAppliedAiSection() {
         </div>
 
         <ServiceIllustrationFrame
-          label={label}
+          label={APPLIED_AI_LABEL}
           className="shadow-[0_28px_70px_-30px_rgba(0,0,0,0.65)] ring-1 ring-white/10"
         >
           <AppliedAiVisual />

@@ -150,8 +150,8 @@ export function ServiceIllustrationFrame({
         aria-hidden
         className="absolute inset-0 overflow-hidden"
         style={{
-          rotateX: reduce ? 0 : springX,
-          rotateY: reduce ? 0 : springY,
+          rotateX: reduce || !inView ? 0 : springX,
+          rotateY: reduce || !inView ? 0 : springY,
           transformStyle: "preserve-3d",
         }}
         initial={reduce ? false : { ...illustrationBlurHidden, y: 8 }}

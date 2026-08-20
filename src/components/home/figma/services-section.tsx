@@ -1,6 +1,4 @@
-"use client";
-
-import { ServiceRow, serviceItems } from "@/components/home/services-section";
+import { ServiceRow, serviceItems } from "@/components/home/service-row";
 
 export function FigmaServicesSection() {
   return (
