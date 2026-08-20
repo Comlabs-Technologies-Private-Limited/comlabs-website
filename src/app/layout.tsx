@@ -73,7 +73,6 @@ export default function RootLayout({
       className={`${plusJakartaSans.variable} ${jetbrainsMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      {/* eslint-disable-next-line @next/next/no-head-element -- gtag must be in the document head so Tag Assistant can detect it */}
       <head>
         <GoogleTag />
       </head>
