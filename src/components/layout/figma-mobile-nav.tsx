@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 
 import { canonicalPath } from "@/lib/site";
@@ -48,13 +47,13 @@ export function FigmaMobileNav({ navLinks }: FigmaMobileNavProps) {
         >
           <div className="flex h-14 items-center justify-between px-6">
             <Link href="/" aria-label="Comlabs home">
-              <Image
+              <img
                 src="/logo.png"
                 alt="Comlabs Technologies Pvt Ltd logo"
                 className="h-22 w-28"
                 height={88}
                 width={112}
-                sizes="112px"
+                decoding="async"
                 style={{ mixBlendMode: "multiply" }}
               />
             </Link>

@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 
 import { FigmaMobileNav } from "@/components/layout/figma-mobile-nav";
@@ -27,14 +26,13 @@ export function FigmaNav({ showBlogLink = true }: FigmaNavProps) {
     >
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-6">
         <Link href="/" aria-label="Comlabs home">
-          <Image
+          <img
             src="/logo.png"
             alt="Comlabs Technologies Pvt Ltd logo"
             className="h-22 w-28"
             height={88}
             width={112}
-            sizes="112px"
-            priority
+            decoding="async"
             style={{ mixBlendMode: "multiply" }}
           />
         </Link>

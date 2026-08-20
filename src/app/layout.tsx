@@ -19,7 +19,7 @@ const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
   style: "normal",
   display: "optional",
-  preload: true,
+  preload: false,
   adjustFontFallback: true,
 });
 
