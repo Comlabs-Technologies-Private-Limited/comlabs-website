@@ -2,11 +2,11 @@
 
 import { AnimatePresence, LayoutGroup, motion, useScroll } from "framer-motion";
 import { ArrowRight, Menu, X } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import { ComlabsLogo } from "@/components/brand/comlabs-logo";
 import { canonicalPath } from "@/lib/site";
 import { cn } from "@/lib/utils";
 import { navPrimaryCtaClass, navPrimaryCtaIconClass } from "@/lib/nav-cta";
@@ -133,14 +133,7 @@ export function AppNavbar() {
             href="/"
             className="relative inline-flex shrink-0 items-center justify-self-start outline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-600/60"
           >
-            <Image
-              src="/logos/comlabslogo.png"
-              alt="ComLabs technologies"
-              width={720}
-              height={280}
-              priority
-              className="h-17 w-auto"
-            />
+            <ComlabsLogo decorative className="h-7 w-auto md:h-8" />
           </Link>
 
           <LayoutGroup id="main-nav">

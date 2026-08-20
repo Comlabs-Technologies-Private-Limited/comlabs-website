@@ -9,6 +9,7 @@ import type { ComponentType, ReactNode, SVGProps } from "react";
 
 import { easeOut, GPU, motionFor } from "@/lib/product-motion";
 import { cn } from "@/lib/utils";
+import { ComlabsLogo } from "@/components/brand/comlabs-logo";
 
 /** Design tokens — SF Pro stack, premium mockup palette */
 const mock = {
@@ -350,13 +351,7 @@ export function LandingMockup({ active = false }: MockupProps) {
               variants={block}
               className="flex shrink-0 items-center justify-between border-b border-stone-200/60 bg-[#f7f7f4]/90 px-2.5 py-0.5 backdrop-blur-sm"
             >
-              <Image
-                src="/logo.png"
-                alt="Comlabs"
-                width={112}
-                height={40}
-                className="h-7 w-auto object-contain"
-              />
+              <ComlabsLogo decorative className="h-5 w-auto" />
               <div className="hidden items-center gap-2 sm:flex">
                 {["Work", "Services"].map((link) => (
                   <span key={link} className="text-[6px] text-stone-500">
