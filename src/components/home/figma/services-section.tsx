@@ -1,7 +1,6 @@
-import { ServiceRow } from "@/components/home/service-row";
-import { buildHomeServiceCards } from "@/lib/canonical-services";
+"use client";
 
-const serviceItems = buildHomeServiceCards();
+import { ServiceRow, serviceItems } from "@/components/home/services-section";
 
 export function FigmaServicesSection() {
   return (

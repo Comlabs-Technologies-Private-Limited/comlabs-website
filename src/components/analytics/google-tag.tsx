@@ -2,36 +2,25 @@
 export const GA_MEASUREMENT_ID = "G-Q09S8Z84WP";
 
 /**
- * Google's gtag snippet stays in the HTML source so Tag Assistant can detect
- * G-Q09S8Z84WP, but the network request is deferred until the page is idle.
+ * Google's gtag snippet as plain script tags so the tag is present in the
+ * HTML source (Tag Assistant / Google's detector). Do not use next/script.
  */
 export function GoogleTag() {
   return (
     <>
       {/* Google tag (gtag.js) */}
       <script
+        async
+        src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+      />
+      <script
         dangerouslySetInnerHTML={{
           __html: `
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
-  function __loadGtag(){
-    if (window.__gtagLoaded) return;
-    window.__gtagLoaded = true;
-    var s = document.createElement('script');
-    s.src = 'https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}';
-    s.async = true;
-    document.head.appendChild(s);
-    gtag('js', new Date());
-    gtag('config', '${GA_MEASUREMENT_ID}');
-  }
-  var load = function () {
-    setTimeout(__loadGtag, 8000);
-  };
-  ['pointerdown', 'keydown', 'scroll', 'touchstart'].forEach(function (eventName) {
-    window.addEventListener(eventName, __loadGtag, { once: true, passive: true });
-  });
-  if (document.readyState === 'complete') load();
-  else window.addEventListener('load', load);
+  gtag('js', new Date());
+
+  gtag('config', '${GA_MEASUREMENT_ID}');
 `,
         }}
       />
