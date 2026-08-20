@@ -25,7 +25,7 @@ export function FigmaProcessSection() {
             >
               <div
                 className="mb-4 text-xs font-medium tabular-nums"
-                style={{ fontFamily: "var(--font-mono)", color: "var(--warm-orange)" }}
+                style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace", color: "var(--warm-orange)" }}
               >
                 {step.step}
               </div>

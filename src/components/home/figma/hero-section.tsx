@@ -39,7 +39,7 @@ export function FigmaHeroSection() {
           src="/hero/hero-bg.webp"
           alt=""
           fetchPriority="high"
-          decoding="async"
+          decoding="sync"
           width={1600}
           height={900}
           className="absolute inset-0 h-full w-full object-cover object-right"

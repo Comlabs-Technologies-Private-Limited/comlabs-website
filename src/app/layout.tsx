@@ -17,6 +17,7 @@ import "./globals.css";
 const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-plus-jakarta",
   subsets: ["latin"],
+  style: "normal",
   display: "swap",
   preload: true,
   adjustFontFallback: true,

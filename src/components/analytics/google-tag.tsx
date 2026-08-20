@@ -27,8 +27,7 @@ export function GoogleTag() {
     gtag('config', '${GA_MEASUREMENT_ID}');
   }
   var load = function () {
-    if ('requestIdleCallback' in window) requestIdleCallback(__loadGtag, { timeout: 8000 });
-    else setTimeout(__loadGtag, 5000);
+    setTimeout(__loadGtag, 8000);
   };
   ['pointerdown', 'keydown', 'scroll', 'touchstart'].forEach(function (eventName) {
     window.addEventListener(eventName, __loadGtag, { once: true, passive: true });
