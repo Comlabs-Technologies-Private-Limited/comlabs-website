@@ -26,15 +26,15 @@ export function GoogleTag() {
     gtag('js', new Date());
     gtag('config', '${GA_MEASUREMENT_ID}');
   }
-  if (document.readyState === 'complete') {
-    if ('requestIdleCallback' in window) requestIdleCallback(__loadGtag, { timeout: 3500 });
-    else setTimeout(__loadGtag, 1);
-  } else {
-    window.addEventListener('load', function () {
-      if ('requestIdleCallback' in window) requestIdleCallback(__loadGtag, { timeout: 3500 });
-      else setTimeout(__loadGtag, 1500);
-    });
-  }
+  var load = function () {
+    if ('requestIdleCallback' in window) requestIdleCallback(__loadGtag, { timeout: 8000 });
+    else setTimeout(__loadGtag, 5000);
+  };
+  ['pointerdown', 'keydown', 'scroll', 'touchstart'].forEach(function (eventName) {
+    window.addEventListener(eventName, __loadGtag, { once: true, passive: true });
+  });
+  if (document.readyState === 'complete') load();
+  else window.addEventListener('load', load);
 `,
         }}
       />

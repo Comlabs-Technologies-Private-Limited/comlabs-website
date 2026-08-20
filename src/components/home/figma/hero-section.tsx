@@ -1,5 +1,4 @@
 import { ArrowRight } from "lucide-react";
-import Image from "next/image";
 
 import { EnterpriseClientsTrust } from "@/components/home/enterprise-clients-section";
 import { canonicalPath } from "@/lib/site";
@@ -7,16 +6,46 @@ import { canonicalPath } from "@/lib/site";
 export function FigmaHeroSection() {
   return (
     <section className="relative overflow-hidden px-6 pt-16 pb-16 md:pt-24 md:pb-20">
-      <Image
-        src="/hero/hero-bg.png"
-        alt=""
-        fill
-        priority
+      <link
+        rel="preload"
+        as="image"
+        href="/hero/hero-bg-mobile.avif"
+        type="image/avif"
+        media="(max-width: 767px)"
         fetchPriority="high"
-        sizes="100vw"
-        className="object-cover object-right"
-        aria-hidden
       />
+      <link
+        rel="preload"
+        as="image"
+        href="/hero/hero-bg.avif"
+        type="image/avif"
+        media="(min-width: 768px)"
+        fetchPriority="high"
+      />
+      <picture>
+        <source
+          media="(max-width: 767px)"
+          type="image/avif"
+          srcSet="/hero/hero-bg-mobile.avif"
+        />
+        <source
+          media="(max-width: 767px)"
+          type="image/webp"
+          srcSet="/hero/hero-bg-mobile.webp"
+        />
+        <source type="image/avif" srcSet="/hero/hero-bg.avif" />
+        <source type="image/webp" srcSet="/hero/hero-bg.webp" />
+        <img
+          src="/hero/hero-bg.webp"
+          alt=""
+          fetchPriority="high"
+          decoding="async"
+          width={1600}
+          height={900}
+          className="absolute inset-0 h-full w-full object-cover object-right"
+          aria-hidden
+        />
+      </picture>
       <div
         aria-hidden
         className="absolute inset-0"
@@ -93,7 +122,11 @@ export function FigmaHeroSection() {
         </div>
       </div>
 
-      <div className="home-fade-up relative mx-auto mt-16 max-w-5xl" style={{ animationDelay: "1.48s" }} aria-label="Trusted clients">
+      <div
+        className="home-fade-up relative mx-auto mt-16 max-w-5xl"
+        style={{ animationDelay: "1.48s" }}
+        aria-label="Trusted clients"
+      >
         <EnterpriseClientsTrust />
       </div>
     </section>
