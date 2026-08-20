@@ -2,9 +2,9 @@
 
 import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 
+import { ComlabsLogo } from "@/components/brand/comlabs-logo";
 import { canonicalPath, isBlogPublic } from "@/lib/site";
 
 const BASE_NAV_LINKS = [
@@ -48,14 +48,7 @@ export function FigmaNav({ showBlogLink = true }: FigmaNavProps) {
       >
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-6">
           <Link href="/" aria-label="Comlabs home">
-            <Image
-              src="/logo.png"
-              alt="Comlabs Technologies Pvt Ltd logo"
-              className="h-22 w-28"
-              height={100}
-              width={100}
-              style={{ mixBlendMode: "multiply" }}
-            />
+            <ComlabsLogo decorative className="h-7 w-auto md:h-8" />
           </Link>
 
           <nav className="hidden items-center gap-7 md:flex" aria-label="Primary">
@@ -116,14 +109,7 @@ export function FigmaNav({ showBlogLink = true }: FigmaNavProps) {
           >
             <div className="flex h-14 items-center justify-between px-6">
               <Link href="/" aria-label="Comlabs home" onClick={() => setMenuOpen(false)}>
-                <Image
-                  src="/logo.png"
-                  alt="Comlabs Technologies Pvt Ltd logo"
-                  className="h-22 w-28"
-                  height={100}
-                  width={100}
-                  style={{ mixBlendMode: "multiply" }}
-                />
+                <ComlabsLogo decorative className="h-7 w-auto" />
               </Link>
               <button
                 type="button"

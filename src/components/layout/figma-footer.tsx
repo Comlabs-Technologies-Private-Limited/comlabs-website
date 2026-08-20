@@ -1,5 +1,5 @@
+import { ComlabsLogo } from "@/components/brand/comlabs-logo";
 import { FigmaFooterSocialLinks } from "@/components/layout/figma-footer-social-links";
-import Image from "next/image";
 import Link from "next/link";
 
 import { canonicalPath, isBlogPublic, siteDescriptor, siteLocation, siteName } from "@/lib/site";
@@ -52,14 +52,7 @@ export function FigmaFooter({ showBlogLink = true }: FigmaFooterProps) {
         <div className="mb-12 flex flex-col justify-between gap-10 md:flex-row">
           <div>
             <Link href="/" className="mb-3 block" aria-label="Comlabs home">
-              <Image
-                src="/logo.png"
-                alt="Comlabs Technologies Pvt Ltd"
-                width={112}
-                height={40}
-                className="h-22 -ml-4 w-auto"
-                style={{ mixBlendMode: "multiply" }}
-              />
+              <ComlabsLogo decorative className="h-8 w-auto md:h-10" />
             </Link>
             <p className="text-sm font-medium text-foreground">{siteName}</p>
             <p className="mt-1 text-sm text-muted-foreground">{siteDescriptor}</p>

@@ -20,7 +20,7 @@ export const siteDefaultDescription =
 
 export const organizationId = `${siteUrl}/#organization` as const;
 export const websiteId = `${siteUrl}/#website` as const;
-export const logoUrl = `${siteUrl}/logo.png` as const;
+export const logoUrl = `${siteUrl}/logo.svg` as const;
 
 /**
  * Absolute canonical URL for an indexable page path or same-origin absolute URL.
