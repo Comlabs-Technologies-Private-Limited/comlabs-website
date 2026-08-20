@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { JetBrains_Mono, Plus_Jakarta_Sans } from "next/font/google";
 
+import { GoogleTag } from "@/components/analytics/google-tag";
 import { RootShell } from "@/components/root-shell";
 import {
   siteAppleIconPath,
@@ -68,6 +69,7 @@ export default function RootLayout({
 }>) {
   return (
     <RootShell fontClassName={`${plusJakartaSans.variable} ${jetbrainsMono.variable}`}>
+      <GoogleTag />
       {children}
     </RootShell>
   );
