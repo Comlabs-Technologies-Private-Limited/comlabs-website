@@ -6,22 +6,6 @@ import { canonicalPath } from "@/lib/site";
 export function FigmaHeroSection() {
   return (
     <section className="hero-shell relative overflow-hidden px-6 pt-16 pb-16 md:pt-24 md:pb-20">
-      <link
-        rel="preload"
-        as="image"
-        href="/hero/hero-bg-mobile.avif"
-        type="image/avif"
-        media="(max-width: 767px)"
-        fetchPriority="high"
-      />
-      <link
-        rel="preload"
-        as="image"
-        href="/hero/hero-bg.avif"
-        type="image/avif"
-        media="(min-width: 768px)"
-        fetchPriority="high"
-      />
       <div
         aria-hidden
         className="hero-orb pointer-events-none absolute -top-24 right-[-18%] h-[24rem] w-[24rem] rounded-full"
