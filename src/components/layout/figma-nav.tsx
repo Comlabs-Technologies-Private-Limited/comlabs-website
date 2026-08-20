@@ -48,7 +48,7 @@ export function FigmaNav({ showBlogLink = true }: FigmaNavProps) {
       >
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-6">
           <Link href="/" aria-label="Comlabs home">
-            <ComlabsLogo decorative className="h-7 w-auto md:h-8" />
+            <ComlabsLogo decorative className="h-5 w-auto" />
           </Link>
 
           <nav className="hidden items-center gap-7 md:flex" aria-label="Primary">
@@ -109,7 +109,7 @@ export function FigmaNav({ showBlogLink = true }: FigmaNavProps) {
           >
             <div className="flex h-14 items-center justify-between px-6">
               <Link href="/" aria-label="Comlabs home" onClick={() => setMenuOpen(false)}>
-                <ComlabsLogo decorative className="h-7 w-auto" />
+                <ComlabsLogo decorative className="h-5 w-auto" />
               </Link>
               <button
                 type="button"

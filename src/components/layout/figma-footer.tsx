@@ -52,7 +52,7 @@ export function FigmaFooter({ showBlogLink = true }: FigmaFooterProps) {
         <div className="mb-12 flex flex-col justify-between gap-10 md:flex-row">
           <div>
             <Link href="/" className="mb-3 block" aria-label="Comlabs home">
-              <ComlabsLogo decorative className="h-8 w-auto md:h-10" />
+              <ComlabsLogo decorative className="h-6 w-auto" />
             </Link>
             <p className="text-sm font-medium text-foreground">{siteName}</p>
             <p className="mt-1 text-sm text-muted-foreground">{siteDescriptor}</p>

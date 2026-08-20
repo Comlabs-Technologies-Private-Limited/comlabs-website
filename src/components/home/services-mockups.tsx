@@ -351,7 +351,7 @@ export function LandingMockup({ active = false }: MockupProps) {
               variants={block}
               className="flex shrink-0 items-center justify-between border-b border-stone-200/60 bg-[#f7f7f4]/90 px-2.5 py-0.5 backdrop-blur-sm"
             >
-              <ComlabsLogo decorative className="h-5 w-auto" />
+              <ComlabsLogo decorative className="h-4 w-auto" />
               <div className="hidden items-center gap-2 sm:flex">
                 {["Work", "Services"].map((link) => (
                   <span key={link} className="text-[6px] text-stone-500">
