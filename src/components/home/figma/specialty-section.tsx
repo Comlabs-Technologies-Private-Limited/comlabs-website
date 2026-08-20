@@ -1,5 +1,6 @@
 import dynamic from "next/dynamic";
 
+import { HydrateOnView } from "@/components/media/hydrate-on-view";
 import { ServiceIllustrationFrame } from "@/components/services/illustrations";
 
 const CustomCraftVisual = dynamic(() =>
@@ -49,13 +50,15 @@ export function FigmaSpecialtySection() {
           </ul>
         </div>
 
-        <ServiceIllustrationFrame
-          label={SPECIALTY_LABEL}
-          background="/services-bg/service-bg-1.png"
-          className="shadow-[0_2px_24px_rgba(28,25,23,0.07)]"
-        >
-          <CustomCraftVisual />
-        </ServiceIllustrationFrame>
+        <HydrateOnView minHeightClassName="aspect-[5/4] md:aspect-[4/3]">
+          <ServiceIllustrationFrame
+            label={SPECIALTY_LABEL}
+            background="/services-bg/service-bg-1.png"
+            className="shadow-[0_2px_24px_rgba(28,25,23,0.07)]"
+          >
+            <CustomCraftVisual />
+          </ServiceIllustrationFrame>
+        </HydrateOnView>
       </div>
     </section>
   );

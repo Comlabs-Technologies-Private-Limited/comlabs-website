@@ -1,42 +1,15 @@
-"use client";
-
-import { motion, useInView, useReducedMotion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { useRef } from "react";
 
-import { ServiceIllustrationFrame } from "@/components/services/illustrations";
-import { lazyServiceVisuals } from "@/components/services/illustrations/lazy-visuals";
+import { HydrateOnView } from "@/components/media/hydrate-on-view";
+import { ServiceVisual } from "@/components/home/service-visual";
 import { buildHomeServiceCards, type HomeServiceCard } from "@/lib/canonical-services";
 import { cn } from "@/lib/utils";
 import { canonicalPath } from "@/lib/site";
 
-const ease = [0.25, 0.1, 0, 1] as const;
-const SERVICE_VIEWPORT = { once: true, amount: 0.2 } as const;
-
 export const serviceItems = buildHomeServiceCards();
 
 export type ServiceItem = HomeServiceCard;
-
-function ServiceVisual({
-  background,
-  visualClassName,
-  id,
-}: {
-  background: string;
-  visualClassName?: string;
-  id: string;
-}) {
-  const illustration = lazyServiceVisuals[id];
-  if (!illustration) return null;
-
-  const { Component, label } = illustration;
-  return (
-    <ServiceIllustrationFrame label={label} background={background} className={visualClassName}>
-      <Component />
-    </ServiceIllustrationFrame>
-  );
-}
 
 export function ServiceRow({
   title,
@@ -49,20 +22,10 @@ export function ServiceRow({
   linkHref,
   variant = "legacy",
 }: HomeServiceCard & { index: number; variant?: "legacy" | "figma"; visualClassName?: string }) {
-  const rowRef = useRef<HTMLElement>(null);
-  const reduceMotion = useReducedMotion();
-  const inView = useInView(rowRef, SERVICE_VIEWPORT);
-  const visible = inView;
   const reversed = index % 2 === 1;
 
   return (
-    <motion.article
-      ref={rowRef}
-      className="grid grid-cols-1 items-center gap-10 md:grid-cols-2 md:gap-12 lg:gap-20"
-      initial={reduceMotion ? false : { opacity: 0, y: 20 }}
-      animate={visible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-      transition={{ duration: reduceMotion ? 0 : 0.28, delay: reduceMotion ? 0 : index * 0.08, ease }}
-    >
+    <article className="grid grid-cols-1 items-center gap-10 md:grid-cols-2 md:gap-12 lg:gap-20">
       <div className={cn("max-w-lg", reversed && "md:order-2 md:justify-self-end")}>
         <h3
           className={cn(
@@ -102,9 +65,11 @@ export function ServiceRow({
       </div>
 
       <div className={cn(reversed && "md:order-1")}>
-        <ServiceVisual background={background} id={id} visualClassName={visualClassName} />
+        <HydrateOnView minHeightClassName="aspect-[5/4] md:aspect-[4/3]">
+          <ServiceVisual background={background} id={id} visualClassName={visualClassName} />
+        </HydrateOnView>
       </div>
-    </motion.article>
+    </article>
   );
 }
 

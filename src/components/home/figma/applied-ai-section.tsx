@@ -1,6 +1,7 @@
 import dynamic from "next/dynamic";
 import Image from "next/image";
 
+import { HydrateOnView } from "@/components/media/hydrate-on-view";
 import { ServiceIllustrationFrame } from "@/components/services/illustrations";
 import { editorialImages } from "@/lib/editorial-images";
 import { EDITORIAL_HERO_OVERLAY } from "@/lib/editorial-hero-styles";
@@ -30,6 +31,7 @@ export function FigmaAppliedAiSection() {
         alt=""
         fill
         sizes="100vw"
+        loading="lazy"
         className="object-cover object-center"
         aria-hidden
       />
@@ -70,12 +72,14 @@ export function FigmaAppliedAiSection() {
           </ul>
         </div>
 
-        <ServiceIllustrationFrame
-          label={APPLIED_AI_LABEL}
-          className="shadow-[0_28px_70px_-30px_rgba(0,0,0,0.65)] ring-1 ring-white/10"
-        >
-          <AppliedAiVisual />
-        </ServiceIllustrationFrame>
+        <HydrateOnView minHeightClassName="aspect-[5/4] md:aspect-[4/3]">
+          <ServiceIllustrationFrame
+            label={APPLIED_AI_LABEL}
+            className="shadow-[0_28px_70px_-30px_rgba(0,0,0,0.65)] ring-1 ring-white/10"
+          >
+            <AppliedAiVisual />
+          </ServiceIllustrationFrame>
+        </HydrateOnView>
       </div>
     </section>
   );

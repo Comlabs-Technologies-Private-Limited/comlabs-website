@@ -1,5 +1,3 @@
-"use client";
-
 import { SectionHeader } from "@/components/home/section-header";
 import { ServiceRow, serviceItems } from "@/components/home/service-row";
 import { SectionContainer } from "@/components/layout/section-container";
