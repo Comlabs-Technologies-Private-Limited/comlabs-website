@@ -1,9 +1,6 @@
-"use client";
+import Image from "next/image";
 
-import {
-  appliedAiIllustration,
-  ServiceIllustrationFrame,
-} from "@/components/services/illustrations";
+import { DeferredHomeVisual } from "@/components/media/deferred-home-visual";
 import { editorialImages } from "@/lib/editorial-images";
 import { EDITORIAL_HERO_OVERLAY } from "@/lib/editorial-hero-styles";
 
@@ -14,23 +11,22 @@ const APPLIED_AI_CAPABILITIES = [
   "Model Integrations",
 ] as const;
 
-const APPLIED_AI_IMAGE = editorialImages.appliedAi.src;
+const APPLIED_AI_IMAGE = editorialImages.appliedAi;
 
 export function FigmaAppliedAiSection() {
-  const { Component: AppliedAiVisual, label } = appliedAiIllustration;
-
   return (
     <section id="applied-ai" className="relative overflow-hidden px-6 py-24 md:py-28">
-      <img
-        src={APPLIED_AI_IMAGE}
+      <Image
+        src={APPLIED_AI_IMAGE.src}
         alt=""
+        fill
+        sizes="100vw"
+        loading="lazy"
+        fetchPriority="low"
+        className="object-cover object-center"
         aria-hidden
-        className="absolute inset-0 h-full w-full object-cover object-center"
       />
-      <div
-        className="absolute inset-0"
-        style={{ background: EDITORIAL_HERO_OVERLAY }}
-      />
+      <div className="absolute inset-0" style={{ background: EDITORIAL_HERO_OVERLAY }} />
 
       <div className="relative z-10 mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-2 lg:gap-16">
         <div className="max-w-2xl">
@@ -67,12 +63,7 @@ export function FigmaAppliedAiSection() {
           </ul>
         </div>
 
-        <ServiceIllustrationFrame
-          label={label}
-          className="shadow-[0_28px_70px_-30px_rgba(0,0,0,0.65)] ring-1 ring-white/10"
-        >
-          <AppliedAiVisual />
-        </ServiceIllustrationFrame>
+        <DeferredHomeVisual name="applied-ai" />
       </div>
     </section>
   );

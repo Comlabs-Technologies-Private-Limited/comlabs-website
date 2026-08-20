@@ -1,7 +1,5 @@
-"use client";
-
 import { ArrowRight, ExternalLink } from "lucide-react";
-import { motion } from "motion/react";
+import Image from "next/image";
 
 import { PROJECTS } from "@/components/home/figma/home-data";
 import { canonicalPath } from "@/lib/site";
@@ -31,21 +29,20 @@ export function FigmaWorkSection() {
         </div>
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          {PROJECTS.map((project, i) => (
-            <motion.a
+          {PROJECTS.map((project) => (
+            <a
               key={project.title}
               href={canonicalPath(project.href)}
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.06 }}
               className="group block overflow-hidden rounded-3xl border border-border bg-background transition-colors hover:border-foreground/20"
             >
               <div className="relative aspect-video overflow-hidden bg-secondary">
-                <img
+                <Image
                   src={project.image}
                   alt={`${project.title} website`}
-                  className="absolute inset-0 h-full w-full max-w-none object-cover object-top transition-transform duration-500 group-hover:scale-[1.02]"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  loading="lazy"
+                  className="object-cover object-top transition-transform duration-500 group-hover:scale-[1.02]"
                 />
               </div>
               <div className="p-6">
@@ -64,7 +61,7 @@ export function FigmaWorkSection() {
                   </span>
                 ) : null}
               </div>
-            </motion.a>
+            </a>
           ))}
         </div>
       </div>

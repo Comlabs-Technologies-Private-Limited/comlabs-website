@@ -59,7 +59,6 @@ type ServiceIllustrationFrameProps = {
   children: ReactNode;
   /** Distant scenic backdrop, held far back behind an ivory scrim. */
   background?: string;
-  priority?: boolean;
   className?: string;
   /** Renders on the dark Applied AI band instead of the light service rows. */
   tone?: "light" | "dark";
@@ -69,7 +68,6 @@ export function ServiceIllustrationFrame({
   label,
   children,
   background,
-  priority = false,
   className,
   tone = "light",
 }: ServiceIllustrationFrameProps) {
@@ -119,20 +117,20 @@ export function ServiceIllustrationFrame({
       )}
       style={{ perspective: 1200 }}
     >
-      {background ? (
-        <Image
-          src={background}
-          alt=""
-          fill
-          priority={priority}
-          loading={priority ? undefined : "lazy"}
-          sizes="(max-width: 1023px) 100vw, 50vw"
-          aria-hidden
-          className={cn(
-            "object-cover object-center",
-            isDark ? "opacity-[0.30]" : "opacity-100",
-          )}
-        />
+      {inView || reduce ? (
+        background ? (
+          <Image
+            src={background}
+            alt=""
+            fill
+            sizes="(max-width: 1023px) 100vw, 50vw"
+            aria-hidden
+            className={cn(
+              "object-cover object-center",
+              isDark ? "opacity-[0.30]" : "opacity-100",
+            )}
+          />
+        ) : null
       ) : null}
 
       {/* Light scrim only — the painterly scenery stays legible behind the interface. */}
@@ -146,26 +144,28 @@ export function ServiceIllustrationFrame({
         }}
       />
 
-      <motion.div
-        aria-hidden
-        className="absolute inset-0 overflow-hidden"
-        style={{
-          rotateX: reduce ? 0 : springX,
-          rotateY: reduce ? 0 : springY,
-          transformStyle: "preserve-3d",
-        }}
-        initial={reduce ? false : { ...illustrationBlurHidden, y: 8 }}
-        animate={
-          inView
-            ? { ...illustrationBlurShown, y: 0 }
-            : { ...illustrationBlurHidden, y: 8 }
-        }
-        transition={{ duration: reduce ? 0 : 0.5, ease: illustrationEase }}
-      >
-        <IllustrationStateContext.Provider value={{ active: inView, reduce }}>
-          {children}
-        </IllustrationStateContext.Provider>
-      </motion.div>
+      {inView || reduce ? (
+        <motion.div
+          aria-hidden
+          className="absolute inset-0 overflow-hidden"
+          style={{
+            rotateX: reduce || !inView ? 0 : springX,
+            rotateY: reduce || !inView ? 0 : springY,
+            transformStyle: "preserve-3d",
+          }}
+          initial={reduce ? false : { ...illustrationBlurHidden, y: 8 }}
+          animate={
+            inView
+              ? { ...illustrationBlurShown, y: 0 }
+              : { ...illustrationBlurHidden, y: 8 }
+          }
+          transition={{ duration: reduce ? 0 : 0.5, ease: illustrationEase }}
+        >
+          <IllustrationStateContext.Provider value={{ active: inView, reduce }}>
+            {children}
+          </IllustrationStateContext.Provider>
+        </motion.div>
+      ) : null}
     </div>
   );
 }
