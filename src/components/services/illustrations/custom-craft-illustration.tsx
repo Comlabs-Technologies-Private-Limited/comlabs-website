@@ -104,7 +104,14 @@ export function CustomCraftIllustration() {
             >
               service-card.tsx
             </span>
-            <span className="ml-auto hidden lg:block">
+            <span className="ml-auto hidden items-center gap-1.5 lg:flex">
+              <img
+                src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/typescript/default.svg"
+                alt="TypeScript logo"
+                width={13}
+                height={13}
+                className="shrink-0"
+              />
               <Chip tone="quiet">TypeScript</Chip>
             </span>
           </div>
