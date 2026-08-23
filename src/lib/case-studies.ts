@@ -93,7 +93,7 @@ export const CASE_STUDY_ORDER: readonly CaseStudySlug[] = [
   "vithub",
 ] as const;
 
-export const RADIANT_LIVE_URL = "https://radiant-three-gamma.vercel.app/";
+export const RADIANT_LIVE_URL = "https://radiant.comlabstechnologies.com/";
 
 export type CaseStudyServiceLink = {
   label: string;

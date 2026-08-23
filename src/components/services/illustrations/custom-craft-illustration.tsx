@@ -1,6 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import { siNextdotjs, siNodedotjs, siReact, siTypescript } from "simple-icons";
 
 import {
   CheckGlyph,
@@ -104,15 +105,19 @@ export function CustomCraftIllustration() {
             >
               service-card.tsx
             </span>
-            <span className="ml-auto hidden items-center gap-1.5 lg:flex">
-              <img
-                src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/typescript/default.svg"
-                alt="TypeScript logo"
-                width={13}
-                height={13}
-                className="shrink-0"
-              />
-              <Chip tone="quiet">TypeScript</Chip>
+            <span className="ml-auto hidden items-center gap-1.5 lg:flex" aria-hidden>
+              {[siTypescript, siNextdotjs, siReact, siNodedotjs].map((icon) => (
+                <svg
+                  key={icon.slug}
+                  viewBox="0 0 24 24"
+                  width={13}
+                  height={13}
+                  className="shrink-0"
+                >
+                  <title>{icon.title}</title>
+                  <path fill={`#${icon.hex}`} d={icon.path} />
+                </svg>
+              ))}
             </span>
           </div>
 

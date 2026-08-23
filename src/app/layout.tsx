@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { JetBrains_Mono, Plus_Jakarta_Sans } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 
 import { GoogleTag } from "@/components/analytics/google-tag";
 import { RootShell } from "@/components/root-shell";
@@ -76,7 +77,10 @@ export default function RootLayout({
       <head>
         <GoogleTag />
       </head>
-      <RootShell>{children}</RootShell>
+      <RootShell>
+        {children}
+        <Analytics />
+      </RootShell>
     </html>
   );
 }

@@ -38,7 +38,7 @@ export const PROJECTS = [
     category: "Website Design & Development",
     desc: "An editorial studio website built around bold work, expressive motion and clear conversion paths.",
     href: "/work/radiant",
-    liveSiteUrl: "https://radiant-three-gamma.vercel.app/",
+    liveSiteUrl: "https://radiant.comlabstechnologies.com/",
     logo: "/work/radiant/radiant-mark.png",
     image: "/work/radiant/radiant-case-study-hero.webp",
   },

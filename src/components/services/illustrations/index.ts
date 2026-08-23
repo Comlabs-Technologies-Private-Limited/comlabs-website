@@ -53,7 +53,7 @@ export const customCraftIllustration: ServiceIllustration = {
 export const appliedAiIllustration: ServiceIllustration = {
   Component: AppliedAiIllustration,
   label:
-    "Applied AI illustration: signals from Slack, Outlook and Salesforce feeding a Claude agent that prepares a renewal quote, pauses for operator approval, then executes actions back to CRM and email.",
+    "Applied AI illustration: a support copilot drafting a grounded reply in a live inbox, citing Slack and Salesforce before the operator sends it.",
 };
 
 export { ServiceIllustrationFrame } from "./service-illustration-frame";
