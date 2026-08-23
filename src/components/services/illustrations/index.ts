@@ -24,7 +24,7 @@ export const serviceIllustrations: Record<string, ServiceIllustration> = {
   "custom-software": {
     Component: CustomSoftwareIllustration,
     label:
-      "Custom software illustration: a customer onboarding workflow moving from a Slack request through Claude review and Comlabs build to a live Salesforce and Outlook deployment across connected enterprise systems.",
+      "Custom software illustration: Atlas, an operations product with a request queue, workspace table and provisioning rail as Acme moves from a Slack request to a live Salesforce and Outlook workspace.",
   },
   "mobile-app": {
     Component: MobileAppIllustration,

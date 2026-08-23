@@ -4,13 +4,7 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { GoogleMark } from "./brand-marks";
-import {
-  CheckGlyph,
-  Chip,
-  MicroLabel,
-  Panel,
-  StatusDot,
-} from "./illustration-primitives";
+import { MicroLabel, Panel } from "./illustration-primitives";
 import {
   IllustrationStage,
   useIllustrationState,
@@ -218,34 +212,6 @@ function Connectors({ activated }: { activated: boolean }) {
         />
       ))}
     </svg>
-  );
-}
-
-const SCHEMA_DOT_COLORS: Record<(typeof DOC_SECTIONS)[number]["schema"], string> = {
-  Service: "#A8A29E",
-  HowTo: "#78716C",
-  FAQ: illustrationColors.accent,
-  LocalBusiness: "#57534E",
-};
-
-/** Linear-style label — bordered chip with a leading status dot. */
-function SchemaPill({ children }: { children: (typeof DOC_SECTIONS)[number]["schema"] }) {
-  return (
-    <span
-      className="inline-flex shrink-0 items-center gap-1 border px-1.5 py-[3px] text-[7px] leading-none lg:px-2 lg:text-[8px]"
-      style={{
-        borderRadius: 6,
-        background: illustrationColors.surface,
-        borderColor: "rgba(28, 25, 23, 0.12)",
-        color: illustrationColors.inkMuted,
-      }}
-    >
-      <span
-        className="h-[5px] w-[5px] shrink-0 rounded-full lg:h-1.5 lg:w-1.5"
-        style={{ background: SCHEMA_DOT_COLORS[children] }}
-      />
-      {children}
-    </span>
   );
 }
 
@@ -706,12 +672,12 @@ export function SeoAeoIllustration() {
                   animate={illustrationTextSwapShown}
                   exit={reduce ? undefined : illustrationTextSwapExit}
                   transition={{ duration: 0.2, ease: illustrationEase }}
-                  className="flex shrink-0 items-center"
+                  className="shrink-0 text-[7px] leading-none lg:text-[8.5px]"
+                  style={{
+                    color: indexed ? illustrationColors.accent : illustrationColors.inkMuted,
+                  }}
                 >
-                  <Chip tone={indexed ? "accent" : "quiet"} size="compact">
-                    {indexed ? <CheckGlyph size={6} /> : <StatusDot tone="idle" />}
-                    {indexed ? "Indexed" : "Crawled"}
-                  </Chip>
+                  {indexed ? "Indexed" : "Crawled"}
                 </motion.span>
               </AnimatePresence>
             </div>
@@ -743,9 +709,10 @@ export function SeoAeoIllustration() {
                               ...fade,
                               delay: reduce ? 0 : index * illustrationTiming.staggerSec,
                             }}
-                            className="flex items-center"
+                            className="shrink-0 text-[7px] leading-none lg:text-[8.5px]"
+                            style={{ color: illustrationColors.inkMuted }}
                           >
-                            <SchemaPill>{section.schema}</SchemaPill>
+                            {section.schema}
                           </motion.span>
                         ) : (
                           <span

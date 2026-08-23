@@ -11,7 +11,7 @@ import {
   SalesforceMark,
   SlackMark,
 } from "./brand-marks";
-import { CheckGlyph, Chip, WindowDots } from "./illustration-primitives";
+import { CheckGlyph, WindowDots } from "./illustration-primitives";
 import {
   IllustrationStage,
   useIllustrationState,
@@ -36,11 +36,7 @@ const THREADS = [
   { company: "Formial", preview: "Contract follow-up", time: "2d", Source: SlackMark },
 ] as const;
 
-const CONTEXT_CHIPS = [
-  { label: "#renewals", Mark: SlackMark },
-  { label: "MSA-118", Mark: FileText },
-  { label: "AC-4421", Mark: SalesforceMark },
-] as const;
+const CONTEXT_LABELS = ["#renewals", "MSA-118", "AC-4421"] as const;
 
 const CONTEXT_FIELDS = [
   { label: "Pricing band", value: "MSA-118", Icon: FileText },
@@ -61,10 +57,9 @@ const FOLLOW_REPLY =
   "Done — the reply now includes a 14-day kickoff, still inside MSA-118.";
 
 const OPERATOR = {
-  name: "Jeet Patel",
-  email: "jeet@comlabs",
-  image:
-    "https://res.cloudinary.com/p8osc4y4/image/upload/v1786453596/jeet-patel_hewm25.jpg",
+  name: "John Doe",
+  email: "john@comlabs",
+  initials: "JD",
 } as const;
 
 const STEPS = 8;
@@ -193,23 +188,14 @@ export function AppliedAiIllustration() {
             >
               Renewal Copilot
             </span>
-            <span
-              className="hidden items-center gap-1 rounded-full border px-1.5 py-[3px] lg:inline-flex"
-              style={{
-                borderColor: illustrationColors.border,
-                background: illustrationColors.surface,
-              }}
-            >
-              <ClaudeMark className="h-[8px] w-[8px]" />
-              <span
-                className="text-[7px] leading-none"
-                style={{ color: illustrationColors.inkMuted }}
-              >
-                Claude
-              </span>
-            </span>
+            <ClaudeMark className="hidden h-[8px] w-[8px] lg:block" />
           </span>
-          <Chip tone={complete ? "accent" : "quiet"} size="compact">
+          <span
+            className="shrink-0 text-[7px] leading-none lg:text-[8.5px]"
+            style={{
+              color: complete ? illustrationColors.accent : illustrationColors.inkMuted,
+            }}
+          >
             {complete
               ? "Draft approved"
               : approvalReady
@@ -217,7 +203,7 @@ export function AppliedAiIllustration() {
                 : retrieving
                   ? "Retrieving context"
                   : "Watching inbox"}
-          </Chip>
+          </span>
         </div>
 
         <div className="flex min-h-0 flex-1">
@@ -308,13 +294,17 @@ export function AppliedAiIllustration() {
               className="mt-auto flex shrink-0 items-center gap-1.5 border-t px-1.5 py-[7px] lg:px-2"
               style={{ borderColor: illustrationColors.border }}
             >
-              <img
-                src={OPERATOR.image}
-                alt=""
-                width={22}
-                height={22}
-                className="h-[18px] w-[18px] shrink-0 rounded-full object-cover lg:h-[22px] lg:w-[22px]"
-              />
+              <span
+                className="flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full lg:h-[22px] lg:w-[22px]"
+                style={{
+                  background: illustrationColors.ink,
+                  color: illustrationColors.surface,
+                }}
+              >
+                <span className="text-[6.5px] leading-none lg:text-[7.5px]">
+                  {OPERATOR.initials}
+                </span>
+              </span>
               <span className="min-w-0 flex-1">
                 <span
                   className="block truncate text-[7px] leading-none lg:text-[8.5px]"
@@ -357,18 +347,15 @@ export function AppliedAiIllustration() {
                     className="mt-1 block truncate text-[6.5px] leading-none lg:text-[7.5px]"
                     style={{ color: illustrationColors.inkFaint }}
                   >
-                    via Slack · A. Shah · 2m
+                    A. Shah · #renewals · 2m
                   </span>
                 </span>
               </span>
-              <span className="flex shrink-0 items-center gap-1">
-                <OutlookMark className="h-[10px] w-[10px]" />
-                <span
-                  className="text-[6.5px] leading-none lg:text-[7.5px]"
-                  style={{ color: illustrationColors.inkMuted }}
-                >
-                  Priya · Owner
-                </span>
+              <span
+                className="shrink-0 text-[6.5px] leading-none lg:text-[7.5px]"
+                style={{ color: illustrationColors.inkMuted }}
+              >
+                Priya
               </span>
             </div>
 
@@ -378,17 +365,13 @@ export function AppliedAiIllustration() {
                 style={{
                   borderRadius: 8,
                   background: illustrationColors.surfaceMuted,
-                  border: `1px solid ${illustrationColors.border}`,
                 }}
               >
-                <span className="mb-1 flex items-center gap-1">
-                  <SlackMark className="h-[8px] w-[8px]" />
-                  <span
-                    className="text-[6.5px] leading-none lg:text-[7.5px]"
-                    style={{ color: illustrationColors.inkFaint }}
-                  >
-                    A. Shah · #renewals
-                  </span>
+                <span
+                  className="mb-1 block text-[6.5px] leading-none lg:text-[7.5px]"
+                  style={{ color: illustrationColors.inkFaint }}
+                >
+                  A. Shah
                 </span>
                 <span
                   className="block text-[7.5px] leading-[1.45] lg:text-[9px]"
@@ -409,8 +392,7 @@ export function AppliedAiIllustration() {
                         transition={fade}
                         className="flex flex-col gap-1.5 rounded-[8px] px-2 py-1.5 lg:px-2.5 lg:py-2"
                         style={{
-                          background: illustrationColors.surfaceWarm,
-                          border: "1px solid rgba(201,100,66,0.16)",
+                          background: illustrationColors.surfaceMuted,
                         }}
                       >
                         <span className="flex items-center gap-1">
@@ -473,7 +455,6 @@ export function AppliedAiIllustration() {
                       style={{
                         borderRadius: 8,
                         background: illustrationColors.surfaceMuted,
-                        border: `1px solid ${illustrationColors.border}`,
                       }}
                     >
                       <span
@@ -498,8 +479,7 @@ export function AppliedAiIllustration() {
                       transition={{ ...fade, delay: reduce ? 0 : 0.12 }}
                       className="flex flex-col gap-1 rounded-[8px] px-2 py-1.5 lg:px-2.5"
                       style={{
-                        background: illustrationColors.surfaceWarm,
-                        border: "1px solid rgba(201,100,66,0.16)",
+                        background: illustrationColors.surfaceMuted,
                       }}
                     >
                       <span className="flex items-center gap-1">
@@ -525,31 +505,11 @@ export function AppliedAiIllustration() {
                 </div>
               </div>
 
-              <div className="flex flex-wrap items-center gap-1">
-                {CONTEXT_CHIPS.map((chip, index) => (
-                  <motion.span
-                    key={chip.label}
-                    initial={reduce ? false : illustrationPopHidden}
-                    animate={
-                      retrieving || complete
-                        ? illustrationPopShown
-                        : illustrationPopHidden
-                    }
-                    transition={{
-                      ...swap,
-                      delay: reduce ? 0 : index * illustrationTiming.staggerSec,
-                    }}
-                  >
-                    <Chip tone="quiet" size="compact">
-                      {chip.Mark === FileText ? (
-                        <FileText size={8} color={illustrationColors.inkMuted} />
-                      ) : (
-                        <chip.Mark className="h-[8px] w-[8px]" />
-                      )}
-                      {chip.label}
-                    </Chip>
-                  </motion.span>
-                ))}
+              <div
+                className="truncate text-[6.5px] leading-none lg:text-[7.5px]"
+                style={{ color: illustrationColors.inkMuted }}
+              >
+                {CONTEXT_LABELS.join("  ·  ")}
               </div>
 
               <div className="flex shrink-0 items-center justify-between gap-2">
