@@ -53,15 +53,15 @@ export function CaseStudyLayout({ content }: { content: CaseStudyContent }) {
           liveSite={extras?.liveSite}
         />
 
-        <div className="border-t border-border px-6 pb-8 md:pb-12">
+        <div className="border-t border-border px-6 pb-8 md:pb-10">
           <div className="mx-auto max-w-6xl">
-            <div className="grid grid-cols-12 gap-x-8 gap-y-12 pt-12 lg:gap-x-12 lg:pt-16">
+            <div className="grid grid-cols-12 gap-x-8 gap-y-10 pt-10 lg:gap-x-12 lg:pt-12">
               <div className="col-span-12 lg:col-span-3">
                 <CaseStudyMeta items={meta} />
               </div>
 
               <div className="col-span-12 lg:col-span-7 lg:col-start-5">
-                <div className="-mx-0 mb-16 md:mb-20 lg:-mx-8">
+                <div className="-mx-0 mb-12 md:mb-14 lg:-mx-8">
                   <CaseStudyMedia media={{ ...leadImage, variant: leadImage.variant ?? "wide" }} />
                 </div>
 

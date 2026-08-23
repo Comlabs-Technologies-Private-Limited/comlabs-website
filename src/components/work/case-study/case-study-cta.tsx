@@ -27,11 +27,11 @@ export function CaseStudyCta({
 
   return (
     <section
-      className="mx-6 mb-16 overflow-hidden rounded-3xl"
+      className="mx-6 mb-12 overflow-hidden rounded-3xl"
       style={{ background: "var(--foreground)" }}
       aria-label="Contact Comlabs"
     >
-      <div className="mx-auto max-w-2xl px-8 py-20 text-center md:px-10 md:py-24">
+      <div className="mx-auto max-w-2xl px-8 py-16 text-center md:px-10 md:py-20">
         <p
           className="mb-5 text-xs tracking-widest uppercase"
           style={{ color: "rgba(247,247,244,0.45)" }}

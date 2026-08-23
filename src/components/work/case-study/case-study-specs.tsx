@@ -11,12 +11,12 @@ export function CaseStudySpecs({ specs }: CaseStudySpecsProps) {
       {specs.map((spec) => (
         <div
           key={spec.label}
-          className="grid gap-1 border-b border-border py-5 sm:grid-cols-[8.5rem_1fr] sm:gap-6"
+          className="grid grid-cols-1 items-baseline gap-1 border-b border-border py-4 sm:grid-cols-[6.5rem_1fr] sm:gap-x-4"
         >
           <dt className="text-xs tracking-widest text-muted-foreground uppercase">
             {spec.label}
           </dt>
-          <dd className="text-sm leading-[1.7] text-foreground md:text-base">
+          <dd className="min-w-0 text-sm leading-relaxed text-foreground">
             {spec.value}
           </dd>
         </div>

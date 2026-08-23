@@ -14,8 +14,6 @@ type MarketingCtaSectionProps = {
   description: string;
   ctaLabel: string;
   ctaHref?: string;
-  audienceItems?: string[];
-  footerNote?: string;
 };
 
 export function MarketingCtaSection({
@@ -24,8 +22,6 @@ export function MarketingCtaSection({
   description,
   ctaLabel,
   ctaHref = "/contact",
-  audienceItems,
-  footerNote,
 }: MarketingCtaSectionProps) {
   return (
     <section
@@ -52,34 +48,11 @@ export function MarketingCtaSection({
           {title}
         </h2>
         <p
-          className={`text-base leading-[1.7] md:text-lg ${audienceItems?.length || footerNote ? "mb-8" : "mb-10"}`}
+          className="mb-10 text-base leading-[1.7] md:text-lg"
           style={{ color: "rgba(247,247,244,0.55)" }}
         >
           {description}
         </p>
-
-        {audienceItems && audienceItems.length > 0 ? (
-          <div className="mb-8 grid grid-cols-1 gap-3 text-left sm:grid-cols-2 sm:gap-x-6 sm:gap-y-3">
-            {audienceItems.map((item) => (
-              <p
-                key={item}
-                className="text-sm font-normal leading-relaxed"
-                style={{ color: "rgba(247,247,244,0.5)" }}
-              >
-                {item}
-              </p>
-            ))}
-          </div>
-        ) : null}
-
-        {footerNote ? (
-          <p
-            className="mb-8 text-sm font-normal leading-relaxed"
-            style={{ color: "rgba(247,247,244,0.45)" }}
-          >
-            {footerNote}
-          </p>
-        ) : null}
 
         <Link
           href={canonicalPath(ctaHref)}

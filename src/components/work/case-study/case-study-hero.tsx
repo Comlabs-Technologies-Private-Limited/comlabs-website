@@ -29,7 +29,7 @@ export function CaseStudyHero({
   liveSite,
 }: CaseStudyHeroProps) {
   return (
-    <header className="px-6 pt-14 pb-16 md:pt-20 md:pb-20">
+    <header className="px-6 pt-12 pb-8 md:pt-16 md:pb-10">
       <div className="mx-auto max-w-6xl">
         <PageBreadcrumbs
           className="mb-10"
