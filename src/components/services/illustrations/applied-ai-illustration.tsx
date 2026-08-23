@@ -1,9 +1,17 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { Clock, FileText, Inbox, LogOut, Search, ShieldCheck, UserRound } from "lucide-react";
 
-import { SalesforceMark, SlackMark } from "./brand-marks";
-import { CheckGlyph, WindowDots } from "./illustration-primitives";
+import {
+  ClaudeMark,
+  CopilotMark,
+  OutlookMark,
+  SalesforceMark,
+  SlackMark,
+} from "./brand-marks";
+import { CheckGlyph, Chip, WindowDots } from "./illustration-primitives";
 import {
   IllustrationStage,
   useIllustrationState,
@@ -22,15 +30,44 @@ import {
 import { useIllustrationSequence } from "./use-illustration-sequence";
 
 const THREADS = [
-  { company: "Acme", preview: "Lock Q3 renewal?", time: "2m" },
-  { company: "Northstar", preview: "Usage on Business", time: "1h" },
-  { company: "Vithub", preview: "Brand assets ready", time: "Yesterday" },
+  { company: "Acme", preview: "Lock Q3 renewal?", time: "2m", Source: SlackMark },
+  { company: "Northstar", preview: "Usage review", time: "1h", Source: SalesforceMark },
+  { company: "Vithub", preview: "Brand assets ready", time: "Yesterday", Source: OutlookMark },
+  { company: "Formial", preview: "Contract follow-up", time: "2d", Source: SlackMark },
+] as const;
+
+const CONTEXT_CHIPS = [
+  { label: "#renewals", Mark: SlackMark },
+  { label: "MSA-118", Mark: FileText },
+  { label: "AC-4421", Mark: SalesforceMark },
+] as const;
+
+const CONTEXT_FIELDS = [
+  { label: "Pricing band", value: "MSA-118", Icon: FileText },
+  { label: "Last renewal", value: "11 months", Icon: Clock },
+  { label: "Account owner", value: "Priya", Icon: UserRound },
+  { label: "Risk", value: "Low", Icon: ShieldCheck },
 ] as const;
 
 const DRAFT =
   "Yes — 14-month term at ₹4.2L, within the MSA-118 pricing band.";
 
-const STEPS = 6;
+const REASONING =
+  "Pulled pricing from latest agreement and matched against current renewal guidelines.";
+
+const FOLLOW_UP = "Add a 2-week kickoff.";
+
+const FOLLOW_REPLY =
+  "Done — the reply now includes a 14-day kickoff, still inside MSA-118.";
+
+const OPERATOR = {
+  name: "Jeet Patel",
+  email: "jeet@comlabs",
+  image:
+    "https://res.cloudinary.com/p8osc4y4/image/upload/v1786453596/jeet-patel_hewm25.jpg",
+} as const;
+
+const STEPS = 8;
 
 const fade = {
   duration: illustrationTiming.transitionSec,
@@ -41,6 +78,54 @@ const swap = {
   duration: illustrationTiming.feedbackSec,
   ease: illustrationEase,
 };
+
+function useTypedText(
+  text: string,
+  enabled: boolean,
+  reduce: boolean,
+  snap: boolean,
+): string {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    if (!enabled || reduce || snap) return;
+
+    const intervalId = window.setInterval(() => {
+      setCount((current) => {
+        if (current >= text.length) {
+          window.clearInterval(intervalId);
+          return current;
+        }
+        return current + 1;
+      });
+    }, 26);
+
+    return () => window.clearInterval(intervalId);
+  }, [enabled, reduce, snap, text]);
+
+  if (reduce || snap) return text;
+  if (!enabled) return "";
+  return text.slice(0, count);
+}
+
+function TypedComposerLabel({
+  enabled,
+  reduce,
+  snap,
+}: {
+  enabled: boolean;
+  reduce: boolean;
+  snap: boolean;
+}) {
+  const typed = useTypedText(FOLLOW_UP, enabled, reduce, snap);
+
+  return (
+    <>
+      {enabled ? typed : "Ask Copilot a follow-up…"}
+      {enabled && !snap && !reduce ? <ComposerCaret /> : null}
+    </>
+  );
+}
 
 function ComposerCaret() {
   return (
@@ -59,24 +144,26 @@ export function AppliedAiIllustration() {
     steps: STEPS,
     active,
     reduce,
-    stepMs: 850,
+    stepMs: 800,
   });
 
-  // 0 inbox · 1 drafting · 2 draft · 3 review · 4 sent · 5 logged
-  const drafting = step >= 1 && step < 4;
+  // 0 request · 1 retrieving · 2 draft · 3 recommend · 4 approval · 5 sent · 6 typing · 7 reply
+  const retrieving = step >= 1;
   const draftReady = step >= 2;
-  const reviewReady = step >= 3;
-  const sent = step >= 4;
-  const logged = step >= 5;
+  const recommended = step >= 3;
+  const approvalReady = step >= 4;
+  const complete = step >= 5;
+  const followUpTyping = step === 6;
+  const followUpReplied = step >= 7;
 
   return (
-    <IllustrationStage>
+    <IllustrationStage className="p-2 lg:p-3">
       <div
-        className="flex h-full flex-col overflow-hidden"
+        className="flex h-full min-h-0 flex-col overflow-hidden"
         style={{
-          borderRadius: illustrationRadius.panel,
-          background: illustrationColors.surfacePanel,
-          border: `1px solid ${illustrationColors.border}`,
+          borderRadius: illustrationRadius.device,
+          background: illustrationColors.surface,
+          border: `1px solid ${illustrationColors.borderStrong}`,
           boxShadow: illustrationShadow.raised,
         }}
       >
@@ -87,230 +174,565 @@ export function AppliedAiIllustration() {
             background: illustrationColors.surfaceMuted,
           }}
         >
-          <span className="flex min-w-0 items-center gap-1.5">
+          <span className="flex min-w-0 items-center gap-2">
             <WindowDots />
             <span
-              className="truncate text-[7.5px] leading-none lg:text-[9px]"
+              className="flex h-[16px] w-[16px] shrink-0 items-center justify-center rounded-[5px] lg:h-[18px] lg:w-[18px]"
+              style={{
+                background: illustrationColors.ink,
+              }}
+            >
+              <CopilotMark
+                className="h-[10px] w-[10px] lg:h-[11px] lg:w-[11px]"
+                color={illustrationColors.surface}
+              />
+            </span>
+            <span
+              className="truncate text-[8px] leading-none lg:text-[10px]"
               style={{ color: illustrationColors.ink }}
             >
-              Copilot
+              Renewal Copilot
+            </span>
+            <span
+              className="hidden items-center gap-1 rounded-full border px-1.5 py-[3px] lg:inline-flex"
+              style={{
+                borderColor: illustrationColors.border,
+                background: illustrationColors.surface,
+              }}
+            >
+              <ClaudeMark className="h-[8px] w-[8px]" />
+              <span
+                className="text-[7px] leading-none"
+                style={{ color: illustrationColors.inkMuted }}
+              >
+                Claude
+              </span>
             </span>
           </span>
-          <span
-            className="shrink-0 text-[6.5px] leading-none lg:text-[7.5px]"
-            style={{ color: illustrationColors.inkFaint }}
-          >
-            {sent ? "Sent" : drafting ? "Drafting…" : "Inbox"}
-          </span>
+          <Chip tone={complete ? "accent" : "quiet"} size="compact">
+            {complete
+              ? "Draft approved"
+              : approvalReady
+                ? "Needs approval"
+                : retrieving
+                  ? "Retrieving context"
+                  : "Watching inbox"}
+          </Chip>
         </div>
 
         <div className="flex min-h-0 flex-1">
           <div
-            className="flex w-[34%] shrink-0 flex-col border-r"
+            className="flex w-[30%] shrink-0 flex-col border-r lg:w-[22%]"
             style={{
               borderColor: illustrationColors.border,
               background: illustrationColors.surfaceMuted,
             }}
           >
-            <span
-              className="px-2 pt-2 pb-1 text-[6.5px] leading-none lg:px-2.5 lg:text-[7.5px]"
-              style={{ color: illustrationColors.inkFaint }}
+            <div className="flex items-center gap-1 px-2 pt-2 pb-1.5 lg:px-2.5">
+              <Inbox size={9} color={illustrationColors.inkMuted} />
+              <span
+                className="text-[7px] leading-none lg:text-[8px]"
+                style={{ color: illustrationColors.inkMuted }}
+              >
+                Queue
+              </span>
+            </div>
+            <div
+              className="mx-1.5 mb-1.5 hidden items-center gap-1 rounded-[6px] border px-1.5 py-[5px] lg:flex"
+              style={{
+                borderColor: illustrationColors.border,
+                background: illustrationColors.surface,
+              }}
             >
-              Inbox
-            </span>
+              <Search size={8} color={illustrationColors.inkFaint} />
+              <span
+                className="text-[7px] leading-none"
+                style={{ color: illustrationColors.inkFaint }}
+              >
+                Search accounts
+              </span>
+            </div>
+            <div className="min-h-0 flex-1 overflow-hidden">
             {THREADS.map((thread, index) => {
               const selected = index === 0;
               return (
                 <div
                   key={thread.company}
-                  className="mx-1 mb-0.5 flex flex-col gap-[3px] px-1.5 py-[6px] lg:mx-1.5 lg:px-2"
+                  className={
+                    index === 3
+                      ? "mx-1 mb-0.5 hidden flex-col gap-1 px-1.5 py-[7px] lg:mx-1.5 lg:flex lg:px-2"
+                      : "mx-1 mb-0.5 flex flex-col gap-1 px-1.5 py-[7px] lg:mx-1.5 lg:px-2"
+                  }
                   style={{
-                    borderRadius: 7,
+                    borderRadius: 8,
                     background: selected ? illustrationColors.surface : "transparent",
                     boxShadow: selected ? illustrationShadow.chip : undefined,
                   }}
                 >
-                  <span className="flex items-center justify-between gap-1">
+                  <span className="flex items-center gap-1.5">
                     <span
-                      className="truncate text-[7px] leading-none lg:text-[8.5px]"
-                      style={{ color: illustrationColors.ink }}
+                      className="flex h-[16px] w-[16px] shrink-0 items-center justify-center rounded-[5px] lg:h-[18px] lg:w-[18px]"
+                      style={{ background: illustrationColors.surface }}
                     >
-                      {thread.company}
+                      <thread.Source className="h-[9px] w-[9px] lg:h-[10px] lg:w-[10px]" />
                     </span>
-                    <span
-                      className="shrink-0 text-[6px] leading-none"
-                      style={{ color: illustrationColors.inkFaint }}
-                    >
-                      {thread.time}
+                    <span className="min-w-0 flex-1">
+                      <span className="flex items-center justify-between gap-1">
+                        <span
+                          className="truncate text-[7.5px] leading-none lg:text-[9px]"
+                          style={{ color: illustrationColors.ink }}
+                        >
+                          {thread.company}
+                        </span>
+                        <span
+                          className="shrink-0 text-[6.5px] leading-none lg:text-[7.5px]"
+                          style={{ color: illustrationColors.inkFaint }}
+                        >
+                          {thread.time}
+                        </span>
+                      </span>
+                      <span
+                        className="mt-1 block truncate text-[6.5px] leading-none lg:text-[7.5px]"
+                        style={{ color: illustrationColors.inkFaint }}
+                      >
+                        {thread.preview}
+                      </span>
                     </span>
-                  </span>
-                  <span
-                    className="truncate text-[6px] leading-none lg:text-[7px]"
-                    style={{ color: illustrationColors.inkFaint }}
-                  >
-                    {thread.preview}
                   </span>
                 </div>
               );
             })}
+            </div>
+
+            <div
+              className="mt-auto flex shrink-0 items-center gap-1.5 border-t px-1.5 py-[7px] lg:px-2"
+              style={{ borderColor: illustrationColors.border }}
+            >
+              <img
+                src={OPERATOR.image}
+                alt=""
+                width={22}
+                height={22}
+                className="h-[18px] w-[18px] shrink-0 rounded-full object-cover lg:h-[22px] lg:w-[22px]"
+              />
+              <span className="min-w-0 flex-1">
+                <span
+                  className="block truncate text-[7px] leading-none lg:text-[8.5px]"
+                  style={{ color: illustrationColors.ink }}
+                >
+                  {OPERATOR.name}
+                </span>
+                <span
+                  className="mt-[3px] hidden truncate text-[6.5px] leading-none lg:block"
+                  style={{ color: illustrationColors.inkFaint }}
+                >
+                  {OPERATOR.email}
+                </span>
+              </span>
+              <span
+                className="flex shrink-0 items-center gap-0.5 text-[6.5px] leading-none lg:text-[7.5px]"
+                style={{ color: illustrationColors.inkMuted }}
+              >
+                <LogOut size={8} />
+                <span className="hidden lg:inline">Log out</span>
+              </span>
+            </div>
           </div>
 
           <div className="flex min-w-0 flex-1 flex-col">
             <div
-              className="flex shrink-0 items-center justify-between gap-2 border-b px-2.5 py-[7px]"
+              className="flex shrink-0 items-center justify-between gap-2 border-b px-2.5 py-[7px] lg:px-3"
               style={{ borderColor: illustrationColors.border }}
             >
-              <span
-                className="truncate text-[7.5px] leading-none lg:text-[9px]"
-                style={{ color: illustrationColors.ink }}
-              >
-                Acme · Renewal
+              <span className="flex min-w-0 items-center gap-1.5">
+                <SlackMark className="h-[11px] w-[11px] lg:h-[13px] lg:w-[13px]" />
+                <span className="min-w-0">
+                  <span
+                    className="block truncate text-[8px] leading-none lg:text-[10px]"
+                    style={{ color: illustrationColors.ink }}
+                  >
+                    Acme · Renewal
+                  </span>
+                  <span
+                    className="mt-1 block truncate text-[6.5px] leading-none lg:text-[7.5px]"
+                    style={{ color: illustrationColors.inkFaint }}
+                  >
+                    via Slack · A. Shah · 2m
+                  </span>
+                </span>
               </span>
-              <span
-                className="shrink-0 text-[6px] leading-none lg:text-[7px]"
-                style={{ color: illustrationColors.inkFaint }}
-              >
-                Priya · Owner
+              <span className="flex shrink-0 items-center gap-1">
+                <OutlookMark className="h-[10px] w-[10px]" />
+                <span
+                  className="text-[6.5px] leading-none lg:text-[7.5px]"
+                  style={{ color: illustrationColors.inkMuted }}
+                >
+                  Priya · Owner
+                </span>
               </span>
             </div>
 
-            <div className="flex min-h-0 flex-1 flex-col gap-2 p-2.5 lg:p-3">
+            <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-hidden p-2.5 lg:gap-2.5 lg:p-3">
               <div
-                className="max-w-[92%] px-2 py-1.5"
+                className="max-w-[94%] px-2 py-1.5 lg:px-2.5 lg:py-2"
                 style={{
                   borderRadius: 8,
                   background: illustrationColors.surfaceMuted,
                   border: `1px solid ${illustrationColors.border}`,
                 }}
               >
+                <span className="mb-1 flex items-center gap-1">
+                  <SlackMark className="h-[8px] w-[8px]" />
+                  <span
+                    className="text-[6.5px] leading-none lg:text-[7.5px]"
+                    style={{ color: illustrationColors.inkFaint }}
+                  >
+                    A. Shah · #renewals
+                  </span>
+                </span>
                 <span
-                  className="block text-[7px] leading-[1.4] lg:text-[8px]"
-                  style={{ color: illustrationColors.inkMuted }}
+                  className="block text-[7.5px] leading-[1.45] lg:text-[9px]"
+                  style={{ color: illustrationColors.ink }}
                 >
                   Can we lock the Q3 renewal this week?
                 </span>
               </div>
 
-              <div className="relative min-h-0 flex-1">
-                <AnimatePresence mode="wait" initial={false}>
-                  {drafting || sent ? (
+              <div className="relative min-h-0 flex-1 overflow-hidden">
+                <div className="flex h-full flex-col gap-2 overflow-hidden">
+                  <AnimatePresence mode="wait" initial={false}>
+                    {draftReady ? (
+                      <motion.div
+                        key="draft"
+                        initial={reduce ? false : illustrationBlurHidden}
+                        animate={illustrationBlurShown}
+                        transition={fade}
+                        className="flex flex-col gap-1.5 rounded-[8px] px-2 py-1.5 lg:px-2.5 lg:py-2"
+                        style={{
+                          background: illustrationColors.surfaceWarm,
+                          border: "1px solid rgba(201,100,66,0.16)",
+                        }}
+                      >
+                        <span className="flex items-center gap-1">
+                          <span
+                            className="flex h-[14px] w-[14px] items-center justify-center rounded-[4px]"
+                            style={{ background: illustrationColors.ink }}
+                          >
+                            <CopilotMark
+                              className="h-[8px] w-[8px]"
+                              color={illustrationColors.surface}
+                            />
+                          </span>
+                          <span
+                            className="text-[6.5px] leading-none lg:text-[7.5px]"
+                            style={{ color: illustrationColors.inkMuted }}
+                          >
+                            Copilot draft
+                          </span>
+                          <ClaudeMark className="ml-auto h-[8px] w-[8px]" />
+                        </span>
+                        <span
+                          className="text-[7.5px] leading-[1.45] lg:text-[9px]"
+                          style={{ color: illustrationColors.ink }}
+                        >
+                          {DRAFT}
+                        </span>
+                        <span
+                          className="text-[6.5px] leading-[1.4] lg:text-[7.5px]"
+                          style={{ color: illustrationColors.inkMuted }}
+                        >
+                          {REASONING}
+                        </span>
+                      </motion.div>
+                    ) : (
+                      <motion.span
+                        key="waiting"
+                        initial={false}
+                        exit={reduce ? undefined : illustrationBlurHidden}
+                        transition={swap}
+                        className="flex items-center gap-1.5 text-[7px] leading-none lg:text-[8px]"
+                        style={{ color: illustrationColors.inkFaint }}
+                      >
+                        <CopilotMark
+                          className="h-[10px] w-[10px]"
+                          color={illustrationColors.inkFaint}
+                        />
+                        {retrieving
+                          ? "Matching agreement and account history…"
+                          : "Waiting for context…"}
+                      </motion.span>
+                    )}
+                  </AnimatePresence>
+
+                  {followUpReplied ? (
                     <motion.div
-                      key="draft"
                       initial={reduce ? false : illustrationBlurHidden}
                       animate={illustrationBlurShown}
                       transition={fade}
-                      className="flex flex-col gap-1.5"
+                      className="ml-auto max-w-[92%] px-2 py-1.5"
+                      style={{
+                        borderRadius: 8,
+                        background: illustrationColors.surfaceMuted,
+                        border: `1px solid ${illustrationColors.border}`,
+                      }}
                     >
                       <span
-                        className="text-[7.5px] leading-[1.45] lg:text-[8.5px]"
+                        className="mb-1 block text-[6.5px] leading-none lg:text-[7.5px]"
+                        style={{ color: illustrationColors.inkFaint }}
+                      >
+                        You
+                      </span>
+                      <span
+                        className="block text-[7.5px] leading-[1.45] lg:text-[9px]"
                         style={{ color: illustrationColors.ink }}
                       >
-                        {DRAFT}
-                        {drafting && !draftReady && !reduce ? <ComposerCaret /> : null}
+                        {FOLLOW_UP}
                       </span>
-                      <div
-                        className="flex items-center gap-1"
-                        style={{
-                          opacity: draftReady || sent ? 1 : 0,
-                          transition: "opacity 200ms ease",
-                        }}
-                      >
-                        <span
-                          className="inline-flex items-center gap-1 rounded-full border px-1.5 py-[3px]"
-                          style={{
-                            borderColor: illustrationColors.border,
-                            background: illustrationColors.surface,
-                          }}
-                        >
-                          <SlackMark className="h-[8px] w-[8px]" />
-                          <span
-                            className="text-[6px] leading-none lg:text-[7px]"
-                            style={{ color: illustrationColors.inkMuted }}
-                          >
-                            #renewals
-                          </span>
-                        </span>
-                        <span
-                          className="inline-flex items-center gap-1 rounded-full border px-1.5 py-[3px]"
-                          style={{
-                            borderColor: illustrationColors.border,
-                            background: illustrationColors.surface,
-                          }}
-                        >
-                          <SalesforceMark className="h-[8px] w-[8px]" />
-                          <span
-                            className="text-[6px] leading-none lg:text-[7px]"
-                            style={{ color: illustrationColors.inkMuted }}
-                          >
-                            AC-4421
-                          </span>
-                        </span>
-                      </div>
                     </motion.div>
-                  ) : (
-                    <motion.span
-                      key="waiting"
-                      initial={false}
-                      exit={reduce ? undefined : illustrationBlurHidden}
-                      transition={swap}
-                      className="text-[7px] leading-none lg:text-[8px]"
-                      style={{ color: illustrationColors.inkFaint }}
+                  ) : null}
+
+                  {followUpReplied ? (
+                    <motion.div
+                      initial={reduce ? false : illustrationBlurHidden}
+                      animate={illustrationBlurShown}
+                      transition={{ ...fade, delay: reduce ? 0 : 0.12 }}
+                      className="flex flex-col gap-1 rounded-[8px] px-2 py-1.5 lg:px-2.5"
+                      style={{
+                        background: illustrationColors.surfaceWarm,
+                        border: "1px solid rgba(201,100,66,0.16)",
+                      }}
                     >
-                      Waiting for context…
-                    </motion.span>
-                  )}
-                </AnimatePresence>
+                      <span className="flex items-center gap-1">
+                        <CopilotMark
+                          className="h-[8px] w-[8px]"
+                          color={illustrationColors.accent}
+                        />
+                        <span
+                          className="text-[6.5px] leading-none lg:text-[7.5px]"
+                          style={{ color: illustrationColors.inkMuted }}
+                        >
+                          Copilot
+                        </span>
+                      </span>
+                      <span
+                        className="text-[7.5px] leading-[1.45] lg:text-[9px]"
+                        style={{ color: illustrationColors.ink }}
+                      >
+                        {FOLLOW_REPLY}
+                      </span>
+                    </motion.div>
+                  ) : null}
+                </div>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-1">
+                {CONTEXT_CHIPS.map((chip, index) => (
+                  <motion.span
+                    key={chip.label}
+                    initial={reduce ? false : illustrationPopHidden}
+                    animate={
+                      retrieving || complete
+                        ? illustrationPopShown
+                        : illustrationPopHidden
+                    }
+                    transition={{
+                      ...swap,
+                      delay: reduce ? 0 : index * illustrationTiming.staggerSec,
+                    }}
+                  >
+                    <Chip tone="quiet" size="compact">
+                      {chip.Mark === FileText ? (
+                        <FileText size={8} color={illustrationColors.inkMuted} />
+                      ) : (
+                        <chip.Mark className="h-[8px] w-[8px]" />
+                      )}
+                      {chip.label}
+                    </Chip>
+                  </motion.span>
+                ))}
               </div>
 
               <div className="flex shrink-0 items-center justify-between gap-2">
-                <AnimatePresence>
-                  {logged ? (
-                    <motion.span
-                      initial={reduce ? false : illustrationPopHidden}
-                      animate={illustrationPopShown}
-                      transition={swap}
-                      className="flex items-center gap-1"
-                    >
-                      <CheckGlyph size={7} />
-                      <span
-                        className="text-[6.5px] leading-none lg:text-[7.5px]"
+                <div className="flex min-w-0 items-center gap-1.5">
+                  <AnimatePresence>
+                    {complete ? (
+                      <motion.span
+                        key="logged"
+                        initial={reduce ? false : illustrationPopHidden}
+                        animate={illustrationPopShown}
+                        transition={swap}
+                        className="flex items-center gap-1"
+                      >
+                        <SalesforceMark className="h-[9px] w-[9px]" />
+                        <CheckGlyph size={8} />
+                        <span
+                          className="text-[7px] leading-none lg:text-[8px]"
+                          style={{ color: illustrationColors.inkMuted }}
+                        >
+                          Logged to CRM
+                        </span>
+                      </motion.span>
+                    ) : recommended ? (
+                      <motion.span
+                        key="suggest"
+                        initial={reduce ? false : illustrationBlurHidden}
+                        animate={illustrationBlurShown}
+                        transition={fade}
+                        className="flex items-center gap-1 truncate text-[7px] leading-none lg:text-[8px]"
                         style={{ color: illustrationColors.inkMuted }}
                       >
-                        Logged to CRM
+                        <CopilotMark
+                          className="h-[9px] w-[9px]"
+                          color={illustrationColors.accent}
+                        />
+                        Suggested: Approve and send
+                      </motion.span>
+                    ) : (
+                      <span
+                        className="flex items-center gap-1 truncate text-[7px] leading-none lg:text-[8px]"
+                        style={{ color: illustrationColors.inkFaint }}
+                      >
+                        <ClaudeMark className="h-[8px] w-[8px]" />
+                        Grounded in contract context
                       </span>
-                    </motion.span>
-                  ) : (
-                    <span
-                      className="text-[6.5px] leading-none lg:text-[7.5px]"
-                      style={{ color: illustrationColors.inkFaint }}
-                    >
-                      Grounded in your stack
-                    </span>
-                  )}
-                </AnimatePresence>
+                    )}
+                  </AnimatePresence>
+                </div>
 
                 <span
-                  className="flex items-center gap-1 rounded-full px-2 py-[4px]"
+                  className="flex shrink-0 items-center gap-1 rounded-full px-2 py-[5px] lg:px-2.5"
                   style={{
-                    background: sent
-                      ? illustrationColors.surfaceSunk
-                      : reviewReady
+                    background: complete
+                      ? illustrationColors.accentSoft
+                      : approvalReady
                         ? illustrationColors.ink
                         : illustrationColors.surfaceSunk,
-                    color: sent || !reviewReady
-                      ? illustrationColors.inkMuted
-                      : illustrationColors.surface,
+                    color: complete
+                      ? illustrationColors.accent
+                      : approvalReady
+                        ? illustrationColors.surface
+                        : illustrationColors.inkFaint,
                     transition: "background 200ms ease, color 200ms ease",
                   }}
                 >
-                  {sent ? (
-                    <CheckGlyph size={6} color={illustrationColors.inkMuted} />
-                  ) : null}
-                  <span className="text-[6.5px] leading-none lg:text-[7.5px]">
-                    {sent ? "Sent" : "⌘↵ Send"}
+                  {complete ? <CheckGlyph size={7} /> : null}
+                  <span className="text-[7px] leading-none lg:text-[8px]">
+                    {complete ? "Sent" : "Approve & Send"}
                   </span>
                 </span>
               </div>
+            </div>
+
+            <div
+              className="flex shrink-0 items-center gap-1.5 border-t px-2.5 py-[6px]"
+              style={{
+                borderColor: illustrationColors.border,
+                background: illustrationColors.surfaceMuted,
+              }}
+            >
+              <span
+                className="flex h-[14px] w-[14px] items-center justify-center rounded-[4px]"
+                style={{ background: illustrationColors.ink }}
+              >
+                <CopilotMark className="h-[8px] w-[8px]" color={illustrationColors.surface} />
+              </span>
+              <span
+                className="min-w-0 flex-1 truncate text-[7px] leading-none"
+                style={{
+                  color: followUpTyping
+                    ? illustrationColors.ink
+                    : illustrationColors.inkFaint,
+                }}
+              >
+                <TypedComposerLabel
+                  key={active ? "live" : "idle"}
+                  enabled={followUpTyping}
+                  reduce={reduce}
+                  snap={followUpReplied}
+                />
+              </span>
+              <span
+                className="ml-auto text-[6.5px] leading-none"
+                style={{ color: illustrationColors.inkFaint }}
+              >
+                ⌘K
+              </span>
+            </div>
+          </div>
+
+          <div
+            className="hidden w-[28%] shrink-0 flex-col border-l lg:flex"
+            style={{
+              borderColor: illustrationColors.border,
+              background: illustrationColors.surfaceMuted,
+            }}
+          >
+            <span className="flex items-center gap-1 px-2.5 pt-2 pb-1.5">
+              <SalesforceMark className="h-[9px] w-[9px]" />
+              <span
+                className="text-[8px] leading-none"
+                style={{ color: illustrationColors.inkMuted }}
+              >
+                Account context
+              </span>
+            </span>
+            <div className="flex flex-col gap-1 px-2 pb-2">
+              {CONTEXT_FIELDS.map((field, index) => (
+                <motion.div
+                  key={field.label}
+                  initial={reduce ? false : illustrationBlurHidden}
+                  animate={
+                    recommended || complete
+                      ? illustrationBlurShown
+                      : illustrationBlurHidden
+                  }
+                  transition={{
+                    ...fade,
+                    delay: reduce ? 0 : index * illustrationTiming.staggerSec,
+                  }}
+                  className="flex items-center gap-1.5 rounded-[7px] px-2 py-[6px]"
+                  style={{
+                    background: illustrationColors.surface,
+                    border: `1px solid ${illustrationColors.border}`,
+                  }}
+                >
+                  <field.Icon size={9} color={illustrationColors.inkMuted} />
+                  <span className="min-w-0 flex-1">
+                    <span
+                      className="block text-[6.5px] leading-none"
+                      style={{ color: illustrationColors.inkFaint }}
+                    >
+                      {field.label}
+                    </span>
+                    <span
+                      className="mt-[3px] block text-[8px] leading-none"
+                      style={{ color: illustrationColors.ink }}
+                    >
+                      {field.value}
+                    </span>
+                  </span>
+                </motion.div>
+              ))}
+
+              <motion.div
+                initial={reduce ? false : illustrationPopHidden}
+                animate={complete ? illustrationPopShown : illustrationPopHidden}
+                transition={swap}
+                className="flex items-center gap-1.5 rounded-[7px] px-2 py-[6px]"
+                style={{
+                  background: illustrationColors.accentSoft,
+                  border: "1px solid rgba(201,100,66,0.20)",
+                }}
+              >
+                <SalesforceMark className="h-[9px] w-[9px]" />
+                <CheckGlyph size={8} />
+                <span
+                  className="text-[7.5px] leading-none"
+                  style={{ color: illustrationColors.accent }}
+                >
+                  Logged to CRM
+                </span>
+              </motion.div>
             </div>
           </div>
         </div>

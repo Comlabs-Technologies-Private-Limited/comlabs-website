@@ -1,6 +1,19 @@
 /** Recognisable enterprise app marks at illustration scale. */
 
+import { siGithubcopilot } from "simple-icons";
+
 type MarkProps = { className?: string };
+
+export function CopilotMark({
+  className = "h-[11px] w-[11px] lg:h-[13px] lg:w-[13px]",
+  color,
+}: MarkProps & { color?: string }) {
+  return (
+    <svg className={`shrink-0 ${className}`} viewBox="0 0 24 24" aria-hidden>
+      <path fill={color ?? `#${siGithubcopilot.hex}`} d={siGithubcopilot.path} />
+    </svg>
+  );
+}
 
 export function SlackMark({ className = "h-[11px] w-[11px] lg:h-[13px] lg:w-[13px]" }: MarkProps) {
   return (

@@ -32,7 +32,7 @@ export function FigmaAppliedAiSection() {
         style={{ background: EDITORIAL_HERO_OVERLAY }}
       />
 
-      <div className="relative z-10 mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-2 lg:gap-16">
+      <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)] lg:gap-12">
         <div className="max-w-2xl">
           <p
             className="mb-4 text-xs font-semibold tracking-widest uppercase"
@@ -69,7 +69,8 @@ export function FigmaAppliedAiSection() {
 
         <ServiceIllustrationFrame
           label={label}
-          className="shadow-[0_28px_70px_-30px_rgba(0,0,0,0.65)] ring-1 ring-white/10"
+          chrome={false}
+          className="md:aspect-[4/3] lg:min-h-[480px]"
         >
           <AppliedAiVisual />
         </ServiceIllustrationFrame>

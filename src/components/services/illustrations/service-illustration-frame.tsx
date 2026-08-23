@@ -63,6 +63,8 @@ type ServiceIllustrationFrameProps = {
   className?: string;
   /** Renders on the dark Applied AI band instead of the light service rows. */
   tone?: "light" | "dark";
+  /** When false, only the illustration renders — no card, backdrop, or scrim. */
+  chrome?: boolean;
 };
 
 export function ServiceIllustrationFrame({
@@ -72,6 +74,7 @@ export function ServiceIllustrationFrame({
   priority = false,
   className,
   tone = "light",
+  chrome = true,
 }: ServiceIllustrationFrameProps) {
   const frameRef = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion() ?? false;
@@ -111,15 +114,17 @@ export function ServiceIllustrationFrame({
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
       className={cn(
-        "relative aspect-[5/4] overflow-hidden rounded-2xl border md:aspect-[4/3] md:rounded-3xl",
-        isDark
-          ? "border-white/12 bg-[#1A1715]"
-          : "border-[rgba(28,25,23,0.10)] bg-[#F4F3EF]",
+        "relative aspect-[5/4] overflow-hidden md:aspect-[4/3]",
+        chrome && "rounded-2xl border md:rounded-3xl",
+        chrome &&
+          (isDark
+            ? "border-white/12 bg-[#1A1715]"
+            : "border-[rgba(28,25,23,0.10)] bg-[#F4F3EF]"),
         className,
       )}
       style={{ perspective: 1200 }}
     >
-      {background ? (
+      {chrome && background ? (
         <Image
           src={background}
           alt=""
@@ -135,16 +140,17 @@ export function ServiceIllustrationFrame({
         />
       ) : null}
 
-      {/* Light scrim only — the painterly scenery stays legible behind the interface. */}
-      <div
-        aria-hidden
-        className="absolute inset-0"
-        style={{
-          background: isDark
-            ? "linear-gradient(165deg, rgba(26,23,21,0.82) 0%, rgba(26,23,21,0.90) 55%, rgba(26,23,21,0.95) 100%)"
-            : "linear-gradient(160deg, rgba(247,247,244,0.30) 0%, rgba(247,247,244,0.42) 45%, rgba(244,243,239,0.56) 100%)",
-        }}
-      />
+      {chrome ? (
+        <div
+          aria-hidden
+          className="absolute inset-0"
+          style={{
+            background: isDark
+              ? "linear-gradient(165deg, rgba(26,23,21,0.82) 0%, rgba(26,23,21,0.90) 55%, rgba(26,23,21,0.95) 100%)"
+              : "linear-gradient(160deg, rgba(247,247,244,0.30) 0%, rgba(247,247,244,0.42) 45%, rgba(244,243,239,0.56) 100%)",
+          }}
+        />
+      ) : null}
 
       <motion.div
         aria-hidden

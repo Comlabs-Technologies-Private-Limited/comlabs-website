@@ -53,7 +53,7 @@ export const customCraftIllustration: ServiceIllustration = {
 export const appliedAiIllustration: ServiceIllustration = {
   Component: AppliedAiIllustration,
   label:
-    "Applied AI illustration: a support copilot drafting a grounded reply in a live inbox, citing Slack and Salesforce before the operator sends it.",
+    "Applied AI illustration: a renewal copilot retrieving contract context for an Acme Q3 request, drafting a priced recommendation, and logging the approved reply to CRM.",
 };
 
 export { ServiceIllustrationFrame } from "./service-illustration-frame";
