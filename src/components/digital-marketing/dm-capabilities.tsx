@@ -68,7 +68,7 @@ export function DigitalMarketingCapabilities() {
     <section id="services" ref={rootRef} className="scroll-mt-24 pb-8 md:pb-16">
       <div className="mx-auto w-full max-w-[1440px] px-5 md:px-6 lg:px-12 xl:px-16">
         <h2
-          className="max-w-[16ch] text-[clamp(2rem,3.6vw,3.5rem)] leading-[1.06] font-medium tracking-tight"
+          className="max-w-[16ch] text-[clamp(1.75rem,3.15vw,3.125rem)] leading-[1.06] font-medium tracking-tight"
           style={{ color: DM.text, letterSpacing: "-0.035em" }}
         >
           One connected marketing system.

@@ -295,38 +295,54 @@ function ContentArchitecture() {
 }
 
 function SocialSystem() {
+  const instagramSwatches = [DM.accent, DM.hairline, DM.hairline, DM.warm] as const;
+
   return (
-    <Frame>
+    <div className="flex h-full min-h-0 flex-col overflow-hidden p-4">
       {meta("Content system")}
-      <div className="mt-3 grid grid-cols-3 gap-2">
-        <div className="rounded-[10px] p-2" style={{ background: DM.black }}>
-          <p className="text-[9px] tracking-[0.14em] uppercase" style={{ color: DM.muted }}>
+      <div className="mt-3 grid min-h-0 flex-1 grid-rows-3 gap-2">
+        <div
+          className="flex min-h-0 min-w-0 items-center gap-3 overflow-hidden rounded-[10px] px-3 py-2"
+          style={{ background: DM.black }}
+        >
+          <p className="w-[4.5rem] shrink-0 text-[9px] tracking-[0.12em] uppercase" style={{ color: DM.muted }}>
             LinkedIn
           </p>
-          <div className="mt-3 h-8 rounded" style={{ background: DM.hairline }} />
-          <div className="mt-2 h-1.5 w-3/4 rounded" style={{ background: DM.warm }} />
-        </div>
-        <div className="rounded-[10px] p-2" style={{ background: DM.black }}>
-          <p className="text-[9px] tracking-[0.14em] uppercase" style={{ color: DM.muted }}>
-            Instagram
-          </p>
-          <div className="mt-2 grid grid-cols-2 gap-1">
-            <div className="aspect-square rounded" style={{ background: DM.accent }} />
-            <div className="aspect-square rounded" style={{ background: DM.hairline }} />
-            <div className="aspect-square rounded" style={{ background: DM.hairline }} />
-            <div className="aspect-square rounded" style={{ background: DM.warm }} />
+          <div className="min-w-0 flex-1">
+            <div className="h-1.5 rounded-full" style={{ background: DM.hairline }} />
+            <div className="mt-1.5 h-1.5 w-2/3 rounded-full" style={{ background: DM.warm }} />
           </div>
         </div>
-        <div className="rounded-[10px] p-2" style={{ background: DM.black }}>
-          <p className="text-[9px] tracking-[0.14em] uppercase" style={{ color: DM.muted }}>
+        <div
+          className="flex min-h-0 min-w-0 items-center gap-3 overflow-hidden rounded-[10px] px-3 py-2"
+          style={{ background: DM.black }}
+        >
+          <p className="w-[4.5rem] shrink-0 text-[9px] tracking-[0.12em] uppercase" style={{ color: DM.muted }}>
+            Instagram
+          </p>
+          <div className="flex min-w-0 flex-1 items-center gap-1">
+            {instagramSwatches.map((color, index) => (
+              <span
+                key={index}
+                className="aspect-square h-6 w-6 shrink-0 rounded"
+                style={{ background: color }}
+              />
+            ))}
+          </div>
+        </div>
+        <div
+          className="flex min-h-0 min-w-0 items-center gap-3 overflow-hidden rounded-[10px] px-3 py-2"
+          style={{ background: DM.black }}
+        >
+          <p className="w-[4.5rem] shrink-0 text-[9px] tracking-[0.12em] uppercase" style={{ color: DM.muted }}>
             X
           </p>
-          <p className="mt-3 text-[10px] leading-snug" style={{ color: DM.text }}>
-            One idea. Three posts. Same argument.
+          <p className="min-w-0 truncate text-[10px] leading-none" style={{ color: DM.text }}>
+            One idea. Three posts.
           </p>
         </div>
       </div>
-    </Frame>
+    </div>
   );
 }
 

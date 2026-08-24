@@ -364,7 +364,16 @@ export const DIGITAL_MARKETING_INSIGHTS: readonly DigitalMarketingInsight[] = [
   },
 ] as const;
 
-export const DIGITAL_MARKETING_PROOF = [
+export type DigitalMarketingProof = {
+  quote: string;
+  name: string;
+  title: string;
+  company: string;
+  initials: string;
+  avatarSrc?: string;
+};
+
+export const DIGITAL_MARKETING_PROOF: readonly DigitalMarketingProof[] = [
   {
     quote:
       "We deal with companies like JIO and Vodafone, so I didn't want a website that looked small. Comlabs got that immediately. They rebuilt the whole thing and now it actually looks like a company at our level.",
@@ -385,7 +394,7 @@ export const DIGITAL_MARKETING_PROOF = [
     avatarSrc:
       "https://res.cloudinary.com/p8osc4y4/image/upload/v1786453597/harsh-sihag_tdj4k7.jpg",
   },
-] as const;
+];
 
 export type MarketingLabLabel =
   | "Campaign / Concept"
