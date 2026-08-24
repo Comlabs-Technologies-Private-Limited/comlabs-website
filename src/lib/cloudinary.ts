@@ -1,9 +1,8 @@
 /**
  * Cloudinary delivery for marketing images.
  *
- * When NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME is set, local `/public` paths are
- * rewritten to Cloudinary. Until then, the original path is returned so the
- * site keeps working from `/public`.
+ * Local `/public` photos were uploaded and removed from the repo. Delivery
+ * requires NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME. Favicons stay same-origin.
  *
  * Existing `res.cloudinary.com` URLs always get f_auto/q_auto (and width when
  * requested) regardless of env.
