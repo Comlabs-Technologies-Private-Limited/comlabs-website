@@ -21,6 +21,14 @@ const LOCAL_ONLY_PATHS = new Set([
   "/apple-touch-icon.png",
 ]);
 
+const LOCAL_ONLY_PREFIXES = ["/digital-marketing/"] as const;
+
+function isLocalStaticAsset(src: string): boolean {
+  const path = src.split("?")[0] ?? src;
+  if (LOCAL_ONLY_PATHS.has(path)) return true;
+  return LOCAL_ONLY_PREFIXES.some((prefix) => path.startsWith(prefix));
+}
+
 export const HERO_BACKGROUND_PATH = "/hero/hero-bg.png";
 
 export function getCloudinaryCloudName(): string | undefined {
@@ -110,7 +118,7 @@ export function mediaUrl(src: string, options: MediaTransform = {}): string {
   }
 
   if (isAbsoluteUrl(src)) return src;
-  if (LOCAL_ONLY_PATHS.has(src.split("?")[0] ?? src)) return src;
+  if (isLocalStaticAsset(src)) return src;
 
   const cloud = getCloudinaryCloudName();
   if (!cloud) return src;

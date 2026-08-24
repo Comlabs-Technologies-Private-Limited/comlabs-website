@@ -3,8 +3,10 @@
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 
-import { DIGITAL_MARKETING_ORANGE } from "@/lib/digital-marketing";
+import { DM } from "@/lib/digital-marketing-media";
 import { gsapEase, registerGsap } from "@/lib/gsap-client";
+
+const LINES = ["Good marketing should feel original—", "and prove its value."] as const;
 
 export function DigitalMarketingPositioning() {
   const rootRef = useRef<HTMLElement>(null);
@@ -15,25 +17,36 @@ export function DigitalMarketingPositioning() {
       const root = rootRef.current;
       if (!root) return;
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const items = root.querySelectorAll("[data-pos]");
+      const lines = root.querySelectorAll("[data-pov-line]");
+      const copy = root.querySelector("[data-pov-copy]");
+
       if (reduce) {
-        gsap.set(items, { opacity: 1, y: 0 });
+        gsap.set([lines, copy], { opacity: 1, y: 0 });
         return;
       }
+
       gsap.fromTo(
-        items,
-        { opacity: 0, y: 24 },
+        lines,
+        { y: 28, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          stagger: 0.12,
+          ease: gsapEase,
+          scrollTrigger: { trigger: root, start: "top 75%", once: true },
+        },
+      );
+      gsap.fromTo(
+        copy,
+        { opacity: 0, y: 12 },
         {
           opacity: 1,
           y: 0,
           duration: 0.7,
-          stagger: 0.1,
+          delay: 0.15,
           ease: gsapEase,
-          scrollTrigger: {
-            trigger: root,
-            start: "top 75%",
-            once: true,
-          },
+          scrollTrigger: { trigger: root, start: "top 75%", once: true },
         },
       );
     },
@@ -41,35 +54,36 @@ export function DigitalMarketingPositioning() {
   );
 
   return (
-    <section ref={rootRef} className="border-b border-border">
-      <div className="mx-auto grid w-full max-w-[1380px] gap-10 px-5 py-[72px] md:px-7 md:py-[120px] lg:grid-cols-12 lg:gap-16 lg:px-12 lg:py-40 xl:px-[72px]">
-        <div className="lg:col-span-8">
-          <p
-            data-pos
-            className="mb-6 text-xs tracking-[0.18em] text-muted-foreground uppercase"
-          >
-            Our point of view
-          </p>
+    <section ref={rootRef} className="py-24 md:py-32 lg:py-40">
+      <div className="mx-auto w-full max-w-[1440px] px-5 md:px-6 lg:px-12 xl:px-16">
+        <p className="mb-8 text-xs tracking-[0.18em] uppercase" style={{ color: DM.muted }}>
+          Our point of view
+        </p>
+        <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,0.62fr)_minmax(0,0.28fr)] lg:justify-between">
           <h2
-            data-pos
-            className="max-w-[16ch] text-[clamp(2rem,4.6vw,4.25rem)] leading-[1.05] font-medium tracking-tight"
-            style={{ letterSpacing: "-0.04em" }}
+            className="text-[clamp(2.1rem,4.4vw,4.5rem)] leading-[1.02] font-medium tracking-tight"
+            style={{ color: DM.text, letterSpacing: "-0.04em" }}
           >
-            Good marketing should feel original—and prove its value.
+            {LINES.map((line) => (
+              <span key={line} className="block overflow-hidden">
+                <span data-pov-line className="block">
+                  {line}
+                </span>
+              </span>
+            ))}
           </h2>
-        </div>
-        <div className="flex flex-col justify-end lg:col-span-4">
-          <div
-            data-pos
-            className="mb-6 h-px w-12"
-            style={{ background: DIGITAL_MARKETING_ORANGE }}
-            aria-hidden
-          />
-          <p data-pos className="text-[0.9375rem] leading-relaxed text-muted-foreground md:text-base">
-            The strongest digital brands do not separate creative ambition from commercial logic. We
-            connect the story people remember with the systems that show what is working, what is not
-            and where growth should come from next.
-          </p>
+          <div data-pov-copy className="lg:pt-4">
+            <span
+              className="mb-6 block h-px w-10"
+              style={{ background: DM.accent }}
+              aria-hidden
+            />
+            <p className="text-[0.9375rem] leading-relaxed" style={{ color: DM.muted }}>
+              The strongest digital brands do not separate creative ambition from commercial logic.
+              We connect the story people remember with the systems that reveal what is working,
+              what is not and where growth should come from next.
+            </p>
+          </div>
         </div>
       </div>
     </section>
