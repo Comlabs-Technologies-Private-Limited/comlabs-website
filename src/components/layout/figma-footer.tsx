@@ -17,7 +17,11 @@ const FOOTER_COLUMNS = [
   },
   {
     heading: "Services",
-    links: [{ label: "All services", href: "/services" }, ...footerServiceLinks],
+    links: [
+      { label: "All services", href: "/services" },
+      { label: "Digital Marketing", href: "/digital-marketing" },
+      ...footerServiceLinks,
+    ],
   },
   {
     heading: "Work",
