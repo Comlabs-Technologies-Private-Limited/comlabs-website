@@ -3,6 +3,7 @@
  * Override with NEXT_PUBLIC_SITE_URL for preview/staging; local dev keeps defaults.
  */
 import { canonicalServicePaths } from "@/lib/canonical-services";
+import { absoluteMediaUrl } from "@/lib/cloudinary";
 
 export const siteUrl = (
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.comlabstechnologies.com"
@@ -20,7 +21,7 @@ export const siteDefaultDescription =
 
 export const organizationId = `${siteUrl}/#organization` as const;
 export const websiteId = `${siteUrl}/#website` as const;
-export const logoUrl = `${siteUrl}/logo.svg` as const;
+export const logoUrl = absoluteMediaUrl("/logo.svg", siteUrl);
 
 /**
  * Absolute canonical URL for an indexable page path or same-origin absolute URL.
@@ -77,7 +78,7 @@ export const siteAppleIconPath = "/apple-touch-icon.png";
 export const siteOgImagePath = "/opengraph.png";
 
 export const siteOgImage = {
-  url: siteOgImagePath,
+  url: absoluteMediaUrl(siteOgImagePath, siteUrl),
   width: 1731,
   height: 909,
   alt: "Comlabs Technologies Pvt Ltd — design and engineering studio",

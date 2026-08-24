@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { mediaUrl } from "@/lib/cloudinary";
 
 type ClientLogo = {
   name: string;
@@ -50,7 +51,7 @@ function LogoBox({ client }: { client: ClientLogo }) {
   return (
     <li className="flex min-w-[120px] flex-1 items-center justify-center px-8 py-5 sm:min-w-[140px]">
       <img
-        src={client.src}
+        src={mediaUrl(client.src)}
         alt={client.alt}
         className={cn("w-auto object-contain opacity-55", client.imageClassName ?? "h-6")}
       />

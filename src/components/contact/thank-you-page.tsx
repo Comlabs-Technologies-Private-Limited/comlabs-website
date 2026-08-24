@@ -3,6 +3,7 @@ import { ArrowRight, Check } from "lucide-react";
 
 import { FigmaFooter } from "@/components/layout/figma-footer";
 import { FigmaNav } from "@/components/layout/figma-nav";
+import { HERO_BACKGROUND_PATH, layeredBackgroundImage } from "@/lib/cloudinary";
 import { canonicalPath, siteName } from "@/lib/site";
 
 export function ThankYouPage() {
@@ -17,8 +18,10 @@ export function ThankYouPage() {
         <div
           className="pointer-events-none absolute inset-0"
           style={{
-            backgroundImage:
-              "linear-gradient(180deg, rgba(247,247,244,0.92) 0%, rgba(247,247,244,0.78) 45%, rgba(247,247,244,0.94) 100%), url('/hero/hero-bg.png')",
+            backgroundImage: layeredBackgroundImage(
+              "linear-gradient(180deg, rgba(247,247,244,0.92) 0%, rgba(247,247,244,0.78) 45%, rgba(247,247,244,0.94) 100%)",
+              HERO_BACKGROUND_PATH,
+            ),
             backgroundSize: "cover",
             backgroundPosition: "center right",
           }}

@@ -4,6 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { motion } from "motion/react";
 
 import { EnterpriseClientsTrust } from "@/components/home/enterprise-clients-section";
+import { HERO_BACKGROUND_PATH, layeredBackgroundImage } from "@/lib/cloudinary";
 import { canonicalPath } from "@/lib/site";
 
 export function FigmaHeroSection() {
@@ -11,8 +12,10 @@ export function FigmaHeroSection() {
     <section
       className="relative overflow-hidden px-6 pt-16 pb-16 md:pt-24 md:pb-20"
       style={{
-        backgroundImage:
-          "linear-gradient(180deg, rgba(247,247,244,0.86) 0%, rgba(247,247,244,0.78) 45%, rgba(247,247,244,0.88) 100%), url('/hero/hero-bg.png')",
+        backgroundImage: layeredBackgroundImage(
+          "linear-gradient(180deg, rgba(247,247,244,0.86) 0%, rgba(247,247,244,0.78) 45%, rgba(247,247,244,0.88) 100%)",
+          HERO_BACKGROUND_PATH,
+        ),
         backgroundSize: "cover",
         backgroundPosition: "center right",
       }}

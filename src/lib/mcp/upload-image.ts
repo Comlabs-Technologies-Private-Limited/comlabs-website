@@ -1,7 +1,12 @@
 import { put } from "@vercel/blob";
 
+import {
+  isCloudinaryUploadConfigured,
+  uploadBufferToCloudinary,
+} from "@/lib/cloudinary-upload";
+
 export function isImageUploadConfigured(): boolean {
-  return Boolean(process.env.BLOB_READ_WRITE_TOKEN?.trim());
+  return isCloudinaryUploadConfigured() || Boolean(process.env.BLOB_READ_WRITE_TOKEN?.trim());
 }
 
 function sanitizeFilename(filename: string): string {
@@ -17,9 +22,13 @@ export async function uploadImageBuffer(
   filename: string,
   contentType: string,
 ): Promise<string> {
+  if (isCloudinaryUploadConfigured()) {
+    return uploadBufferToCloudinary(buffer, filename, contentType);
+  }
+
   const token = process.env.BLOB_READ_WRITE_TOKEN?.trim();
   if (!token) {
-    throw new Error("BLOB_READ_WRITE_TOKEN is not configured.");
+    throw new Error("Cloudinary or BLOB_READ_WRITE_TOKEN is not configured.");
   }
 
   const safeName = sanitizeFilename(filename) || `image-${Date.now()}.jpg`;

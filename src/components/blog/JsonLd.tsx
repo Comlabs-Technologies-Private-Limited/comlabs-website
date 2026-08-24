@@ -1,4 +1,5 @@
-import { canonicalUrl, organizationId, siteName, siteOgImagePath, siteUrl } from "@/lib/site";
+import { absoluteMediaUrl } from "@/lib/cloudinary";
+import { canonicalUrl, organizationId, siteName, siteUrl } from "@/lib/site";
 import type { Post } from "@/types/post";
 
 type JsonLdProps = {
@@ -9,7 +10,7 @@ export function PostJsonLd({ post }: JsonLdProps) {
   const pageUrl = post.canonicalUrl
     ? canonicalUrl(post.canonicalUrl)
     : canonicalUrl(`/blog/${post.slug}`);
-  const image = post.ogImage || post.coverImage || `${siteUrl}${siteOgImagePath}`;
+  const image = absoluteMediaUrl(post.ogImage || post.coverImage || "/opengraph.png", siteUrl);
 
   const jsonLd = {
     "@context": "https://schema.org",

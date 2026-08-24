@@ -10,7 +10,8 @@
     "postinstall": "prisma generate",
     "db:generate": "prisma generate",
     "db:seed": "tsx prisma/seed.ts",
-    "admin:hash-password": "node scripts/hash-admin-password.mjs"
+    "admin:hash-password": "node scripts/hash-admin-password.mjs",
+    "media:upload-cloudinary": "tsx scripts/upload-public-to-cloudinary.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/server": "^2.0.0",

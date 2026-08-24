@@ -6,6 +6,7 @@ import {
 } from "@/components/services/illustrations";
 import { editorialImages } from "@/lib/editorial-images";
 import { EDITORIAL_HERO_OVERLAY } from "@/lib/editorial-hero-styles";
+import { mediaUrl } from "@/lib/cloudinary";
 
 const APPLIED_AI_CAPABILITIES = [
   "AI Search",
@@ -22,7 +23,7 @@ export function FigmaAppliedAiSection() {
   return (
     <section id="applied-ai" className="relative overflow-hidden px-6 py-24 md:py-28">
       <img
-        src={APPLIED_AI_IMAGE}
+        src={mediaUrl(APPLIED_AI_IMAGE)}
         alt=""
         aria-hidden
         className="absolute inset-0 h-full w-full object-cover object-center"
