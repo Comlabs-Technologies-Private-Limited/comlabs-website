@@ -65,7 +65,7 @@ export function DigitalMarketingHeroVisual() {
       <div
         data-layer
         data-depth="10"
-        className="absolute inset-x-[8%] top-[6%] overflow-hidden rounded-[16px] border border-black/[0.08] bg-[#f3f1ec] shadow-[0_24px_60px_rgba(28,25,23,0.08)]"
+        className="absolute inset-x-[8%] top-[6%] overflow-hidden rounded-[16px] border border-black/[0.08] bg-[#f3f1ec] shadow-[0_24px_60px_rgba(28,25,23,0.08)] motion-safe:opacity-0"
       >
         <div className="flex items-center justify-between border-b border-black/[0.06] px-4 py-3">
           <span className="text-[10px] tracking-[0.16em] text-muted-foreground uppercase">
@@ -94,7 +94,7 @@ export function DigitalMarketingHeroVisual() {
       <div
         data-layer
         data-depth="18"
-        className="absolute top-[18%] right-[2%] w-[58%] rounded-[14px] border border-black/[0.08] bg-white px-4 py-4 shadow-[0_16px_40px_rgba(28,25,23,0.08)] md:w-[54%]"
+        className="absolute top-[18%] right-[2%] w-[58%] rounded-[14px] border border-black/[0.08] bg-white px-4 py-4 shadow-[0_16px_40px_rgba(28,25,23,0.08)] motion-safe:opacity-0 md:w-[54%]"
       >
         <p className="text-[10px] tracking-[0.16em] text-muted-foreground uppercase">Discovery</p>
         <p className="mt-2 text-[13px] font-medium tracking-tight text-foreground">
@@ -117,7 +117,7 @@ export function DigitalMarketingHeroVisual() {
       <div
         data-layer
         data-depth="26"
-        className="absolute bottom-[16%] left-[4%] w-[64%] rounded-[14px] border border-black/[0.08] bg-white p-4 shadow-[0_16px_40px_rgba(28,25,23,0.08)] md:bottom-[14%] md:w-[58%]"
+        className="absolute bottom-[16%] left-[4%] w-[64%] rounded-[14px] border border-black/[0.08] bg-white p-4 shadow-[0_16px_40px_rgba(28,25,23,0.08)] motion-safe:opacity-0 md:bottom-[14%] md:w-[58%]"
       >
         <div className="mb-3 flex items-center justify-between">
           <p className="text-[10px] tracking-[0.16em] text-muted-foreground uppercase">
@@ -144,7 +144,7 @@ export function DigitalMarketingHeroVisual() {
       <div
         data-layer
         data-depth="8"
-        className="absolute right-[8%] bottom-[6%] max-w-[200px] rounded-[12px] border border-black/[0.08] bg-[#f7f7f4] px-4 py-3 shadow-[0_10px_28px_rgba(28,25,23,0.06)]"
+        className="absolute right-[8%] bottom-[6%] max-w-[200px] rounded-[12px] border border-black/[0.08] bg-[#f7f7f4] px-4 py-3 shadow-[0_10px_28px_rgba(28,25,23,0.06)] motion-safe:opacity-0"
       >
         <p className="text-[10px] tracking-[0.16em] text-muted-foreground uppercase">Insight</p>
         <p className="mt-1.5 text-[13px] leading-snug font-medium tracking-tight text-foreground">

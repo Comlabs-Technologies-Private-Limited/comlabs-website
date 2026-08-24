@@ -59,7 +59,7 @@ export function DigitalMarketingHero() {
     >
       <div className="mx-auto grid min-h-[90svh] w-full max-w-[1380px] items-center gap-12 px-5 py-16 md:px-7 md:py-20 lg:grid-cols-12 lg:gap-10 lg:px-12 lg:py-8 xl:px-[72px]">
         <div className="lg:col-span-6 xl:col-span-6">
-          <div data-hero-intro>
+          <div data-hero-intro className="motion-safe:opacity-0">
             <PageBreadcrumbs
               currentPath={DIGITAL_MARKETING_PATH}
               items={[
@@ -70,7 +70,7 @@ export function DigitalMarketingHero() {
           </div>
           <p
             data-hero-intro
-            className="mb-5 text-xs tracking-[0.18em] text-muted-foreground uppercase"
+            className="mb-5 text-xs tracking-[0.18em] text-muted-foreground uppercase motion-safe:opacity-0"
           >
             Digital Marketing at Comlabs
           </p>
@@ -80,7 +80,7 @@ export function DigitalMarketingHero() {
           >
             {words.map((word, index) => (
               <span key={`${word}-${index}`} className="inline-block overflow-hidden align-bottom">
-                <span data-hero-word className="inline-block pr-[0.28em]">
+                <span data-hero-word className="inline-block pr-[0.28em] motion-safe:opacity-0">
                   {word}
                 </span>
               </span>
@@ -88,12 +88,12 @@ export function DigitalMarketingHero() {
           </h1>
           <p
             data-hero-intro
-            className="mt-6 max-w-xl text-[0.9375rem] leading-relaxed text-muted-foreground md:text-base"
+            className="mt-6 max-w-xl text-[0.9375rem] leading-relaxed text-muted-foreground motion-safe:opacity-0 md:text-base"
           >
             We bring positioning, creative, search, performance and analytics into one connected
             system—so every campaign strengthens the business behind it.
           </p>
-          <div data-hero-intro className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div data-hero-intro className="mt-10 flex flex-col gap-3 motion-safe:opacity-0 sm:flex-row sm:items-center">
             <Link
               href={canonicalPath("/contact")}
               className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-medium text-white transition-opacity duration-200 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30 focus-visible:ring-offset-2"
