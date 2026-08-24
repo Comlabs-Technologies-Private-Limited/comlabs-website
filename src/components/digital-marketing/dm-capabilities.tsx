@@ -16,13 +16,10 @@ import type { LucideIcon } from "lucide-react";
 import { DmVisual } from "@/components/digital-marketing/dm-visual";
 import {
   DIGITAL_MARKETING_CAPABILITIES,
-  DIGITAL_MARKETING_RELATED_LINKS,
   type DigitalMarketingCapability,
 } from "@/lib/digital-marketing";
 import { DM, DM_EASE } from "@/lib/digital-marketing-media";
 import { gsapEase, registerGsap } from "@/lib/gsap-client";
-import { canonicalPath } from "@/lib/site";
-import Link from "next/link";
 
 const ICONS: Record<string, LucideIcon> = {
   "brand-strategy": Compass,
@@ -68,7 +65,7 @@ export function DigitalMarketingCapabilities() {
   );
 
   return (
-    <section id="capabilities" ref={rootRef} className="scroll-mt-24 pb-8 md:pb-16">
+    <section id="services" ref={rootRef} className="scroll-mt-24 pb-8 md:pb-16">
       <div className="mx-auto w-full max-w-[1440px] px-5 md:px-6 lg:px-12 xl:px-16">
         <h2
           className="max-w-[16ch] text-[clamp(2rem,3.6vw,3.5rem)] leading-[1.06] font-medium tracking-tight"
@@ -86,22 +83,6 @@ export function DigitalMarketingCapabilities() {
             <CapabilityRow key={capability.id} capability={capability} />
           ))}
         </div>
-
-        <p className="mt-12 text-sm" style={{ color: DM.muted }}>
-          Related:{" "}
-          {DIGITAL_MARKETING_RELATED_LINKS.map((link, index) => (
-            <span key={link.href}>
-              {index > 0 ? " · " : null}
-              <Link
-                href={canonicalPath(link.href)}
-                className="underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2"
-                style={{ color: DM.text }}
-              >
-                {link.label}
-              </Link>
-            </span>
-          ))}
-        </p>
       </div>
     </section>
   );

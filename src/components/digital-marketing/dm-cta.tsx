@@ -1,20 +1,18 @@
 "use client";
 
 import { ArrowRight } from "lucide-react";
-import Link from "next/link";
 import { motion, useReducedMotion } from "motion/react";
 
 import {
   DIGITAL_MARKETING_CONTACT_EMAIL,
 } from "@/lib/digital-marketing";
 import { DM, DM_EASE } from "@/lib/digital-marketing-media";
-import { canonicalPath } from "@/lib/site";
 
 export function DigitalMarketingCta() {
   const reduce = useReducedMotion();
 
   return (
-    <section className="px-5 pb-20 md:px-6 lg:px-12 xl:px-16">
+    <section id="contact" className="scroll-mt-24 px-5 pb-20 md:px-6 lg:px-12 xl:px-16">
       <motion.div
         className="mx-auto max-w-[1440px] overflow-hidden px-6 py-16 md:px-12 md:py-24 lg:px-20 lg:py-28"
         style={{
@@ -47,14 +45,14 @@ export function DigitalMarketingCta() {
           place to begin.
         </p>
         <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
-          <Link
-            href={canonicalPath("/contact")}
+          <a
+            href={`mailto:${DIGITAL_MARKETING_CONTACT_EMAIL}`}
             className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-7 py-3 text-sm font-medium transition-opacity duration-200 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2"
             style={{ background: DM.accent, color: DM.warm }}
           >
             Start a conversation
             <ArrowRight size={15} aria-hidden />
-          </Link>
+          </a>
           <a
             href={`mailto:${DIGITAL_MARKETING_CONTACT_EMAIL}`}
             className="text-sm underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2"

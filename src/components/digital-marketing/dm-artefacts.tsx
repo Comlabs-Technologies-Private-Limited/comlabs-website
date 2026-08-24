@@ -140,29 +140,33 @@ function ChannelAttribution() {
   const sources = ["Search", "Social", "Direct", "Referral"] as const;
   return (
     <Frame>
-      {meta("Illustrative interface")}
-      <p className="mt-2 text-sm font-medium tracking-tight">Channel to enquiry</p>
-      <div className="relative mt-6 h-[108px]">
-        {sources.map((source, index) => (
-          <div key={source} className="absolute" style={{ top: index * 22, left: 0 }}>
-            <span className="text-[10px]" style={{ color: DM.muted }}>
-              {source}
-            </span>
-            <span
-              className="absolute top-1.5 left-[72px] h-px w-[42%] origin-left"
-              style={{
-                background: `linear-gradient(90deg, ${DM.hairline}, ${DM.accent})`,
-              }}
-              aria-hidden
-            />
-          </div>
-        ))}
-        <div
-          className="absolute top-1/2 right-0 -translate-y-1/2 rounded-full px-2.5 py-1 text-[10px]"
+      <div>
+        {meta("Illustrative interface")}
+        <p className="mt-2 text-sm font-medium tracking-tight">Channel to enquiry</p>
+      </div>
+      <div className="mt-6 flex items-center gap-4">
+        <div className="flex min-w-0 flex-1 flex-col gap-4">
+          {sources.map((source) => (
+            <div key={source} className="flex items-center gap-3">
+              <span className="w-16 shrink-0 text-[10px] leading-none" style={{ color: DM.muted }}>
+                {source}
+              </span>
+              <span
+                className="h-px min-w-0 flex-1"
+                style={{
+                  background: `linear-gradient(90deg, ${DM.hairline}, ${DM.accent})`,
+                }}
+                aria-hidden
+              />
+            </div>
+          ))}
+        </div>
+        <span
+          className="shrink-0 rounded-full px-2.5 py-1 text-[10px] leading-none"
           style={{ background: DM.accent, color: DM.warm }}
         >
           Qualified enquiry
-        </div>
+        </span>
       </div>
     </Frame>
   );
@@ -338,9 +342,9 @@ function CustomerJourney() {
   return (
     <Frame>
       {meta("Customer journey")}
-      <ol className="mt-3 space-y-2">
+      <ol className="mt-4 space-y-4">
         {stages.map((stage, index) => (
-          <li key={stage.name} className="flex items-baseline justify-between gap-3">
+          <li key={stage.name} className="flex items-baseline justify-between gap-4">
             <span className="text-[11px] font-medium tracking-tight">
               <span style={{ color: DM.muted }}>0{index + 1} </span>
               {stage.name}

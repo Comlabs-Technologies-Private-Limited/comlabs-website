@@ -77,7 +77,7 @@ export function DigitalMarketingOperatingSystem() {
           How the system moves.
         </h2>
 
-        <div className="relative mt-16">
+        <div className="relative mt-20">
           <div
             className="absolute top-3 bottom-3 left-[11px] w-px origin-top md:top-5 md:right-0 md:bottom-auto md:left-0 md:h-px md:w-full md:origin-left"
             style={{ background: DM.hairline }}
@@ -89,11 +89,11 @@ export function DigitalMarketingOperatingSystem() {
             style={{ background: DM.accent }}
             aria-hidden
           />
-          <ol className="grid gap-10 md:grid-cols-4 md:gap-8">
+          <ol className="grid gap-14 md:grid-cols-4 md:gap-x-8">
             {DIGITAL_MARKETING_STAGES.map((stage) => (
               <li key={stage.index} data-process-step className="relative pl-8 md:pl-0">
                 <span
-                  className="absolute top-0 left-0 h-6 w-6 rounded-full md:relative md:mb-6"
+                  className="absolute top-0 left-0 h-6 w-6 rounded-full md:relative md:mb-8"
                   style={{
                     background: DM.bg,
                     boxShadow: `inset 0 0 0 1px ${DM.accent}`,
@@ -103,8 +103,8 @@ export function DigitalMarketingOperatingSystem() {
                 <p className="text-[11px] tracking-[0.16em] uppercase" style={{ color: DM.muted }}>
                   {stage.index}
                 </p>
-                <h3 className="mt-2 text-xl font-medium tracking-tight">{stage.title}</h3>
-                <p className="mt-3 text-sm leading-relaxed" style={{ color: DM.muted }}>
+                <h3 className="mt-3 text-xl font-medium tracking-tight">{stage.title}</h3>
+                <p className="mt-4 text-sm leading-relaxed" style={{ color: DM.muted }}>
                   {stage.description}
                 </p>
               </li>

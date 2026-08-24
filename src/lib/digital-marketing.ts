@@ -1,8 +1,8 @@
-import { TESTIMONIALS } from "@/components/home/figma/home-data";
 import {
   type DmArtefactId,
   type DmPhotoId,
   DM,
+  DM_PHOTOS,
 } from "@/lib/digital-marketing-media";
 
 export const DIGITAL_MARKETING_PATH = "/digital-marketing" as const;
@@ -275,7 +275,7 @@ export const DIGITAL_MARKETING_ENGAGEMENTS: readonly DigitalMarketingEngagement[
     index: "01",
     title: "Growth Sprint",
     description:
-      "A focused diagnosis covering positioning, opportunity, measurement and the clearest execution priorities.",
+      "Focused diagnosis of positioning, opportunity, measurement and execution priorities.",
   },
   {
     index: "02",
@@ -329,22 +329,63 @@ export const DIGITAL_MARKETING_FAQS: readonly DigitalMarketingFaq[] = [
   },
 ] as const;
 
-export const DIGITAL_MARKETING_RELATED_LINKS = [
+export type DigitalMarketingInsight = {
+  category: string;
+  title: string;
+  excerpt: string;
+  thumbnail: string;
+  thumbnailAlt: string;
+};
+
+export const DIGITAL_MARKETING_INSIGHTS: readonly DigitalMarketingInsight[] = [
   {
-    label: "Website Design & Development",
-    href: "/services/website-design-development",
+    category: "Positioning",
+    title: "Make the offer unmistakable",
+    excerpt:
+      "When the category is noisy, the work is to name the problem, the buyer and the reason you win—then hold that line everywhere.",
+    thumbnail: DM_PHOTOS["IMG-09"].srcSm,
+    thumbnailAlt: DM_PHOTOS["IMG-09"].alt,
   },
   {
-    label: "SEO / AEO & Copywriting",
-    href: "/services/seo-aeo-copywriting",
+    category: "Search",
+    title: "Be findable in Google and in AI answers",
+    excerpt:
+      "SEO, AEO and structured content planned as one visibility system, not a list of disconnected keywords.",
+    thumbnail: DM_PHOTOS["IMG-04"].srcSm,
+    thumbnailAlt: DM_PHOTOS["IMG-04"].alt,
   },
   {
-    label: "Selected work",
-    href: "/work",
+    category: "Conversion",
+    title: "Turn attention into a decision",
+    excerpt:
+      "Landing experiences, proof and measurement designed around the action that actually moves the business.",
+    thumbnail: DM_PHOTOS["IMG-06"].srcSm,
+    thumbnailAlt: DM_PHOTOS["IMG-06"].alt,
   },
 ] as const;
 
-export const DIGITAL_MARKETING_PROOF = TESTIMONIALS.slice(0, 2);
+export const DIGITAL_MARKETING_PROOF = [
+  {
+    quote:
+      "We deal with companies like JIO and Vodafone, so I didn't want a website that looked small. Comlabs got that immediately. They rebuilt the whole thing and now it actually looks like a company at our level.",
+    name: "Pramod Mishra",
+    title: "Director",
+    company: "Global Services Enterprise",
+    initials: "PM",
+    avatarSrc:
+      "https://res.cloudinary.com/p8osc4y4/image/upload/v1786453596/pramod-mishra_rygkvp.jpg",
+  },
+  {
+    quote:
+      "I'd been putting off the website for ages. Comlabs made it painless. The site finally looks like the brand I've had in my head, and people have actually noticed.",
+    name: "Harsh Sihag",
+    title: "Director and Founder",
+    company: "Vithub",
+    initials: "HS",
+    avatarSrc:
+      "https://res.cloudinary.com/p8osc4y4/image/upload/v1786453597/harsh-sihag_tdj4k7.jpg",
+  },
+] as const;
 
 export type MarketingLabLabel =
   | "Campaign / Concept"

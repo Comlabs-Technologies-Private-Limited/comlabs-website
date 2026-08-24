@@ -1,15 +1,11 @@
 "use client";
 
 import { ArrowRight } from "lucide-react";
-import Link from "next/link";
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 
-import { PageBreadcrumbs } from "@/components/seo/page-breadcrumbs";
 import { DM } from "@/lib/digital-marketing-media";
-import { DIGITAL_MARKETING_PATH } from "@/lib/digital-marketing";
 import { gsapEase, registerGsap } from "@/lib/gsap-client";
-import { canonicalPath } from "@/lib/site";
 
 export function DigitalMarketingHero() {
   const rootRef = useRef<HTMLElement>(null);
@@ -45,22 +41,12 @@ export function DigitalMarketingHero() {
   return (
     <section ref={rootRef} className="pt-8 md:pt-12">
       <div className="mx-auto w-full max-w-[1440px] px-5 md:px-6 lg:px-12 xl:px-16">
-        <div data-hero-intro className="motion-safe:opacity-0">
-          <PageBreadcrumbs
-            currentPath={DIGITAL_MARKETING_PATH}
-            tone="dark"
-            items={[
-              { label: "Services", href: "/services" },
-              { label: "Digital Marketing" },
-            ]}
-          />
-        </div>
         <p
           data-hero-intro
           className="mb-6 text-xs tracking-[0.18em] uppercase motion-safe:opacity-0"
           style={{ color: DM.muted }}
         >
-          Digital Marketing at Comlabs
+          Digital marketing
         </p>
         <h1
           data-hero-headline
@@ -88,8 +74,8 @@ export function DigitalMarketingHero() {
           data-hero-intro
           className="mt-10 flex flex-col gap-3 motion-safe:opacity-0 sm:flex-row sm:items-center"
         >
-          <Link
-            href={canonicalPath("/contact")}
+          <a
+            href="#contact"
             className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-medium transition-opacity duration-200 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
             style={{
               background: DM.accent,
@@ -99,9 +85,9 @@ export function DigitalMarketingHero() {
           >
             Plan a growth sprint
             <ArrowRight size={15} aria-hidden />
-          </Link>
-          <Link
-            href="#capabilities"
+          </a>
+          <a
+            href="#services"
             className="inline-flex min-h-11 items-center justify-center rounded-full px-6 py-3 text-sm font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2"
             style={{
               color: DM.text,
@@ -109,7 +95,7 @@ export function DigitalMarketingHero() {
             }}
           >
             Explore our capabilities
-          </Link>
+          </a>
         </div>
       </div>
     </section>

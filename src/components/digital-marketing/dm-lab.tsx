@@ -73,7 +73,18 @@ export function DigitalMarketingLab() {
                     <DmVisual visual={item.visual} size="tile" className="h-full min-h-[180px] w-full" />
                   </motion.div>
                 </div>
-                <div className="absolute inset-x-0 bottom-0 flex items-end justify-between p-3">
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute inset-x-0 bottom-0 h-[72%]"
+                  style={{
+                    background: "rgba(20, 20, 20, 0.38)",
+                    backdropFilter: "blur(18px) saturate(1.2)",
+                    WebkitBackdropFilter: "blur(18px) saturate(1.2)",
+                    maskImage: "linear-gradient(to top, #000 42%, transparent)",
+                    WebkitMaskImage: "linear-gradient(to top, #000 42%, transparent)",
+                  }}
+                />
+                <div className="absolute inset-x-0 bottom-0 z-10 flex items-end justify-between p-4">
                   <p
                     className="text-[10px] tracking-[0.14em] uppercase transition-opacity duration-200 group-hover:opacity-100"
                     style={{ color: DM.warm, opacity: 0.86 }}

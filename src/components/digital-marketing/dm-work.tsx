@@ -1,16 +1,12 @@
 "use client";
 
 import { useGSAP } from "@gsap/react";
-import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import { useRef } from "react";
-import { motion, useReducedMotion } from "motion/react";
 
 import { DIGITAL_MARKETING_WORK } from "@/lib/digital-marketing";
-import { DM, DM_EASE } from "@/lib/digital-marketing-media";
+import { DM } from "@/lib/digital-marketing-media";
 import { gsapEase, registerGsap } from "@/lib/gsap-client";
-import { canonicalPath } from "@/lib/site";
 
 export function DigitalMarketingWork() {
   const rootRef = useRef<HTMLElement>(null);
@@ -43,7 +39,7 @@ export function DigitalMarketingWork() {
   );
 
   return (
-    <section ref={rootRef} className="py-24 md:py-32">
+    <section id="work" ref={rootRef} className="scroll-mt-24 py-24 md:py-32">
       <div className="mx-auto w-full max-w-[1440px] px-5 md:px-6 lg:px-12 xl:px-16">
         <h2
           className="max-w-[16ch] text-[clamp(2rem,3.6vw,3.5rem)] leading-[1.06] font-medium tracking-tight"
@@ -58,7 +54,7 @@ export function DigitalMarketingWork() {
 
         <div className="mt-14 flex flex-col">
           {DIGITAL_MARKETING_WORK.map((item) => (
-            <WorkRow key={item.href} item={item} />
+            <WorkRow key={item.client} item={item} />
           ))}
         </div>
       </div>
@@ -67,12 +63,9 @@ export function DigitalMarketingWork() {
 }
 
 function WorkRow({ item }: { item: (typeof DIGITAL_MARKETING_WORK)[number] }) {
-  const reduce = useReducedMotion();
-
   return (
-    <Link
-      href={canonicalPath(item.href)}
-      className="group grid items-center gap-6 py-8 focus-visible:outline-none focus-visible:ring-2 lg:grid-cols-12 lg:gap-10 lg:py-10"
+    <article
+      className="grid items-center gap-6 py-8 lg:grid-cols-12 lg:gap-10 lg:py-10"
       style={{ borderTop: `1px solid ${DM.hairline}` }}
     >
       <div className="lg:col-span-4">
@@ -88,18 +81,6 @@ function WorkRow({ item }: { item: (typeof DIGITAL_MARKETING_WORK)[number] }) {
         <p className="mt-4 max-w-md text-sm leading-relaxed" style={{ color: DM.muted }}>
           {item.outcome}
         </p>
-        <span className="mt-6 inline-flex items-center gap-1.5 text-sm" style={{ color: DM.text }}>
-          Read case study
-          <motion.span
-            aria-hidden
-            className="inline-flex"
-            animate={reduce ? undefined : { x: 0 }}
-            whileHover={reduce ? undefined : { x: 3, y: -2 }}
-            transition={{ duration: 0.2, ease: DM_EASE }}
-          >
-            <ArrowUpRight size={15} />
-          </motion.span>
-        </span>
       </div>
       <div
         data-work-image
@@ -111,9 +92,9 @@ function WorkRow({ item }: { item: (typeof DIGITAL_MARKETING_WORK)[number] }) {
           alt={item.imageAlt}
           fill
           sizes="(max-width: 1024px) 100vw, 66vw"
-          className="object-cover object-top transition-transform duration-[400ms] ease-[cubic-bezier(0.25,0.1,0,1)] group-hover:scale-[1.04]"
+          className="object-cover object-top"
         />
       </div>
-    </Link>
+    </article>
   );
 }

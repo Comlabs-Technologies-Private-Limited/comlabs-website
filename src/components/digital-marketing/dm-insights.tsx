@@ -1,13 +1,10 @@
 import Image from "next/image";
-import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
 
-import type { MarketingInsight } from "@/lib/digital-marketing-insights";
+import type { DigitalMarketingInsight } from "@/lib/digital-marketing";
 import { DM, DM_PHOTOS } from "@/lib/digital-marketing-media";
-import { canonicalPath } from "@/lib/site";
 
 type InsightsRailProps = {
-  insights: readonly MarketingInsight[];
+  insights: readonly DigitalMarketingInsight[];
 };
 
 export function DigitalMarketingInsights({ insights }: InsightsRailProps) {
@@ -34,7 +31,7 @@ export function DigitalMarketingInsights({ insights }: InsightsRailProps) {
         </div>
         <div className="p-4">
           <p className="text-[10px] tracking-[0.16em] uppercase" style={{ color: DM.muted }}>
-            About Comlabs Marketing
+            About this practice
           </p>
           <p className="mt-3 text-sm leading-relaxed" style={{ color: DM.text }}>
             We combine creative judgment with commercial evidence to build marketing systems that
@@ -44,10 +41,9 @@ export function DigitalMarketingInsights({ insights }: InsightsRailProps) {
       </article>
 
       {insights.map((insight) => (
-        <Link
-          key={insight.href}
-          href={canonicalPath(insight.href)}
-          className="group grid grid-cols-[88px_minmax(0,1fr)_16px] items-start gap-3 p-3 transition-colors duration-200 hover:bg-white/[0.03] focus-visible:outline-none focus-visible:ring-2"
+        <article
+          key={insight.title}
+          className="grid grid-cols-[88px_minmax(0,1fr)] items-start gap-3 p-3"
           style={{
             background: DM.elevated,
             borderRadius: 12,
@@ -67,20 +63,13 @@ export function DigitalMarketingInsights({ insights }: InsightsRailProps) {
           <div className="min-w-0">
             <p className="text-[10px] tracking-[0.14em] uppercase" style={{ color: DM.muted }}>
               {insight.category}
-              {insight.dateLabel ? ` · ${insight.dateLabel}` : ""}
             </p>
             <h3 className="mt-1 text-sm leading-snug font-medium tracking-tight">{insight.title}</h3>
             <p className="mt-1 line-clamp-2 text-[12px] leading-relaxed" style={{ color: DM.muted }}>
               {insight.excerpt}
             </p>
           </div>
-          <ArrowUpRight
-            size={14}
-            className="mt-1 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-            aria-hidden
-            style={{ color: DM.muted }}
-          />
-        </Link>
+        </article>
       ))}
     </aside>
   );

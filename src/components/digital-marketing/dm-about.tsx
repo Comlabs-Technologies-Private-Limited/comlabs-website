@@ -10,7 +10,7 @@ export function DigitalMarketingAbout() {
   const second = DIGITAL_MARKETING_WORK[1];
 
   return (
-    <section className="py-24 md:py-32">
+    <section id="about" className="scroll-mt-24 py-24 md:py-32">
       <div className="mx-auto grid w-full max-w-[1440px] items-start gap-12 px-5 md:px-6 lg:grid-cols-12 lg:px-12 xl:px-16">
         <div className="lg:col-span-5">
           <h2

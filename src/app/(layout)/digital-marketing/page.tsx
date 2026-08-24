@@ -4,20 +4,20 @@ import { preload } from "react-dom";
 
 import { DigitalMarketingAbout } from "@/components/digital-marketing/dm-about";
 import { DigitalMarketingEngagement } from "@/components/digital-marketing/dm-engagement";
+import { DigitalMarketingFooter } from "@/components/digital-marketing/dm-footer";
 import { DigitalMarketingHero } from "@/components/digital-marketing/dm-hero";
 import { DigitalMarketingInsights } from "@/components/digital-marketing/dm-insights";
 import { DigitalMarketingMosaic } from "@/components/digital-marketing/dm-mosaic";
+import { DigitalMarketingNav } from "@/components/digital-marketing/dm-nav";
 import { DigitalMarketingPositioning } from "@/components/digital-marketing/dm-positioning";
 import { DigitalMarketingProof } from "@/components/digital-marketing/dm-proof";
-import { FigmaFooter } from "@/components/layout/figma-footer";
-import { FigmaNav } from "@/components/layout/figma-nav";
 import { JsonLdScript } from "@/components/seo/json-ld-script";
 import {
   DIGITAL_MARKETING_FAQS,
+  DIGITAL_MARKETING_INSIGHTS,
   DIGITAL_MARKETING_META,
   DIGITAL_MARKETING_PATH,
 } from "@/lib/digital-marketing";
-import { getMarketingInsights } from "@/lib/digital-marketing-insights";
 import { DM, DM_PHOTOS, HERO_PRELOAD_PHOTOS } from "@/lib/digital-marketing-media";
 import { buildPageMetadata } from "@/lib/metadata";
 import { getFaqPageSchema, getServiceSchema } from "@/lib/schema";
@@ -58,8 +58,6 @@ export const metadata: Metadata = buildPageMetadata({
 });
 
 export default async function DigitalMarketingPage() {
-  const insights = await getMarketingInsights();
-
   for (const id of HERO_PRELOAD_PHOTOS) {
     const photo = DM_PHOTOS[id];
     preload(photo.srcSm, { as: "image", type: "image/avif" });
@@ -77,14 +75,14 @@ export default async function DigitalMarketingPage() {
       />
       <JsonLdScript data={getFaqPageSchema([...DIGITAL_MARKETING_FAQS])} />
 
-      <FigmaNav tone="dark" />
+      <DigitalMarketingNav />
 
       <main>
         <DigitalMarketingHero />
-        <section className="mt-12 pb-8 md:mt-16 lg:mt-20">
+        <section id="posts" className="mt-12 scroll-mt-24 pb-8 md:mt-16 lg:mt-20">
           <div className="mx-auto grid w-full max-w-[1440px] gap-4 px-5 md:px-6 lg:grid-cols-[minmax(0,0.75fr)_minmax(0,0.25fr)] lg:items-start lg:gap-4 lg:px-12 xl:px-16">
             <DigitalMarketingMosaic />
-            <DigitalMarketingInsights insights={insights} />
+            <DigitalMarketingInsights insights={DIGITAL_MARKETING_INSIGHTS} />
           </div>
         </section>
         <DigitalMarketingPositioning />
@@ -100,7 +98,7 @@ export default async function DigitalMarketingPage() {
         <DigitalMarketingCta />
       </main>
 
-      <FigmaFooter tone="dark" />
+      <DigitalMarketingFooter />
     </div>
   );
 }
