@@ -1,6 +1,6 @@
 # Image credits
 
-Editorial photography used on `/digital-marketing` was downloaded from Unsplash on **24 August 2026**, stored locally under `public/digital-marketing/`, and converted to AVIF (primary) with WebP fallbacks. Images are **not** hotlinked in production.
+Editorial photography used on `/digital-marketing` was downloaded from Unsplash on **24 August 2026**, stored locally under `public/media/digital-marketing/`, and converted to AVIF (primary) with WebP fallbacks. Images are **not** hotlinked in production.
 
 Licence verified on each source page at download time: **Unsplash License** — free to use, including commercially. See [unsplash.com/license](https://unsplash.com/license).
 

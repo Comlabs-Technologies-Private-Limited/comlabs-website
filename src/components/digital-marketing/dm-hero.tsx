@@ -45,7 +45,7 @@ export function DigitalMarketingHero() {
   return (
     <section ref={rootRef} className="pt-8 md:pt-12">
       <div className="mx-auto w-full max-w-[1440px] px-5 md:px-6 lg:px-12 xl:px-16">
-        <div data-hero-intro>
+        <div data-hero-intro className="motion-safe:opacity-0">
           <PageBreadcrumbs
             currentPath={DIGITAL_MARKETING_PATH}
             tone="dark"
@@ -57,7 +57,7 @@ export function DigitalMarketingHero() {
         </div>
         <p
           data-hero-intro
-          className="mb-6 text-xs tracking-[0.18em] uppercase"
+          className="mb-6 text-xs tracking-[0.18em] uppercase motion-safe:opacity-0"
           style={{ color: DM.muted }}
         >
           Digital Marketing at Comlabs
@@ -78,13 +78,16 @@ export function DigitalMarketingHero() {
         </h1>
         <p
           data-hero-intro
-          className="mt-8 max-w-xl text-[0.9375rem] leading-relaxed md:text-base"
+          className="mt-8 max-w-xl text-[0.9375rem] leading-relaxed motion-safe:opacity-0 md:text-base"
           style={{ color: DM.muted }}
         >
           We connect positioning, creative, search, performance and analytics into one growth
           system—so every campaign strengthens the business behind it.
         </p>
-        <div data-hero-intro className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
+        <div
+          data-hero-intro
+          className="mt-10 flex flex-col gap-3 motion-safe:opacity-0 sm:flex-row sm:items-center"
+        >
           <Link
             href={canonicalPath("/contact")}
             className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-medium transition-opacity duration-200 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"

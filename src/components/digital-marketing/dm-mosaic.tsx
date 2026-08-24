@@ -104,7 +104,7 @@ export function DigitalMarketingMosaic() {
           key={columnIndex}
           data-mosaic-col
           className={cn(
-            "flex flex-col gap-3 lg:gap-4",
+            "flex flex-col gap-3 lg:gap-4 motion-safe:lg:opacity-0",
             columnIndex === 0 && "pt-8 lg:pt-16",
             columnIndex === 1 && "pt-0 lg:pt-4",
             columnIndex === 2 && "hidden pt-10 md:flex lg:pt-0",
@@ -137,7 +137,7 @@ function MosaicTileCard({
   tileIndex: number;
 }) {
   return (
-    <div data-mosaic-tile className={cn("w-full overflow-hidden", ASPECT[tile.aspect])}>
+    <div data-mosaic-tile className={cn("w-full overflow-hidden motion-safe:max-lg:opacity-0", ASPECT[tile.aspect])}>
       <DmVisual
         visual={tile.visual}
         size={tile.aspect === "feature" ? "feature" : "tile"}
