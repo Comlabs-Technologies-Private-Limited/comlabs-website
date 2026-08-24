@@ -1,190 +1,168 @@
 "use client";
 
-import { useRef } from "react";
-import Link from "next/link";
 import { useGSAP } from "@gsap/react";
+import {
+  Compass,
+  LineChart,
+  Megaphone,
+  PenLine,
+  Search,
+  Share2,
+} from "lucide-react";
+import { motion, useReducedMotion } from "motion/react";
+import { useRef } from "react";
+import type { LucideIcon } from "lucide-react";
 
-import { CAPABILITY_VISUALS } from "@/components/digital-marketing/dm-capability-visuals";
+import { DmVisual } from "@/components/digital-marketing/dm-visual";
 import {
   DIGITAL_MARKETING_CAPABILITIES,
-  DIGITAL_MARKETING_ORANGE,
   DIGITAL_MARKETING_RELATED_LINKS,
+  type DigitalMarketingCapability,
 } from "@/lib/digital-marketing";
-import { registerGsap } from "@/lib/gsap-client";
+import { DM, DM_EASE } from "@/lib/digital-marketing-media";
+import { gsapEase, registerGsap } from "@/lib/gsap-client";
 import { canonicalPath } from "@/lib/site";
+import Link from "next/link";
+
+const ICONS: Record<string, LucideIcon> = {
+  "brand-strategy": Compass,
+  "content-creative": PenLine,
+  performance: Megaphone,
+  search: Search,
+  social: Share2,
+  analytics: LineChart,
+};
 
 export function DigitalMarketingCapabilities() {
   const rootRef = useRef<HTMLElement>(null);
-  const pinRef = useRef<HTMLDivElement>(null);
   const gsap = registerGsap();
 
   useGSAP(
     () => {
       const root = rootRef.current;
-      const pin = pinRef.current;
-      if (!root || !pin) return;
-
+      if (!root) return;
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const visuals = pin.querySelectorAll<HTMLElement>("[data-capability-visual]");
-      const items = pin.querySelectorAll<HTMLElement>("[data-capability-item]");
-      const progress = pin.querySelector<HTMLElement>("[data-capability-progress]");
+      const rows = root.querySelectorAll<HTMLElement>("[data-capability-row]");
 
-      const setActive = (index: number) => {
-        visuals.forEach((visual, visualIndex) => {
-          visual.classList.toggle("opacity-100", visualIndex === index);
-          visual.classList.toggle("opacity-0", visualIndex !== index);
-          visual.classList.toggle("pointer-events-none", visualIndex !== index);
-        });
-        items.forEach((item, itemIndex) => {
-          item.setAttribute("data-active", itemIndex === index ? "true" : "false");
-        });
-        if (progress) {
-          progress.style.height = `${((index + 1) / DIGITAL_MARKETING_CAPABILITIES.length) * 100}%`;
+      rows.forEach((row) => {
+        const frames = row.querySelectorAll("[data-capability-frame]");
+        if (reduce) {
+          gsap.set(frames, { opacity: 1, clipPath: "none" });
+          return;
         }
-      };
-
-      setActive(0);
-
-      if (reduce) return;
-
-      const mm = gsap.matchMedia();
-      mm.add("(min-width: 1024px)", () => {
-        const trigger = gsap.timeline({
-          scrollTrigger: {
-            trigger: pin,
-            start: "top 56px",
-            end: () => `+=${window.innerHeight * DIGITAL_MARKETING_CAPABILITIES.length * 0.72}`,
-            pin: true,
-            scrub: 0.45,
-            anticipatePin: 1,
-            onUpdate: (self) => {
-              const next = Math.min(
-                DIGITAL_MARKETING_CAPABILITIES.length - 1,
-                Math.floor(self.progress * DIGITAL_MARKETING_CAPABILITIES.length),
-              );
-              setActive(next);
-            },
+        gsap.fromTo(
+          frames,
+          { clipPath: "inset(0 0 100% 0)", opacity: 0.4 },
+          {
+            clipPath: "inset(0 0 0% 0)",
+            opacity: 1,
+            duration: 0.85,
+            stagger: 0.1,
+            ease: gsapEase,
+            scrollTrigger: { trigger: row, start: "top 78%", once: true },
           },
-        });
-        return () => {
-          trigger.kill();
-        };
+        );
       });
     },
     { scope: rootRef },
   );
 
   return (
-    <section id="capabilities" ref={rootRef} className="border-b border-border">
-      <div className="mx-auto w-full max-w-[1380px] px-5 pt-[72px] md:px-7 md:pt-[120px] lg:px-12 lg:pt-40 xl:px-[72px]">
-        <p className="mb-5 text-xs tracking-[0.18em] text-muted-foreground uppercase">Capabilities</p>
-        <div className="grid gap-6 lg:grid-cols-12 lg:items-end lg:gap-12">
-          <h2
-            className="lg:col-span-7 text-[clamp(1.85rem,3.4vw,3.25rem)] leading-[1.08] font-medium tracking-tight"
-            style={{ letterSpacing: "-0.035em" }}
-          >
-            One connected marketing system.
-          </h2>
-          <p className="max-w-md text-[0.9375rem] leading-relaxed text-muted-foreground lg:col-span-5">
-            Strategy, creative and distribution work better when they share the same customer
-            understanding, business goals and measurement model.
-          </p>
-        </div>
-      </div>
+    <section id="capabilities" ref={rootRef} className="scroll-mt-24 pb-8 md:pb-16">
+      <div className="mx-auto w-full max-w-[1440px] px-5 md:px-6 lg:px-12 xl:px-16">
+        <h2
+          className="max-w-[16ch] text-[clamp(2rem,3.6vw,3.5rem)] leading-[1.06] font-medium tracking-tight"
+          style={{ color: DM.text, letterSpacing: "-0.035em" }}
+        >
+          One connected marketing system.
+        </h2>
+        <p className="mt-5 max-w-xl text-[0.9375rem] leading-relaxed" style={{ color: DM.muted }}>
+          Strategy, creative and distribution work better when they share the same customer
+          understanding, business goals and measurement model.
+        </p>
 
-      <div
-        ref={pinRef}
-        className="mx-auto w-full max-w-[1380px] px-5 py-16 md:px-7 lg:px-12 lg:py-20 xl:px-[72px]"
-      >
-        <div className="grid gap-10 lg:grid-cols-12 lg:gap-14">
-          <div className="relative lg:col-span-5">
-            <div
-              className="pointer-events-none absolute top-0 bottom-0 left-0 hidden w-px bg-black/[0.08] lg:block"
-              aria-hidden
-            >
-              <span
-                data-capability-progress
-                className="absolute top-0 left-0 w-px origin-top"
-                style={{ background: DIGITAL_MARKETING_ORANGE, height: "16%" }}
-              />
-            </div>
-            <ol className="flex flex-col gap-10 lg:gap-8 lg:pl-8">
-              {DIGITAL_MARKETING_CAPABILITIES.map((capability, index) => {
-                const Visual = CAPABILITY_VISUALS[index];
-                return (
-                  <li
-                    key={capability.id}
-                    data-capability-item
-                    data-active={index === 0 ? "true" : "false"}
-                    className="group"
-                  >
-                    <p className="text-[11px] tracking-[0.16em] text-muted-foreground uppercase">
-                      {capability.index}
-                    </p>
-                    <h3
-                      className="mt-2 text-xl font-medium tracking-tight text-foreground transition-colors duration-200 group-data-[active=false]:lg:text-muted-foreground md:text-2xl"
-                      style={{ letterSpacing: "-0.03em" }}
-                    >
-                      {capability.title}
-                    </h3>
-                    <p className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
-                      {capability.description}
-                    </p>
-                    <ul className="mt-4 grid gap-1.5 text-sm text-foreground/80 sm:grid-cols-2">
-                      {capability.deliverables.map((item) => (
-                        <li key={item} className="flex gap-2">
-                          <span
-                            className="mt-2 h-1 w-1 shrink-0 rounded-full"
-                            style={{ background: DIGITAL_MARKETING_ORANGE }}
-                            aria-hidden
-                          />
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
-                    {Visual ? (
-                      <div className="mt-6 lg:hidden">
-                        <Visual />
-                      </div>
-                    ) : null}
-                  </li>
-                );
-              })}
-            </ol>
-          </div>
-
-          <div className="relative hidden lg:col-span-7 lg:block">
-            <div className="relative h-[min(72vh,640px)]">
-              {DIGITAL_MARKETING_CAPABILITIES.map((capability, index) => {
-                const Visual = CAPABILITY_VISUALS[index];
-                return (
-                  <div
-                    key={capability.id}
-                    data-capability-visual
-                    className={`absolute inset-0 transition-opacity duration-300 ${
-                      index === 0 ? "opacity-100" : "pointer-events-none opacity-0"
-                    }`}
-                  >
-                    {Visual ? <Visual className="h-full" /> : null}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-16 flex flex-wrap gap-x-6 gap-y-2 border-t border-border pt-8 text-sm">
-          {DIGITAL_MARKETING_RELATED_LINKS.map((link) => (
-            <Link
-              key={link.href}
-              href={canonicalPath(link.href)}
-              className="text-muted-foreground transition-colors hover:text-foreground focus-visible:text-foreground focus-visible:outline-none"
-            >
-              {link.label} →
-            </Link>
+        <div className="mt-16">
+          {DIGITAL_MARKETING_CAPABILITIES.map((capability) => (
+            <CapabilityRow key={capability.id} capability={capability} />
           ))}
         </div>
+
+        <p className="mt-12 text-sm" style={{ color: DM.muted }}>
+          Related:{" "}
+          {DIGITAL_MARKETING_RELATED_LINKS.map((link, index) => (
+            <span key={link.href}>
+              {index > 0 ? " · " : null}
+              <Link
+                href={canonicalPath(link.href)}
+                className="underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2"
+                style={{ color: DM.text }}
+              >
+                {link.label}
+              </Link>
+            </span>
+          ))}
+        </p>
       </div>
     </section>
+  );
+}
+
+function CapabilityRow({ capability }: { capability: DigitalMarketingCapability }) {
+  const Icon = ICONS[capability.id] ?? Compass;
+  const reduce = useReducedMotion();
+
+  return (
+    <article
+      data-capability-row
+      className="grid gap-8 py-10 lg:grid-cols-[minmax(0,0.32fr)_minmax(0,0.68fr)] lg:gap-12 lg:py-14"
+      style={{ borderTop: `1px solid ${DM.hairline}` }}
+    >
+      <div>
+        <p className="text-[11px] tracking-[0.16em] uppercase" style={{ color: DM.muted }}>
+          {capability.index} · {capability.category}
+        </p>
+        <div className="mt-4 flex items-center gap-3">
+          <span
+            className="flex h-9 w-9 items-center justify-center"
+            style={{ boxShadow: `inset 0 0 0 1px ${DM.hairline}`, borderRadius: 8 }}
+          >
+            <Icon size={16} aria-hidden style={{ color: DM.accent }} />
+          </span>
+          <h3
+            className="text-[1.65rem] leading-tight font-medium tracking-tight"
+            style={{ letterSpacing: "-0.03em" }}
+          >
+            {capability.title}
+          </h3>
+        </div>
+        <p className="mt-4 max-w-md text-sm leading-relaxed" style={{ color: DM.muted }}>
+          {capability.description}
+        </p>
+        <ul className="mt-6 space-y-2">
+          {capability.deliverables.map((item) => (
+            <li key={item} className="flex items-center gap-2 text-[13px]" style={{ color: DM.text }}>
+              <span className="h-1 w-1 rounded-full" style={{ background: DM.accent }} />
+              {item}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div className="flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2 lg:grid lg:grid-cols-3 lg:gap-3 lg:overflow-visible lg:pb-0">
+        {capability.visuals.map((visual, index) => (
+          <motion.div
+            key={`${capability.id}-${index}`}
+            whileHover={reduce ? undefined : { scale: 1.015 }}
+            transition={{ duration: 0.35, ease: DM_EASE }}
+            className="min-w-[78%] snap-start overflow-hidden sm:min-w-[56%] lg:min-w-0"
+            style={{ borderRadius: 12 }}
+          >
+            <div data-capability-frame className="aspect-[4/5] min-h-[220px]">
+              <DmVisual visual={visual} size="tile" className="h-full w-full" />
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </article>
   );
 }

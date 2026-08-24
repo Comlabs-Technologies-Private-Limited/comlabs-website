@@ -154,6 +154,22 @@
   }
 }
 
+.dm-page {
+  --background: #141414;
+  --foreground: #f4f2ed;
+  --muted-foreground: rgba(244, 242, 237, 0.58);
+  --border: rgba(244, 242, 237, 0.12);
+  --card: #1a1a1a;
+  --secondary: #1a1a1a;
+  --ring: rgba(244, 242, 237, 0.4);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  letter-spacing: -0.025em;
+}
+
+.dm-page :focus-visible {
+  outline-color: rgba(244, 242, 237, 0.45);
+}
+
 /* `translate3d` + unique name: reliable compositing; avoid mask on same node as animated transform (WebKit). */
 @keyframes marquee {
   from {
