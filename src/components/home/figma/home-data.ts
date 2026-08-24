@@ -1,10 +1,3 @@
-export const TRUST_STATS = [
-  { value: "12+", label: "Years in business" },
-  { value: "83%", label: "Clients who return" },
-  { value: "140+", label: "Projects shipped" },
-  { value: "4.9★", label: "Average rating" },
-] as const;
-
 export const PROCESS_STEPS = [
   {
     step: "01",
@@ -39,7 +32,6 @@ export const PROJECTS = [
     desc: "An editorial studio website built around bold work, expressive motion and clear conversion paths.",
     href: "/work/radiant",
     liveSiteUrl: "https://radiant.comlabstechnologies.com/",
-    logo: "/work/radiant/radiant-mark.png",
     image: "/work/radiant/radiant-case-study-hero.webp",
   },
   {
@@ -48,7 +40,6 @@ export const PROJECTS = [
     desc: "Multi-page onboarding flow for an internal dashboard — built to cut drop-off and get users to activation fast.",
     href: "/work/formial-labs",
     liveSiteUrl: "https://formial.in",
-    logo: "https://formial.in/cdn/shop/files/Brand_Design-04_90b8501a-2715-48dc-934d-b45bba7f000b.png?v=1747823670&width=200",
     image: "/work/formial-labs/formial-case-study-hero.webp",
   },
   {
@@ -57,7 +48,6 @@ export const PROJECTS = [
     desc: "Full website rebuild that lifted conversion and helped land JIO and Vodafone-Idea as enterprise clients.",
     href: "/work/global-services",
     liveSiteUrl: "https://global-services-website.vercel.app",
-    logo: "https://media.licdn.com/dms/image/v2/D4D0BAQGQX5VqkCJ3Kw/company-logo_200_200/B4DZ_HUcVbK4AE-/0/1785755452993?e=1787788800&v=beta&t=0m0sb88g-MtInzITn26oE280SA6izWiywxQvtZIsbGo",
     image: "/work/global-services/global-services-case-study-hero.webp",
   },
   {
@@ -66,7 +56,6 @@ export const PROJECTS = [
     desc: "Design-led marketing website built to give Vithub a strong digital identity and a foundation for growth.",
     href: "/work/vithub",
     liveSiteUrl: "https://vithub.in",
-    logo: "https://vithub.in/cdn/shop/files/Vit_hub_web_logo_temp.png?height=100&v=1762338028",
     image: "/work/vithub/vithub-case-study-hero.webp",
   },
 ] as const;
@@ -79,7 +68,6 @@ export type Testimonial = {
   initials: string;
   /** Founder headshot URL — add when available */
   avatarSrc?: string;
-  companyLogoSrc?: string;
   linkedinUrl?: string;
 };
 

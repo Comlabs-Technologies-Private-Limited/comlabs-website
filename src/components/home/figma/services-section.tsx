@@ -25,7 +25,7 @@ export function FigmaServicesSection() {
 
         <div className="flex flex-col gap-20 md:gap-28 lg:gap-32">
           {serviceItems.map((service, index) => (
-            <ServiceRow key={service.id} {...service} index={index} variant="figma" />
+            <ServiceRow key={service.id} {...service} index={index} />
           ))}
         </div>
       </div>

@@ -1,5 +1,3 @@
-import type { ReactNode } from "react";
-
 export type CaseStudyMetaItem = {
   label: string;
   value: string;
@@ -209,24 +207,3 @@ export function getNextCaseStudy(slug: CaseStudySlug): {
     thumbnail: NEXT_CASE_STUDY_THUMBNAIL[slug],
   };
 }
-
-/** @deprecated Legacy shape — use CaseStudyContent from this module instead. */
-export type CaseStudyMetric = { value: string; label: string };
-
-/** @deprecated Legacy shape — use CaseStudyContent from this module instead. */
-export type LegacyCaseStudyContent = {
-  slug: string;
-  client: string;
-  category: string;
-  year: string;
-  eyebrow: string;
-  title: ReactNode;
-  subtitle: string;
-  coverImage: string;
-  liveSiteUrl?: string;
-  metrics: CaseStudyMetric[];
-  problem: string[];
-  whatWeBuilt: string[];
-  results: string[];
-  clients?: { label: string; note?: string };
-};
