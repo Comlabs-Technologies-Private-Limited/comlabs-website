@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { motion } from "motion/react";
 
 import type { EditorialImage } from "@/lib/editorial-images";
+import { HERO_BACKGROUND_PATH, layeredBackgroundImage, mediaUrl } from "@/lib/cloudinary";
 import {
   EDITORIAL_HERO_OVERLAY,
   EDITORIAL_HERO_OVERLAY_WARM,
@@ -44,7 +45,7 @@ export function MarketingPageHero({
     return (
       <section className="relative overflow-hidden px-6 pt-12 pb-20 md:pt-16 md:pb-24">
         <img
-          src={backgroundImage.src}
+          src={mediaUrl(backgroundImage.src)}
           alt=""
           aria-hidden
           className="absolute inset-0 h-full w-full object-cover object-center"
@@ -129,8 +130,10 @@ export function MarketingPageHero({
     <section
       className="relative overflow-hidden px-6 pt-12 pb-12 md:pt-16 md:pb-16"
       style={{
-        backgroundImage:
-          "linear-gradient(180deg, rgba(247,247,244,0.86) 0%, rgba(247,247,244,0.78) 45%, rgba(247,247,244,0.92) 100%), url('/hero/hero-bg.png')",
+        backgroundImage: layeredBackgroundImage(
+          "linear-gradient(180deg, rgba(247,247,244,0.86) 0%, rgba(247,247,244,0.78) 45%, rgba(247,247,244,0.92) 100%)",
+          HERO_BACKGROUND_PATH,
+        ),
         backgroundSize: "cover",
         backgroundPosition: "center right",
       }}

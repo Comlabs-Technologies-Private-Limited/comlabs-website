@@ -1,6 +1,7 @@
 import Image from "next/image";
 
 import type { CaseStudyMedia as CaseStudyMediaType } from "@/lib/case-studies";
+import { mediaUrl } from "@/lib/cloudinary";
 
 import { CaseStudyCaption } from "./case-study-caption";
 
@@ -38,7 +39,7 @@ export function CaseStudyMedia({ media }: CaseStudyMediaProps) {
       >
         {isRemoteSrc(src) ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={src} alt={alt} className={imageClass} loading="lazy" />
+          <img src={mediaUrl(src)} alt={alt} className={imageClass} loading="lazy" />
         ) : (
           <Image
             src={src}

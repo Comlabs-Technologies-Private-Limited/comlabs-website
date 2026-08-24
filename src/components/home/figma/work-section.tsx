@@ -5,6 +5,7 @@ import { motion } from "motion/react";
 
 import { PROJECTS } from "@/components/home/figma/home-data";
 import { canonicalPath } from "@/lib/site";
+import { mediaUrl } from "@/lib/cloudinary";
 
 export function FigmaWorkSection() {
   return (
@@ -43,7 +44,7 @@ export function FigmaWorkSection() {
             >
               <div className="relative aspect-video overflow-hidden bg-secondary">
                 <img
-                  src={project.image}
+                  src={mediaUrl(project.image)}
                   alt={`${project.title} website`}
                   className="absolute inset-0 h-full w-full max-w-none object-cover object-top transition-transform duration-500 group-hover:scale-[1.02]"
                 />

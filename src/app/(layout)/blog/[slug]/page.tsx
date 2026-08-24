@@ -12,7 +12,8 @@ import { MarketingCtaSection } from "@/components/marketing/marketing-cta-sectio
 import { PageBreadcrumbs } from "@/components/seo/page-breadcrumbs";
 import { getPublishedPostBySlug, getPublishedPostSlugs } from "@/lib/admin/posts";
 import { buildPageMetadata } from "@/lib/metadata";
-import { canonicalPath, canonicalUrl, isBlogEnabled, siteOgImagePath } from "@/lib/site";
+import { HERO_BACKGROUND_PATH, layeredBackgroundImage, absoluteMediaUrl } from "@/lib/cloudinary";
+import { canonicalPath, canonicalUrl, isBlogEnabled, siteUrl } from "@/lib/site";
 import type { Post as PostType } from "@/types/post";
 
 export const revalidate = 60;
@@ -50,7 +51,10 @@ export async function generateMetadata({
   const canonical = post.canonicalUrl
     ? canonicalUrl(post.canonicalUrl)
     : canonicalUrl(`/blog/${post.slug}`);
-  const ogImage = post.ogImage || post.coverImage || siteOgImagePath;
+  const ogImage = absoluteMediaUrl(
+    post.ogImage || post.coverImage || "/opengraph.png",
+    siteUrl,
+  );
 
   return {
     ...buildPageMetadata({
@@ -113,8 +117,10 @@ export default async function BlogPostPage({
           <header
             className="relative overflow-hidden px-6 pt-12 pb-12 md:pt-16 md:pb-16"
             style={{
-              backgroundImage:
-                "linear-gradient(180deg, rgba(247,247,244,0.86) 0%, rgba(247,247,244,0.78) 45%, rgba(247,247,244,0.92) 100%), url('/hero/hero-bg.png')",
+              backgroundImage: layeredBackgroundImage(
+              "linear-gradient(180deg, rgba(247,247,244,0.86) 0%, rgba(247,247,244,0.78) 45%, rgba(247,247,244,0.92) 100%)",
+              HERO_BACKGROUND_PATH,
+            ),
               backgroundSize: "cover",
               backgroundPosition: "center right",
             }}

@@ -5,6 +5,7 @@ import { ArrowRight } from "lucide-react";
 
 import { MarketingFadeIn } from "@/components/marketing/marketing-motion";
 import { getCanonicalService } from "@/lib/canonical-services";
+import { mediaUrl } from "@/lib/cloudinary";
 import type { ServicePageData } from "@/lib/services-data";
 import { canonicalPath } from "@/lib/site";
 
@@ -24,7 +25,7 @@ export function MarketingServiceCards({ services }: MarketingServiceCardsProps) 
             {service.editorialImage ? (
               <div className="relative aspect-[16/9] overflow-hidden bg-secondary/30">
                 <img
-                  src={service.editorialImage.src}
+                  src={mediaUrl(service.editorialImage.src)}
                   alt=""
                   aria-hidden
                   className="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-[1.02]"

@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { mediaUrl } from "@/lib/cloudinary";
 
 type ComlabsLogoProps = {
   className?: string;
@@ -11,7 +12,7 @@ export function ComlabsLogo({ className, decorative = false }: ComlabsLogoProps)
     // SVG lockup is a static asset; next/image does not optimize SVG.
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      src="/logo.svg"
+      src={mediaUrl("/logo.svg")}
       alt={decorative ? "" : "Comlabs Technologies"}
       width={1132}
       height={242}

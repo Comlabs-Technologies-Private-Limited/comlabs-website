@@ -2,8 +2,9 @@
 
 import { FigmaNav } from "@/components/layout/figma-nav";
 import { ContactForm } from "@/components/contact/contact-form";
+import { HERO_BACKGROUND_PATH, mediaUrl } from "@/lib/cloudinary";
 
-const BACKGROUND_IMAGE = "/hero/hero-bg.png";
+const BACKGROUND_IMAGE = HERO_BACKGROUND_PATH;
 
 export function ContactPage() {
   return (
@@ -17,7 +18,7 @@ export function ContactPage() {
         {/* LEFT — cinematic panel */}
         <div className="relative flex md:min-h-screen flex-col justify-end px-8 py-12 lg:min-h-0 lg:px-12 lg:py-28">
           <img
-            src={BACKGROUND_IMAGE}
+            src={mediaUrl(BACKGROUND_IMAGE)}
             alt=""
             aria-hidden
             className="absolute inset-0 h-full w-full object-cover object-center"

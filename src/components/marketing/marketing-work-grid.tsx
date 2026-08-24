@@ -5,6 +5,7 @@ import { ArrowRight, ExternalLink } from "lucide-react";
 
 import { PROJECTS } from "@/components/home/figma/home-data";
 import { MarketingFadeIn } from "@/components/marketing/marketing-motion";
+import { mediaUrl } from "@/lib/cloudinary";
 import { canonicalPath } from "@/lib/site";
 
 type MarketingWorkGridProps = {
@@ -20,7 +21,7 @@ export function MarketingWorkGrid({ showLiveSite = true }: MarketingWorkGridProp
             <Link href={canonicalPath(project.href)} className="block flex-1">
               <div className="relative aspect-video overflow-hidden bg-secondary">
                 <img
-                  src={project.image}
+                  src={mediaUrl(project.image)}
                   alt={`${project.title} website`}
                   className="absolute inset-0 h-full w-full max-w-none object-cover object-top transition-transform duration-500 group-hover:scale-[1.02]"
                 />

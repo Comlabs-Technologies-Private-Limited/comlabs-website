@@ -11,11 +11,13 @@ const nextConfig: NextConfig = {
     "/blog/**": ["./node_modules/.prisma/client/**/*"],
   },
   images: {
+    loader: "custom",
+    loaderFile: "./src/lib/cloudinary-image-loader.ts",
     remotePatterns: [
       {
         protocol: "https",
         hostname: "res.cloudinary.com",
-        pathname: "/p8osc4y4/image/upload/**",
+        pathname: "/**",
       },
       {
         protocol: "https",

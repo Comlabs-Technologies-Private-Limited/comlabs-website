@@ -374,7 +374,7 @@ export function registerComlabsMcpTools(server: McpServer): void {
     {
       title: "Upload image from URL",
       description:
-        "Download an image from a public URL and store it in Comlabs blob storage. Returns a permanent URL for use in blog posts or case studies.",
+        "Download an image from a public URL and store it in Cloudinary (or Vercel Blob if Cloudinary is unset). Returns a permanent URL.",
       inputSchema: z.object({
         url: z.string().url().describe("Public image URL to fetch"),
         filename: z.string().optional().describe("Optional filename, e.g. formial-hero.jpg"),
@@ -383,7 +383,7 @@ export function registerComlabsMcpTools(server: McpServer): void {
     async ({ url, filename }) => {
       try {
         if (!isImageUploadConfigured()) {
-          return mcpError("BLOB_READ_WRITE_TOKEN is not configured for image uploads.");
+          return mcpError("Cloudinary or BLOB_READ_WRITE_TOKEN is not configured for image uploads.");
         }
         const result = await uploadImageFromUrl(url, filename);
         return mcpTextResult(result, "Image uploaded");
@@ -398,7 +398,7 @@ export function registerComlabsMcpTools(server: McpServer): void {
     {
       title: "Upload image from base64",
       description:
-        "Upload raw base64 image data to Comlabs blob storage. Returns a permanent URL for blog cover images or case study media.",
+        "Upload raw base64 image data to Cloudinary (or Vercel Blob if Cloudinary is unset). Returns a permanent URL.",
       inputSchema: z.object({
         base64: z.string().describe("Base64-encoded image data (with or without data: prefix)"),
         filename: z.string().describe("Filename with extension, e.g. cover.jpg"),
@@ -411,7 +411,7 @@ export function registerComlabsMcpTools(server: McpServer): void {
     async ({ base64, filename, contentType }) => {
       try {
         if (!isImageUploadConfigured()) {
-          return mcpError("BLOB_READ_WRITE_TOKEN is not configured for image uploads.");
+          return mcpError("Cloudinary or BLOB_READ_WRITE_TOKEN is not configured for image uploads.");
         }
         const result = await uploadImageFromBase64(base64, filename, contentType ?? "image/jpeg");
         return mcpTextResult(result, "Image uploaded");
