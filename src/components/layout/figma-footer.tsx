@@ -37,9 +37,10 @@ const FOOTER_COLUMNS = [
 
 type FigmaFooterProps = {
   showBlogLink?: boolean;
+  tone?: "light" | "dark";
 };
 
-export function FigmaFooter({ showBlogLink = true }: FigmaFooterProps) {
+export function FigmaFooter({ showBlogLink = true, tone = "light" }: FigmaFooterProps) {
   const columns = FOOTER_COLUMNS.map((col) => {
     if (col.heading !== "Company" || showBlogLink || !isBlogPublic()) {
       return col;
@@ -51,17 +52,31 @@ export function FigmaFooter({ showBlogLink = true }: FigmaFooterProps) {
   });
 
   return (
-    <footer className="border-t border-border px-6 py-14">
+    <footer
+      className="border-t px-6 py-14"
+      style={
+        tone === "dark"
+          ? {
+              background: "#141414",
+              borderColor: "rgba(244,242,237,0.12)",
+              color: "#F4F2ED",
+            }
+          : undefined
+      }
+    >
       <div className="mx-auto max-w-6xl">
         <div className="mb-12 flex flex-col justify-between gap-10 md:flex-row">
           <div>
             <Link href="/" className="mb-3 block" aria-label="Comlabs home">
-              <ComlabsLogo decorative className="h-6 w-auto" />
+              <ComlabsLogo
+                decorative
+                className={tone === "dark" ? "h-6 w-auto brightness-0 invert" : "h-6 w-auto"}
+              />
             </Link>
             <p className="text-sm font-medium text-foreground">{siteName}</p>
             <p className="mt-1 text-sm text-muted-foreground">{siteDescriptor}</p>
             <p className="mt-1 text-sm text-muted-foreground">{siteLocation}</p>
-            <FigmaFooterSocialLinks />
+            <FigmaFooterSocialLinks tone={tone} />
           </div>
 
           <div className="grid grid-cols-2 gap-10 text-sm md:grid-cols-3">

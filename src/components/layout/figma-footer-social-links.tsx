@@ -40,7 +40,8 @@ const SOCIAL_LINKS: SocialLink[] = [
   },
 ];
 
-export function FigmaFooterSocialLinks() {
+export function FigmaFooterSocialLinks({ tone = "light" }: { tone?: "light" | "dark" }) {
+  const dark = tone === "dark";
   return (
     <div className="mt-5 flex items-center gap-3">
       {SOCIAL_LINKS.map((link) => (
@@ -50,7 +51,12 @@ export function FigmaFooterSocialLinks() {
           target="_blank"
           rel="noopener noreferrer"
           aria-label={link.label}
-          className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:border-foreground/20 hover:text-foreground"
+          className={
+            dark
+              ? "inline-flex h-11 w-11 items-center justify-center rounded-full text-[#F4F2ED]/70 transition-colors hover:text-[#F4F2ED]"
+              : "inline-flex h-9 w-9 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:border-foreground/20 hover:text-foreground"
+          }
+          style={dark ? { boxShadow: "inset 0 0 0 1px rgba(244,242,237,0.12)" } : undefined}
         >
           {link.icon}
         </a>

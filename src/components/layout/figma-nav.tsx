@@ -71,18 +71,24 @@ type MobileAccordion = "services" | "work" | null;
 const CLOSE_DELAY_MS = 100;
 const DROPDOWN_EASE = [0.22, 1, 0.36, 1] as const;
 
-const navLinkClass = cn(
-  "rounded-[9px] px-[10px] py-[7px] text-sm text-muted-foreground",
-  "transition-[background-color,color] duration-[180ms] ease-[cubic-bezier(0.22,1,0.36,1)]",
-  "hover:bg-black/[0.045] hover:text-foreground",
-  "focus-visible:bg-black/[0.045] focus-visible:text-foreground focus-visible:outline-none",
-);
+function navLinkClass(dark: boolean) {
+  return cn(
+    "rounded-full px-3 py-[7px] text-sm",
+    "transition-[background-color,color] duration-[180ms] ease-[cubic-bezier(0.22,1,0.36,1)]",
+    "focus-visible:outline-none",
+    dark
+      ? "text-[#F4F2ED]/70 hover:bg-white/[0.08] hover:text-[#F4F2ED] focus-visible:bg-white/[0.08] focus-visible:text-[#F4F2ED]"
+      : "rounded-[9px] px-[10px] text-muted-foreground hover:bg-black/[0.045] hover:text-foreground focus-visible:bg-black/[0.045] focus-visible:text-foreground",
+  );
+}
 
 type FigmaNavProps = {
   showBlogLink?: boolean;
+  tone?: "light" | "dark";
 };
 
-export function FigmaNav({ showBlogLink = true }: FigmaNavProps) {
+export function FigmaNav({ showBlogLink = true, tone = "light" }: FigmaNavProps) {
+  const dark = tone === "dark";
   const [menuOpen, setMenuOpen] = useState(false);
   const [desktopMenu, setDesktopMenu] = useState<DesktopMenu>(null);
   const [mobileAccordion, setMobileAccordion] = useState<MobileAccordion>(null);
@@ -167,12 +173,19 @@ export function FigmaNav({ showBlogLink = true }: FigmaNavProps) {
   return (
     <>
       <header
-        className="sticky top-0 z-[80] border-b border-border"
-        style={{ background: "rgba(247,247,244,0.88)", backdropFilter: "blur(12px)" }}
+        className="sticky top-0 z-[80] border-b"
+        style={{
+          background: dark ? "rgba(20,20,20,0.88)" : "rgba(247,247,244,0.88)",
+          borderColor: dark ? "rgba(244,242,237,0.12)" : "var(--border)",
+          backdropFilter: "blur(12px)",
+        }}
       >
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-6">
           <Link href="/" aria-label="Comlabs home">
-            <ComlabsLogo decorative className="h-5 w-auto" />
+            <ComlabsLogo
+              decorative
+              className={cn("h-5 w-auto", dark && "brightness-0 invert")}
+            />
           </Link>
 
           <nav className="hidden items-center gap-1 md:flex" aria-label="Primary">
@@ -181,6 +194,7 @@ export function FigmaNav({ showBlogLink = true }: FigmaNavProps) {
               href="/services"
               open={desktopMenu === "services"}
               reduce={Boolean(reduce)}
+              dark={dark}
               panelWidth="min(580px, calc(100vw - 48px))"
               onOpen={() => openDesktop("services")}
               onClose={closeDesktop}
@@ -193,10 +207,11 @@ export function FigmaNav({ showBlogLink = true }: FigmaNavProps) {
                     href={item.href}
                     title={item.title}
                     description={item.description}
+                    dark={dark}
                   />
                 ))}
               </div>
-              <DropdownFooter href="/services" label="View all services" />
+              <DropdownFooter href="/services" label="View all services" dark={dark} />
             </DesktopDropdown>
 
             <DesktopDropdown
@@ -204,6 +219,7 @@ export function FigmaNav({ showBlogLink = true }: FigmaNavProps) {
               href="/work"
               open={desktopMenu === "work"}
               reduce={Boolean(reduce)}
+              dark={dark}
               panelWidth="min(400px, calc(100vw - 48px))"
               onOpen={() => openDesktop("work")}
               onClose={closeDesktop}
@@ -216,17 +232,18 @@ export function FigmaNav({ showBlogLink = true }: FigmaNavProps) {
                     href={item.href}
                     title={item.title}
                     description={item.description}
+                    dark={dark}
                   />
                 ))}
               </div>
-              <DropdownFooter href="/work" label="View all work" />
+              <DropdownFooter href="/work" label="View all work" dark={dark} />
             </DesktopDropdown>
 
             {[...SIMPLE_LINKS, ...blogLinks].map((link) => (
               <Link
                 key={link.label}
                 href={canonicalPath(link.href)}
-                className={navLinkClass}
+                className={navLinkClass(dark)}
               >
                 {link.label}
               </Link>
@@ -236,8 +253,18 @@ export function FigmaNav({ showBlogLink = true }: FigmaNavProps) {
           <div className="hidden items-center gap-3 md:flex">
             <Link
               href={canonicalPath("/contact")}
-              className="rounded-full px-4 py-1.5 text-sm font-semibold text-background transition-opacity hover:opacity-90"
-              style={{ background: "var(--foreground)" }}
+              className={cn(
+                "rounded-full px-4 py-1.5 text-sm font-medium transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2",
+                !dark && "font-medium text-background",
+              )}
+              style={
+                dark
+                  ? {
+                      color: "#F4F2ED",
+                      boxShadow: "inset 0 0 0 1px rgba(244,242,237,0.18)",
+                    }
+                  : { background: "var(--foreground)" }
+              }
             >
               Get Started
             </Link>
@@ -245,7 +272,10 @@ export function FigmaNav({ showBlogLink = true }: FigmaNavProps) {
 
           <button
             type="button"
-            className="-mr-2 flex h-10 w-10 items-center justify-center text-foreground md:hidden"
+            className={cn(
+              "-mr-2 flex h-11 w-11 items-center justify-center md:hidden",
+              dark ? "text-[#F4F2ED]" : "text-foreground",
+            )}
             onClick={() => setMenuOpen(true)}
             aria-label="Open menu"
             aria-expanded={menuOpen}
@@ -270,20 +300,24 @@ export function FigmaNav({ showBlogLink = true }: FigmaNavProps) {
             onClick={closeMobile}
           />
 
-          <div
-            className="relative flex flex-col"
-            style={{
-              background: "var(--background)",
-              paddingTop: "env(safe-area-inset-top)",
-            }}
-          >
-            <div className="flex h-14 items-center justify-between px-6">
-              <Link href="/" aria-label="Comlabs home" onClick={closeMobile}>
-                <ComlabsLogo decorative className="h-5 w-auto" />
-              </Link>
+            <div
+              className="relative flex flex-col"
+              style={{
+                background: dark ? "#141414" : "var(--background)",
+                paddingTop: "env(safe-area-inset-top)",
+                color: dark ? "#F4F2ED" : undefined,
+              }}
+            >
+              <div className="flex h-14 items-center justify-between px-6">
+                <Link href="/" aria-label="Comlabs home" onClick={closeMobile}>
+                  <ComlabsLogo decorative className={cn("h-5 w-auto", dark && "brightness-0 invert")} />
+                </Link>
               <button
                 type="button"
-                className="-mr-2 flex h-10 w-10 items-center justify-center text-foreground"
+                className={cn(
+                  "-mr-2 flex h-11 w-11 items-center justify-center",
+                  dark ? "text-[#F4F2ED]" : "text-foreground",
+                )}
                 onClick={closeMobile}
                 aria-label="Close menu"
               >
@@ -293,8 +327,12 @@ export function FigmaNav({ showBlogLink = true }: FigmaNavProps) {
 
             <nav
               id="mobile-navigation"
-              className="flex flex-col gap-1 border-t border-border px-6 py-5"
+              className={cn(
+                "flex flex-col gap-1 border-t px-6 py-5",
+                dark ? "border-white/10" : "border-border",
+              )}
               aria-label="Mobile"
+              style={dark ? { color: "#F4F2ED" } : undefined}
             >
               <MobileAccordion
                 id="mobile-services"
@@ -376,7 +414,11 @@ export function FigmaNav({ showBlogLink = true }: FigmaNavProps) {
               ))}
               <Link
                 href={canonicalPath("/contact")}
-                className="mt-3 rounded-full bg-foreground px-4 py-2.5 text-center text-sm font-semibold text-background"
+                className={cn(
+                  "mt-3 rounded-full px-4 py-2.5 text-center text-sm font-medium",
+                  dark ? "text-[#141414]" : "bg-foreground text-background",
+                )}
+                style={dark ? { background: "#F4F2ED" } : undefined}
                 onClick={closeMobile}
               >
                 Get Started
@@ -394,6 +436,7 @@ function DesktopDropdown({
   href,
   open,
   reduce,
+  dark,
   panelWidth,
   onOpen,
   onClose,
@@ -404,6 +447,7 @@ function DesktopDropdown({
   href: string;
   open: boolean;
   reduce: boolean;
+  dark: boolean;
   panelWidth: string;
   onOpen: () => void;
   onClose: () => void;
@@ -462,7 +506,10 @@ function DesktopDropdown({
     >
       <Link
         href={canonicalPath(href)}
-        className={cn(navLinkClass, open && "bg-black/[0.045] text-foreground")}
+        className={cn(
+          navLinkClass(dark),
+          open && (dark ? "bg-white/[0.08] text-[#F4F2ED]" : "bg-black/[0.045] text-foreground"),
+        )}
         aria-expanded={open}
         aria-haspopup="true"
         aria-controls={panelId}
@@ -501,10 +548,11 @@ function DesktopDropdown({
               className="rounded-2xl p-6"
               style={{
                 width: panelWidth,
-                background: "#FFFFFF",
-                border: "1px solid rgba(0,0,0,0.06)",
-                boxShadow:
-                  "0 18px 50px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.04)",
+                background: dark ? "#1A1A1A" : "#FFFFFF",
+                border: dark ? "1px solid rgba(244,242,237,0.12)" : "1px solid rgba(0,0,0,0.06)",
+                boxShadow: dark
+                  ? "0 18px 50px rgba(0,0,0,0.35)"
+                  : "0 18px 50px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.04)",
               }}
             >
               {children}
@@ -520,10 +568,12 @@ function DropdownItem({
   href,
   title,
   description,
+  dark,
 }: {
   href: string;
   title: string;
   description: string;
+  dark?: boolean;
 }) {
   return (
     <Link
@@ -531,29 +581,53 @@ function DropdownItem({
       className={cn(
         "group/item block rounded-[10px] px-3 py-3",
         "transition-[background-color,transform] duration-[180ms] ease-[cubic-bezier(0.22,1,0.36,1)]",
-        "hover:bg-black/[0.04] hover:translate-x-px",
-        "focus-visible:bg-black/[0.04] focus-visible:outline-none",
+        "hover:translate-x-px focus-visible:outline-none",
+        dark
+          ? "hover:bg-white/[0.06] focus-visible:bg-white/[0.06]"
+          : "hover:bg-black/[0.04] focus-visible:bg-black/[0.04]",
       )}
     >
-      <span className="block text-[13px] font-medium tracking-tight text-foreground">
+      <span
+        className={cn(
+          "block text-[13px] font-medium tracking-tight",
+          dark ? "text-[#F4F2ED]" : "text-foreground",
+        )}
+      >
         {title}
       </span>
-      <span className="mt-1 block text-[12px] leading-snug text-muted-foreground">
+      <span
+        className={cn(
+          "mt-1 block text-[12px] leading-snug",
+          dark ? "text-[#F4F2ED]/60" : "text-muted-foreground",
+        )}
+      >
         {description}
       </span>
     </Link>
   );
 }
 
-function DropdownFooter({ href, label }: { href: string; label: string }) {
+function DropdownFooter({
+  href,
+  label,
+  dark,
+}: {
+  href: string;
+  label: string;
+  dark?: boolean;
+}) {
   return (
-    <div className="mt-4 border-t border-black/[0.06] pt-4">
+    <div
+      className="mt-4 pt-4"
+      style={{ borderTop: dark ? "1px solid rgba(244,242,237,0.12)" : "1px solid rgba(0,0,0,0.06)" }}
+    >
       <Link
         href={canonicalPath(href)}
         className={cn(
-          "inline-flex text-[13px] text-muted-foreground",
-          "transition-colors duration-[180ms] hover:text-foreground",
-          "focus-visible:text-foreground focus-visible:outline-none",
+          "inline-flex text-[13px] transition-colors duration-[180ms] focus-visible:outline-none",
+          dark
+            ? "text-[#F4F2ED]/60 hover:text-[#F4F2ED] focus-visible:text-[#F4F2ED]"
+            : "text-muted-foreground hover:text-foreground focus-visible:text-foreground",
         )}
       >
         {label} →

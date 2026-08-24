@@ -1,22 +1,19 @@
 "use client";
 
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useRef } from "react";
-import { ArrowRight } from "lucide-react";
 import { useGSAP } from "@gsap/react";
 
-import { DigitalMarketingHeroVisual } from "@/components/digital-marketing/dm-hero-visual";
 import { PageBreadcrumbs } from "@/components/seo/page-breadcrumbs";
-import { DIGITAL_MARKETING_ORANGE, DIGITAL_MARKETING_PATH } from "@/lib/digital-marketing";
+import { DM } from "@/lib/digital-marketing-media";
+import { DIGITAL_MARKETING_PATH } from "@/lib/digital-marketing";
 import { gsapEase, registerGsap } from "@/lib/gsap-client";
 import { canonicalPath } from "@/lib/site";
-
-const HEADLINE = "Marketing that turns attention into measurable growth.";
 
 export function DigitalMarketingHero() {
   const rootRef = useRef<HTMLElement>(null);
   const gsap = registerGsap();
-  const words = HEADLINE.split(" ");
 
   useGSAP(
     () => {
@@ -24,95 +21,95 @@ export function DigitalMarketingHero() {
       if (!root) return;
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const intro = root.querySelectorAll("[data-hero-intro]");
-      const wordNodes = root.querySelectorAll("[data-hero-word]");
+      const headline = root.querySelector("[data-hero-headline]");
 
       if (reduce) {
-        gsap.set([intro, wordNodes], { opacity: 1, y: 0 });
+        gsap.set([intro, headline], { opacity: 1, y: 0 });
         return;
       }
 
       gsap.fromTo(
         intro,
-        { opacity: 0, y: 16 },
+        { opacity: 0, y: 14 },
         { opacity: 1, y: 0, duration: 0.7, stagger: 0.08, ease: gsapEase },
       );
       gsap.fromTo(
-        wordNodes,
+        headline,
         { opacity: 0, y: 22 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.85,
-          stagger: 0.045,
-          ease: gsapEase,
-          delay: 0.08,
-        },
+        { opacity: 1, y: 0, duration: 0.9, delay: 0.12, ease: gsapEase },
       );
     },
     { scope: rootRef },
   );
 
   return (
-    <section
-      ref={rootRef}
-      className="relative min-h-[90svh] overflow-hidden border-b border-border"
-    >
-      <div className="mx-auto grid min-h-[90svh] w-full max-w-[1380px] items-center gap-12 px-5 py-16 md:px-7 md:py-20 lg:grid-cols-12 lg:gap-10 lg:px-12 lg:py-8 xl:px-[72px]">
-        <div className="lg:col-span-6 xl:col-span-6">
-          <div data-hero-intro className="motion-safe:opacity-0">
-            <PageBreadcrumbs
-              currentPath={DIGITAL_MARKETING_PATH}
-              items={[
-                { label: "Services", href: "/services" },
-                { label: "Digital Marketing" },
-              ]}
-            />
-          </div>
-          <p
-            data-hero-intro
-            className="mb-5 text-xs tracking-[0.18em] text-muted-foreground uppercase motion-safe:opacity-0"
-          >
-            Digital Marketing at Comlabs
-          </p>
-          <h1
-            className="max-w-[14ch] text-[clamp(2.35rem,6vw,5.25rem)] leading-[1.02] font-medium tracking-tight text-foreground"
-            style={{ letterSpacing: "-0.04em" }}
-          >
-            {words.map((word, index) => (
-              <span key={`${word}-${index}`} className="inline-block overflow-hidden align-bottom">
-                <span data-hero-word className="inline-block pr-[0.28em] motion-safe:opacity-0">
-                  {word}
-                </span>
-              </span>
-            ))}
-          </h1>
-          <p
-            data-hero-intro
-            className="mt-6 max-w-xl text-[0.9375rem] leading-relaxed text-muted-foreground motion-safe:opacity-0 md:text-base"
-          >
-            We bring positioning, creative, search, performance and analytics into one connected
-            system—so every campaign strengthens the business behind it.
-          </p>
-          <div data-hero-intro className="mt-10 flex flex-col gap-3 motion-safe:opacity-0 sm:flex-row sm:items-center">
-            <Link
-              href={canonicalPath("/contact")}
-              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-medium text-white transition-opacity duration-200 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30 focus-visible:ring-offset-2"
-              style={{ background: DIGITAL_MARKETING_ORANGE }}
-            >
-              Plan a growth sprint
-              <ArrowRight size={15} aria-hidden />
-            </Link>
-            <Link
-              href="#capabilities"
-              className="inline-flex min-h-12 items-center justify-center rounded-full border border-border bg-white/70 px-6 py-3 text-sm font-medium text-foreground backdrop-blur-sm transition-colors duration-200 hover:border-foreground/20 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30 focus-visible:ring-offset-2"
-            >
-              Explore our capabilities
-            </Link>
-          </div>
+    <section ref={rootRef} className="pt-8 md:pt-12">
+      <div className="mx-auto w-full max-w-[1440px] px-5 md:px-6 lg:px-12 xl:px-16">
+        <div data-hero-intro className="motion-safe:opacity-0">
+          <PageBreadcrumbs
+            currentPath={DIGITAL_MARKETING_PATH}
+            tone="dark"
+            items={[
+              { label: "Services", href: "/services" },
+              { label: "Digital Marketing" },
+            ]}
+          />
         </div>
-
-        <div className="lg:col-span-6">
-          <DigitalMarketingHeroVisual />
+        <p
+          data-hero-intro
+          className="mb-6 text-xs tracking-[0.18em] uppercase motion-safe:opacity-0"
+          style={{ color: DM.muted }}
+        >
+          Digital Marketing at Comlabs
+        </p>
+        <h1
+          data-hero-headline
+          className="max-w-[13ch] text-[clamp(3.1rem,6vw,7.5rem)] leading-[0.94] font-medium tracking-tight motion-safe:opacity-0"
+          style={{ color: DM.text, letterSpacing: "-0.045em" }}
+        >
+          Marketing that turns attention into{" "}
+          <em
+            className="italic"
+            style={{ fontFamily: "var(--font-instrument-serif), Georgia, serif", fontWeight: 400 }}
+          >
+            measurable growth
+          </em>
+          .
+        </h1>
+        <p
+          data-hero-intro
+          className="mt-8 max-w-xl text-[0.9375rem] leading-relaxed motion-safe:opacity-0 md:text-base"
+          style={{ color: DM.muted }}
+        >
+          We connect positioning, creative, search, performance and analytics into one growth
+          system—so every campaign strengthens the business behind it.
+        </p>
+        <div
+          data-hero-intro
+          className="mt-10 flex flex-col gap-3 motion-safe:opacity-0 sm:flex-row sm:items-center"
+        >
+          <Link
+            href={canonicalPath("/contact")}
+            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-medium transition-opacity duration-200 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+            style={{
+              background: DM.accent,
+              color: DM.warm,
+              outlineColor: DM.warm,
+            }}
+          >
+            Plan a growth sprint
+            <ArrowRight size={15} aria-hidden />
+          </Link>
+          <Link
+            href="#capabilities"
+            className="inline-flex min-h-11 items-center justify-center rounded-full px-6 py-3 text-sm font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2"
+            style={{
+              color: DM.text,
+              boxShadow: `inset 0 0 0 1px ${DM.hairline}`,
+            }}
+          >
+            Explore our capabilities
+          </Link>
         </div>
       </div>
     </section>

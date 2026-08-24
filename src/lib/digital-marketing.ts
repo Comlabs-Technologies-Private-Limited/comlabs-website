@@ -1,6 +1,13 @@
+import { TESTIMONIALS } from "@/components/home/figma/home-data";
+import {
+  type DmArtefactId,
+  type DmPhotoId,
+  DM,
+} from "@/lib/digital-marketing-media";
+
 export const DIGITAL_MARKETING_PATH = "/digital-marketing" as const;
 
-export const DIGITAL_MARKETING_ORANGE = "#D9603D" as const;
+export const DIGITAL_MARKETING_ORANGE = DM.accent;
 
 export const DIGITAL_MARKETING_CONTACT_EMAIL = "admin@comlabstechnologies.com" as const;
 
@@ -10,12 +17,55 @@ export const DIGITAL_MARKETING_META = {
     "Comlabs combines brand strategy, creative campaigns, performance marketing, SEO, AI-search visibility and analytics to build measurable digital growth.",
 } as const;
 
+export type DigitalMarketingVisual =
+  | { kind: "photo"; id: DmPhotoId; alt?: string }
+  | { kind: "artefact"; id: DmArtefactId }
+  | { kind: "billboard" }
+  | { kind: "work"; src: string; alt: string };
+
+export type MosaicAspect = "square" | "four-three" | "three-two" | "portrait" | "feature";
+
+export type MosaicTile = {
+  visual: DigitalMarketingVisual;
+  aspect: MosaicAspect;
+  priority?: boolean;
+};
+
+export const DIGITAL_MARKETING_MOSAIC: readonly (readonly MosaicTile[])[] = [
+  [
+    { visual: { kind: "artefact", id: "performance-panel" }, aspect: "four-three", priority: true },
+    { visual: { kind: "photo", id: "IMG-01" }, aspect: "portrait" },
+    { visual: { kind: "artefact", id: "social-system" }, aspect: "square" },
+    { visual: { kind: "photo", id: "IMG-04" }, aspect: "three-two" },
+  ],
+  [
+    { visual: { kind: "photo", id: "IMG-03" }, aspect: "square", priority: true },
+    { visual: { kind: "artefact", id: "campaign-poster" }, aspect: "portrait" },
+    { visual: { kind: "photo", id: "IMG-11" }, aspect: "three-two" },
+    { visual: { kind: "artefact", id: "search-cluster" }, aspect: "four-three" },
+  ],
+  [
+    { visual: { kind: "photo", id: "IMG-06" }, aspect: "feature", priority: true },
+    { visual: { kind: "artefact", id: "landing-experiment" }, aspect: "four-three" },
+    { visual: { kind: "photo", id: "IMG-09" }, aspect: "three-two" },
+    { visual: { kind: "artefact", id: "customer-journey" }, aspect: "square" },
+  ],
+  [
+    { visual: { kind: "photo", id: "IMG-10" }, aspect: "portrait", priority: true },
+    { visual: { kind: "artefact", id: "conversion-funnel" }, aspect: "square" },
+    { visual: { kind: "photo", id: "IMG-02" }, aspect: "portrait" },
+    { visual: { kind: "artefact", id: "landing-preview" }, aspect: "four-three" },
+  ],
+] as const;
+
 export type DigitalMarketingCapability = {
   id: string;
   index: string;
   title: string;
+  category: string;
   description: string;
   deliverables: readonly string[];
+  visuals: readonly DigitalMarketingVisual[];
 };
 
 export const DIGITAL_MARKETING_CAPABILITIES: readonly DigitalMarketingCapability[] = [
@@ -23,32 +73,45 @@ export const DIGITAL_MARKETING_CAPABILITIES: readonly DigitalMarketingCapability
     id: "brand-strategy",
     index: "01",
     title: "Brand Strategy & Positioning",
+    category: "Strategy",
     description:
-      "Clarify who you are for, what makes you worth choosing and how that position should show up across every digital touchpoint.",
+      "Clarify who you are for, what makes you worth choosing and how that position should appear across every digital touchpoint.",
     deliverables: [
       "Audience and category research",
       "Brand positioning",
       "Messaging architecture",
       "Campaign direction",
     ],
+    visuals: [
+      { kind: "photo", id: "IMG-04" },
+      { kind: "photo", id: "IMG-05" },
+      { kind: "artefact", id: "positioning-map" },
+    ],
   },
   {
     id: "content-creative",
     index: "02",
     title: "Content & Creative Systems",
+    category: "Creative",
     description:
-      "Build a recognisable content language that can scale across campaigns without becoming repetitive or losing quality.",
+      "Build a recognisable content language that scales across campaigns without becoming repetitive or losing quality.",
     deliverables: [
       "Creative direction",
       "Campaign concepts",
       "Social content systems",
       "Design and production guidance",
     ],
+    visuals: [
+      { kind: "photo", id: "IMG-08" },
+      { kind: "photo", id: "IMG-09" },
+      { kind: "artefact", id: "campaign-poster" },
+    ],
   },
   {
     id: "performance",
     index: "03",
     title: "Performance & Acquisition",
+    category: "Growth",
     description:
       "Plan, launch and improve campaigns around qualified demand, conversion quality and sustainable acquisition—not vanity traffic.",
     deliverables: [
@@ -57,24 +120,36 @@ export const DIGITAL_MARKETING_CAPABILITIES: readonly DigitalMarketingCapability
       "Landing-page alignment",
       "Experimentation and optimisation",
     ],
+    visuals: [
+      { kind: "artefact", id: "performance-panel" },
+      { kind: "artefact", id: "channel-attribution" },
+      { kind: "artefact", id: "landing-experiment" },
+    ],
   },
   {
     id: "search",
     index: "04",
     title: "SEO, AEO & GEO",
+    category: "Search",
     description:
       "Build authority across traditional search and AI-powered discovery through technically sound pages, useful content and clear information architecture.",
     deliverables: [
       "Search opportunity research",
       "Technical SEO",
       "Content architecture",
-      "AI-search and answer-engine readiness",
+      "AI-search readiness",
+    ],
+    visuals: [
+      { kind: "artefact", id: "search-cluster" },
+      { kind: "artefact", id: "ai-visibility" },
+      { kind: "artefact", id: "content-architecture" },
     ],
   },
   {
     id: "social",
     index: "05",
     title: "Social Media & Community",
+    category: "Distribution",
     description:
       "Turn social channels into a consistent source of relevance, trust and demand through clear editorial thinking and platform-aware execution.",
     deliverables: [
@@ -83,18 +158,29 @@ export const DIGITAL_MARKETING_CAPABILITIES: readonly DigitalMarketingCapability
       "Founder and brand content",
       "Distribution experiments",
     ],
+    visuals: [
+      { kind: "photo", id: "IMG-11" },
+      { kind: "photo", id: "IMG-10" },
+      { kind: "artefact", id: "social-system" },
+    ],
   },
   {
     id: "analytics",
     index: "06",
     title: "Analytics & Conversion",
+    category: "Optimisation",
     description:
       "Connect marketing activity to user behaviour and business outcomes, then use those signals to improve the complete customer journey.",
     deliverables: [
       "Measurement planning",
       "Funnel analysis",
       "Conversion optimisation",
-      "Reporting and actionable insights",
+      "Reporting and insights",
+    ],
+    visuals: [
+      { kind: "artefact", id: "customer-journey" },
+      { kind: "artefact", id: "conversion-funnel" },
+      { kind: "artefact", id: "landing-experiment" },
     ],
   },
 ] as const;
@@ -109,7 +195,7 @@ export const DIGITAL_MARKETING_STAGES: readonly DigitalMarketingStage[] = [
   {
     index: "01",
     title: "Diagnose",
-    description: "Understand the market, customer, current performance and constraints.",
+    description: "Understand the market, customer, existing performance and constraints.",
   },
   {
     index: "02",
@@ -188,17 +274,20 @@ export const DIGITAL_MARKETING_ENGAGEMENTS: readonly DigitalMarketingEngagement[
   {
     index: "01",
     title: "Growth Sprint",
-    description: "Focused diagnosis, positioning and an execution plan for the next move.",
+    description:
+      "A focused diagnosis covering positioning, opportunity, measurement and the clearest execution priorities.",
   },
   {
     index: "02",
     title: "Campaign Partnership",
-    description: "Strategy, creative, launch and optimisation around a defined growth problem.",
+    description:
+      "Strategy, creative, launch and optimisation for a defined campaign or growth objective.",
   },
   {
     index: "03",
     title: "Ongoing Growth System",
-    description: "Continuous content, search, performance and conversion work as one operating rhythm.",
+    description:
+      "Continuous content, search, performance and conversion work operating as one connected system.",
   },
 ] as const;
 
@@ -211,7 +300,7 @@ export const DIGITAL_MARKETING_FAQS: readonly DigitalMarketingFaq[] = [
   {
     question: "What does Comlabs’ digital marketing service include?",
     answer:
-      "Brand strategy and positioning, content and creative systems, performance and acquisition, SEO / AEO / GEO, social and community, and analytics connected to conversion. The work is planned as one system, not as isolated channel tasks.",
+      "Brand strategy and positioning, content and creative systems, performance and acquisition, SEO, AEO and GEO, social and community, and analytics connected to conversion. The work is planned as one system, not as isolated channel tasks.",
   },
   {
     question: "Can Comlabs manage both strategy and execution?",
@@ -252,5 +341,173 @@ export const DIGITAL_MARKETING_RELATED_LINKS = [
   {
     label: "Selected work",
     href: "/work",
+  },
+] as const;
+
+export const DIGITAL_MARKETING_PROOF = TESTIMONIALS.slice(0, 2);
+
+export type MarketingLabLabel =
+  | "Campaign / Concept"
+  | "SEO / Research"
+  | "AEO / System"
+  | "Social / Direction"
+  | "CRO / Experiment"
+  | "Brand / Positioning"
+  | "Content / Framework"
+  | "Analytics / Study"
+  | "Landing Page / Build"
+  | "Comlabs / Internal";
+
+export type MarketingLabItem = {
+  id: string;
+  label: MarketingLabLabel;
+  visual: DigitalMarketingVisual;
+  span: string;
+};
+
+export const DIGITAL_MARKETING_LAB: readonly MarketingLabItem[] = [
+  {
+    id: "lab-01",
+    label: "Campaign / Concept",
+    visual: { kind: "billboard" },
+    span: "col-span-6 row-span-2 md:col-span-4 lg:col-span-4",
+  },
+  {
+    id: "lab-02",
+    label: "Brand / Positioning",
+    visual: { kind: "artefact", id: "positioning-map" },
+    span: "col-span-6 md:col-span-4 lg:col-span-2",
+  },
+  {
+    id: "lab-03",
+    label: "SEO / Research",
+    visual: { kind: "artefact", id: "search-cluster" },
+    span: "col-span-6 md:col-span-4 lg:col-span-2",
+  },
+  {
+    id: "lab-04",
+    label: "Comlabs / Internal",
+    visual: { kind: "photo", id: "IMG-01" },
+    span: "col-span-6 md:col-span-3 lg:col-span-2",
+  },
+  {
+    id: "lab-05",
+    label: "AEO / System",
+    visual: { kind: "artefact", id: "ai-visibility" },
+    span: "col-span-6 md:col-span-5 lg:col-span-3",
+  },
+  {
+    id: "lab-06",
+    label: "Social / Direction",
+    visual: { kind: "photo", id: "IMG-11" },
+    span: "col-span-6 md:col-span-4 lg:col-span-3",
+  },
+  {
+    id: "lab-07",
+    label: "Content / Framework",
+    visual: { kind: "artefact", id: "content-calendar" },
+    span: "col-span-6 md:col-span-4 lg:col-span-4",
+  },
+  {
+    id: "lab-08",
+    label: "Landing Page / Build",
+    visual: {
+      kind: "work",
+      src: "/work/global-services/global-services-case-study-hero.webp",
+      alt: "Global Services marketing website",
+    },
+    span: "col-span-6 row-span-2 md:col-span-6 lg:col-span-4",
+  },
+  {
+    id: "lab-09",
+    label: "CRO / Experiment",
+    visual: { kind: "artefact", id: "landing-experiment" },
+    span: "col-span-6 md:col-span-4 lg:col-span-2",
+  },
+  {
+    id: "lab-10",
+    label: "Analytics / Study",
+    visual: { kind: "artefact", id: "conversion-funnel" },
+    span: "col-span-6 md:col-span-4 lg:col-span-2",
+  },
+  {
+    id: "lab-11",
+    label: "Campaign / Concept",
+    visual: { kind: "photo", id: "IMG-06" },
+    span: "col-span-6 md:col-span-4 lg:col-span-3",
+  },
+  {
+    id: "lab-12",
+    label: "Brand / Positioning",
+    visual: { kind: "photo", id: "IMG-13" },
+    span: "col-span-6 row-span-2 md:col-span-3 lg:col-span-2",
+  },
+  {
+    id: "lab-13",
+    label: "Content / Framework",
+    visual: { kind: "photo", id: "IMG-09" },
+    span: "col-span-6 md:col-span-5 lg:col-span-3",
+  },
+  {
+    id: "lab-14",
+    label: "Social / Direction",
+    visual: { kind: "artefact", id: "social-system" },
+    span: "col-span-6 md:col-span-4 lg:col-span-4",
+  },
+  {
+    id: "lab-15",
+    label: "Comlabs / Internal",
+    visual: {
+      kind: "work",
+      src: "/work/radiant/radiant-case-study-hero.webp",
+      alt: "Radiant studio website",
+    },
+    span: "col-span-6 md:col-span-4 lg:col-span-3",
+  },
+  {
+    id: "lab-16",
+    label: "SEO / Research",
+    visual: { kind: "artefact", id: "content-architecture" },
+    span: "col-span-6 md:col-span-4 lg:col-span-3",
+  },
+  {
+    id: "lab-17",
+    label: "CRO / Experiment",
+    visual: { kind: "photo", id: "IMG-08" },
+    span: "col-span-6 md:col-span-4 lg:col-span-2",
+  },
+  {
+    id: "lab-18",
+    label: "Analytics / Study",
+    visual: { kind: "artefact", id: "channel-attribution" },
+    span: "col-span-6 md:col-span-4 lg:col-span-4",
+  },
+  {
+    id: "lab-19",
+    label: "Campaign / Concept",
+    visual: { kind: "photo", id: "IMG-02" },
+    span: "col-span-6 md:col-span-4 lg:col-span-3",
+  },
+  {
+    id: "lab-20",
+    label: "AEO / System",
+    visual: { kind: "photo", id: "IMG-03" },
+    span: "col-span-6 md:col-span-4 lg:col-span-3",
+  },
+  {
+    id: "lab-21",
+    label: "Social / Direction",
+    visual: { kind: "photo", id: "IMG-10" },
+    span: "col-span-6 md:col-span-4 lg:col-span-2",
+  },
+  {
+    id: "lab-22",
+    label: "Landing Page / Build",
+    visual: {
+      kind: "work",
+      src: "/work/vithub/vithub-case-study-hero.webp",
+      alt: "Vithub marketing website",
+    },
+    span: "col-span-6 md:col-span-4 lg:col-span-4",
   },
 ] as const;
