@@ -92,6 +92,7 @@ export const indexableStaticPaths = [
   "/",
   "/services",
   ...canonicalServicePaths,
+  "/digital-marketing",
   "/about",
   "/work",
   "/contact",

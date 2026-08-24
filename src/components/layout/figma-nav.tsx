@@ -16,6 +16,11 @@ const SIMPLE_LINKS = [
 
 const SERVICE_ITEMS = [
   {
+    title: "Digital Marketing",
+    description: "Strategy, creative, search and performance.",
+    href: "/digital-marketing",
+  },
+  {
     title: "Website Design & Development",
     description: "Fast, conversion-focused websites.",
     href: "/services/website-design-development",

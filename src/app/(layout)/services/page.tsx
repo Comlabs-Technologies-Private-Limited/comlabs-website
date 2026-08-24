@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 import { FigmaFooter } from "@/components/layout/figma-footer";
 import { FigmaNav } from "@/components/layout/figma-nav";
@@ -12,6 +13,7 @@ import { ServicesGrid } from "@/components/services/service-card";
 import { PageBreadcrumbs } from "@/components/seo/page-breadcrumbs";
 import { buildPageMetadata } from "@/lib/metadata";
 import { servicePages, servicesIndex } from "@/lib/services-data";
+import { canonicalPath } from "@/lib/site";
 
 export const metadata: Metadata = buildPageMetadata({
   title: servicesIndex.metaTitle,
@@ -53,6 +55,20 @@ export default function ServicesIndexPage() {
                 </>
               }
             />
+            <Link
+              href={canonicalPath("/digital-marketing")}
+              className="mb-10 flex flex-col justify-between gap-4 rounded-[16px] border border-border bg-background p-6 transition-colors hover:border-foreground/20 md:mb-12 md:flex-row md:items-end md:p-8"
+            >
+              <div>
+                <p className="text-[11px] tracking-[0.16em] text-muted-foreground uppercase">
+                  Digital Marketing
+                </p>
+                <p className="mt-3 max-w-xl text-xl font-medium tracking-tight md:text-2xl" style={{ letterSpacing: "-0.03em" }}>
+                  Strategy, creative and performance as one system.
+                </p>
+              </div>
+              <span className="text-sm text-[var(--warm-orange)]">View the growth practice →</span>
+            </Link>
             <ServicesGrid services={servicePages} />
           </div>
         </section>

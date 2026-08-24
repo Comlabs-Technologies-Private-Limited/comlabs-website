@@ -9,7 +9,7 @@ export const revalidate = 60;
 
 function priorityForPath(path: string): number {
   if (path === "/") return 1;
-  if (path === "/services") return 0.9;
+  if (path === "/services" || path === "/digital-marketing") return 0.9;
   if (path.startsWith("/services/")) return 0.85;
   if (path === "/work") return 0.85;
   if (path.startsWith("/work/")) return 0.8;
@@ -20,7 +20,7 @@ function changeFrequencyForPath(
   path: string,
 ): MetadataRoute.Sitemap[0]["changeFrequency"] {
   if (path === "/") return "weekly";
-  if (path.startsWith("/services")) return "monthly";
+  if (path.startsWith("/services") || path === "/digital-marketing") return "monthly";
   if (path.startsWith("/work")) return "monthly";
   return "monthly";
 }
