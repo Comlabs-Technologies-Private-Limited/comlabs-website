@@ -95,73 +95,13 @@ export const homeServiceBackgrounds: Record<CanonicalServiceSlug, string> = {
   "cloud-infrastructure-scaling": "/services-bg/service-bg-5.png",
 };
 
-/** Foreground editorial photos for homepage service rows — hosted on Cloudinary. */
-export const homeServiceMockupImages: Record<CanonicalServiceSlug, string> = {
-  "website-design-development":
-    "https://res.cloudinary.com/p8osc4y4/image/upload/v1786362044/ChatGPT_Image_Aug_10_2026_05_09_44_PM_1_gqznci.png",
-  "custom-software-development":
-    "https://res.cloudinary.com/p8osc4y4/image/upload/v1786363963/ChatGPT_Image_Aug_10_2026_05_42_31_PM_g4qshm.png",
-  "mobile-app-development":
-    "https://res.cloudinary.com/p8osc4y4/image/upload/v1786362044/ChatGPT_Image_Aug_10_2026_05_09_44_PM_3_uo0nwu.png",
-  "seo-aeo-copywriting":
-    "https://res.cloudinary.com/p8osc4y4/image/upload/v1786362045/ChatGPT_Image_Aug_10_2026_05_09_44_PM_4_k8jhhj.png",
-  "cloud-infrastructure-scaling":
-    "https://res.cloudinary.com/p8osc4y4/image/upload/v1786362045/ChatGPT_Image_Aug_10_2026_05_09_44_PM_5_lbsvbf.png",
-};
-
-/** Homepage card visuals keyed by slug — layout/motion only, not service copy. */
-export const homeServiceCardVisuals: Record<
-  CanonicalServiceSlug,
-  {
-    id: string;
-    mockupImage?: string;
-    mockupAlt?: string;
-    mockupOverlayClassName?: string;
-    mockupWrapperClassName?: string;
-    mockupClassName?: string;
-  }
-> = {
-  "website-design-development": {
-    id: "website-design",
-    mockupImage: homeServiceMockupImages["website-design-development"],
-    mockupAlt: "Website design and development preview",
-    mockupOverlayClassName: "",
-    mockupWrapperClassName: "mt-12 md:mt-22",
-    mockupClassName: "scale-107 pl-1",
-  },
-  "custom-software-development": {
-    id: "custom-software",
-    mockupImage: homeServiceMockupImages["custom-software-development"],
-    mockupAlt: "Custom software development preview",
-    mockupOverlayClassName: "mt-5 md:mt-6 scale-112",
-    mockupWrapperClassName: "",
-    mockupClassName: "",
-  },
-  "mobile-app-development": {
-    id: "mobile-app",
-    mockupImage: homeServiceMockupImages["mobile-app-development"],
-    mockupAlt: "Mobile app development preview",
-    mockupOverlayClassName: "inset-2.5 top-8 bottom-2.5 items-stretch md:inset-3 md:top-10",
-    mockupWrapperClassName: "flex h-full w-full max-w-[94%] flex-col",
-    mockupClassName: "",
-  },
-  "seo-aeo-copywriting": {
-    id: "seo-aeo",
-    mockupImage: homeServiceMockupImages["seo-aeo-copywriting"],
-    mockupAlt: "SEO and copywriting preview",
-    mockupOverlayClassName: "md:top-16 top-8 items-",
-    mockupWrapperClassName: "top-16",
-    mockupClassName: "",
-  },
-  "cloud-infrastructure-scaling": {
-    id: "cloud-infrastructure",
-    mockupImage: homeServiceMockupImages["cloud-infrastructure-scaling"],
-    mockupAlt: "Cloud infrastructure and scaling preview",
-    mockupOverlayClassName:
-      "inset-x-3 top-8 bottom-0 flex items-end justify-center md:inset-x-5 md:top-10",
-    mockupWrapperClassName: "flex w-full max-w-[92%] flex-col",
-    mockupClassName: "",
-  },
+/** Homepage illustration ids keyed by slug. */
+export const homeServiceCardVisuals: Record<CanonicalServiceSlug, { id: string }> = {
+  "website-design-development": { id: "website-design" },
+  "custom-software-development": { id: "custom-software" },
+  "mobile-app-development": { id: "mobile-app" },
+  "seo-aeo-copywriting": { id: "seo-aeo" },
+  "cloud-infrastructure-scaling": { id: "cloud-infrastructure" },
 };
 
 export function buildHomeServiceCards() {

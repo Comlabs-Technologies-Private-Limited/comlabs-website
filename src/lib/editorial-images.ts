@@ -11,12 +11,6 @@ const cloudinaryBase =
   "https://res.cloudinary.com/p8osc4y4/image/upload/v1786355515";
 
 export const editorialImages = {
-  generalLandscape: {
-    src: "/editorial/general-landscape.jpg",
-    alt: "Wide landscape with warm-toned hills and open sky",
-    width: 1800,
-    height: 1200,
-  },
   websiteDesign: {
     src: `${cloudinaryBase}/ChatGPT_Image_Aug_10_2026_03_09_22_PM_5_mv4tv3.png`,
     alt: "Snow-capped mountain peak above a hazy desert valley in soft morning light",

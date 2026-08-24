@@ -21,21 +21,6 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "formial.in",
-        pathname: "/cdn/shop/files/**",
-      },
-      {
-        protocol: "https",
-        hostname: "vithub.in",
-        pathname: "/cdn/shop/files/**",
-      },
-      {
-        protocol: "https",
-        hostname: "media.licdn.com",
-        pathname: "/dms/image/**",
-      },
-      {
-        protocol: "https",
         hostname: "*.public.blob.vercel-storage.com",
         pathname: "/**",
       },
