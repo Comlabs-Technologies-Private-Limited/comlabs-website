@@ -2,6 +2,19 @@ import type { Metadata } from "next";
 
 import { canonicalUrl, siteName, siteOgImage, siteUrl } from "@/lib/site";
 
+/** Public marketing pages: ask Google to index the page and follow its links. */
+export const indexFollowRobots = {
+  index: true,
+  follow: true,
+  googleBot: {
+    index: true,
+    follow: true,
+    "max-image-preview": "large" as const,
+    "max-snippet": -1,
+    "max-video-preview": -1,
+  },
+};
+
 type PageMetadataInput = {
   title: string;
   description: string;
@@ -29,6 +42,7 @@ export function buildPageMetadata({
   return {
     title: absoluteTitle ? { absolute: title } : title,
     description,
+    robots: indexFollowRobots,
     alternates: {
       canonical,
     },

@@ -276,9 +276,13 @@ export function PostForm({ post }: PostFormProps) {
             <input
               value={form.canonicalUrl}
               onChange={(event) => updateField("canonicalUrl", event.target.value)}
-              placeholder="Canonical URL"
+              placeholder="Canonical URL (same-site only)"
               className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none"
             />
+            <p className="text-xs leading-relaxed text-muted-foreground">
+              Leave blank to use this post&apos;s URL. Never paste an external article here —
+              Google will index that site instead of this post.
+            </p>
           </div>
         </aside>
       </div>

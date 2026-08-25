@@ -23,6 +23,11 @@ export const organizationId = `${siteUrl}/#organization` as const;
 export const websiteId = `${siteUrl}/#website` as const;
 export const logoUrl = absoluteMediaUrl("/logo.svg", siteUrl);
 
+export function isSiteHostname(hostname: string): boolean {
+  const host = hostname.replace(/\.$/, "").toLowerCase();
+  return host === "comlabstechnologies.com" || host === "www.comlabstechnologies.com";
+}
+
 /**
  * Absolute canonical URL for an indexable page path or same-origin absolute URL.
  * Homepage → `https://www.comlabstechnologies.com/`
@@ -33,8 +38,10 @@ export function canonicalUrl(pathOrUrl: string): string {
 
   if (/^https?:\/\//i.test(pathOrUrl)) {
     const parsed = new URL(pathOrUrl);
-    if (parsed.origin !== siteUrl) return pathOrUrl;
-    return canonicalUrl(`${parsed.pathname}${parsed.search}`);
+    if (isSiteHostname(parsed.hostname)) {
+      return canonicalUrl(`${parsed.pathname}${parsed.search}`);
+    }
+    return pathOrUrl;
   }
 
   const hashIndex = pathOrUrl.indexOf("#");

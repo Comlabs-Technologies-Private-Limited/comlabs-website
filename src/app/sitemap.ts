@@ -3,6 +3,7 @@ import type { MetadataRoute } from "next";
 import { listCaseStudies } from "@/lib/admin/case-studies";
 import { listPosts } from "@/lib/admin/posts";
 import { CASE_STUDY_ORDER } from "@/lib/case-studies";
+import { listStaticPosts } from "@/lib/posts";
 import { canonicalUrl, indexableStaticPaths, isBlogEnabled } from "@/lib/site";
 
 export const revalidate = 60;
@@ -64,7 +65,12 @@ async function getBlogPostEntries(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     }));
   } catch {
-    return [];
+    return listStaticPosts({ status: "published" }).map((post) => ({
+      url: canonicalUrl(`/blog/${post.slug}`),
+      lastModified: post.updatedAt ? new Date(post.updatedAt) : undefined,
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+    }));
   }
 }
 
