@@ -1,4 +1,5 @@
 import type { Post as PrismaPost } from "@prisma/client";
+import { sanitizeBlogHtml } from "@/lib/mcp/sanitize";
 import { calcReadingTime, slugify } from "@/lib/post-utils";
 import {
   getStaticPostBySlug,
@@ -7,6 +8,7 @@ import {
 } from "@/lib/posts";
 import { getPrisma, isDatabaseConfigured } from "@/lib/prisma";
 import { buildPostSeo } from "@/lib/seo/auto-metadata";
+import { sanitizeCanonicalInput } from "@/lib/seo/indexable-canonical";
 import { revalidateContentPaths } from "@/lib/seo/revalidate-content";
 import type { Post, PostStatus, PostSummary } from "@/types/post";
 
@@ -154,7 +156,7 @@ export async function createPost(input: PostInput): Promise<Post> {
   const prisma = getPrisma();
   const slug = input.slug?.trim() || slugify(input.title ?? "");
   const status = input.status ?? "draft";
-  const content = input.content ?? "";
+  const content = input.content ? sanitizeBlogHtml(input.content) : "";
   const seo = buildPostSeo({
     title: input.title?.trim() ?? "",
     content,
@@ -177,7 +179,7 @@ export async function createPost(input: PostInput): Promise<Post> {
       metaTitle: seo.metaTitle,
       metaDescription: seo.metaDescription,
       ogImage: input.ogImage ?? "",
-      canonicalUrl: input.canonicalUrl ?? "",
+      canonicalUrl: sanitizeCanonicalInput(input.canonicalUrl),
       publishedAt: resolvePublishedAt(status, null),
     },
   });
@@ -192,7 +194,8 @@ export async function updatePost(id: string, input: PostInput): Promise<Post | n
   if (!existing) return null;
 
   const status = input.status ?? (existing.status as PostStatus);
-  const content = input.content ?? existing.content;
+  const content =
+    input.content !== undefined ? sanitizeBlogHtml(input.content) : existing.content;
   const title = input.title !== undefined ? input.title.trim() : existing.title;
   const slug = input.slug !== undefined ? input.slug.trim() : existing.slug;
   const seo = buildPostSeo({
@@ -209,7 +212,7 @@ export async function updatePost(id: string, input: PostInput): Promise<Post | n
       ...(input.title !== undefined ? { title } : {}),
       ...(input.slug !== undefined ? { slug } : {}),
       excerpt: seo.excerpt,
-      ...(input.content !== undefined ? { content: input.content } : {}),
+      ...(input.content !== undefined ? { content } : {}),
       ...(input.coverImage !== undefined ? { coverImage: input.coverImage } : {}),
       ...(input.tags !== undefined ? { tags: input.tags } : {}),
       ...(input.status !== undefined ? { status: input.status } : {}),
@@ -217,7 +220,9 @@ export async function updatePost(id: string, input: PostInput): Promise<Post | n
       metaTitle: seo.metaTitle,
       metaDescription: seo.metaDescription,
       ...(input.ogImage !== undefined ? { ogImage: input.ogImage } : {}),
-      ...(input.canonicalUrl !== undefined ? { canonicalUrl: input.canonicalUrl } : {}),
+      ...(input.canonicalUrl !== undefined
+        ? { canonicalUrl: sanitizeCanonicalInput(input.canonicalUrl) }
+        : {}),
       readingTime: calcReadingTime(content),
       publishedAt: resolvePublishedAt(status, existing.publishedAt),
     },

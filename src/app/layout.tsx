@@ -5,6 +5,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 
 import { GoogleTag } from "@/components/analytics/google-tag";
 import { RootShell } from "@/components/root-shell";
+import { indexFollowRobots } from "@/lib/metadata";
 import {
   siteAppleIconPath,
   siteDefaultDescription,
@@ -66,10 +67,7 @@ export const metadata: Metadata = {
     description: siteDefaultDescription,
     images: [siteOgImage.url],
   },
-  robots: {
-    index: true,
-    follow: true,
-  },
+  robots: indexFollowRobots,
 };
 
 export default function RootLayout({

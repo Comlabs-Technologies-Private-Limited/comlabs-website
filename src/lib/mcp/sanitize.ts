@@ -1,4 +1,10 @@
-/** Strip script tags from HTML blog content before persistence. */
+import { prepareIndexableHtml } from "@/lib/seo/prepare-html-links";
+
+/** Strip script tags and normalize outbound links before persistence. */
 export function sanitizeBlogHtml(html: string): string {
-  return html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "");
+  const withoutScripts = html.replace(
+    /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
+    "",
+  );
+  return prepareIndexableHtml(withoutScripts);
 }

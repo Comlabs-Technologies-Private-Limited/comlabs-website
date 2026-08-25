@@ -13,6 +13,7 @@ import { PageBreadcrumbs } from "@/components/seo/page-breadcrumbs";
 import { getPublishedPostBySlug, getPublishedPostSlugs } from "@/lib/admin/posts";
 import { buildPageMetadata } from "@/lib/metadata";
 import { HERO_BACKGROUND_PATH, layeredBackgroundImage, absoluteMediaUrl } from "@/lib/cloudinary";
+import { indexableCanonicalUrl } from "@/lib/seo/indexable-canonical";
 import { canonicalPath, canonicalUrl, isBlogEnabled, siteUrl } from "@/lib/site";
 import type { Post as PostType } from "@/types/post";
 
@@ -48,9 +49,7 @@ export async function generateMetadata({
   const post = await getPost(slug);
   if (!post) return {};
 
-  const canonical = post.canonicalUrl
-    ? canonicalUrl(post.canonicalUrl)
-    : canonicalUrl(`/blog/${post.slug}`);
+  const canonical = indexableCanonicalUrl(post.canonicalUrl, `/blog/${post.slug}`);
   const ogImage = absoluteMediaUrl(
     post.ogImage || post.coverImage || "/opengraph.png",
     siteUrl,
