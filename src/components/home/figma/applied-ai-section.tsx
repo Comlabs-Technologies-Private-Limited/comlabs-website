@@ -9,8 +9,9 @@ import { EDITORIAL_HERO_OVERLAY } from "@/lib/editorial-hero-styles";
 import { mediaUrl } from "@/lib/cloudinary";
 
 const APPLIED_AI_CAPABILITIES = [
-  "AI Search",
+  "AI Agents",
   "Internal Copilots",
+  "Intelligent Search",
   "Workflow Automation",
   "Model Integrations",
 ] as const;
@@ -45,16 +46,15 @@ export function FigmaAppliedAiSection() {
             className="mb-6 text-2xl leading-tight font-bold tracking-tight md:text-5xl"
             style={{ color: "var(--background)", letterSpacing: "-0.03em" }}
           >
-            AI, applied where it actually{" "}
-            <span style={{ color: "var(--warm-orange)" }}>changes</span> the product.
+            AI should do more than{" "}
+            <span style={{ color: "var(--warm-orange)" }}>generate</span> an answer.
           </h2>
           <p
             className="mb-7 text-sm leading-relaxed md:text-base"
             style={{ color: "rgba(247,247,244,0.62)" }}
           >
-            From intelligent search and internal copilots to workflow automation and model-powered
-            product features, we build AI around real business workflows — not demos for the sake of
-            it.
+            We build AI around actual business systems, giving models the context, tools and
+            controls required to complete useful work safely.
           </p>
           <ul className="space-y-3 text-sm" style={{ color: "rgba(247,247,244,0.72)" }}>
             {APPLIED_AI_CAPABILITIES.map((item) => (

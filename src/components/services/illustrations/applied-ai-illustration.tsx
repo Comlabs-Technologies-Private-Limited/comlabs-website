@@ -206,6 +206,31 @@ export function AppliedAiIllustration() {
           </span>
         </div>
 
+        <div
+          className="flex shrink-0 flex-wrap items-center gap-x-1 gap-y-1 border-b px-2.5 py-1.5 lg:px-3"
+          style={{ borderColor: illustrationColors.border }}
+        >
+          {(["Request", "Context", "Agent", "Tools", "Approval", "Action"] as const).map(
+            (label, index) => {
+              const reached = step >= index;
+              return (
+                <span
+                  key={label}
+                  className="text-[6px] leading-none lg:text-[7.5px]"
+                  style={{
+                    color: reached ? illustrationColors.ink : illustrationColors.inkFaint,
+                  }}
+                >
+                  {label}
+                  {index < 5 ? (
+                    <span style={{ color: illustrationColors.inkFaint }}> → </span>
+                  ) : null}
+                </span>
+              );
+            },
+          )}
+        </div>
+
         <div className="flex min-h-0 flex-1">
           <div
             className="flex w-[30%] shrink-0 flex-col border-r lg:w-[22%]"

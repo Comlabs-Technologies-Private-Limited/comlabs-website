@@ -20,7 +20,7 @@ export function FigmaWorkSection() {
               className="text-2xl font-bold tracking-tight md:text-4xl"
               style={{ letterSpacing: "-0.03em" }}
             >
-              Recent <span style={{ color: "var(--warm-orange)" }}>projects</span>.
+              Work we&apos;ve <span style={{ color: "var(--warm-orange)" }}>shipped</span>.
             </h2>
           </div>
           <a

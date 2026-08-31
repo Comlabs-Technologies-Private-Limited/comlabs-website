@@ -9,7 +9,7 @@ import {
   Ec2Mark,
   RdsMark,
 } from "./brand-marks";
-import { CheckGlyph, MicroLabel, Panel } from "./illustration-primitives";
+import { MicroLabel, Panel } from "./illustration-primitives";
 import {
   IllustrationStage,
   useIllustrationState,
@@ -144,7 +144,6 @@ export function CloudScalingIllustration() {
   const confirmed = step >= 5;
 
   const activeInstanceRoutes = redistributed ? 3 : scaledOut ? 2 : trafficHigh ? 2 : 1;
-  const instanceCount = scaledOut ? 3 : 2;
 
   return (
     <IllustrationStage>
@@ -334,47 +333,38 @@ export function CloudScalingIllustration() {
 
           {/* Operations footer */}
           <div
-            className="mt-auto flex shrink-0 items-center justify-between gap-2 px-2 py-[5px] lg:py-[6px]"
+            className="mt-auto grid shrink-0 grid-cols-3 gap-1 px-1.5 py-1.5 lg:px-2"
             style={{
               borderRadius: illustrationRadius.control,
               background: illustrationColors.surfaceMuted,
               border: `1px solid ${illustrationColors.border}`,
             }}
           >
-            <div className="flex min-w-0 items-center gap-1.5">
-              {confirmed ? (
-                <CheckGlyph size={8} />
-              ) : (
+            {(
+              [
+                { label: "Production", value: confirmed ? "healthy" : "watch" },
+                { label: "API", value: confirmed ? "healthy" : "watch" },
+                { label: "Database", value: dataFlowing ? "healthy" : "sync" },
+                { label: "Last deploy", value: confirmed ? "ok" : "in flight" },
+                { label: "Backups", value: confirmed ? "successful" : "queued" },
+                { label: "p95 latency", value: "128 ms" },
+              ] as const
+            ).map((item) => (
+              <div key={item.label} className="min-w-0">
                 <span
-                  className="block h-[4px] w-[4px] shrink-0 rounded-full"
-                  style={{ background: illustrationColors.accent }}
-                />
-              )}
-              <span
-                className="truncate text-[7px] leading-none font-medium lg:text-[9px]"
-                style={{ color: illustrationColors.ink }}
-              >
-                {confirmed
-                  ? "Target group healthy"
-                  : scaledOut
-                    ? `Scaling · ${instanceCount} instances`
-                    : "Monitoring traffic"}
-              </span>
-            </div>
-            <div className="flex shrink-0 items-center gap-2">
-              <span
-                className="text-[6px] leading-none lg:text-[7.5px]"
-                style={{ color: illustrationColors.inkFaint }}
-              >
-                p95
-              </span>
-              <span
-                className="text-[7px] leading-none font-medium tabular-nums lg:text-[9px]"
-                style={{ color: illustrationColors.inkMuted }}
-              >
-                128 ms
-              </span>
-            </div>
+                  className="block truncate text-[5.5px] leading-none lg:text-[6.5px]"
+                  style={{ color: illustrationColors.inkFaint }}
+                >
+                  {item.label}
+                </span>
+                <span
+                  className="mt-[2px] block truncate text-[6.5px] leading-none font-medium lg:text-[8px]"
+                  style={{ color: illustrationColors.ink }}
+                >
+                  {item.value}
+                </span>
+              </div>
+            ))}
           </div>
         </div>
       </Panel>

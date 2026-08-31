@@ -1,6 +1,6 @@
 /**
  * Single source of truth for Comlabs service taxonomy.
- * Consumed by homepage cards, service pages, footer, and marketing components.
+ * Consumed by service pages, sitemap, and marketing components.
  */
 
 export type CanonicalServiceSlug =
@@ -79,38 +79,3 @@ export const canonicalServicePaths = canonicalServices.map((service) => service.
 export function getCanonicalService(slug: string): CanonicalService | undefined {
   return canonicalServices.find((service) => service.slug === slug);
 }
-
-/** Footer and nav service links — same labels everywhere. */
-export const footerServiceLinks = canonicalServices.map((service) => ({
-  label: service.title,
-  href: service.path,
-}));
-
-/** Homepage service section tile backgrounds — local painterly bases. */
-export const homeServiceBackgrounds: Record<CanonicalServiceSlug, string> = {
-  "website-design-development": "/services-bg/service-bg-1.png",
-  "custom-software-development": "/services-bg/service-bg-2.png",
-  "mobile-app-development": "/services-bg/service-bg-3.png",
-  "seo-aeo-copywriting": "/services-bg/service-bg-4.png",
-  "cloud-infrastructure-scaling": "/services-bg/service-bg-5.png",
-};
-
-/** Homepage illustration ids keyed by slug. */
-export const homeServiceCardVisuals: Record<CanonicalServiceSlug, { id: string }> = {
-  "website-design-development": { id: "website-design" },
-  "custom-software-development": { id: "custom-software" },
-  "mobile-app-development": { id: "mobile-app" },
-  "seo-aeo-copywriting": { id: "seo-aeo" },
-  "cloud-infrastructure-scaling": { id: "cloud-infrastructure" },
-};
-
-export function buildHomeServiceCards() {
-  return canonicalServices.map((service) => ({
-    ...service,
-    ...homeServiceCardVisuals[service.slug],
-    background: homeServiceBackgrounds[service.slug],
-    linkHref: service.path,
-  }));
-}
-
-export type HomeServiceCard = ReturnType<typeof buildHomeServiceCards>[number];

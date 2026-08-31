@@ -31,37 +31,36 @@ type Token = { text: string; tone: "keyword" | "plain" | "string" | "faint" };
 const CODE_LINES: Token[][] = [
   [
     { text: "export", tone: "keyword" },
-    { text: " function ", tone: "plain" },
-    { text: "ServiceCard", tone: "keyword" },
-    { text: "({", tone: "faint" },
+    { text: " async function ", tone: "plain" },
+    { text: "escalateIncident", tone: "keyword" },
+    { text: "(", tone: "faint" },
   ],
-  [{ text: "  title, href,", tone: "plain" }],
+  [{ text: "  incident,", tone: "plain" }],
   [
-    { text: "}: ", tone: "faint" },
-    { text: "ServiceCardProps", tone: "plain" },
-    { text: ") {", tone: "faint" },
+    { text: "): ", tone: "faint" },
+    { text: "Promise<Runbook>", tone: "plain" },
+    { text: " {", tone: "faint" },
   ],
   [
     { text: "  return ", tone: "keyword" },
-    { text: "<Card ", tone: "plain" },
-    { text: "href", tone: "plain" },
-    { text: "={href} />", tone: "string" },
+    { text: "routeToL3", tone: "plain" },
+    { text: "(incident)", tone: "string" },
   ],
   [{ text: "}", tone: "faint" }],
 ];
 
 const FILE_TREE = [
-  { name: "app/", depth: 0, active: false },
-  { name: "service-card.tsx", depth: 1, active: true },
-  { name: "components/", depth: 0, active: false },
-  { name: "lib/", depth: 0, active: false },
+  { name: "ops/", depth: 0, active: false },
+  { name: "escalate-incident.ts", depth: 1, active: true },
+  { name: "runbooks/", depth: 0, active: false },
+  { name: "infra/", depth: 0, active: false },
 ] as const;
 
 /** Quality gates resolve one per step — never a chart, just pass states. */
 const GATES = [
-  { label: "Type-safe", detail: "0 errors", step: 2 },
-  { label: "Performance", detail: "budget met", step: 3 },
-  { label: "Accessibility", detail: "AA", step: 4 },
+  { label: "Typed runbook", detail: "0 errors", step: 2 },
+  { label: "Observability", detail: "traces on", step: 3 },
+  { label: "Escalation path", detail: "L3 ready", step: 4 },
 ] as const;
 
 const STEPS = 6;
@@ -103,7 +102,7 @@ export function CustomCraftIllustration() {
               className="truncate text-[8px] leading-none lg:text-[9.5px]"
               style={{ color: illustrationColors.inkMuted }}
             >
-              service-card.tsx
+              escalate-incident.ts
             </span>
             <span className="ml-auto hidden items-center gap-1.5 lg:flex" aria-hidden>
               {[siTypescript, siNextdotjs, siReact, siNodedotjs].map((icon) => (

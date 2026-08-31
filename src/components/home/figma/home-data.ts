@@ -1,27 +1,27 @@
 export const PROCESS_STEPS = [
   {
     step: "01",
-    title: "Discovery",
+    title: "Assess",
     description:
-      "Deep listening first. We learn your business goals, your users, and the constraints that matter.",
+      "We understand the system, business requirements, infrastructure and operational constraints before changing anything.",
   },
   {
     step: "02",
-    title: "Design",
+    title: "Engineer",
     description:
-      "Wireframes become high-fidelity prototypes. Every interaction is considered before code ships.",
+      "We design, build or improve the software, infrastructure and workflows required to solve the problem properly.",
   },
   {
     step: "03",
-    title: "Build",
+    title: "Deploy",
     description:
-      "Clean, documented, production-grade code. Short cycles, frequent check-ins, no surprises.",
+      "Changes move through controlled environments, testing and production validation.",
   },
   {
     step: "04",
-    title: "Launch & Grow",
+    title: "Operate",
     description:
-      "We handle deployment and hand you the keys — with optional ongoing support to keep momentum.",
+      "Where required, we stay responsible through monitoring, support, incident resolution and continuous engineering.",
   },
 ] as const;
 

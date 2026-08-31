@@ -4,10 +4,10 @@ import {
 } from "@/components/services/illustrations";
 
 const SPECIALTY_ITEMS = [
-  "React, Next.js, and TypeScript by default",
-  "Performance budgets enforced from day one",
-  "Accessibility baked in, not bolted on",
-  "Full code handoff with documentation",
+  "Application and production support",
+  "AWS and DevOps engineering",
+  "Agentic AI infrastructure",
+  "Custom software development",
 ] as const;
 
 export function FigmaSpecialtySection() {
@@ -24,12 +24,14 @@ export function FigmaSpecialtySection() {
             className="mb-6 text-2xl leading-tight font-bold tracking-tight md:text-5xl"
             style={{ letterSpacing: "-0.03em" }}
           >
-            We specialize in{" "}
-            <span style={{ color: "var(--warm-orange)" }}>custom</span> development.
+            Engineering{" "}
+            <span style={{ color: "var(--warm-orange)" }}>beyond</span> deployment.
           </h2>
           <p className="mb-7 text-sm leading-relaxed text-muted-foreground">
-            No templates, no page builders, no compromises. Every project starts from a blank canvas
-            and is built to your exact specifications using modern, maintainable code.
+            We do not separate software from the infrastructure, support and operations required to
+            keep it useful. Our teams work across applications, cloud, AI and production operations
+            so businesses have one technical partner capable of taking a problem from first report
+            to engineering resolution.
           </p>
           <ul className="space-y-3 text-sm text-muted-foreground">
             {SPECIALTY_ITEMS.map((item) => (

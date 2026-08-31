@@ -12,12 +12,12 @@ export const siteUrl = (
 export const siteName = "Comlabs Technologies Pvt Ltd" as const;
 export const siteShortName = "Comlabs Technologies" as const;
 export const siteDescriptor =
-  "Design & Engineering Studio" as const;
+  "Application Support · AI Infrastructure · Cloud · Engineering" as const;
 export const siteLocation = "Pune, Maharashtra, India" as const;
 
 /** Default meta description — keep at or below ~155 characters for SERP display. */
 export const siteDefaultDescription =
-  "Comlabs Technologies is a design and engineering studio in Pune building websites, custom software, mobile products, and scalable infrastructure." as const;
+  "Comlabs provides L1–L4 application support, agentic AI engineering, AWS cloud and DevOps services, custom software development and production engineering." as const;
 
 export const organizationId = `${siteUrl}/#organization` as const;
 export const websiteId = `${siteUrl}/#website` as const;
@@ -88,7 +88,7 @@ export const siteOgImage = {
   url: absoluteMediaUrl(siteOgImagePath, siteUrl),
   width: 1731,
   height: 909,
-  alt: "Comlabs Technologies Pvt Ltd — design and engineering studio",
+  alt: "Comlabs Technologies Pvt Ltd — application support, AI, cloud and engineering",
   type: "image/png",
 } as const;
 
