@@ -94,7 +94,7 @@ export function AgenticWorkflowIllustration() {
           </div>
 
           <div
-            className="px-2 py-2"
+            className="min-h-0 flex-1 px-2 py-2"
             style={{
               borderRadius: illustrationRadius.control,
               background: illustrationColors.surfaceMuted,
