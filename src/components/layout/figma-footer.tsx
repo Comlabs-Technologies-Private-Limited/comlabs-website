@@ -3,7 +3,6 @@ import { FigmaFooterSocialLinks } from "@/components/layout/figma-footer-social-
 import Link from "next/link";
 
 import { canonicalPath, isBlogPublic, siteDescriptor, siteLocation, siteName } from "@/lib/site";
-import { footerServiceLinks } from "@/lib/canonical-services";
 
 const FOOTER_COLUMNS = [
   {
@@ -21,7 +20,12 @@ const FOOTER_COLUMNS = [
     links: [
       { label: "All services", href: "/services" },
       { label: "Digital Marketing", href: "/digital-marketing" },
-      ...footerServiceLinks,
+      { label: "Application Support", href: "/services/custom-software-development" },
+      { label: "AI Engineering", href: "/#applied-ai" },
+      { label: "Cloud & DevOps", href: "/services/cloud-infrastructure-scaling" },
+      { label: "Software Engineering", href: "/services/custom-software-development" },
+      { label: "Digital Experience", href: "/services/website-design-development" },
+      { label: "Mobile Engineering", href: "/services/mobile-app-development" },
     ],
   },
   {

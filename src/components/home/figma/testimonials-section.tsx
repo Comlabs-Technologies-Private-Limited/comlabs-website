@@ -50,10 +50,11 @@ export function FigmaTestimonialsSection() {
             className="text-2xl font-bold tracking-tight md:text-4xl"
             style={{ letterSpacing: "-0.03em" }}
           >
-            What founders say <MarketingOrangeHighlight>about us</MarketingOrangeHighlight>.
+            What clients say about working with{" "}
+            <MarketingOrangeHighlight>Comlabs</MarketingOrangeHighlight>.
           </h2>
           <p className="mt-4 text-sm leading-relaxed text-muted-foreground md:text-base">
-            Direct feedback from founders we&apos;ve shipped websites, products, and platforms with.
+            Direct feedback from clients we&apos;ve shipped websites, products, and platforms with.
           </p>
         </MarketingFadeIn>
 

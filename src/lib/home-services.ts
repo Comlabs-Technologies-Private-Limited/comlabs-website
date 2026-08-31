@@ -1,0 +1,121 @@
+export type HomeServiceId =
+  | "application-support"
+  | "agentic-infrastructure"
+  | "cloud-infrastructure"
+  | "custom-software"
+  | "website-design"
+  | "mobile-app";
+
+export type HomeService = {
+  id: HomeServiceId;
+  title: string;
+  description: string;
+  capabilities: readonly string[];
+  linkLabel: string;
+  href: string;
+  background: string;
+};
+
+/**
+ * Homepage capability cards. Destinations reuse existing service URLs until
+ * dedicated pages exist. Application Support and Software Engineering both
+ * map to custom software; AI Engineering maps to the Applied AI section.
+ */
+export const HOME_SERVICES: readonly HomeService[] = [
+  {
+    id: "application-support",
+    title: "L1–L4 Application Support",
+    description:
+      "Support that escalates all the way to engineering. We manage application issues from first-line support to complex production defects, code-level fixes and specialist escalation.",
+    capabilities: [
+      "L1 Service Support",
+      "L2 Technical Support",
+      "L3 Engineering Support",
+      "L4 Specialist Engineering",
+    ],
+    linkLabel: "Explore application support",
+    href: "/services/custom-software-development",
+    background: "/services-bg/service-bg-2.png",
+  },
+  {
+    id: "agentic-infrastructure",
+    title: "Agentic Infrastructure & AI Agents",
+    description:
+      "AI systems built to operate, not just respond. We engineer agents, tool integrations and context infrastructure that connect AI to real workflows, data and business systems.",
+    capabilities: [
+      "AI Agents",
+      "Agentic Workflows",
+      "RAG & Context Systems",
+      "Tool Orchestration",
+      "Evaluations & Guardrails",
+    ],
+    linkLabel: "Explore AI engineering",
+    href: "/#applied-ai",
+    background: "/services-bg/service-bg-4.png",
+  },
+  {
+    id: "cloud-infrastructure",
+    title: "AWS Cloud & DevOps",
+    description:
+      "Infrastructure built for production. We design and operate AWS environments, deployment pipelines and reliability systems that keep applications available, observable and ready to scale.",
+    capabilities: [
+      "AWS Infrastructure",
+      "CI/CD",
+      "Docker & Terraform",
+      "Monitoring & Observability",
+      "Backups & Recovery",
+      "Performance & Cost Optimisation",
+    ],
+    linkLabel: "Explore cloud & DevOps",
+    href: "/services/cloud-infrastructure-scaling",
+    background: "/services-bg/service-bg-5.png",
+  },
+  {
+    id: "custom-software",
+    title: "Custom Software Engineering",
+    description:
+      "Software built around the way your business actually works. We engineer web applications, SaaS products, internal platforms and integrations for businesses that need more than off-the-shelf software.",
+    capabilities: [
+      "Web Applications",
+      "SaaS Platforms",
+      "Internal Systems",
+      "APIs & Integrations",
+      "ERP & Workflow Tools",
+    ],
+    linkLabel: "Explore software engineering",
+    href: "/services/custom-software-development",
+    background: "/services-bg/service-bg-2.png",
+  },
+  {
+    id: "website-design",
+    title: "Web & Digital Experience",
+    description:
+      "High-performance digital experiences with engineering behind them. From corporate websites to product interfaces, we build fast, clear and technically robust digital experiences designed to perform in production.",
+    capabilities: [
+      "Websites",
+      "Product UI",
+      "Frontend Engineering",
+      "Performance",
+      "Technical SEO & AEO",
+    ],
+    linkLabel: "Explore digital experiences",
+    href: "/services/website-design-development",
+    background: "/services-bg/service-bg-1.png",
+  },
+  {
+    id: "mobile-app",
+    title: "Mobile Engineering",
+    description:
+      "Production-ready mobile products without disconnected backend thinking. We build mobile applications alongside the APIs, infrastructure and operational systems required to support them reliably.",
+    capabilities: [
+      "Cross-platform Apps",
+      "Backend Integrations",
+      "Authentication",
+      "Payments",
+      "Production Deployment",
+    ],
+    linkLabel: "Explore mobile engineering",
+    href: "/services/mobile-app-development",
+    background: "/services-bg/service-bg-3.png",
+  },
+] as const;

@@ -1,6 +1,6 @@
 "use client";
 
-import { Brain, Building2, Cloud, ShoppingBag, Wallet } from "lucide-react";
+import { Brain, Building2, Cog, Cpu, ShoppingBag } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 import { MarketingFadeIn } from "@/components/marketing/marketing-motion";
@@ -14,29 +14,29 @@ type IndustryItem = {
 
 const INDUSTRIES: IndustryItem[] = [
   {
-    title: "Fintech",
-    description: "Secure platforms, payment flows, and compliance-ready product engineering.",
-    icon: Wallet,
-  },
-  {
-    title: "E-commerce",
-    description: "High-converting storefronts, checkout experiences, and scalable catalog systems.",
-    icon: ShoppingBag,
-  },
-  {
-    title: "Artificial Intelligence",
-    description: "Search, copilots, automation, and model integrations built into real workflows.",
-    icon: Brain,
-  },
-  {
-    title: "Cloud & DevOps",
-    description: "Infrastructure, CI/CD, observability, and scaling for production workloads.",
-    icon: Cloud,
+    title: "SaaS & Technology",
+    description: "Applications, AI systems, APIs and production infrastructure.",
+    icon: Cpu,
   },
   {
     title: "Enterprise Software",
-    description: "Internal tools, dashboards, and custom systems for complex organizations.",
+    description: "Internal platforms, business systems and complex integrations.",
     icon: Building2,
+  },
+  {
+    title: "Manufacturing & Operations",
+    description: "ERP workflows, internal systems and operational software.",
+    icon: Cog,
+  },
+  {
+    title: "AI-native Products",
+    description: "Agents, model integrations and context infrastructure.",
+    icon: Brain,
+  },
+  {
+    title: "Commerce",
+    description: "Customer platforms, integrations and scalable digital infrastructure.",
+    icon: ShoppingBag,
   },
 ];
 
@@ -52,13 +52,9 @@ export function FigmaIndustriesSection() {
             className="text-2xl font-bold tracking-tight md:text-5xl"
             style={{ letterSpacing: "-0.03em" }}
           >
-            Built for teams shipping in{" "}
-            <MarketingOrangeHighlight>high-stakes</MarketingOrangeHighlight> domains.
+            Built for companies where software is part of the{" "}
+            <MarketingOrangeHighlight>operation</MarketingOrangeHighlight>.
           </h2>
-          <p className="mt-5 text-sm leading-relaxed text-muted-foreground md:text-base">
-            From regulated fintech to fast-moving commerce and AI-native products — we bring the
-            same engineering discipline across every industry.
-          </p>
         </MarketingFadeIn>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-6">

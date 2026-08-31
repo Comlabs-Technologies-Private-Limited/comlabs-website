@@ -18,7 +18,7 @@ export function getOrganizationSchema() {
     url: canonicalUrl("/"),
     logo: logoUrl,
     description:
-      "Comlabs Technologies is a design and engineering studio building websites, custom software, mobile products, and scalable digital infrastructure.",
+      "Comlabs Technologies is an engineering and technology operations company supporting production applications, AI systems, cloud infrastructure and digital products.",
     address: {
       "@type": "PostalAddress",
       addressLocality: "Pune",

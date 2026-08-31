@@ -65,23 +65,23 @@ export function FigmaHeroSection() {
           className="mb-7 text-3xl leading-[1.08] font-bold tracking-tight md:text-6xl"
           style={{ letterSpacing: "-0.03em" }}
         >
-          We Turn Ambitious Ideas
+          We Run the Technology
           <br />
-          Into{" "}
+          Your Business{" "}
           <span className="font-bold" style={{ color: "var(--warm-orange)" }}>
-            Products
-          </span>{" "}
-          People Use
+            Depends On
+          </span>
         </motion.h1>
 
         <motion.p
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.82, ease: "easeOut" }}
-          className="mb-10 max-w-lg text-md leading-relaxed text-muted-foreground md:mx-auto md:text-lg"
+          className="mb-10 max-w-2xl text-md leading-relaxed text-muted-foreground md:mx-auto md:text-lg"
         >
-          Comlabs is a design and engineering studio building high-performance websites, custom
-          software, and mobile products for ambitious companies.
+          Comlabs is an engineering and technology operations company supporting production
+          applications, AI systems, cloud infrastructure and digital products from build through
+          operation.
         </motion.p>
 
         <motion.div
@@ -98,10 +98,10 @@ export function FigmaHeroSection() {
             Talk to us <ArrowRight size={14} />
           </a>
           <a
-            href={canonicalPath("/work")}
+            href="#services"
             className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium transition-colors hover:bg-accent"
           >
-            View our work
+            Explore our capabilities
           </a>
         </motion.div>
       </div>

@@ -22,29 +22,34 @@ const SERVICE_ITEMS = [
     href: "/digital-marketing",
   },
   {
-    title: "Website Design & Development",
-    description: "Fast, conversion-focused websites.",
-    href: "/services/website-design-development",
-  },
-  {
-    title: "Custom Software Development",
-    description: "SaaS, dashboards and internal systems.",
+    title: "Application Support",
+    description: "L1–L4 support that escalates to engineering.",
     href: "/services/custom-software-development",
   },
   {
-    title: "Mobile App Development",
-    description: "Production-ready mobile products.",
-    href: "/services/mobile-app-development",
+    title: "AI Engineering",
+    description: "Agents, tools and context infrastructure.",
+    href: "/#applied-ai",
   },
   {
-    title: "SEO / AEO & Copywriting",
-    description: "Search visibility, AI discovery and content.",
-    href: "/services/seo-aeo-copywriting",
-  },
-  {
-    title: "Cloud Infrastructure & Scaling",
-    description: "Reliable infrastructure for growing products.",
+    title: "Cloud & DevOps",
+    description: "AWS, pipelines and production reliability.",
     href: "/services/cloud-infrastructure-scaling",
+  },
+  {
+    title: "Software Engineering",
+    description: "SaaS, platforms and internal systems.",
+    href: "/services/custom-software-development",
+  },
+  {
+    title: "Digital Experience",
+    description: "Websites, product UI and frontend engineering.",
+    href: "/services/website-design-development",
+  },
+  {
+    title: "Mobile Engineering",
+    description: "Production-ready apps with the systems behind them.",
+    href: "/services/mobile-app-development",
   },
 ] as const;
 
@@ -204,7 +209,7 @@ export function FigmaNav({ showBlogLink = true, tone = "light" }: FigmaNavProps)
               <div className="grid grid-cols-2 gap-1">
                 {SERVICE_ITEMS.map((item) => (
                   <DropdownItem
-                    key={item.href}
+                    key={item.title}
                     href={item.href}
                     title={item.title}
                     description={item.description}
@@ -349,7 +354,7 @@ export function FigmaNav({ showBlogLink = true, tone = "light" }: FigmaNavProps)
               >
                 {SERVICE_ITEMS.map((item) => (
                   <Link
-                    key={item.href}
+                    key={item.title}
                     href={canonicalPath(item.href)}
                     className="block rounded-[10px] px-3 py-3"
                     onClick={closeMobile}

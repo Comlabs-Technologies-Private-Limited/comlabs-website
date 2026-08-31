@@ -1,6 +1,8 @@
 import type { ComponentType } from "react";
 
 import { AppliedAiIllustration } from "./applied-ai-illustration";
+import { AgenticWorkflowIllustration } from "./agentic-workflow-illustration";
+import { ApplicationSupportIllustration } from "./application-support-illustration";
 import { CloudScalingIllustration } from "./cloud-scaling-illustration";
 import { CustomCraftIllustration } from "./custom-craft-illustration";
 import { CustomSoftwareIllustration } from "./custom-software-illustration";
@@ -16,6 +18,16 @@ export type ServiceIllustration = {
 
 /** Keyed by the homepage service card id in `canonical-services.ts`. */
 export const serviceIllustrations: Record<string, ServiceIllustration> = {
+  "application-support": {
+    Component: ApplicationSupportIllustration,
+    label:
+      "Application support illustration: incident INC-2481 for a production Payments API failure, escalating from L1 triage through L3 engineering.",
+  },
+  "agentic-infrastructure": {
+    Component: AgenticWorkflowIllustration,
+    label:
+      "Agentic infrastructure illustration: a guarded agent run moving from user request through context, tools, approval and action, with CRM, database, email and API tools.",
+  },
   "website-design": {
     Component: WebsiteDesignIllustration,
     label:
@@ -39,7 +51,7 @@ export const serviceIllustrations: Record<string, ServiceIllustration> = {
   "cloud-infrastructure": {
     Component: CloudScalingIllustration,
     label:
-      "Cloud infrastructure illustration: AWS CloudFront, Application Load Balancer and EC2 instances scaling under traffic in ap-south-1, with RDS Aurora and CloudWatch metrics confirming target group health.",
+      "Cloud infrastructure illustration: AWS CloudFront, Application Load Balancer and EC2 instances scaling under traffic in ap-south-1, with RDS Aurora and an operations strip for production, API, database, last deploy, backups and p95 latency.",
   },
 };
 
@@ -47,13 +59,13 @@ export const serviceIllustrations: Record<string, ServiceIllustration> = {
 export const customCraftIllustration: ServiceIllustration = {
   Component: CustomCraftIllustration,
   label:
-    "Custom development illustration: a TypeScript component being written in an editor alongside quality gates for type safety, performance budget and accessibility that each pass, ending in a handoff-ready state.",
+    "Custom development illustration: a TypeScript incident escalation function being written beside gates for typed runbooks, observability and an L3 path.",
 };
 
 export const appliedAiIllustration: ServiceIllustration = {
   Component: AppliedAiIllustration,
   label:
-    "Applied AI illustration: a renewal copilot retrieving contract context for an Acme Q3 request, drafting a priced recommendation, and logging the approved reply to CRM.",
+    "Applied AI illustration: a renewal copilot moving from request through context, tools and approval, then logging the approved reply.",
 };
 
 export { ServiceIllustrationFrame } from "./service-illustration-frame";
