@@ -6,7 +6,12 @@ import { FigmaNav } from "@/components/layout/figma-nav";
 import { HERO_BACKGROUND_PATH, layeredBackgroundImage } from "@/lib/cloudinary";
 import { canonicalPath, siteName } from "@/lib/site";
 
-export function ThankYouPage() {
+type ThankYouPageProps = {
+  variant?: "contact" | "careers";
+};
+
+export function ThankYouPage({ variant = "contact" }: ThankYouPageProps) {
+  const isCareers = variant === "careers";
   return (
     <div
       className="flex min-h-screen flex-col bg-background text-foreground antialiased"
@@ -52,18 +57,20 @@ export function ThankYouPage() {
               className="inline-block h-1.5 w-1.5 rounded-full"
               style={{ background: "var(--warm-orange)" }}
             />
-            Message received
+            {isCareers ? "Application received" : "Message received"}
           </p>
 
           <h1
             className="text-3xl leading-[1.08] font-bold tracking-tight md:text-5xl"
             style={{ letterSpacing: "-0.03em" }}
           >
-            Thank you for choosing {siteName}.
+            {isCareers ? "Thank you for applying." : `Thank you for choosing ${siteName}.`}
           </h1>
 
           <p className="mt-5 text-base leading-relaxed text-muted-foreground md:text-lg">
-            Our team will contact you within 48 hours.
+            {isCareers
+              ? "We'll review your note and follow up if there's a fit."
+              : "Our team will contact you within 48 hours."}
           </p>
 
           <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
