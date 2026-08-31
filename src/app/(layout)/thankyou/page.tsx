@@ -16,6 +16,11 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ThankYouRoute() {
-  return <ThankYouPage />;
+export default async function ThankYouRoute({
+  searchParams,
+}: {
+  searchParams: Promise<{ from?: string }>;
+}) {
+  const { from } = await searchParams;
+  return <ThankYouPage variant={from === "careers" ? "careers" : "contact"} />;
 }

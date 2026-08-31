@@ -10,6 +10,7 @@ const FOOTER_COLUMNS = [
     heading: "Company",
     links: [
       { label: "About", href: "/about" },
+      { label: "Careers", href: "/careers" },
       { label: "Work", href: "/work" },
       { label: "Contact", href: "/contact" },
       ...(isBlogPublic() ? [{ label: "Blog", href: "/blog" }] : []),

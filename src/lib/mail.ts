@@ -14,6 +14,16 @@ export type ContactEmailInput = {
   message: string;
 };
 
+export type CareersEmailInput = {
+  name: string;
+  email: string;
+  role: string;
+  portfolio: string;
+  message: string;
+};
+
+const ADMIN_EMAIL = "admin@comlabstechnologies.com";
+
 function getSmtpConfig(): SmtpConfig | null {
   const host = process.env.SMTP_HOST?.trim();
   const port = Number(process.env.SMTP_PORT ?? "587");
@@ -87,20 +97,114 @@ export function buildContactEmailContent({ name, email, message }: ContactEmailI
   };
 }
 
-export async function sendContactEmail(input: ContactEmailInput): Promise<void> {
+async function sendSiteEmail({
+  replyTo,
+  to,
+  subject,
+  text,
+  html,
+}: {
+  replyTo: string;
+  to: string;
+  subject: string;
+  text: string;
+  html: string;
+}): Promise<void> {
   const smtp = getSmtpConfig();
   if (!smtp) {
     throw new Error("SMTP_NOT_CONFIGURED");
   }
 
   const from = process.env.SMTP_FROM?.trim() || smtp.user;
-  const to = process.env.CONTACT_TO_EMAIL?.trim() || "admin@comlabstechnologies.com";
-  const content = buildContactEmailContent(input);
   const transporter = createTransporter(smtp);
 
   await transporter.sendMail({
     from,
     to,
+    replyTo,
+    subject,
+    text,
+    html,
+  });
+}
+
+export async function sendContactEmail(input: ContactEmailInput): Promise<void> {
+  const to = process.env.CONTACT_TO_EMAIL?.trim() || ADMIN_EMAIL;
+  const content = buildContactEmailContent(input);
+  await sendSiteEmail({
+    to,
+    replyTo: input.email,
+    subject: content.subject,
+    text: content.text,
+    html: content.html,
+  });
+}
+
+export function buildCareersEmailContent({
+  name,
+  email,
+  role,
+  portfolio,
+  message,
+}: CareersEmailInput) {
+  const safeName = escapeHtml(name);
+  const safeEmail = escapeHtml(email);
+  const safeRole = escapeHtml(role);
+  const safePortfolio = escapeHtml(portfolio);
+  const safeMessage = escapeHtml(message).replaceAll("\n", "<br />");
+  const portfolioLine = portfolio || "Not provided";
+
+  return {
+    subject: `New Comlabs career application from ${name}`,
+    text: [
+      "You have a new career application from the Comlabs website.",
+      "",
+      `Name: ${name}`,
+      `Email: ${email}`,
+      `Role: ${role}`,
+      `Portfolio / LinkedIn: ${portfolioLine}`,
+      "",
+      "Note:",
+      message,
+    ].join("\n"),
+    html: `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #111827;">
+        <h1 style="font-size: 20px; margin: 0 0 16px;">New Comlabs career application</h1>
+        <p style="margin: 0 0 16px;">You have a new application from the Careers page.</p>
+        <table style="border-collapse: collapse; margin-bottom: 16px;">
+          <tr>
+            <td style="padding: 4px 12px 4px 0; color: #6b7280;">Name</td>
+            <td style="padding: 4px 0;">${safeName}</td>
+          </tr>
+          <tr>
+            <td style="padding: 4px 12px 4px 0; color: #6b7280;">Email</td>
+            <td style="padding: 4px 0;">${safeEmail}</td>
+          </tr>
+          <tr>
+            <td style="padding: 4px 12px 4px 0; color: #6b7280;">Role</td>
+            <td style="padding: 4px 0;">${safeRole}</td>
+          </tr>
+          <tr>
+            <td style="padding: 4px 12px 4px 0; color: #6b7280;">Portfolio / LinkedIn</td>
+            <td style="padding: 4px 0;">${
+              portfolio
+                ? `<a href="${safePortfolio}">${safePortfolio}</a>`
+                : "Not provided"
+            }</td>
+          </tr>
+        </table>
+        <div style="padding: 16px; border: 1px solid #e5e7eb; border-radius: 8px; background: #f9fafb;">
+          ${safeMessage}
+        </div>
+      </div>
+    `,
+  };
+}
+
+export async function sendCareersEmail(input: CareersEmailInput): Promise<void> {
+  const content = buildCareersEmailContent(input);
+  await sendSiteEmail({
+    to: ADMIN_EMAIL,
     replyTo: input.email,
     subject: content.subject,
     text: content.text,

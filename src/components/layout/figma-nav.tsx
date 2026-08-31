@@ -12,6 +12,7 @@ import { canonicalPath, isBlogPublic } from "@/lib/site";
 
 const SIMPLE_LINKS = [
   { label: "About", href: "/about" },
+  { label: "Careers", href: "/careers" },
 ] as const;
 
 const SERVICE_ITEMS = [
