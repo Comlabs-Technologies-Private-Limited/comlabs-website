@@ -75,7 +75,7 @@ export function ApplicationSupportIllustration() {
               return (
                 <div
                   key={row.id}
-                  className="flex items-center justify-between gap-2 px-2 py-[6px] lg:py-[7px]"
+                  className="flex min-h-0 flex-1 items-center justify-between gap-2 px-2 py-[6px] lg:py-[7px]"
                   style={{
                     borderRadius: illustrationRadius.control,
                     background: current

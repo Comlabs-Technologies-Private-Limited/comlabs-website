@@ -7,6 +7,7 @@ import {
   useEffect,
   useRef,
   useState,
+  type CSSProperties,
   type PointerEvent as ReactPointerEvent,
   type ReactNode,
 } from "react";
@@ -27,6 +28,8 @@ type IllustrationState = {
   active: boolean;
   /** User prefers reduced motion. */
   reduce: boolean;
+  /** Optional padding override for IllustrationStage (e.g. tighter homepage cards). */
+  stageClassName?: string;
 };
 
 const IllustrationStateContext = createContext<IllustrationState>({
@@ -61,6 +64,9 @@ type ServiceIllustrationFrameProps = {
   background?: string;
   priority?: boolean;
   className?: string;
+  style?: CSSProperties;
+  /** Padding classes applied to IllustrationStage inside this frame. */
+  stageClassName?: string;
   /** Renders on the dark Applied AI band instead of the light service rows. */
   tone?: "light" | "dark";
   /** When false, only the illustration renders — no card, backdrop, or scrim. */
@@ -73,6 +79,8 @@ export function ServiceIllustrationFrame({
   background,
   priority = false,
   className,
+  style,
+  stageClassName,
   tone = "light",
   chrome = true,
 }: ServiceIllustrationFrameProps) {
@@ -122,7 +130,7 @@ export function ServiceIllustrationFrame({
             : "border-[rgba(28,25,23,0.10)] bg-[#F4F3EF]"),
         className,
       )}
-      style={{ perspective: 1200 }}
+      style={{ perspective: 1200, ...style }}
     >
       {chrome && background ? (
         <Image
@@ -168,7 +176,7 @@ export function ServiceIllustrationFrame({
         }
         transition={{ duration: reduce ? 0 : 0.5, ease: illustrationEase }}
       >
-        <IllustrationStateContext.Provider value={{ active: inView, reduce }}>
+        <IllustrationStateContext.Provider value={{ active: inView, reduce, stageClassName }}>
           {children}
         </IllustrationStateContext.Provider>
       </motion.div>
@@ -184,7 +192,11 @@ export function IllustrationStage({
   children: ReactNode;
   className?: string;
 }) {
+  const { stageClassName } = useIllustrationState();
+
   return (
-    <div className={cn("absolute inset-0 overflow-hidden p-4 lg:p-7", className)}>{children}</div>
+    <div className={cn("absolute inset-0 overflow-hidden p-4 lg:p-7", stageClassName, className)}>
+      {children}
+    </div>
   );
 }

@@ -23,7 +23,9 @@ function ServiceCardVisual({ service, index }: { service: HomeService; index: nu
       label={label}
       background={service.background}
       priority={index < 2}
-      className="aspect-[16/10] min-h-0 rounded-none border-0 md:aspect-[16/10] md:rounded-none"
+      className="w-full shrink-0 rounded-none border-0 md:rounded-none"
+      style={{ aspectRatio: "5 / 4" }}
+      stageClassName="p-2 lg:p-3"
     >
       <Component />
     </ServiceIllustrationFrame>
