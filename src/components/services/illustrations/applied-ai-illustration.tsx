@@ -158,15 +158,14 @@ export function AppliedAiIllustration() {
         style={{
           borderRadius: illustrationRadius.device,
           background: illustrationColors.surface,
-          border: `1px solid ${illustrationColors.borderStrong}`,
-          boxShadow: illustrationShadow.raised,
+          border: `1px solid ${illustrationColors.border}`,
+          boxShadow: illustrationShadow.panel,
         }}
       >
         <div
-          className="flex shrink-0 items-center justify-between gap-2 border-b px-2.5 py-[7px] lg:px-3"
+          className="flex shrink-0 items-center justify-between gap-2 px-3 py-2.5 lg:px-3.5 lg:py-3"
           style={{
-            borderColor: illustrationColors.border,
-            background: illustrationColors.surfaceMuted,
+            borderBottom: `1px solid ${illustrationColors.border}`,
           }}
         >
           <span className="flex min-w-0 items-center gap-2">
@@ -193,7 +192,11 @@ export function AppliedAiIllustration() {
           <span
             className="shrink-0 text-[7px] leading-none lg:text-[8.5px]"
             style={{
-              color: complete ? illustrationColors.accent : illustrationColors.inkMuted,
+              color: complete
+              ? illustrationColors.health
+              : approvalReady
+                ? illustrationColors.accent
+                : illustrationColors.inkMuted,
             }}
           >
             {complete
@@ -249,10 +252,9 @@ export function AppliedAiIllustration() {
               </span>
             </div>
             <div
-              className="mx-1.5 mb-1.5 hidden items-center gap-1 rounded-[6px] border px-1.5 py-[5px] lg:flex"
+              className="mx-2.5 mb-2 hidden items-center gap-1.5 py-1.5 lg:flex"
               style={{
-                borderColor: illustrationColors.border,
-                background: illustrationColors.surface,
+                borderBottom: `1px solid ${illustrationColors.border}`,
               }}
             >
               <Search size={8} color={illustrationColors.inkFaint} />
@@ -271,13 +273,15 @@ export function AppliedAiIllustration() {
                   key={thread.company}
                   className={
                     index === 3
-                      ? "mx-1 mb-0.5 hidden flex-col gap-1 px-1.5 py-[7px] lg:mx-1.5 lg:flex lg:px-2"
-                      : "mx-1 mb-0.5 flex flex-col gap-1 px-1.5 py-[7px] lg:mx-1.5 lg:px-2"
+                      ? "hidden flex-col gap-1 px-2.5 py-2 lg:flex"
+                      : "flex flex-col gap-1 px-2.5 py-2"
                   }
                   style={{
-                    borderRadius: 8,
-                    background: selected ? illustrationColors.surface : "transparent",
-                    boxShadow: selected ? illustrationShadow.chip : undefined,
+                    background: selected ? illustrationColors.surfaceMuted : "transparent",
+                    boxShadow: selected
+                      ? `inset 2px 0 0 ${illustrationColors.ink}`
+                      : undefined,
+                    borderBottom: `1px solid ${illustrationColors.border}`,
                   }}
                 >
                   <span className="flex items-center gap-1.5">
@@ -588,12 +592,12 @@ export function AppliedAiIllustration() {
                   className="flex shrink-0 items-center gap-1 rounded-full px-2 py-[5px] lg:px-2.5"
                   style={{
                     background: complete
-                      ? illustrationColors.accentSoft
+                      ? illustrationColors.healthSoft
                       : approvalReady
                         ? illustrationColors.ink
                         : illustrationColors.surfaceSunk,
                     color: complete
-                      ? illustrationColors.accent
+                      ? illustrationColors.health
                       : approvalReady
                         ? illustrationColors.surface
                         : illustrationColors.inkFaint,
@@ -675,10 +679,9 @@ export function AppliedAiIllustration() {
                     ...fade,
                     delay: reduce ? 0 : index * illustrationTiming.staggerSec,
                   }}
-                  className="flex items-center gap-1.5 rounded-[7px] px-2 py-[6px]"
+                  className="flex items-center gap-1.5 px-2.5 py-[7px]"
                   style={{
-                    background: illustrationColors.surface,
-                    border: `1px solid ${illustrationColors.border}`,
+                    borderTop: index === 0 ? undefined : `1px solid ${illustrationColors.border}`,
                   }}
                 >
                   <field.Icon size={9} color={illustrationColors.inkMuted} />
@@ -703,17 +706,15 @@ export function AppliedAiIllustration() {
                 initial={reduce ? false : illustrationPopHidden}
                 animate={complete ? illustrationPopShown : illustrationPopHidden}
                 transition={swap}
-                className="flex items-center gap-1.5 rounded-[7px] px-2 py-[6px]"
+                className="flex items-center gap-1.5 px-2.5 py-[6px]"
                 style={{
-                  background: illustrationColors.accentSoft,
-                  border: "1px solid rgba(201,100,66,0.20)",
+                  borderTop: `1px solid ${illustrationColors.border}`,
                 }}
               >
-                <SalesforceMark className="h-[9px] w-[9px]" />
-                <CheckGlyph size={8} />
+                <CheckGlyph size={8} color={illustrationColors.health} />
                 <span
                   className="text-[7.5px] leading-none"
-                  style={{ color: illustrationColors.accent }}
+                  style={{ color: illustrationColors.health }}
                 >
                   Logged to CRM
                 </span>

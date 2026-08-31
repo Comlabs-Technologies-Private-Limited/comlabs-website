@@ -16,7 +16,6 @@ import {
   illustrationEase,
   illustrationPopHidden,
   illustrationPopShown,
-  illustrationShadow,
   illustrationTextSwapExit,
   illustrationTextSwapHidden,
   illustrationTextSwapShown,
@@ -345,7 +344,6 @@ function CitationSearchBar({
         borderRadius: 999,
         background: illustrationColors.surface,
         border: `1px solid ${illustrationColors.border}`,
-        boxShadow: illustrationShadow.chip,
       }}
     >
       <svg width="7" height="7" viewBox="0 0 12 12" fill="none" aria-hidden className="shrink-0">
@@ -620,7 +618,6 @@ export function SeoAeoIllustration() {
             borderRadius: 999,
             background: illustrationColors.surface,
             border: `1px solid ${illustrationColors.border}`,
-            boxShadow: illustrationShadow.chip,
           }}
         >
           <svg width="8" height="8" viewBox="0 0 12 12" fill="none" aria-hidden>
@@ -648,7 +645,7 @@ export function SeoAeoIllustration() {
 
         <div className="flex min-h-0 flex-1 items-stretch gap-0">
           {/* Source document */}
-          <Panel className="flex w-[40%] shrink-0 flex-col overflow-hidden" elevation="raised">
+          <Panel className="flex w-[40%] shrink-0 flex-col overflow-hidden" elevation="panel">
             <div
               className="flex shrink-0 items-center justify-between gap-1.5 border-b px-2 py-[7px] lg:px-2.5"
               style={{
@@ -740,7 +737,7 @@ export function SeoAeoIllustration() {
             {/* Search result — fixed height locked to completed state */}
             <Panel
               className="flex h-[96px] shrink-0 flex-col overflow-hidden lg:h-[104px]"
-              elevation="raised"
+              elevation="panel"
             >
               <div
                 className="flex shrink-0 items-center justify-between gap-1.5 border-b px-2 py-[7px] lg:px-2.5"
@@ -838,7 +835,7 @@ export function SeoAeoIllustration() {
             {/* ChatGPT answer — fixed height locked to completed state */}
             <Panel
               className="flex h-[100px] shrink-0 flex-col overflow-hidden lg:h-[108px]"
-              elevation="raised"
+              elevation="panel"
             >
               <div
                 className="flex shrink-0 items-center gap-1 border-b px-2 py-[7px] lg:px-2.5"

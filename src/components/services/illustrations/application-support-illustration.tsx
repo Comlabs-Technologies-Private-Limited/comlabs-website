@@ -2,13 +2,9 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 
-import { CheckGlyph, Chip, MicroLabel, Panel, StatusDot } from "./illustration-primitives";
+import { CheckGlyph, Chip, Panel, StatusDot } from "./illustration-primitives";
 import { IllustrationStage, useIllustrationState } from "./service-illustration-frame";
-import {
-  illustrationColors,
-  illustrationRadius,
-  illustrationSwap,
-} from "./illustration-tokens";
+import { illustrationColors, illustrationSwap } from "./illustration-tokens";
 import { useIllustrationSequence } from "./use-illustration-sequence";
 
 const STEPS = 5;
@@ -29,18 +25,14 @@ export function ApplicationSupportIllustration() {
 
   return (
     <IllustrationStage>
-      <Panel className="flex h-full flex-col overflow-hidden" elevation="raised">
+      <Panel className="flex h-full flex-col overflow-hidden" elevation="panel">
         <div
-          className="flex shrink-0 items-center justify-between gap-2 border-b px-2.5 py-2 lg:px-3 lg:py-2.5"
-          style={{
-            borderColor: illustrationColors.border,
-            background: illustrationColors.surfaceMuted,
-          }}
+          className="flex shrink-0 items-center justify-between gap-3 px-3 py-2.5 lg:px-4 lg:py-3"
+          style={{ borderBottom: `1px solid ${illustrationColors.border}` }}
         >
-          <span className="flex min-w-0 items-center gap-1.5">
-            <StatusDot />
+          <span className="flex min-w-0 items-center gap-2">
             <span
-              className="truncate text-[7.5px] leading-none font-medium tabular-nums lg:text-[9px]"
+              className="truncate text-[8px] leading-none font-medium tracking-tight tabular-nums lg:text-[10px]"
               style={{ color: illustrationColors.ink }}
             >
               INC-2481
@@ -49,52 +41,53 @@ export function ApplicationSupportIllustration() {
               P1
             </Chip>
           </span>
-          <MicroLabel>Production</MicroLabel>
+          <span
+            className="shrink-0 text-[7px] leading-none lg:text-[8px]"
+            style={{ color: illustrationColors.inkFaint }}
+          >
+            Production
+          </span>
         </div>
 
-        <div className="flex min-h-0 flex-1 flex-col gap-2 p-2.5 lg:gap-2.5 lg:p-3">
-          <div>
+        <div className="flex min-h-0 flex-1 flex-col px-3 pt-3 pb-3 lg:px-4 lg:pt-4 lg:pb-3.5">
+          <div className="shrink-0">
             <p
-              className="text-[9px] leading-tight font-medium lg:text-[11px]"
+              className="text-[10px] leading-[1.3] font-medium tracking-tight lg:text-[12px]"
               style={{ color: illustrationColors.ink }}
             >
               Production API failure
             </p>
             <p
-              className="mt-1 text-[7px] leading-none lg:text-[8.5px]"
+              className="mt-1.5 text-[7.5px] leading-[1.4] lg:text-[8.5px]"
               style={{ color: illustrationColors.inkMuted }}
             >
-              Service: Payments API
+              Payments API
             </p>
           </div>
 
-          <div className="flex min-h-0 flex-1 flex-col gap-1">
+          <div className="mt-4 flex min-h-0 flex-1 flex-col">
             {ESCALATION.map((row, index) => {
               const complete = index <= completeThrough;
               const current = index === inProgressIndex && !complete;
               return (
                 <div
                   key={row.id}
-                  className="flex min-h-0 flex-1 items-center justify-between gap-2 px-2 py-[6px] lg:py-[7px]"
+                  className="flex min-h-0 flex-1 items-center justify-between gap-3"
                   style={{
-                    borderRadius: illustrationRadius.control,
-                    background: current
-                      ? illustrationColors.surfaceWarm
-                      : illustrationColors.surfaceMuted,
-                    border: `1px solid ${
-                      current ? "rgba(201,100,66,0.22)" : illustrationColors.border
-                    }`,
+                    borderTop: index === 0 ? undefined : `1px solid ${illustrationColors.border}`,
                   }}
                 >
-                  <span className="flex min-w-0 items-center gap-1.5">
+                  <span className="flex min-w-0 items-center gap-2">
                     {complete ? (
-                      <CheckGlyph size={9} />
+                      <CheckGlyph size={9} color={illustrationColors.inkMuted} />
                     ) : (
                       <StatusDot tone={current ? "accent" : "idle"} />
                     )}
                     <span
-                      className="truncate text-[7.5px] leading-none font-medium lg:text-[9px]"
-                      style={{ color: illustrationColors.ink }}
+                      className="truncate text-[8px] leading-none lg:text-[9.5px]"
+                      style={{
+                        color: current ? illustrationColors.ink : illustrationColors.inkMuted,
+                      }}
                     >
                       {row.label}
                     </span>
@@ -105,13 +98,13 @@ export function ApplicationSupportIllustration() {
                       initial={reduce ? false : { opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={illustrationSwap}
-                      className="shrink-0 text-[6.5px] leading-none lg:text-[8px]"
+                      className="shrink-0 text-[7px] leading-none lg:text-[8px]"
                       style={{
-                        color: complete
+                        color: current
                           ? illustrationColors.accent
-                          : current
-                            ? illustrationColors.ink
-                            : illustrationColors.inkFaint,
+                          : complete
+                            ? illustrationColors.inkFaint
+                            : illustrationColors.wire,
                       }}
                     >
                       {complete ? "Complete" : current ? row.detail : "Queued"}
@@ -123,19 +116,20 @@ export function ApplicationSupportIllustration() {
           </div>
 
           <div
-            className="mt-auto flex items-center justify-between gap-2 px-2 py-[5px]"
-            style={{
-              borderRadius: illustrationRadius.control,
-              background: illustrationColors.surfaceMuted,
-              border: `1px solid ${illustrationColors.border}`,
-            }}
+            className="mt-3 flex shrink-0 items-center justify-between gap-3 pt-3"
+            style={{ borderTop: `1px solid ${illustrationColors.border}` }}
           >
-            <MicroLabel tone="muted">Environment: Production</MicroLabel>
             <span
-              className="text-[6.5px] leading-none font-medium lg:text-[8px]"
+              className="text-[7px] leading-none lg:text-[8px]"
+              style={{ color: illustrationColors.inkFaint }}
+            >
+              Environment
+            </span>
+            <span
+              className="text-[7.5px] leading-none lg:text-[8.5px]"
               style={{ color: illustrationColors.inkMuted }}
             >
-              Payments API
+              Production · Payments API
             </span>
           </div>
         </div>
