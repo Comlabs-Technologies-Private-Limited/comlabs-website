@@ -208,7 +208,7 @@ export function FigmaNav({ showBlogLink = true, tone = "light" }: FigmaNavProps)
               <div className="grid grid-cols-2 gap-1">
                 {SERVICE_ITEMS.map((item) => (
                   <DropdownItem
-                    key={item.href}
+                    key={item.title}
                     href={item.href}
                     title={item.title}
                     description={item.description}
@@ -353,7 +353,7 @@ export function FigmaNav({ showBlogLink = true, tone = "light" }: FigmaNavProps)
               >
                 {SERVICE_ITEMS.map((item) => (
                   <Link
-                    key={item.href}
+                    key={item.title}
                     href={canonicalPath(item.href)}
                     className="block rounded-[10px] px-3 py-3"
                     onClick={closeMobile}
