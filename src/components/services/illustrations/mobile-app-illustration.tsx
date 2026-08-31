@@ -466,7 +466,11 @@ function InboxRow({
         ...fade,
         delay: reduce ? 0 : index * illustrationTiming.staggerSec,
       }}
-      className="flex items-start gap-2.5 px-3 py-2.5 lg:gap-3 lg:px-4 lg:py-3"
+      className="flex items-start gap-2.5 px-3 py-3 lg:gap-3 lg:px-4 lg:py-3.5"
+      style={{
+        background: selected ? "rgba(28,25,23,0.04)" : "transparent",
+        boxShadow: `inset 0 -1px 0 ${illustrationColors.border}`,
+      }}
     >
       <span className="mt-[1px] flex h-3 w-3 shrink-0 items-center justify-center lg:h-3.5 lg:w-3.5">
         <TaskIcon name={icon} active={selected} spin={spin} />
@@ -804,31 +808,8 @@ export function MobileAppIllustration() {
   const toastVisible = step >= 4;
 
   return (
-    <IllustrationStage className="px-4 py-3 lg:px-7 lg:py-4">
-      <span
-        aria-hidden
-        className="absolute inset-0"
-        style={{ background: "rgba(247,247,244,0.48)" }}
-      />
-      <span
-        aria-hidden
-        className="absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(56% 50% at 36% 44%, rgba(255,246,236,0.88) 0%, rgba(253,247,239,0.30) 44%, rgba(247,247,244,0) 72%)",
-        }}
-      />
-
+    <IllustrationStage className="px-4 py-3 lg:px-6 lg:py-4">
       <div className="relative flex h-full items-end justify-center">
-        <span
-          aria-hidden
-          className="pointer-events-none absolute bottom-[2px] left-[42%] block h-[12px] w-[55%] -translate-x-1/2"
-          style={{
-            background:
-              "radial-gradient(50% 50% at 50% 50%, rgba(28,25,23,0.18) 0%, rgba(28,25,23,0) 72%)",
-          }}
-        />
-
         {/* Front phone — dominant */}
         <PhoneShell className="relative z-10 h-[98%] w-[132px] shrink-0 lg:w-[172px]">
           <FrontPhoneScreen

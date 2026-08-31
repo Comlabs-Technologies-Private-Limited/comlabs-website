@@ -51,7 +51,7 @@ export const serviceIllustrations: Record<string, ServiceIllustration> = {
   "cloud-infrastructure": {
     Component: CloudScalingIllustration,
     label:
-      "Cloud infrastructure illustration: AWS CloudFront, Application Load Balancer and EC2 instances scaling under traffic in ap-south-1, with RDS Aurora and an operations strip for production, API, database, last deploy, backups and p95 latency.",
+      "Cloud infrastructure illustration: a production AWS console for prod-api in ap-south-1, with request rate, p95 latency, healthy services, last deploy and backups.",
   },
 };
 

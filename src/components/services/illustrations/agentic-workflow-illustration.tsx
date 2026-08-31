@@ -2,9 +2,9 @@
 
 import { Database, Mail, Radio, Table2 } from "lucide-react";
 
-import { Chip, MicroLabel, Panel, StatusDot, WindowDots } from "./illustration-primitives";
+import { Chip, Panel, StatusDot, WindowDots } from "./illustration-primitives";
 import { IllustrationStage, useIllustrationState } from "./service-illustration-frame";
-import { illustrationColors, illustrationRadius } from "./illustration-tokens";
+import { illustrationColors } from "./illustration-tokens";
 import { useIllustrationSequence } from "./use-illustration-sequence";
 
 const STEPS = 6;
@@ -29,63 +29,56 @@ export function AgenticWorkflowIllustration() {
   const { active, reduce } = useIllustrationState();
   const step = useIllustrationSequence({ steps: STEPS, active, reduce });
 
+  const toolsLive = step >= 3;
+  const approved = step >= 5;
+  const awaiting = step >= 4 && !approved;
+
   return (
     <IllustrationStage>
-      <Panel className="flex h-full flex-col overflow-hidden" elevation="raised">
+      <Panel className="flex h-full flex-col overflow-hidden" elevation="panel">
         <div
-          className="flex shrink-0 items-center justify-between gap-2 border-b px-2.5 py-2 lg:px-3 lg:py-2.5"
-          style={{
-            borderColor: illustrationColors.border,
-            background: illustrationColors.surfaceMuted,
-          }}
+          className="flex shrink-0 items-center justify-between gap-3 px-3 py-2.5 lg:px-4 lg:py-3"
+          style={{ borderBottom: `1px solid ${illustrationColors.border}` }}
         >
-          <span className="flex items-center gap-1.5">
+          <span className="flex min-w-0 items-center gap-2">
             <WindowDots />
             <span
-              className="text-[7.5px] leading-none font-medium lg:text-[9px]"
+              className="truncate text-[8px] leading-none font-medium tracking-tight lg:text-[10px]"
               style={{ color: illustrationColors.ink }}
             >
               Agent run
             </span>
           </span>
           <Chip tone="quiet" size="compact">
-            guarded
+            Guarded
           </Chip>
         </div>
 
-        <div className="flex min-h-0 flex-1 flex-col gap-2.5 p-2.5 lg:p-3">
-          <div className="flex flex-wrap gap-1">
+        <div className="flex min-h-0 flex-1 flex-col px-3 py-3 lg:px-4 lg:py-4">
+          <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
             {PIPELINE.map((label, index) => {
               const reached = step >= index;
               const current = step === index;
               return (
-                <span key={label} className="flex items-center gap-1">
+                <span key={label} className="flex items-center gap-1.5">
                   <span
-                    className="inline-flex items-center gap-1 px-1.5 py-[3px]"
+                    className="text-[7px] leading-none lg:text-[8px]"
                     style={{
-                      borderRadius: illustrationRadius.chip,
-                      background: current
-                        ? illustrationColors.accentSoft
+                      color: current
+                        ? illustrationColors.ink
                         : reached
-                          ? illustrationColors.surface
-                          : illustrationColors.surfaceSunk,
-                      border: `1px solid ${
-                        current ? "rgba(201,100,66,0.22)" : illustrationColors.border
-                      }`,
-                      color: reached ? illustrationColors.ink : illustrationColors.inkFaint,
+                          ? illustrationColors.inkMuted
+                          : illustrationColors.inkFaint,
                     }}
                   >
-                    <StatusDot tone={current ? "accent" : reached ? "muted" : "idle"} />
-                    <span className="text-[6.5px] leading-none font-medium lg:text-[8px]">
-                      {label}
-                    </span>
+                    {label}
                   </span>
                   {index < PIPELINE.length - 1 ? (
                     <span
-                      className="text-[6px] leading-none"
-                      style={{ color: illustrationColors.inkFaint }}
+                      className="text-[7px] leading-none"
+                      style={{ color: illustrationColors.wire }}
                     >
-                      →
+                      /
                     </span>
                   ) : null}
                 </span>
@@ -93,73 +86,69 @@ export function AgenticWorkflowIllustration() {
             })}
           </div>
 
-          <div
-            className="min-h-0 flex-1 px-2 py-2"
-            style={{
-              borderRadius: illustrationRadius.control,
-              background: illustrationColors.surfaceMuted,
-              border: `1px solid ${illustrationColors.border}`,
-            }}
-          >
-            <MicroLabel>User request</MicroLabel>
+          <div className="mt-4 min-h-0 flex-1">
             <p
-              className="mt-1 text-[8px] leading-snug lg:text-[9.5px]"
+              className="text-[7px] leading-none lg:text-[8px]"
+              style={{ color: illustrationColors.inkFaint }}
+            >
+              Current task
+            </p>
+            <p
+              className="mt-2 text-[9px] leading-[1.45] lg:text-[11px]"
               style={{ color: illustrationColors.ink }}
             >
               Pull Q3 renewal context and draft a reply for approval.
             </p>
           </div>
 
-          <div className="grid grid-cols-4 gap-1">
+          <div
+            className="flex items-center gap-4 py-3"
+            style={{ borderTop: `1px solid ${illustrationColors.border}` }}
+          >
             {TOOLS.map((tool, index) => {
-              const live = step >= 3 && (reduce || index <= step - 2);
+              const live = toolsLive && (reduce || index <= step - 2);
               const Icon = tool.Icon;
               return (
-                <div
-                  key={tool.label}
-                  className="flex flex-col items-center gap-1 px-1 py-1.5"
-                  style={{
-                    borderRadius: illustrationRadius.control,
-                    background: live
-                      ? illustrationColors.surface
-                      : illustrationColors.surfaceSunk,
-                    border: `1px solid ${
-                      live ? "rgba(201,100,66,0.18)" : illustrationColors.border
-                    }`,
-                  }}
-                >
+                <span key={tool.label} className="flex items-center gap-1.5">
                   <Icon
                     size={10}
-                    strokeWidth={1.75}
-                    style={{ color: live ? illustrationColors.accent : illustrationColors.inkFaint }}
+                    strokeWidth={1.5}
+                    style={{
+                      color: live ? illustrationColors.ink : illustrationColors.inkFaint,
+                    }}
                   />
                   <span
-                    className="text-[6px] leading-none lg:text-[7.5px]"
-                    style={{ color: live ? illustrationColors.ink : illustrationColors.inkFaint }}
+                    className="text-[7px] leading-none lg:text-[8px]"
+                    style={{
+                      color: live ? illustrationColors.inkMuted : illustrationColors.inkFaint,
+                    }}
                   >
                     {tool.label}
                   </span>
-                </div>
+                </span>
               );
             })}
           </div>
 
           <div
-            className="mt-auto flex items-center justify-between gap-2 px-2 py-[5px]"
-            style={{
-              borderRadius: illustrationRadius.control,
-              background: illustrationColors.surfaceMuted,
-              border: `1px solid ${illustrationColors.border}`,
-            }}
+            className="mt-auto flex items-center justify-between gap-3 pt-3"
+            style={{ borderTop: `1px solid ${illustrationColors.border}` }}
           >
-            <span
-              className="text-[7px] leading-none font-medium lg:text-[8.5px]"
-              style={{ color: illustrationColors.ink }}
-            >
-              {step >= 5 ? "Action queued after approval" : "Waiting on human approval"}
+            <span className="flex min-w-0 items-center gap-1.5">
+              <StatusDot tone={approved ? "health" : awaiting ? "accent" : "idle"} />
+              <span
+                className="truncate text-[8px] leading-none lg:text-[9px]"
+                style={{ color: illustrationColors.ink }}
+              >
+                {approved
+                  ? "Action queued"
+                  : awaiting
+                    ? "Waiting on approval"
+                    : "Gathering context"}
+              </span>
             </span>
-            <Chip tone={step >= 4 ? "accent" : "quiet"} size="compact">
-              {step >= 5 ? "Approved" : "Hold"}
+            <Chip tone={approved ? "health" : awaiting ? "accent" : "quiet"} size="compact">
+              {approved ? "Approved" : awaiting ? "Review" : "Hold"}
             </Chip>
           </div>
         </div>

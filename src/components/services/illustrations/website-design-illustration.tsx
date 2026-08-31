@@ -82,7 +82,7 @@ export function WebsiteDesignIllustration() {
                     style={{
                       borderRadius: illustrationRadius.chip,
                       background: isSelected
-                        ? illustrationColors.accentSoft
+                        ? illustrationColors.surfaceSunk
                         : "transparent",
                     }}
                   >
@@ -92,11 +92,11 @@ export function WebsiteDesignIllustration() {
                         borderRadius: 2,
                         border: `1px solid ${
                           isSelected
-                            ? "rgba(201,100,66,0.5)"
+                            ? illustrationColors.ink
                             : illustrationColors.wire
                         }`,
                         background: isSelected
-                          ? "rgba(201,100,66,0.18)"
+                          ? illustrationColors.ink
                           : "transparent",
                       }}
                     />
@@ -119,7 +119,7 @@ export function WebsiteDesignIllustration() {
 
         {/* Browser canvas — primary object */}
         <div className="relative min-w-0 flex-1">
-          <Panel className="flex h-full flex-col overflow-hidden" elevation="raised">
+          <Panel className="flex h-full flex-col overflow-hidden" elevation="panel">
             {/* Chrome */}
             <div
               className="flex items-center gap-2 border-b px-2.5 py-[7px]"
@@ -361,7 +361,7 @@ export function WebsiteDesignIllustration() {
                 borderRadius: illustrationRadius.device,
                 background: illustrationColors.surface,
                 border: `1px solid ${illustrationColors.borderStrong}`,
-                boxShadow: illustrationShadow.raised,
+                boxShadow: illustrationShadow.panel,
               }}
             >
               <div
@@ -431,7 +431,7 @@ export function WebsiteDesignIllustration() {
                 transition={fade}
                 className="absolute bottom-1 left-1 lg:bottom-2 lg:left-2"
               >
-                <Chip tone="neutral" style={{ boxShadow: illustrationShadow.chip }}>
+                <Chip tone="neutral">
                   <StatusDot />
                   Responsive
                 </Chip>

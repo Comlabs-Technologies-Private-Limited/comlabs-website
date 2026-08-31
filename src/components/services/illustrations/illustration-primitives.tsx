@@ -61,7 +61,7 @@ export function MicroLabel({
   return (
     <span
       className={cn(
-        "block text-[8px] font-medium lg:text-[9.5px]",
+        "block text-[7px] leading-[1.3] font-medium tracking-[0.04em] lg:text-[8px]",
         className,
       )}
       style={{ color }}
@@ -80,7 +80,7 @@ export function Chip({
   style,
 }: {
   children: ReactNode;
-  tone?: "neutral" | "accent" | "quiet";
+  tone?: "neutral" | "accent" | "quiet" | "health";
   size?: "default" | "compact";
   className?: string;
   style?: CSSProperties;
@@ -90,27 +90,33 @@ export function Chip({
       ? {
           background: illustrationColors.accentSoft,
           color: illustrationColors.accent,
-          borderColor: "rgba(201, 100, 66, 0.20)",
+          borderColor: "rgba(201, 100, 66, 0.16)",
         }
-      : tone === "quiet"
+      : tone === "health"
         ? {
-            background: illustrationColors.surfaceSunk,
-            color: illustrationColors.inkFaint,
-            borderColor: illustrationColors.border,
+            background: illustrationColors.healthSoft,
+            color: illustrationColors.health,
+            borderColor: "rgba(63, 122, 90, 0.16)",
           }
-        : {
-            background: illustrationColors.surface,
-            color: illustrationColors.inkMuted,
-            borderColor: illustrationColors.border,
-          };
+        : tone === "quiet"
+          ? {
+              background: illustrationColors.surfaceMuted,
+              color: illustrationColors.inkFaint,
+              borderColor: illustrationColors.border,
+            }
+          : {
+              background: illustrationColors.surface,
+              color: illustrationColors.inkMuted,
+              borderColor: illustrationColors.border,
+            };
 
   return (
     <span
       className={cn(
         "inline-flex items-center self-center border font-medium whitespace-nowrap",
         size === "compact"
-          ? "gap-0.5 px-1 py-[2px] text-[6.5px] leading-none tracking-[0.02em] lg:text-[7.5px]"
-          : "gap-1 px-1.5 py-[3px] text-[8px] leading-none lg:text-[9.5px]",
+          ? "gap-0.5 px-1.5 py-[3px] text-[6.5px] leading-none tracking-[0.02em] lg:text-[7.5px]"
+          : "gap-1 px-2 py-[4px] text-[7.5px] leading-none lg:text-[8.5px]",
         className,
       )}
       style={{ borderRadius: illustrationRadius.chip, ...palette, ...style }}
@@ -125,19 +131,21 @@ export function StatusDot({
   tone = "accent",
   className,
 }: {
-  tone?: "accent" | "muted" | "idle";
+  tone?: "accent" | "muted" | "idle" | "health";
   className?: string;
 }) {
   const background =
     tone === "accent"
       ? illustrationColors.accent
-      : tone === "muted"
-        ? illustrationColors.inkFaint
-        : illustrationColors.wire;
+      : tone === "health"
+        ? illustrationColors.health
+        : tone === "muted"
+          ? illustrationColors.inkFaint
+          : illustrationColors.wire;
 
   return (
     <span
-      className={cn("inline-block h-1 w-1 shrink-0 rounded-full", className)}
+      className={cn("inline-block h-[5px] w-[5px] shrink-0 rounded-full", className)}
       style={{ background }}
     />
   );
@@ -164,7 +172,7 @@ export function Bar({
         ? illustrationColors.wire
         : tone === "accent"
           ? illustrationColors.accent
-          : "rgba(28,25,23,0.14)";
+          : "rgba(28,25,23,0.12)";
 
   return (
     <span
@@ -187,8 +195,8 @@ export function WindowDots() {
       {[0, 1, 2].map((dot) => (
         <span
           key={dot}
-          className="block h-[4px] w-[4px] rounded-full"
-          style={{ background: "rgba(28,25,23,0.16)" }}
+          className="block h-[5px] w-[5px] rounded-full"
+          style={{ background: "rgba(28,25,23,0.12)" }}
         />
       ))}
     </span>
@@ -197,7 +205,7 @@ export function WindowDots() {
 
 export function CheckGlyph({
   size = 8,
-  color = illustrationColors.accent,
+  color = illustrationColors.ink,
 }: {
   size?: number;
   color?: string;
@@ -214,7 +222,7 @@ export function CheckGlyph({
       <path
         d="M2.5 6.4 4.8 8.7 9.5 3.6"
         stroke={color}
-        strokeWidth="1.6"
+        strokeWidth="1.35"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
@@ -234,7 +242,7 @@ export function ArrowGlyph({
       <path
         d="M2.5 6h7M6.6 3.1 9.5 6l-2.9 2.9"
         stroke={color}
-        strokeWidth="1.3"
+        strokeWidth="1.25"
         strokeLinecap="round"
         strokeLinejoin="round"
       />

@@ -107,7 +107,7 @@ function StatusLabel({ stage }: { stage: Stage }) {
     <span
       className="shrink-0 text-[6.5px] leading-none lg:text-[7.5px]"
       style={{
-        color: live ? illustrationColors.accent : illustrationColors.inkMuted,
+        color: live ? illustrationColors.health : illustrationColors.inkFaint,
       }}
     >
       {stage}
@@ -130,15 +130,14 @@ export function CustomSoftwareIllustration() {
         style={{
           borderRadius: illustrationRadius.device,
           background: illustrationColors.surface,
-          border: `1px solid ${illustrationColors.borderStrong}`,
-          boxShadow: illustrationShadow.raised,
+          border: `1px solid ${illustrationColors.border}`,
+          boxShadow: illustrationShadow.panel,
         }}
       >
         <div
-          className="flex shrink-0 items-center justify-between gap-2 border-b px-2.5 py-[7px] lg:px-3"
+          className="flex shrink-0 items-center justify-between gap-2 px-3 py-2.5 lg:px-3.5 lg:py-3"
           style={{
-            borderColor: illustrationColors.border,
-            background: illustrationColors.surfaceMuted,
+            borderBottom: `1px solid ${illustrationColors.border}`,
           }}
         >
           <span className="flex min-w-0 items-center gap-2">
@@ -157,17 +156,8 @@ export function CustomSoftwareIllustration() {
               Operations
             </span>
           </span>
-          <Chip tone={live ? "accent" : building ? "neutral" : "quiet"} size="compact">
-            {live ? (
-              <>
-                <CheckGlyph size={6} />
-                Live
-              </>
-            ) : building ? (
-              "Provisioning"
-            ) : (
-              "New request"
-            )}
+          <Chip tone={live ? "health" : building ? "neutral" : "quiet"} size="compact">
+            {live ? "Live" : building ? "Provisioning" : "New request"}
           </Chip>
         </div>
 
@@ -179,43 +169,35 @@ export function CustomSoftwareIllustration() {
               background: illustrationColors.surfaceMuted,
             }}
           >
-            <div
-              className="mx-1.5 mt-2 mb-1.5 flex items-center gap-1 rounded-[6px] border px-1.5 py-[5px]"
-              style={{
-                borderColor: illustrationColors.border,
-                background: illustrationColors.surface,
-              }}
-            >
-              <Search size={8} color={illustrationColors.inkFaint} />
+            <div className="flex items-center gap-1.5 px-3 pt-3 pb-2">
+              <Search size={9} strokeWidth={1.5} color={illustrationColors.inkFaint} />
               <span
-                className="text-[7px] leading-none"
+                className="text-[7.5px] leading-none"
                 style={{ color: illustrationColors.inkFaint }}
               >
-                Search requests
+                Search
               </span>
             </div>
 
-            <div className="flex flex-col gap-1 px-1.5">
+            <div className="flex flex-col px-1.5">
               {NAV.map((item) => (
                 <span
                   key={item.label}
-                  className="flex items-center gap-1.5 px-1.5 py-[6px]"
+                  className="flex items-center gap-2 px-2 py-[8px]"
                   style={{
-                    borderRadius: 6,
+                    borderRadius: illustrationRadius.control,
                     background: item.active ? illustrationColors.surface : "transparent",
-                    boxShadow: item.active ? illustrationShadow.chip : undefined,
                   }}
                 >
                   <item.Icon
-                    size={9}
+                    size={11}
+                    strokeWidth={1.5}
                     color={item.active ? illustrationColors.ink : illustrationColors.inkFaint}
                   />
                   <span
                     className="truncate text-[8px] leading-none"
                     style={{
-                      color: item.active
-                        ? illustrationColors.ink
-                        : illustrationColors.inkMuted,
+                      color: item.active ? illustrationColors.ink : illustrationColors.inkMuted,
                     }}
                   >
                     {item.label}
@@ -225,43 +207,18 @@ export function CustomSoftwareIllustration() {
             </div>
 
             <div
-              className="mt-auto flex flex-col gap-1 border-t px-1.5 py-2"
-              style={{ borderColor: illustrationColors.border }}
+              className="mt-auto flex items-center gap-2 px-3 py-3"
+              style={{ borderTop: `1px solid ${illustrationColors.border}` }}
             >
-              <span
-                className="px-1.5 text-[6.5px] leading-none"
-                style={{ color: illustrationColors.inkFaint }}
-              >
-                Connected
-              </span>
               {INTEGRATIONS.map((app) => {
                 const connected = step >= app.step;
                 return (
                   <span
                     key={app.name}
-                    className="flex items-center gap-1.5 px-1.5 py-[5px]"
-                    style={{
-                      borderRadius: 6,
-                      opacity: connected ? 1 : 0.42,
-                      transition: "opacity 380ms ease",
-                    }}
+                    className="flex h-[16px] w-[16px] items-center justify-center"
+                    style={{ opacity: connected ? 1 : 0.35, transition: "opacity 380ms ease" }}
                   >
-                    <app.Mark className="h-[10px] w-[10px]" />
-                    <span className="min-w-0 flex-1">
-                      <span
-                        className="block truncate text-[7.5px] leading-none"
-                        style={{ color: illustrationColors.ink }}
-                      >
-                        {app.name}
-                      </span>
-                      <span
-                        className="mt-[3px] block truncate text-[6.5px] leading-none"
-                        style={{ color: illustrationColors.inkFaint }}
-                      >
-                        {connected ? app.detail : "Waiting"}
-                      </span>
-                    </span>
-                    {connected ? <CheckGlyph size={7} /> : <StatusDot tone="idle" />}
+                    <app.Mark className="h-[11px] w-[11px]" />
                   </span>
                 );
               })}
@@ -270,12 +227,11 @@ export function CustomSoftwareIllustration() {
 
           <div className="flex min-h-0 min-w-0 flex-1 flex-col">
             <div
-              className="flex shrink-0 items-center gap-1.5 border-b px-2.5 py-[7px] lg:px-3"
-              style={{ borderColor: illustrationColors.border }}
+              className="flex shrink-0 items-center gap-2 px-3 py-2.5 lg:px-3.5"
+              style={{ borderBottom: `1px solid ${illustrationColors.border}` }}
             >
-              <Inbox size={9} color={illustrationColors.inkMuted} />
               <span
-                className="text-[8px] leading-none lg:text-[10px]"
+                className="text-[8px] leading-none font-medium lg:text-[9.5px]"
                 style={{ color: illustrationColors.ink }}
               >
                 Requests
@@ -288,7 +244,7 @@ export function CustomSoftwareIllustration() {
               </span>
             </div>
 
-            <div className="min-h-0 flex-1 overflow-hidden px-1 pt-1 lg:px-1.5">
+            <div className="min-h-0 flex-1 overflow-hidden">
               {REQUESTS.map((row, index) => {
                 const selected = index === 0;
                 const current = rowStage(index, step);
@@ -296,12 +252,13 @@ export function CustomSoftwareIllustration() {
                 return (
                   <div
                     key={row.company}
-                    className="mb-0.5 flex items-center gap-1.5 px-1.5 py-[7px] lg:px-2"
+                    className="flex items-center gap-2 px-3 py-[9px] lg:px-3.5 lg:py-2.5"
                     style={{
-                      borderRadius: 8,
-                      background: selected
-                        ? illustrationColors.surfaceMuted
-                        : "transparent",
+                      background: selected ? illustrationColors.surfaceMuted : "transparent",
+                      boxShadow: selected
+                        ? `inset 2px 0 0 ${illustrationColors.ink}`
+                        : undefined,
+                      borderBottom: `1px solid ${illustrationColors.border}`,
                     }}
                   >
                     <span
@@ -351,45 +308,40 @@ export function CustomSoftwareIllustration() {
           </div>
 
           <div
-            className="flex w-[42%] shrink-0 flex-col border-l md:w-[36%] lg:w-[32%]"
+            className="flex w-[42%] shrink-0 flex-col md:w-[36%] lg:w-[32%]"
             style={{
-              borderColor: illustrationColors.border,
-              background: illustrationColors.surfaceMuted,
+              borderLeft: `1px solid ${illustrationColors.border}`,
             }}
           >
-            <div
-              className="flex shrink-0 items-center justify-between gap-1 border-b px-2 py-[7px] lg:px-2.5"
-              style={{ borderColor: illustrationColors.border }}
-            >
+            <div className="flex shrink-0 items-center justify-between gap-2 px-3 py-2.5 lg:px-3.5">
               <span className="min-w-0">
                 <span
-                  className="block truncate text-[8px] leading-none lg:text-[9.5px]"
+                  className="block truncate text-[8.5px] leading-none lg:text-[10px]"
                   style={{ color: illustrationColors.ink }}
                 >
                   Acme Corp
                 </span>
                 <span
-                  className="mt-1 block truncate text-[6.5px] leading-none"
+                  className="mt-1.5 block truncate text-[7px] leading-none"
                   style={{ color: illustrationColors.inkFaint }}
                 >
                   Workspace onboarding
                 </span>
               </span>
-              <SlackMark className="h-[10px] w-[10px]" />
             </div>
 
-            <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-hidden p-2 lg:p-2.5">
-              <div className="flex flex-col gap-1.5">
+            <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-hidden px-3 pb-3 lg:px-3.5">
+              <div className="flex flex-col gap-2">
                 {FIELDS.map((field) => (
-                  <div key={field.label} className="flex items-baseline justify-between gap-2">
+                  <div key={field.label} className="flex items-baseline justify-between gap-3">
                     <span
-                      className="shrink-0 text-[6.5px] leading-none lg:text-[7.5px]"
+                      className="shrink-0 text-[7px] leading-[1.3] lg:text-[8px]"
                       style={{ color: illustrationColors.inkFaint }}
                     >
                       {field.label}
                     </span>
                     <span
-                      className="truncate text-[7px] leading-none lg:text-[8px]"
+                      className="truncate text-[7.5px] leading-[1.3] lg:text-[8.5px]"
                       style={{ color: illustrationColors.ink }}
                     >
                       {field.value}
@@ -399,14 +351,11 @@ export function CustomSoftwareIllustration() {
               </div>
 
               <div
-                className="flex min-h-0 flex-1 flex-col gap-1 rounded-[8px] border p-1.5 lg:p-2"
-                style={{
-                  borderColor: live ? "rgba(201,100,66,0.18)" : illustrationColors.border,
-                  background: illustrationColors.surface,
-                }}
+                className="flex min-h-0 flex-1 flex-col pt-3"
+                style={{ borderTop: `1px solid ${illustrationColors.border}` }}
               >
                 <span
-                  className="mb-0.5 text-[6.5px] leading-none lg:text-[7.5px]"
+                  className="mb-2 text-[7px] leading-none lg:text-[8px]"
                   style={{ color: illustrationColors.inkFaint }}
                 >
                   Provisioning
@@ -414,13 +363,17 @@ export function CustomSoftwareIllustration() {
                 {PROVISION.map((item) => {
                   const done = step >= item.step;
                   return (
-                    <div key={item.label} className="flex items-start gap-1.5 py-[3px]">
+                    <div key={item.label} className="flex items-start gap-2 py-[6px]">
                       <span className="mt-px flex h-[12px] w-[12px] shrink-0 items-center justify-center">
-                        {done ? <CheckGlyph size={8} /> : <StatusDot tone="idle" />}
+                        {done ? (
+                          <CheckGlyph size={8} color={illustrationColors.health} />
+                        ) : (
+                          <StatusDot tone="idle" />
+                        )}
                       </span>
                       <span className="min-w-0">
                         <span
-                          className="block truncate text-[7.5px] leading-none lg:text-[8.5px]"
+                          className="block truncate text-[8px] leading-none lg:text-[9px]"
                           style={{
                             color: done ? illustrationColors.ink : illustrationColors.inkFaint,
                           }}
@@ -428,11 +381,11 @@ export function CustomSoftwareIllustration() {
                           {item.label}
                         </span>
                         <span
-                          className="mt-[3px] block truncate text-[6.5px] leading-none"
+                          className="mt-1 block truncate text-[7px] leading-none"
                           style={{
                             color: done
                               ? illustrationColors.inkMuted
-                              : illustrationColors.wire,
+                              : illustrationColors.inkFaint,
                           }}
                         >
                           {done ? item.hint : "Pending"}
@@ -450,16 +403,12 @@ export function CustomSoftwareIllustration() {
                     initial={reduce ? false : illustrationPopHidden}
                     animate={illustrationPopShown}
                     transition={fade}
-                    className="flex items-center gap-1.5 rounded-[8px] border px-2 py-1.5"
-                    style={{
-                      borderColor: "rgba(201,100,66,0.20)",
-                      background: illustrationColors.accentSoft,
-                    }}
+                    className="flex items-center gap-1.5 pt-1"
                   >
-                    <CheckGlyph size={8} />
+                    <CheckGlyph size={8} color={illustrationColors.health} />
                     <span
-                      className="truncate text-[7.5px] leading-none lg:text-[8.5px]"
-                      style={{ color: illustrationColors.accent }}
+                      className="truncate text-[8px] leading-none lg:text-[9px]"
+                      style={{ color: illustrationColors.health }}
                     >
                       Workspace live
                     </span>
@@ -469,7 +418,7 @@ export function CustomSoftwareIllustration() {
                     key="progress"
                     initial={false}
                     animate={illustrationBlurShown}
-                    className="truncate text-[7px] leading-none"
+                    className="truncate text-[7.5px] leading-none"
                     style={{ color: illustrationColors.inkFaint }}
                   >
                     {building ? "Provisioning systems…" : "Waiting to start…"}

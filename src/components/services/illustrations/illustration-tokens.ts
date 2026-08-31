@@ -6,39 +6,40 @@
 
 export const illustrationColors = {
   surface: "#FFFFFF",
-  /** Base panel fill — slightly translucent so the scenic backdrop stays present. */
-  surfacePanel: "rgba(255, 255, 255, 0.94)",
-  surfaceTranslucent: "rgba(255, 255, 255, 0.88)",
-  surfaceMuted: "#F7F7F4",
-  surfaceSunk: "#EFEFEA",
-  surfaceWarm: "#FDF7EF",
+  /** Opaque panel fill — miniature UIs should read as real product chrome. */
+  surfacePanel: "#FFFFFF",
+  surfaceTranslucent: "rgba(255, 255, 255, 0.96)",
+  surfaceMuted: "#FAFAF8",
+  surfaceSunk: "#F4F4F0",
+  surfaceWarm: "#FBF6F1",
   ink: "#1C1917",
   inkMuted: "#78716C",
   inkFaint: "#A8A29E",
-  border: "rgba(28, 25, 23, 0.10)",
-  borderStrong: "rgba(28, 25, 23, 0.20)",
-  wire: "#D8D5D0",
+  border: "rgba(28, 25, 23, 0.08)",
+  borderStrong: "rgba(28, 25, 23, 0.12)",
+  wire: "#E7E5E1",
   accent: "#C96442",
-  accentSoft: "#F5E6DF",
-  accentLine: "rgba(201, 100, 66, 0.42)",
+  accentSoft: "#F7EEE9",
+  accentLine: "rgba(201, 100, 66, 0.28)",
+  /** Health / success — AWS and ops states only. */
+  health: "#3F7A5A",
+  healthSoft: "#EAF3EE",
 } as const;
 
 export const illustrationShadow = {
-  /** Base interface panel resting on the scene. */
-  panel:
-    "0 1px 2px rgba(28,25,23,0.04), 0 10px 28px -14px rgba(28,25,23,0.20)",
-  /** Foreground object that overlaps another panel. */
-  raised:
-    "0 2px 6px rgba(28,25,23,0.06), 0 20px 44px -18px rgba(28,25,23,0.28)",
-  /** Chips, toasts and small floating controls. */
-  chip: "0 1px 2px rgba(28,25,23,0.06)",
+  /** Resting product surface. */
+  panel: "0 1px 2px rgba(28,25,23,0.04)",
+  /** Foreground window — elevation only, not atmosphere. */
+  raised: "0 1px 2px rgba(28,25,23,0.05), 0 10px 28px -18px rgba(28,25,23,0.18)",
+  /** Unused for chips; kept so existing elevation keys stay valid. */
+  chip: "0 1px 1px rgba(28,25,23,0.04)",
 } as const;
 
 export const illustrationRadius = {
-  chip: 5,
-  control: 7,
+  chip: 6,
+  control: 8,
   panel: 10,
-  device: 16,
+  device: 12,
 } as const;
 
 /** Site-wide easing — calm, mechanical, no overshoot. */
