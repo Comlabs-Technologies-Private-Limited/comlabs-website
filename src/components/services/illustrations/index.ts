@@ -21,27 +21,27 @@ export const serviceIllustrations: Record<string, ServiceIllustration> = {
   "application-support": {
     Component: ApplicationSupportIllustration,
     label:
-      "Application support illustration: incident INC-2481 for a production Payments API failure, escalating from L1 triage through L3 engineering.",
+      "Application support illustration: incident INC-2481 for a production Payments API failure, escalating from L1 triage through L4 with a resolved finish.",
   },
   "agentic-infrastructure": {
     Component: AgenticWorkflowIllustration,
     label:
-      "Agentic infrastructure illustration: a guarded agent run moving from user request through context, tools, approval and action, with CRM, database, email and API tools.",
+      "Agentic infrastructure illustration: Renewal Agent orchestrating a Q3 Acme renewal across CRM, database, email and approval.",
   },
   "website-design": {
     Component: WebsiteDesignIllustration,
     label:
-      "Website design illustration: wireframe page blocks resolving into a finished, responsive Comlabs website inside a browser, with a mobile preview and a ready-for-review status.",
+      "Website design illustration: stacked live previews of Radiant, Formial Labs and Global Services, Comlabs-built digital experiences.",
     },
   "custom-software": {
     Component: CustomSoftwareIllustration,
     label:
-      "Custom software illustration: Atlas, an operations product with a request queue, workspace table and provisioning rail as Acme moves from a Slack request to a live Salesforce and Outlook workspace.",
+      "Custom software illustration: Atlas receiving an Acme workspace request and provisioning CRM, seats and calendar until the workspace is ready.",
   },
   "mobile-app": {
     Component: MobileAppIllustration,
     label:
-      "Mobile app illustration: a SaaS inbox where a seat request is reviewed, approved, and confirmed across a list and detail view.",
+      "Mobile app illustration: an operations iPhone app where a production deploy completes, the Dynamic Island updates, and a health sheet appears.",
   },
   "seo-aeo": {
     Component: SeoAeoIllustration,
@@ -51,7 +51,7 @@ export const serviceIllustrations: Record<string, ServiceIllustration> = {
   "cloud-infrastructure": {
     Component: CloudScalingIllustration,
     label:
-      "Cloud infrastructure illustration: a production AWS console for prod-api in ap-south-1, with request rate, p95 latency, healthy services, last deploy and backups.",
+      "Cloud infrastructure illustration: live production traffic moving CloudFront to ALB, ECS and RDS in ap-south-1 until the deploy is healthy.",
   },
 };
 
@@ -65,7 +65,7 @@ export const customCraftIllustration: ServiceIllustration = {
 export const appliedAiIllustration: ServiceIllustration = {
   Component: AppliedAiIllustration,
   label:
-    "Applied AI illustration: a renewal copilot moving from request through context, tools and approval, then logging the approved reply.",
+    "Applied AI illustration: Renewal Copilot gathering contract context, drafting a Q3 reply, then logging the approved message to CRM.",
 };
 
 export { ServiceIllustrationFrame } from "./service-illustration-frame";

@@ -1,11 +1,13 @@
 "use client";
 
 import type { CSSProperties, ReactNode } from "react";
+import { motion } from "framer-motion";
 
 import { cn } from "@/lib/utils";
 
 import {
   illustrationColors,
+  illustrationEase,
   illustrationRadius,
   illustrationShadow,
 } from "./illustration-tokens";
@@ -245,6 +247,96 @@ export function ArrowGlyph({
         strokeWidth="1.25"
         strokeLinecap="round"
         strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+export function ActivitySpinner({
+  size = 12,
+  active = true,
+  reduce = false,
+  color = illustrationColors.accent,
+}: {
+  size?: number;
+  active?: boolean;
+  reduce?: boolean;
+  color?: string;
+}) {
+  return (
+    <motion.span
+      className="block rounded-full border"
+      style={{
+        width: size,
+        height: size,
+        borderColor: `${color}33`,
+        borderTopColor: color,
+      }}
+      animate={!reduce && active ? { rotate: 360 } : undefined}
+      transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }}
+    />
+  );
+}
+
+export function DrawnCheck({
+  show,
+  reduce = false,
+  size = 12,
+  color = illustrationColors.health,
+}: {
+  show: boolean;
+  reduce?: boolean;
+  size?: number;
+  color?: string;
+}) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 12 12" fill="none" aria-hidden>
+      <motion.path
+        d="M2.5 6.4 4.8 8.7 9.5 3.6"
+        stroke={color}
+        strokeWidth="1.4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        initial={false}
+        animate={{ pathLength: show ? 1 : 0, opacity: show ? 1 : 0 }}
+        transition={{ duration: reduce ? 0 : 0.32, ease: illustrationEase }}
+      />
+    </svg>
+  );
+}
+
+export function ConnectorBeam({
+  active,
+  reduce = false,
+  height = 10,
+}: {
+  active: boolean;
+  reduce?: boolean;
+  height?: number;
+}) {
+  return (
+    <svg width="12" height={height} viewBox={`0 0 12 ${height}`} fill="none" aria-hidden>
+      <line
+        x1="6"
+        y1="0"
+        x2="6"
+        y2={height}
+        stroke={illustrationColors.wire}
+        strokeWidth="1"
+        strokeDasharray="1.6 2.4"
+        strokeLinecap="round"
+      />
+      <motion.line
+        x1="6"
+        y1="0"
+        x2="6"
+        y2={height}
+        stroke={illustrationColors.accent}
+        strokeWidth="1.2"
+        strokeLinecap="round"
+        initial={false}
+        animate={{ pathLength: active ? 1 : 0, opacity: active ? 1 : 0 }}
+        transition={{ duration: reduce ? 0 : 0.42, ease: illustrationEase }}
       />
     </svg>
   );
