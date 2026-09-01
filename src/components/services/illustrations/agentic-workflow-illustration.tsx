@@ -278,10 +278,10 @@ function WorkflowNode({
       onPointerLeave={() => onHover?.(false)}
       animate={{ y: hovered ? -1 : 0 }}
       transition={{ duration: 0.18, ease: EASE }}
-      className="relative"
+      className={wide ? "relative min-w-0" : "relative shrink-0"}
       style={{
         width: wide ? "100%" : "max-content",
-        maxWidth: "100%",
+        maxWidth: wide ? "100%" : undefined,
         borderRadius: 10,
         background: hovered ? surfaceMuted : surface,
         border: `1px solid ${
