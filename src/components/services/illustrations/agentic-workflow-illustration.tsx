@@ -1,385 +1,1102 @@
 "use client";
 
-import { useRef } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { Database, Mail, Table2, WalletCards } from "lucide-react";
+import { motion } from "framer-motion";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from "react";
 
-import { AnimatedBeam } from "./animated-beam";
-import { Chip, Panel } from "./illustration-primitives";
-import { IllustrationStage, useIllustrationState } from "./service-illustration-frame";
 import {
   illustrationColors,
-  illustrationPopHidden,
-  illustrationPopShown,
+  illustrationEase,
   illustrationShadow,
-  illustrationSpring,
-  illustrationSwap,
-} from "./illustration-tokens";
-import { useIllustrationSequence } from "./use-illustration-sequence";
+} from "@/components/services/illustrations/illustration-tokens";
+import {
+  IllustrationStage,
+  useIllustrationState,
+} from "@/components/services/illustrations/service-illustration-frame";
+import { useIllustrationSequence } from "@/components/services/illustrations/use-illustration-sequence";
 
-const CONTEXT_CARDS = [
-  { label: "MSA-118", meta: "Pricing band" },
-  { label: "Last renewal: 11 months", meta: "Account history" },
-  { label: "Risk: Low", meta: "Health" },
+type PortSide = "left" | "right" | "top" | "bottom";
+type PortShape = "circle" | "diamond";
+type PortId =
+  | "requestOut"
+  | "agentIn"
+  | "agentOut"
+  | "agentModel"
+  | "agentMemory"
+  | "agentTools"
+  | "modelIn"
+  | "memoryIn"
+  | "crmIn"
+  | "contractIn"
+  | "pricingIn"
+  | "prepareIn"
+  | "prepareOut"
+  | "approvalIn"
+  | "approvalOut"
+  | "sendIn"
+  | "sendOut"
+  | "doneIn";
+
+type NodeId =
+  | "request"
+  | "agent"
+  | "model"
+  | "memory"
+  | "crm"
+  | "contract"
+  | "pricing"
+  | "prepare"
+  | "approval"
+  | "send"
+  | "done";
+
+type NodeState = "idle" | "active" | "ready" | "done";
+type EdgeKind = "main" | "ai";
+type EdgeDir = "h" | "v" | "around";
+
+interface Point {
+  x: number;
+  y: number;
+}
+
+interface EdgeDef {
+  id: string;
+  from: PortId;
+  to: PortId;
+  kind: EdgeKind;
+  dir: EdgeDir;
+}
+
+const EASE = illustrationEase;
+const COMPACT_AT = 400;
+const PORT = 7;
+
+const ink = illustrationColors.ink;
+const inkMuted = illustrationColors.inkMuted;
+const inkFaint = illustrationColors.inkFaint;
+const border = illustrationColors.border;
+const borderStrong = illustrationColors.borderStrong;
+const surface = illustrationColors.surface;
+const surfaceMuted = illustrationColors.surfaceMuted;
+const surfaceSunk = illustrationColors.surfaceSunk;
+const accent = illustrationColors.accent;
+const accentSoft = illustrationColors.accentSoft;
+const accentLine = illustrationColors.accentLine;
+const health = illustrationColors.health;
+const healthSoft = illustrationColors.healthSoft;
+const connector = "rgba(28, 25, 23, 0.22)";
+const connectorAi = "rgba(28, 25, 23, 0.18)";
+
+const S = {
+  request: 1,
+  pulseToAgent: 2,
+  agentGather: 3,
+  aiModel: 4,
+  aiMemory: 5,
+  aiCrm: 6,
+  aiRest: 7,
+  contextReady: 8,
+  pulsePrepare: 9,
+  prepareReady: 10,
+  approval: 11,
+  approved: 12,
+  pulseSend: 13,
+  sent: 14,
+  complete: 15,
+} as const;
+
+const STEP_COUNT = 16;
+const DELAYS = [
+  360, 400, 460, 260, 280, 280, 300, 400, 400, 460, 680, 400, 460, 500, 240,
 ] as const;
 
-function agentCopy(step: number): string {
-  if (step >= 11) return "Action completed";
-  if (step >= 7) return "Preparing action";
-  if (step >= 3) return "Retrieving account context";
-  if (step >= 2) return "Understanding request";
-  return "Idle";
+const DESKTOP_EDGES: EdgeDef[] = [
+  { id: "e-req-agent", from: "requestOut", to: "agentIn", kind: "main", dir: "h" },
+  { id: "e-agent-prep", from: "agentOut", to: "prepareIn", kind: "main", dir: "h" },
+  { id: "e-prep-appr", from: "prepareOut", to: "approvalIn", kind: "main", dir: "h" },
+  { id: "e-appr-send", from: "approvalOut", to: "sendIn", kind: "main", dir: "v" },
+  { id: "e-send-done", from: "sendOut", to: "doneIn", kind: "main", dir: "v" },
+  { id: "e-agent-model", from: "agentModel", to: "modelIn", kind: "ai", dir: "v" },
+  { id: "e-agent-mem", from: "agentMemory", to: "memoryIn", kind: "ai", dir: "v" },
+  { id: "e-agent-crm", from: "agentTools", to: "crmIn", kind: "ai", dir: "v" },
+  { id: "e-agent-con", from: "agentTools", to: "contractIn", kind: "ai", dir: "v" },
+  { id: "e-agent-price", from: "agentTools", to: "pricingIn", kind: "ai", dir: "v" },
+];
+
+function edgesFor(compact: boolean, showModel: boolean, showPricing: boolean): EdgeDef[] {
+  if (compact) return COMPACT_EDGES;
+  return DESKTOP_EDGES.filter((edge) => {
+    if (!showModel && edge.id === "e-agent-model") return false;
+    if (!showPricing && edge.id === "e-agent-price") return false;
+    return true;
+  });
+}
+
+const COMPACT_EDGES: EdgeDef[] = [
+  { id: "e-req-agent", from: "requestOut", to: "agentIn", kind: "main", dir: "v" },
+  { id: "e-agent-appr", from: "agentOut", to: "approvalIn", kind: "main", dir: "around" },
+  { id: "e-appr-done", from: "approvalOut", to: "doneIn", kind: "main", dir: "v" },
+  { id: "e-agent-crm", from: "agentModel", to: "crmIn", kind: "ai", dir: "v" },
+  { id: "e-agent-mem", from: "agentMemory", to: "memoryIn", kind: "ai", dir: "v" },
+  { id: "e-agent-con", from: "agentTools", to: "contractIn", kind: "ai", dir: "v" },
+];
+
+const NODE_PORTS: Record<NodeId, PortId[]> = {
+  request: ["requestOut"],
+  agent: ["agentIn", "agentOut", "agentModel", "agentMemory", "agentTools"],
+  model: ["modelIn"],
+  memory: ["memoryIn"],
+  crm: ["crmIn"],
+  contract: ["contractIn"],
+  pricing: ["pricingIn"],
+  prepare: ["prepareIn", "prepareOut"],
+  approval: ["approvalIn", "approvalOut"],
+  send: ["sendIn", "sendOut"],
+  done: ["doneIn"],
+};
+
+function cubic(from: Point, to: Point, dir: EdgeDir, canvasWidth = 1000): string {
+  if (dir === "around") {
+    const bulge = Math.min(canvasWidth - 14, Math.max(from.x, to.x) + 22);
+    return `M ${from.x.toFixed(2)} ${from.y.toFixed(2)} C ${bulge.toFixed(2)} ${from.y.toFixed(2)}, ${bulge.toFixed(2)} ${to.y.toFixed(2)}, ${to.x.toFixed(2)} ${to.y.toFixed(2)}`;
+  }
+  if (dir === "v") {
+    const dy = Math.max(16, Math.abs(to.y - from.y) * 0.46);
+    const sign = to.y >= from.y ? 1 : -1;
+    return `M ${from.x.toFixed(2)} ${from.y.toFixed(2)} C ${from.x.toFixed(2)} ${(from.y + sign * dy).toFixed(2)}, ${to.x.toFixed(2)} ${(to.y - sign * dy).toFixed(2)}, ${to.x.toFixed(2)} ${to.y.toFixed(2)}`;
+  }
+  const dx = Math.max(20, Math.abs(to.x - from.x) * 0.42);
+  const sign = to.x >= from.x ? 1 : -1;
+  return `M ${from.x.toFixed(2)} ${from.y.toFixed(2)} C ${(from.x + sign * dx).toFixed(2)} ${from.y.toFixed(2)}, ${(to.x - sign * dx).toFixed(2)} ${to.y.toFixed(2)}, ${to.x.toFixed(2)} ${to.y.toFixed(2)}`;
+}
+
+function Port({
+  id,
+  register,
+  side,
+  shape = "circle",
+  offset = 50,
+  lit = false,
+}: {
+  id: PortId;
+  register: (id: PortId, el: HTMLSpanElement | null) => void;
+  side: PortSide;
+  shape?: PortShape;
+  offset?: number;
+  lit?: boolean;
+}) {
+  const place: CSSProperties =
+    side === "left"
+      ? { left: 0, top: `${offset}%`, transform: "translate(-50%, -50%)" }
+      : side === "right"
+        ? { right: 0, top: `${offset}%`, transform: "translate(50%, -50%)" }
+        : side === "top"
+          ? { top: 0, left: `${offset}%`, transform: "translate(-50%, -50%)" }
+          : { bottom: 0, left: `${offset}%`, transform: "translate(-50%, 50%)" };
+
+  return (
+    <span
+      ref={(el) => register(id, el)}
+      data-port={id}
+      aria-hidden
+      className="pointer-events-none absolute z-20 block"
+      style={{
+        width: PORT,
+        height: PORT,
+        ...place,
+      }}
+    >
+      <span
+        className="block size-full"
+        style={{
+          borderRadius: shape === "diamond" ? 1.5 : 999,
+          transform: shape === "diamond" ? "rotate(45deg)" : undefined,
+          background: lit ? accent : surface,
+          border: `1px solid ${lit ? accent : borderStrong}`,
+          boxShadow: lit ? `0 0 0 2px ${accentSoft}` : "none",
+        }}
+      />
+    </span>
+  );
+}
+
+function NodeIcon({ children }: { children: ReactNode }) {
+  return (
+    <span
+      className="flex size-6 shrink-0 items-center justify-center rounded-[6px]"
+      style={{
+        background: surfaceSunk,
+        color: ink,
+        border: `1px solid ${border}`,
+      }}
+    >
+      {children}
+    </span>
+  );
+}
+
+function WorkflowNode({
+  children,
+  state,
+  selected = false,
+  hovered = false,
+  onHover,
+  wide = false,
+}: {
+  children: ReactNode;
+  state: NodeState;
+  selected?: boolean;
+  hovered?: boolean;
+  onHover?: (value: boolean) => void;
+  wide?: boolean;
+}) {
+  const active = state === "active";
+  const complete = state === "done" || state === "ready";
+
+  return (
+    <motion.div
+      onMouseEnter={() => onHover?.(true)}
+      onMouseLeave={() => onHover?.(false)}
+      onPointerEnter={() => onHover?.(true)}
+      onPointerLeave={() => onHover?.(false)}
+      animate={{ y: hovered ? -1 : 0 }}
+      transition={{ duration: 0.18, ease: EASE }}
+      className="relative"
+      style={{
+        width: wide ? "100%" : "max-content",
+        maxWidth: "100%",
+        borderRadius: 10,
+        background: hovered ? surfaceMuted : surface,
+        border: `1px solid ${
+          selected || active ? borderStrong : hovered ? borderStrong : complete ? borderStrong : border
+        }`,
+        boxShadow:
+          selected || active
+            ? `0 0 0 1px ${accentLine}, ${illustrationShadow.panel}`
+            : illustrationShadow.panel,
+        padding: "7px 10px 7px 8px",
+        pointerEvents: "auto",
+        cursor: "default",
+      }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+function Title({ children }: { children: ReactNode }) {
+  return (
+    <p
+      className="truncate font-medium leading-none tracking-tight"
+      style={{ fontSize: 11, color: ink }}
+    >
+      {children}
+    </p>
+  );
+}
+
+function Meta({
+  children,
+  tone = "muted",
+}: {
+  children: ReactNode;
+  tone?: "muted" | "accent" | "ok";
+}) {
+  const color = tone === "accent" ? accent : tone === "ok" ? health : inkMuted;
+  return (
+    <p className="mt-0.5 whitespace-nowrap leading-none tracking-tight" style={{ fontSize: 10, color }}>
+      {children}
+    </p>
+  );
+}
+
+function StrokeIcon({ d, extra }: { d: string; extra?: ReactNode }) {
+  return (
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
+      <path d={d} stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+      {extra}
+    </svg>
+  );
+}
+
+function EdgePulse({ d, run }: { d: string; run: boolean }) {
+  const pathRef = useRef<SVGPathElement>(null);
+  const [point, setPoint] = useState<Point | null>(null);
+
+  useEffect(() => {
+    if (!run) return;
+    const path = pathRef.current;
+    if (!path) return;
+    const length = path.getTotalLength();
+    if (length < 1) return;
+    const started = performance.now();
+    const duration = 420;
+    let frame = 0;
+    const tick = (now: number) => {
+      const t = Math.min(1, (now - started) / duration);
+      const p = path.getPointAtLength(t * length);
+      setPoint({ x: p.x, y: p.y });
+      if (t < 1) frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [d, run]);
+
+  return (
+    <>
+      <path ref={pathRef} d={d} fill="none" stroke="none" />
+      {run && point ? <circle cx={point.x} cy={point.y} r={2.5} fill={accent} /> : null}
+    </>
+  );
+}
+
+function ToolNode({
+  id,
+  title,
+  idleMeta,
+  hoverMeta,
+  icon,
+  portId,
+  state,
+  hovered,
+  setHovered,
+  register,
+}: {
+  id: NodeId;
+  title: string;
+  idleMeta: string;
+  hoverMeta: string;
+  icon: ReactNode;
+  portId: PortId;
+  state: NodeState;
+  hovered: NodeId | null;
+  setHovered: (id: NodeId | null) => void;
+  register: (id: PortId, el: HTMLSpanElement | null) => void;
+}) {
+  const isHovered = hovered === id;
+  return (
+    <WorkflowNode state={state} hovered={isHovered} onHover={(v) => setHovered(v ? id : null)}>
+      <Port id={portId} register={register} side="top" lit={state === "active"} />
+      <div className="flex items-center gap-1.5 pr-0.5">
+        <NodeIcon>{icon}</NodeIcon>
+        <div>
+          <Title>{title}</Title>
+          <Meta tone={state === "done" ? "ok" : state === "active" ? "accent" : "muted"}>
+            {isHovered ? hoverMeta : state === "done" ? "Ready" : idleMeta}
+          </Meta>
+        </div>
+      </div>
+    </WorkflowNode>
+  );
 }
 
 export function AgenticWorkflowIllustration() {
-  const { active, reduce } = useIllustrationState();
+  const { active, reduce, hovered: frameHovered } = useIllustrationState();
+
   const step = useIllustrationSequence({
-    steps: 12,
-    active,
+    steps: STEP_COUNT,
+    active: active || frameHovered,
     reduce,
-    stepMs: [360, 380, 360, 380, 360, 420, 400, 480, 520, 420, 560],
+    stepMs: DELAYS,
   });
 
-  const canvasRef = useRef<HTMLDivElement>(null);
-  const requestRef = useRef<HTMLDivElement>(null);
-  const agentRef = useRef<HTMLDivElement>(null);
-  const crmRef = useRef<HTMLDivElement>(null);
-  const dbRef = useRef<HTMLDivElement>(null);
-  const emailRef = useRef<HTMLDivElement>(null);
-  const billingRef = useRef<HTMLDivElement>(null);
-  const approvalRef = useRef<HTMLDivElement>(null);
+  return (
+    <IllustrationStage className="p-0 lg:p-0">
+      <WorkflowCanvas step={step} reduce={reduce} />
+    </IllustrationStage>
+  );
+}
 
-  const approved = step >= 9;
-  const completed = step >= 11;
+function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
+  const canvasRef = useRef<HTMLDivElement>(null);
+  const portsRef = useRef<Partial<Record<PortId, HTMLSpanElement | null>>>({});
+  const [size, setSize] = useState({ w: 1000, h: 560 });
+  const [compact, setCompact] = useState(false);
+  const [showModel, setShowModel] = useState(true);
+  const [showPricing, setShowPricing] = useState(true);
+  const [points, setPoints] = useState<Partial<Record<PortId, Point>>>({});
+  const [hovered, setHovered] = useState<NodeId | null>(null);
+
+  const finished = step >= S.complete;
+  const settled = reduce || finished;
+
+  const register = useCallback((id: PortId, el: HTMLSpanElement | null) => {
+    portsRef.current[id] = el;
+  }, []);
+
+  const measure = useCallback(() => {
+    const root = canvasRef.current;
+    if (!root) return;
+    const rect = root.getBoundingClientRect();
+    if (rect.width < 8 || rect.height < 8) return;
+    const nextCompact = rect.width < COMPACT_AT;
+    const nextModel = rect.width >= 460;
+    const nextPricing = rect.width >= 520;
+    setSize((prev) => (prev.w === rect.width && prev.h === rect.height ? prev : { w: rect.width, h: rect.height }));
+    setCompact((prev) => (prev === nextCompact ? prev : nextCompact));
+    setShowModel((prev) => (prev === nextModel ? prev : nextModel));
+    setShowPricing((prev) => (prev === nextPricing ? prev : nextPricing));
+    const next: Partial<Record<PortId, Point>> = {};
+    for (const [id, el] of Object.entries(portsRef.current) as [PortId, HTMLSpanElement | null][]) {
+      if (!el) continue;
+      const r = el.getBoundingClientRect();
+      next[id] = {
+        x: r.left - rect.left + r.width / 2,
+        y: r.top - rect.top + r.height / 2,
+      };
+    }
+    setPoints((prev) => {
+      const keys = Object.keys(next) as PortId[];
+      if (keys.length === Object.keys(prev).length) {
+        let same = true;
+        for (const key of keys) {
+          const a = prev[key];
+          const b = next[key];
+          if (!a || !b || Math.abs(a.x - b.x) > 0.4 || Math.abs(a.y - b.y) > 0.4) {
+            same = false;
+            break;
+          }
+        }
+        if (same) return prev;
+      }
+      return next;
+    });
+  }, []);
+
+  useLayoutEffect(() => {
+    measure();
+    const root = canvasRef.current;
+    if (!root) return;
+    const ro = new ResizeObserver(() => measure());
+    ro.observe(root);
+    const frame = requestAnimationFrame(() => measure());
+    return () => {
+      ro.disconnect();
+      cancelAnimationFrame(frame);
+    };
+  }, [measure, compact, showModel, showPricing, step, hovered]);
+
+  const edges = edgesFor(compact, showModel, showPricing);
+
+  const nodeState = (id: NodeId): NodeState => {
+    if (settled) {
+      return id === "agent" ? "ready" : "done";
+    }
+    switch (id) {
+      case "request":
+        return step >= S.request ? "active" : "idle";
+      case "agent":
+        if (step >= S.contextReady) return "ready";
+        if (step >= S.agentGather) return "active";
+        return "idle";
+      case "model":
+        return step >= S.aiModel ? (step >= S.aiMemory ? "done" : "active") : "idle";
+      case "memory":
+        return step >= S.aiMemory ? (step >= S.aiCrm ? "done" : "active") : "idle";
+      case "crm":
+        return step >= S.aiCrm ? (step >= S.aiRest ? "done" : "active") : "idle";
+      case "contract":
+      case "pricing":
+        return step >= S.aiRest ? (step >= S.contextReady ? "done" : "active") : "idle";
+      case "prepare":
+        if (step >= S.prepareReady) return "ready";
+        if (step >= S.pulsePrepare) return "active";
+        return "idle";
+      case "approval":
+        if (step >= S.approved) return "done";
+        if (step >= S.approval) return "active";
+        return "idle";
+      case "send":
+        if (step >= S.sent) return "done";
+        if (step >= S.pulseSend) return "active";
+        return "idle";
+      case "done":
+        return step >= S.complete ? "done" : "idle";
+      default:
+        return "idle";
+    }
+  };
+
+  const pulseOn = (id: string) => {
+    if (reduce || finished) return false;
+    if (id === "e-req-agent") return step === S.pulseToAgent;
+    if (id === "e-agent-model") return step === S.aiModel;
+    if (id === "e-agent-mem") return step === S.aiMemory;
+    if (id === "e-agent-crm") return step === S.aiCrm;
+    if (id === "e-agent-con" || id === "e-agent-price") return step === S.aiRest;
+    if (id === "e-agent-prep") return step === S.pulsePrepare;
+    if (id === "e-prep-appr" || id === "e-agent-appr") return step === S.prepareReady;
+    if (id === "e-appr-send") return step === S.pulseSend;
+    if (id === "e-send-done" || id === "e-appr-done") return step === S.sent;
+    return false;
+  };
+
+  const related = (edge: EdgeDef) => {
+    if (!hovered || !settled) return false;
+    const ports = NODE_PORTS[hovered];
+    return ports.includes(edge.from) || ports.includes(edge.to);
+  };
+
+  const agentMeta =
+    nodeState("agent") === "ready" || settled
+      ? "Context ready"
+      : nodeState("agent") === "active"
+        ? "Gathering context"
+        : "AI Agent";
+  const prepareMeta =
+    nodeState("prepare") === "ready" || settled
+      ? "Ready"
+      : nodeState("prepare") === "active"
+        ? "Preparing"
+        : "Queued";
+  const sendMeta =
+    nodeState("send") === "done" || settled
+      ? "Sent"
+      : nodeState("send") === "active"
+        ? "Sending…"
+        : "Waiting";
+
+  const statusLabel = settled
+    ? "Action completed"
+    : step >= S.approval
+      ? "Awaiting approval"
+      : "Orchestrating";
+  const stepsDone = settled ? 6 : Math.min(6, Math.max(0, Math.round((step / S.complete) * 6)));
+
+  const approvalExpanded = !reduce && step === S.approval && !finished;
 
   return (
-    <IllustrationStage>
-      <Panel className="relative flex h-full flex-col overflow-hidden" radius={12}>
-        <div
-          className="flex shrink-0 items-center justify-between border-b px-3 py-2 lg:px-3.5"
-          style={{ borderColor: illustrationColors.border }}
+    <div
+      ref={canvasRef}
+      className="relative h-full min-h-0 w-full overflow-hidden"
+      style={{
+        backgroundColor: surfaceMuted,
+        backgroundImage: `radial-gradient(circle, rgba(28, 25, 23, 0.20) 0.7px, transparent 0.8px)`,
+        backgroundSize: "18px 18px",
+      }}
+    >
+      <div className="pointer-events-none absolute inset-x-4 top-2.5 z-10 flex items-center justify-between gap-3">
+        <p className="truncate font-medium tracking-tight" style={{ fontSize: 10, color: inkFaint }}>
+          Prepare the Q3 renewal for Acme
+        </p>
+        <span
+          className="shrink-0 rounded px-1.5 py-0.5 font-medium tracking-tight"
+          style={{
+            fontSize: 10,
+            color: settled ? health : inkMuted,
+            border: `1px solid ${border}`,
+            background: surface,
+          }}
         >
-          <span>
-            <span
-              className="block text-[8px] font-medium tracking-tight lg:text-[10px]"
-              style={{ color: illustrationColors.ink }}
-            >
-              Renewal Agent
-            </span>
-            <span
-              className="mt-0.5 block text-[6.5px] lg:text-[7.5px]"
-              style={{ color: illustrationColors.inkFaint }}
-            >
-              Request → Context → Tools → Approval
-            </span>
-          </span>
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.span
-              key={agentCopy(step)}
-              initial={reduce ? false : illustrationPopHidden}
-              animate={illustrationPopShown}
-              exit={reduce ? undefined : illustrationPopHidden}
-              transition={illustrationSwap}
-            >
-              <Chip
-                tone={completed ? "health" : approved ? "accent" : "quiet"}
-                size="compact"
-              >
-                {agentCopy(step)}
-              </Chip>
-            </motion.span>
-          </AnimatePresence>
+          {statusLabel}
+        </span>
+      </div>
+
+      <svg
+        className="pointer-events-none absolute inset-0 z-[1]"
+        width={size.w}
+        height={size.h}
+        viewBox={`0 0 ${size.w} ${size.h}`}
+        fill="none"
+        aria-hidden
+      >
+        {edges.map((edge) => {
+          const from = points[edge.from];
+          const to = points[edge.to];
+          if (!from || !to) return null;
+          const d = cubic(from, to, edge.dir, size.w);
+          const highlight = related(edge);
+          const pulsing = pulseOn(edge.id);
+          const activeStroke = highlight || pulsing;
+          return (
+            <g key={edge.id}>
+              <path
+                d={d}
+                stroke={activeStroke ? accent : edge.kind === "ai" ? connectorAi : connector}
+                strokeWidth={highlight ? 1.25 : 1.1}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeDasharray={edge.kind === "ai" ? "4 5" : undefined}
+                opacity={edge.kind === "ai" ? (activeStroke ? 0.8 : 0.5) : activeStroke ? 1 : 0.88}
+              />
+              <EdgePulse d={d} run={pulsing} />
+            </g>
+          );
+        })}
+      </svg>
+
+      <div
+        className="relative z-[2] grid h-full w-full"
+        style={{
+          padding: compact ? "32px 16px 26px" : "36px 18px 30px",
+          gridTemplateColumns: compact
+            ? "1fr"
+            : "minmax(0, 0.95fr) minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1.15fr)",
+          gridTemplateRows: compact ? "auto auto auto auto auto" : "auto auto auto",
+          columnGap: compact ? 0 : 12,
+          rowGap: compact ? 12 : 18,
+          alignContent: "center",
+        }}
+      >
+        <div
+          style={{
+            gridColumn: "1",
+            gridRow: "1",
+            display: "flex",
+            justifyContent: compact ? "center" : "flex-start",
+            width: compact ? "min(220px, 72%)" : undefined,
+            justifySelf: compact ? "center" : undefined,
+          }}
+        >
+          <WorkflowNode
+            state={nodeState("request")}
+            hovered={hovered === "request"}
+            onHover={(v) => setHovered(v ? "request" : null)}
+            wide={compact}
+          >
+            <Port
+              id="requestOut"
+              register={register}
+              side={compact ? "bottom" : "right"}
+              lit={nodeState("request") === "active"}
+            />
+            <div className="flex items-center gap-2 pr-1">
+              <NodeIcon>
+                <StrokeIcon d="M2 6h8M7 3l3 3-3 3" />
+              </NodeIcon>
+              <div className="min-w-0">
+                <Title>Renewal request</Title>
+                <Meta>Acme Corp</Meta>
+              </div>
+            </div>
+          </WorkflowNode>
         </div>
 
-        <div ref={canvasRef} className="relative min-h-0 flex-1">
-          <div className="pointer-events-none absolute inset-0 z-0">
-            <AnimatedBeam
-              containerRef={canvasRef}
-              fromRef={requestRef}
-              toRef={agentRef}
-              curvature={18}
-              enabled={step >= 2}
-              duration={1.1}
-              delay={0}
+        <div
+          style={{
+            gridColumn: compact ? "1" : "2",
+            gridRow: compact ? "2" : "1",
+            display: "flex",
+            justifyContent: "center",
+            width: compact ? "min(220px, 72%)" : undefined,
+            justifySelf: compact ? "center" : undefined,
+          }}
+        >
+          <WorkflowNode
+            state={nodeState("agent")}
+            selected={nodeState("agent") === "active"}
+            hovered={hovered === "agent"}
+            onHover={(v) => setHovered(v ? "agent" : null)}
+            wide
+          >
+            <Port
+              id="agentIn"
+              register={register}
+              side={compact ? "top" : "left"}
+              lit={nodeState("agent") === "active"}
             />
-            <AnimatedBeam
-              containerRef={canvasRef}
-              fromRef={agentRef}
-              toRef={crmRef}
-              curvature={-16}
-              enabled={step >= 4}
-              duration={0.9}
-              delay={0.05}
+            <Port
+              id="agentOut"
+              register={register}
+              side={compact ? "right" : "right"}
+              lit={nodeState("agent") === "active"}
             />
-            <AnimatedBeam
-              containerRef={canvasRef}
-              fromRef={agentRef}
-              toRef={dbRef}
-              curvature={16}
-              enabled={step >= 4}
-              duration={0.9}
-              delay={0.12}
+            <Port
+              id="agentModel"
+              register={register}
+              side="bottom"
+              shape="diamond"
+              offset={28}
+              lit={nodeState("model") === "active" || (compact && nodeState("contract") === "active")}
             />
-            <AnimatedBeam
-              containerRef={canvasRef}
-              fromRef={agentRef}
-              toRef={emailRef}
-              curvature={-12}
-              enabled={step >= 10}
-              duration={0.95}
-              delay={0}
+            <Port
+              id="agentMemory"
+              register={register}
+              side="bottom"
+              shape="diamond"
+              offset={50}
+              lit={nodeState("memory") === "active"}
             />
-            <AnimatedBeam
-              containerRef={canvasRef}
-              fromRef={agentRef}
-              toRef={approvalRef}
-              curvature={10}
-              enabled={step >= 8}
-              duration={0.85}
-              delay={0}
+            <Port
+              id="agentTools"
+              register={register}
+              side="bottom"
+              shape="diamond"
+              offset={72}
+              lit={nodeState("crm") === "active"}
             />
-          </div>
-
-          <div className="relative z-10 grid h-full grid-cols-[minmax(0,0.92fr)_minmax(0,1.15fr)_minmax(0,0.95fr)] gap-1.5 px-2 py-2 lg:gap-2 lg:px-3 lg:py-2.5">
-            <div className="flex flex-col justify-center">
-              <motion.div
-                ref={requestRef}
-                initial={reduce ? false : { opacity: 0, x: -8, filter: "blur(2px)" }}
-                animate={
-                  step >= 1
-                    ? { opacity: 1, x: 0, filter: "blur(0px)" }
-                    : { opacity: 0, x: -8, filter: "blur(2px)" }
-                }
-                transition={{ duration: reduce ? 0 : 0.34, ease: [0.25, 0.1, 0, 1] }}
-                className="rounded-[10px] border px-2 py-2 lg:px-2.5"
-                style={{
-                  borderColor: illustrationColors.border,
-                  background: illustrationColors.surfaceMuted,
-                  boxShadow: illustrationShadow.panel,
-                }}
-              >
-                <span
-                  className="block text-[6.5px] lg:text-[7.5px]"
-                  style={{ color: illustrationColors.inkFaint }}
-                >
-                  User request
-                </span>
-                <span
-                  className="mt-1 block text-[7.5px] leading-snug tracking-tight lg:text-[8.5px]"
-                  style={{ color: illustrationColors.ink }}
-                >
-                  Prepare the Q3 renewal for Acme.
-                </span>
-              </motion.div>
-            </div>
-
-            <div className="relative flex flex-col items-center justify-center">
-              <motion.div
-                ref={crmRef}
-                className="mb-2 flex items-center gap-1 rounded-[8px] border px-1.5 py-1"
-                animate={{
-                  borderColor:
-                    step >= 6
-                      ? illustrationColors.accentLine
-                      : illustrationColors.border,
-                  background:
-                    step >= 6
-                      ? illustrationColors.accentSoft
-                      : illustrationColors.surface,
-                }}
-                transition={{ duration: reduce ? 0 : 0.24 }}
-              >
-                <Table2 size={8} strokeWidth={1.6} color={illustrationColors.inkMuted} />
-                <span
-                  className="text-[6.5px] lg:text-[7.5px]"
-                  style={{ color: illustrationColors.inkMuted }}
-                >
-                  CRM
-                </span>
-              </motion.div>
-
-              <div className="flex w-full items-center justify-between gap-1">
-                <motion.div
-                  ref={dbRef}
-                  className="flex items-center gap-1 rounded-[8px] border px-1.5 py-1"
-                  animate={{
-                    borderColor:
-                      step >= 7
-                        ? illustrationColors.accentLine
-                        : illustrationColors.border,
-                    background:
-                      step >= 7
-                        ? illustrationColors.accentSoft
-                        : illustrationColors.surface,
-                  }}
-                  transition={{ duration: reduce ? 0 : 0.24 }}
-                >
-                  <Database size={8} strokeWidth={1.6} color={illustrationColors.inkMuted} />
-                  <span
-                    className="hidden text-[6.5px] sm:inline lg:text-[7.5px]"
-                    style={{ color: illustrationColors.inkMuted }}
-                  >
-                    Database
-                  </span>
-                </motion.div>
-
-                <motion.div
-                  ref={agentRef}
-                  className="flex h-11 w-11 flex-col items-center justify-center rounded-[12px] border lg:h-12 lg:w-12"
-                  style={{
-                    background: illustrationColors.ink,
-                    borderColor: illustrationColors.ink,
-                    boxShadow: illustrationShadow.raised,
-                  }}
-                >
-                  <span
-                    className="text-[6px] tracking-tight lg:text-[7px]"
-                    style={{ color: "rgba(247,247,244,0.7)" }}
-                  >
-                    Agent
-                  </span>
-                  <span
-                    className="text-[6.5px] font-medium tracking-tight lg:text-[7.5px]"
-                    style={{ color: illustrationColors.surface }}
-                  >
-                    Renewal
-                  </span>
-                </motion.div>
-
-                <motion.div
-                  ref={emailRef}
-                  className="flex items-center gap-1 rounded-[8px] border px-1.5 py-1"
-                  animate={{
-                    borderColor:
-                      step >= 7
-                        ? illustrationColors.accentLine
-                        : illustrationColors.border,
-                    background:
-                      step >= 7
-                        ? illustrationColors.accentSoft
-                        : illustrationColors.surface,
-                  }}
-                  transition={{ duration: reduce ? 0 : 0.24 }}
-                >
-                  <Mail size={8} strokeWidth={1.6} color={illustrationColors.inkMuted} />
-                  <span
-                    className="hidden text-[6.5px] sm:inline lg:text-[7.5px]"
-                    style={{ color: illustrationColors.inkMuted }}
-                  >
-                    Email
-                  </span>
-                </motion.div>
+            <div className="flex items-center gap-2">
+              <NodeIcon>
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
+                  <circle cx="6" cy="6" r="4.15" stroke="currentColor" strokeWidth="1.2" />
+                  <circle cx="6" cy="6" r="1.15" fill="currentColor" />
+                </svg>
+              </NodeIcon>
+              <div className="min-w-0">
+                <Title>Renewal Agent</Title>
+                <Meta tone={nodeState("agent") === "active" ? "accent" : nodeState("agent") === "ready" ? "ok" : "muted"}>
+                  {agentMeta}
+                </Meta>
               </div>
-
-              <motion.div
-                ref={billingRef}
-                className="mt-2 hidden items-center gap-1 rounded-[8px] border px-1.5 py-1 md:flex"
-                style={{
-                  borderColor: illustrationColors.border,
-                  background: illustrationColors.surface,
-                }}
-              >
-                <WalletCards size={8} strokeWidth={1.6} color={illustrationColors.inkMuted} />
-                <span
-                  className="text-[6.5px] lg:text-[7.5px]"
-                  style={{ color: illustrationColors.inkMuted }}
-                >
-                  Billing / API
-                </span>
-              </motion.div>
-
-              <AnimatePresence>
-                {step >= 6 ? (
-                  <motion.div
-                    key="context"
-                    initial={reduce ? false : { opacity: 0, y: 6, filter: "blur(2px)" }}
-                    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                    transition={{ duration: reduce ? 0 : 0.32, ease: [0.25, 0.1, 0, 1] }}
-                    className="absolute top-1/2 -right-1 z-20 hidden w-[92px] -translate-y-1/2 flex-col gap-1 lg:flex"
-                  >
-                    {CONTEXT_CARDS.map((card, index) => (
-                      <motion.div
-                        key={card.label}
-                        initial={reduce ? false : { opacity: 0, x: 6 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{
-                          delay: reduce ? 0 : index * 0.06,
-                          duration: 0.28,
-                          ease: [0.25, 0.1, 0, 1],
-                        }}
-                        className="rounded-[8px] border px-1.5 py-1"
-                        style={{
-                          background: illustrationColors.surface,
-                          borderColor: illustrationColors.border,
-                          boxShadow: illustrationShadow.panel,
-                        }}
-                      >
-                        <span
-                          className="block text-[6.5px] tracking-tight"
-                          style={{ color: illustrationColors.ink }}
-                        >
-                          {card.label}
-                        </span>
-                      </motion.div>
-                    ))}
-                  </motion.div>
-                ) : null}
-              </AnimatePresence>
             </div>
+          </WorkflowNode>
+        </div>
 
-            <div ref={approvalRef} className="flex min-h-[72px] flex-col justify-end pb-1 lg:justify-center">
-              <AnimatePresence>
-                {step >= 8 ? (
-                  <motion.div
-                    key="approval"
-                    initial={reduce ? false : { opacity: 0, y: 10, filter: "blur(2px)" }}
-                    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                    transition={reduce ? { duration: 0 } : illustrationSpring.panel}
-                    className="rounded-[10px] border px-2 py-2 lg:px-2.5"
+        {!compact ? (
+          <div style={{ gridColumn: "3", gridRow: "1", display: "flex", justifyContent: "center" }}>
+            <WorkflowNode
+              state={nodeState("prepare")}
+              hovered={hovered === "prepare"}
+              onHover={(v) => setHovered(v ? "prepare" : null)}
+            >
+              <Port id="prepareIn" register={register} side="left" lit={nodeState("prepare") === "active"} />
+              <Port
+                id="prepareOut"
+                register={register}
+                side="right"
+                lit={nodeState("prepare") === "active"}
+              />
+              <div className="flex items-center gap-2 pr-1">
+                <NodeIcon>
+                  <StrokeIcon d="M3 2.5h6v7L6 8.2 3 9.5v-7Z" />
+                </NodeIcon>
+                <div className="min-w-0">
+                  <Title>Prepare renewal</Title>
+                  <Meta
+                    tone={
+                      nodeState("prepare") === "active" ? "accent" : nodeState("prepare") === "ready" ? "ok" : "muted"
+                    }
+                  >
+                    {prepareMeta}
+                  </Meta>
+                </div>
+              </div>
+            </WorkflowNode>
+          </div>
+        ) : null}
+
+        <div
+          style={{
+            gridColumn: compact ? "1" : "4",
+            gridRow: compact ? "4" : "1",
+            display: "flex",
+            justifyContent: compact ? "center" : "flex-end",
+            width: compact ? "min(220px, 72%)" : undefined,
+            justifySelf: compact ? "center" : undefined,
+          }}
+        >
+          <motion.div
+            animate={{ margin: approvalExpanded ? 4 : 0 }}
+            transition={{ duration: 0.28, ease: EASE }}
+          >
+            <WorkflowNode
+              state={nodeState("approval")}
+              selected={nodeState("approval") === "active"}
+              hovered={hovered === "approval"}
+              onHover={(v) => setHovered(v ? "approval" : null)}
+              wide={compact}
+            >
+              <Port
+                id="approvalIn"
+                register={register}
+                side={compact ? "right" : "left"}
+                lit={nodeState("approval") === "active"}
+              />
+              <Port
+                id="approvalOut"
+                register={register}
+                side={compact ? "bottom" : "bottom"}
+                lit={nodeState("approval") === "active"}
+              />
+              <div className="flex items-center gap-2">
+                <NodeIcon>
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
+                    <circle cx="6" cy="6" r="4.2" stroke="currentColor" strokeWidth="1.2" />
+                    <path
+                      d="M4.1 6.15 5.4 7.5 8 4.7"
+                      stroke="currentColor"
+                      strokeWidth="1.2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </NodeIcon>
+                <div className="min-w-0">
+                  <Title>Human approval</Title>
+                  <Meta
+                    tone={
+                      nodeState("approval") === "done" ? "ok" : nodeState("approval") === "active" ? "accent" : "muted"
+                    }
+                  >
+                    {nodeState("approval") === "done" || settled
+                      ? "Approved ✓"
+                      : "Renew at existing pricing?"}
+                  </Meta>
+                </div>
+              </div>
+              {nodeState("approval") === "active" && !settled ? (
+                <div className="mt-1.5 flex gap-1">
+                  <span
+                    className="rounded px-1.5 py-0.5 tracking-tight"
+                    style={{ fontSize: 10, color: inkMuted, border: `1px solid ${border}` }}
+                  >
+                    Review
+                  </span>
+                  <span
+                    className="rounded px-1.5 py-0.5 font-medium tracking-tight"
                     style={{
-                      borderColor: illustrationColors.borderStrong,
-                      background: illustrationColors.surface,
-                      boxShadow: illustrationShadow.raised,
+                      fontSize: 10,
+                      color: "#fff",
+                      background: accent,
                     }}
                   >
-                    <span
-                      className="block text-[7.5px] leading-snug tracking-tight lg:text-[8.5px]"
-                      style={{ color: illustrationColors.ink }}
-                    >
-                      Renew at existing pricing?
-                    </span>
-                    <span className="mt-2 flex gap-1">
-                      <span
-                        className="rounded-[8px] border px-2 py-1 text-[6.5px]"
-                        style={{
-                          borderColor: illustrationColors.border,
-                          color: illustrationColors.inkMuted,
-                        }}
-                      >
-                        Review
-                      </span>
-                      <motion.span
-                        className="rounded-[8px] px-2 py-1 text-[6.5px]"
-                        animate={{
-                          background: approved
-                            ? illustrationColors.health
-                            : illustrationColors.ink,
-                          color: illustrationColors.surface,
-                          x: step === 8 ? [0, 0] : 0,
-                        }}
-                        whileHover={reduce ? undefined : { y: -1 }}
-                        transition={{ duration: reduce ? 0 : 0.2 }}
-                      >
-                        {approved ? "Approved" : "Approve"}
-                      </motion.span>
-                    </span>
-                  </motion.div>
-                ) : null}
-              </AnimatePresence>
-            </div>
-          </div>
+                    Approve
+                  </span>
+                </div>
+              ) : null}
+            </WorkflowNode>
+          </motion.div>
         </div>
-      </Panel>
-    </IllustrationStage>
+
+        <div
+          className="flex flex-wrap items-start justify-center"
+          style={{
+            gridColumn: compact ? "1" : "1 / 4",
+            gridRow: compact ? "3" : "2",
+            gap: compact ? 6 : 8,
+            paddingLeft: compact ? 0 : 8,
+            flexWrap: "nowrap",
+          }}
+        >
+          {!compact && showModel ? (
+            <ToolNode
+              id="model"
+              title="Model"
+              idleMeta="Claude / LLM"
+              hoverMeta="Sonnet"
+              icon={
+                <StrokeIcon d="M3 8.5 6 2.5l3 6M4.2 7h3.6" />
+              }
+              portId="modelIn"
+              state={nodeState("model")}
+              hovered={hovered}
+              setHovered={setHovered}
+              register={register}
+            />
+          ) : null}
+          {!compact ? (
+            <ToolNode
+              id="memory"
+              title="Memory"
+              idleMeta="Account"
+              hoverMeta="Acme context"
+              icon={
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
+                  <ellipse cx="6" cy="3.2" rx="3.4" ry="1.3" stroke="currentColor" strokeWidth="1.2" />
+                  <path
+                    d="M2.6 3.2v5.4c0 .8 1.5 1.4 3.4 1.4s3.4-.6 3.4-1.4V3.2"
+                    stroke="currentColor"
+                    strokeWidth="1.2"
+                  />
+                </svg>
+              }
+              portId="memoryIn"
+              state={nodeState("memory")}
+              hovered={hovered}
+              setHovered={setHovered}
+              register={register}
+            />
+          ) : null}
+          <ToolNode
+            id="crm"
+            title="CRM"
+            idleMeta="Accounts"
+            hoverMeta="AC-4421"
+            icon={
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
+                <circle cx="6" cy="4" r="2" stroke="currentColor" strokeWidth="1.2" />
+                <path
+                  d="M2.4 9.4c.6-1.6 2-2.4 3.6-2.4s3 .8 3.6 2.4"
+                  stroke="currentColor"
+                  strokeWidth="1.2"
+                  strokeLinecap="round"
+                />
+              </svg>
+            }
+            portId="crmIn"
+            state={nodeState("crm")}
+            hovered={hovered}
+            setHovered={setHovered}
+            register={register}
+          />
+          {compact ? (
+            <ToolNode
+              id="memory"
+              title="Memory"
+              idleMeta="Account"
+              hoverMeta="Acme context"
+              icon={
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
+                  <ellipse cx="6" cy="3.2" rx="3.4" ry="1.3" stroke="currentColor" strokeWidth="1.2" />
+                  <path
+                    d="M2.6 3.2v5.4c0 .8 1.5 1.4 3.4 1.4s3.4-.6 3.4-1.4V3.2"
+                    stroke="currentColor"
+                    strokeWidth="1.2"
+                  />
+                </svg>
+              }
+              portId="memoryIn"
+              state={nodeState("memory")}
+              hovered={hovered}
+              setHovered={setHovered}
+              register={register}
+            />
+          ) : null}
+          <ToolNode
+            id="contract"
+            title="Contract"
+            idleMeta="MSA"
+            hoverMeta="MSA-118"
+            icon={<StrokeIcon d="M2.2 5h7.6M4.4 2.4v2.6M7.6 2.4v2.6" extra={<rect x="2.2" y="2.4" width="7.6" height="7.2" rx="1.4" stroke="currentColor" strokeWidth="1.2" />} />}
+            portId="contractIn"
+            state={nodeState("contract")}
+            hovered={hovered}
+            setHovered={setHovered}
+            register={register}
+          />
+          {!compact && showPricing ? (
+            <ToolNode
+              id="pricing"
+              title="Pricing"
+              idleMeta="API"
+              hoverMeta="Enterprise band"
+              icon={
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
+                  <path d="M4 3.2h4M4 8.8h4M6 3.2v5.6" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+                  <circle cx="6" cy="3.2" r="1" fill="currentColor" />
+                  <circle cx="6" cy="8.8" r="1" fill="currentColor" />
+                </svg>
+              }
+              portId="pricingIn"
+              state={nodeState("pricing")}
+              hovered={hovered}
+              setHovered={setHovered}
+              register={register}
+            />
+          ) : null}
+        </div>
+
+        {!compact ? (
+          <div
+            className="flex flex-col items-stretch justify-end gap-3"
+            style={{ gridColumn: "4", gridRow: "2 / 4" }}
+          >
+            <WorkflowNode
+              state={nodeState("send")}
+              hovered={hovered === "send"}
+              onHover={(v) => setHovered(v ? "send" : null)}
+              wide
+            >
+              <Port id="sendIn" register={register} side="top" lit={nodeState("send") === "active"} />
+              <Port id="sendOut" register={register} side="bottom" lit={nodeState("send") === "active"} />
+              <div className="flex items-center gap-2 pr-1">
+                <NodeIcon>
+                  <StrokeIcon d="M2 6h8M7.2 3.4 10 6l-2.8 2.6" />
+                </NodeIcon>
+                <div className="min-w-0">
+                  <Title>Send proposal</Title>
+                  <Meta tone={nodeState("send") === "active" ? "accent" : nodeState("send") === "done" ? "ok" : "muted"}>
+                    {sendMeta}
+                  </Meta>
+                </div>
+              </div>
+            </WorkflowNode>
+            <WorkflowNode
+              state={nodeState("done")}
+              hovered={hovered === "done"}
+              onHover={(v) => setHovered(v ? "done" : null)}
+              wide
+            >
+              <Port id="doneIn" register={register} side="top" lit={false} />
+              <div className="flex items-center gap-2">
+                <span
+                  className="flex size-6 items-center justify-center rounded-[6px]"
+                  style={{
+                    background: nodeState("done") === "done" || settled ? healthSoft : surfaceSunk,
+                    color: nodeState("done") === "done" || settled ? health : ink,
+                    border: `1px solid ${border}`,
+                  }}
+                >
+                  <StrokeIcon d="M2.6 6.2 5 8.6 9.5 3.6" />
+                </span>
+                <div>
+                  <Title>Completed</Title>
+                  <Meta tone="ok">{settled ? "Done" : "Pending"}</Meta>
+                </div>
+              </div>
+            </WorkflowNode>
+          </div>
+        ) : (
+          <div
+            style={{
+              gridColumn: "1",
+              gridRow: "5",
+              display: "flex",
+              justifyContent: "center",
+              width: "min(220px, 72%)",
+              justifySelf: "center",
+            }}
+          >
+            <WorkflowNode
+              state={nodeState("done")}
+              hovered={hovered === "done"}
+              onHover={(v) => setHovered(v ? "done" : null)}
+              wide
+            >
+              <Port id="doneIn" register={register} side="top" lit={false} />
+              <div className="flex items-center gap-2">
+                <span
+                  className="flex size-6 items-center justify-center rounded-[6px]"
+                  style={{
+                    background: nodeState("done") === "done" || settled ? healthSoft : surfaceSunk,
+                    color: nodeState("done") === "done" || settled ? health : ink,
+                    border: `1px solid ${border}`,
+                  }}
+                >
+                  <StrokeIcon d="M2.6 6.2 5 8.6 9.5 3.6" />
+                </span>
+                <div>
+                  <Title>Completed</Title>
+                  <Meta tone="ok">{settled ? "Done" : "Pending"}</Meta>
+                </div>
+              </div>
+            </WorkflowNode>
+          </div>
+        )}
+      </div>
+
+      <div className="pointer-events-none absolute bottom-2.5 left-4 z-10 flex items-center gap-2">
+        <span className="font-medium tracking-tight" style={{ fontSize: 10, color: inkFaint }}>
+          Run #184
+        </span>
+        <span aria-hidden style={{ fontSize: 10, color: inkFaint }}>
+          ·
+        </span>
+        <span style={{ fontSize: 10, color: inkFaint }}>1.8s</span>
+        <span aria-hidden style={{ fontSize: 10, color: inkFaint }}>
+          ·
+        </span>
+        <span style={{ fontSize: 10, color: inkFaint }}>
+          {stepsDone} / 6 complete
+        </span>
+      </div>
+    </div>
   );
 }
