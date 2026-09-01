@@ -26,11 +26,6 @@ export function AgenticWorkflowIllustration() {
         {TOOLS.map(([label, Icon], index) => <span key={label} className="flex items-center gap-1 rounded-md border px-1.5 py-1 transition-colors duration-150" style={{ borderColor: index === Math.min(step, 3) ? illustrationColors.accentLine : illustrationColors.border, background: index === Math.min(step, 3) ? illustrationColors.accentSoft : illustrationColors.surface }}><Icon size={8} strokeWidth={1.5} style={{ color: illustrationColors.inkMuted }} /><span className="text-[6.5px] lg:text-[7.5px]" style={{ color: illustrationColors.inkMuted }}>{label}</span></span>)}
       </div>
 
-      <motion.div className="grid grid-cols-2 gap-3 border-b px-3 py-2 lg:px-4" style={{ borderColor: illustrationColors.border }} initial={false} animate={{ opacity: step >= 1 ? 1 : 0.52, y: step >= 1 ? 0 : 2 }} transition={{ duration: reduce ? 0 : 0.24 }}>
-        <span className="min-w-0"><span className="block text-[6.5px] lg:text-[7.5px]" style={{ color: illustrationColors.inkFaint }}>CRM context</span><span className="mt-1 block truncate text-[7.5px] lg:text-[8.5px]" style={{ color: illustrationColors.ink }}>Enterprise · renews Sep 30</span></span>
-        <span className="min-w-0"><span className="block text-[6.5px] lg:text-[7.5px]" style={{ color: illustrationColors.inkFaint }}>Account signal</span><span className="mt-1 block truncate text-[7.5px] lg:text-[8.5px]" style={{ color: illustrationColors.ink }}>12 seats · payment current</span></span>
-      </motion.div>
-
       <div className="min-h-0 flex-1 px-2 py-1 lg:px-3">
         {TASKS.map((task, index) => {
           const done = step > index + 1;
@@ -43,9 +38,9 @@ export function AgenticWorkflowIllustration() {
         })}
       </div>
 
-      <motion.div className="mx-3 mb-2 flex items-center justify-between gap-2 rounded-lg border px-2.5 py-2 lg:mx-4" style={{ borderColor: step >= 5 ? illustrationColors.borderStrong : illustrationColors.border, boxShadow: step >= 5 ? "0 6px 18px -16px rgba(28,25,23,.3)" : "none" }} initial={false} animate={{ opacity: step >= 5 ? 1 : 0.58, y: step >= 5 ? 0 : 2 }} transition={{ duration: reduce ? 0 : 0.28 }}>
+      <motion.div className="mx-3 mb-2 flex items-center justify-between gap-2 rounded-lg border px-2.5 py-2 lg:mx-4" style={{ borderColor: illustrationColors.borderStrong, boxShadow: "0 6px 18px -16px rgba(28,25,23,.3)" }} initial={false} animate={{ opacity: step >= 5 ? 1 : 0, y: step >= 5 ? 0 : 4 }} transition={{ duration: reduce ? 0 : 0.28 }}>
         <span className="min-w-0"><span className="block truncate text-[7.5px] font-medium lg:text-[8.5px]" style={{ color: illustrationColors.ink }}>Apply renewal change?</span><span className="mt-0.5 block truncate text-[6.5px] lg:text-[7px]" style={{ color: illustrationColors.inkFaint }}>CRM record · proposal email</span></span>
-        <span className="flex gap-1"><button disabled={step < 5} tabIndex={-1} className="rounded-md border px-2 py-1 text-[6.5px] disabled:opacity-50" style={{ borderColor: illustrationColors.border, color: illustrationColors.inkMuted }}>Review</button><button disabled={step < 5} tabIndex={-1} className="rounded-md px-2 py-1 text-[6.5px] text-white disabled:opacity-40" style={{ background: illustrationColors.ink }}>Approve</button></span>
+        <span className="flex gap-1"><button tabIndex={-1} className="rounded-md border px-2 py-1 text-[6.5px]" style={{ borderColor: illustrationColors.border, color: illustrationColors.inkMuted }}>Review</button><button tabIndex={-1} className="rounded-md px-2 py-1 text-[6.5px] text-white" style={{ background: illustrationColors.ink }}>Approve</button></span>
       </motion.div>
     </Panel>
   </IllustrationStage>;

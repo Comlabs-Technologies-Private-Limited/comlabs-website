@@ -52,17 +52,10 @@ export function ApplicationSupportIllustration() {
         </div>
 
         <div className="flex items-center justify-between px-3 py-2 lg:px-4">
-          <span>
-            <span className="block text-[7.5px] font-medium lg:text-[8.5px]" style={{ color: illustrationColors.ink }}>Resolution tasks</span>
-            <span className="mt-1 block text-[6.5px] lg:text-[7.5px]" style={{ color: illustrationColors.inkFaint }}>Payments API · customer impact confirmed</span>
-          </span>
+          <span className="text-[7px] lg:text-[8px]" style={{ color: illustrationColors.inkFaint }}>Resolution tasks</span>
           <span className="flex items-baseline gap-0.5 text-[7px] tabular-nums lg:text-[8px]" style={{ color: illustrationColors.inkMuted }}>
             <AnimatePresence mode="popLayout" initial={false}><motion.b key={completed} initial={reduce ? false : illustrationTextSwapHidden} animate={illustrationTextSwapShown} exit={illustrationTextSwapExit} transition={illustrationSwap} className="font-medium">{completed}</motion.b></AnimatePresence>/4 done
           </span>
-        </div>
-
-        <div className="mx-3 h-px shrink-0 overflow-hidden lg:mx-4" style={{ background: illustrationColors.surfaceSunk }}>
-          <motion.span className="block h-full origin-left" style={{ background: illustrationColors.accent }} animate={{ scaleX: completed / 4 }} transition={{ duration: reduce ? 0 : 0.32 }} />
         </div>
 
         <div className="min-h-0 flex-1 px-1.5 lg:px-2">

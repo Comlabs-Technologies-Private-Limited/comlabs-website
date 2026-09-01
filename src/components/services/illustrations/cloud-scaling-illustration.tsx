@@ -8,7 +8,7 @@ import { IllustrationStage, useIllustrationState } from "./service-illustration-
 import { illustrationColors, illustrationSwap, illustrationTextSwapExit, illustrationTextSwapHidden, illustrationTextSwapShown } from "./illustration-tokens";
 import { useIllustrationSequence } from "./use-illustration-sequence";
 
-const SERVICES = [["API", "Public gateway · 3 replicas", "124 ms", "99.99% uptime"], ["Database", "Aurora primary · 1 replica", "38 connections", "4 ms query p95"], ["Workers", "Autoscaling · queue clear", "12 active", "0 queued jobs"]] as const;
+const SERVICES = [["API", "124 ms", "99.99% uptime"], ["Database", "38 connections", "4 ms query p95"], ["Workers", "12 active", "0 queued jobs"]] as const;
 
 export function CloudScalingIllustration() {
   const { active, reduce } = useIllustrationState();
@@ -27,9 +27,9 @@ export function CloudScalingIllustration() {
       </div>
       <div className="flex items-center justify-between px-3 pt-2.5 pb-1 lg:px-4"><span className="text-[7px] lg:text-[8px]" style={{ color: illustrationColors.inkFaint }}>Services</span><span className="text-[6.5px] tabular-nums lg:text-[7.5px]" style={{ color: illustrationColors.inkFaint }}>3 of 3 healthy</span></div>
       <div className="min-h-0 flex-1 px-2 lg:px-3">
-        {SERVICES.map(([label, detail, metric, tooltip]) => <div key={label} className="group flex h-1/3 items-center gap-2 rounded-md px-1.5 transition-colors duration-150 hover:bg-stone-50 lg:px-2">
+        {SERVICES.map(([label, metric, tooltip]) => <div key={label} className="group flex h-1/3 items-center gap-2 rounded-md px-1.5 transition-colors duration-150 hover:bg-stone-50 lg:px-2">
           <span className="h-1.5 w-1.5 rounded-full" style={{ background: illustrationColors.health }} />
-          <span className="min-w-0 flex-1"><span className="block text-[8px] lg:text-[9px]" style={{ color: illustrationColors.ink }}>{label}</span><span className="mt-1 block truncate text-[6.5px] lg:text-[7.5px]" style={{ color: illustrationColors.inkFaint }}>{detail}</span></span>
+          <span className="flex-1 text-[8px] lg:text-[9px]" style={{ color: illustrationColors.ink }}>{label}</span>
           <span className="relative flex items-center gap-1 text-[7px] tabular-nums lg:text-[8px]" style={{ color: illustrationColors.inkMuted }}>{metric}<Info size={8} style={{ color: illustrationColors.inkFaint }} /><span className="pointer-events-none absolute right-0 bottom-full z-10 mb-1 translate-y-1 rounded-md border bg-white px-2 py-1 text-[6.5px] whitespace-nowrap opacity-0 shadow-sm transition-all duration-150 group-hover:translate-y-0 group-hover:opacity-100" style={{ borderColor: illustrationColors.border, color: illustrationColors.inkMuted }}>{tooltip}</span></span>
           <span className="text-[6.5px] lg:text-[7.5px]" style={{ color: illustrationColors.health }}>Healthy</span>
         </div>)}
