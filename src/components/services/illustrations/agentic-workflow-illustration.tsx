@@ -114,7 +114,7 @@ const S = {
 
 const STEP_COUNT = 16;
 const DELAYS = [
-  360, 400, 460, 260, 280, 280, 300, 400, 400, 460, 680, 400, 460, 500, 240,
+  640, 720, 840, 520, 560, 560, 620, 780, 760, 840, 1100, 740, 760, 820, 520,
 ] as const;
 
 const DESKTOP_EDGES: EdgeDef[] = [
@@ -141,11 +141,11 @@ function edgesFor(compact: boolean, showModel: boolean, showPricing: boolean): E
 
 const COMPACT_EDGES: EdgeDef[] = [
   { id: "e-req-agent", from: "requestOut", to: "agentIn", kind: "main", dir: "v" },
-  { id: "e-agent-appr", from: "agentOut", to: "approvalIn", kind: "main", dir: "around" },
+  { id: "e-agent-appr", from: "agentOut", to: "approvalIn", kind: "main", dir: "v" },
   { id: "e-appr-done", from: "approvalOut", to: "doneIn", kind: "main", dir: "v" },
-  { id: "e-agent-crm", from: "agentModel", to: "crmIn", kind: "ai", dir: "v" },
-  { id: "e-agent-mem", from: "agentMemory", to: "memoryIn", kind: "ai", dir: "v" },
-  { id: "e-agent-con", from: "agentTools", to: "contractIn", kind: "ai", dir: "v" },
+  { id: "e-agent-crm", from: "agentTools", to: "crmIn", kind: "ai", dir: "h" },
+  { id: "e-agent-mem", from: "agentMemory", to: "memoryIn", kind: "ai", dir: "h" },
+  { id: "e-agent-con", from: "agentModel", to: "contractIn", kind: "ai", dir: "h" },
 ];
 
 const NODE_PORTS: Record<NodeId, PortId[]> = {
@@ -337,7 +337,7 @@ function EdgePulse({ d, run }: { d: string; run: boolean }) {
     const length = path.getTotalLength();
     if (length < 1) return;
     const started = performance.now();
-    const duration = 420;
+    const duration = 720;
     let frame = 0;
     const tick = (now: number) => {
       const t = Math.min(1, (now - started) / duration);
@@ -368,6 +368,7 @@ function ToolNode({
   hovered,
   setHovered,
   register,
+  portSide = "top",
 }: {
   id: NodeId;
   title: string;
@@ -379,11 +380,12 @@ function ToolNode({
   hovered: NodeId | null;
   setHovered: (id: NodeId | null) => void;
   register: (id: PortId, el: HTMLSpanElement | null) => void;
+  portSide?: PortSide;
 }) {
   const isHovered = hovered === id;
   return (
     <WorkflowNode state={state} hovered={isHovered} onHover={(v) => setHovered(v ? id : null)}>
-      <Port id={portId} register={register} side="top" lit={state === "active"} />
+      <Port id={portId} register={register} side={portSide} lit={state === "active"} />
       <div className="flex items-center gap-1.5 pr-0.5">
         <NodeIcon>{icon}</NodeIcon>
         <div>
@@ -405,6 +407,7 @@ export function AgenticWorkflowIllustration() {
     active: active || frameHovered,
     reduce,
     stepMs: DELAYS,
+    startDelayMs: 480,
   });
 
   return (
@@ -635,14 +638,14 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
       <div
         className="relative z-[2] grid h-full w-full"
         style={{
-          padding: compact ? "32px 16px 26px" : "36px 18px 30px",
+          padding: compact ? "36px 20px 28px" : "44px 24px 40px",
           gridTemplateColumns: compact
             ? "1fr"
             : "minmax(0, 0.95fr) minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1.15fr)",
-          gridTemplateRows: compact ? "auto auto auto auto auto" : "auto auto auto",
-          columnGap: compact ? 0 : 12,
-          rowGap: compact ? 12 : 18,
-          alignContent: "center",
+          gridTemplateRows: compact ? "auto auto auto auto" : "auto auto auto",
+          columnGap: compact ? 0 : 10,
+          rowGap: compact ? 16 : 16,
+          alignContent: compact ? "start" : "center",
         }}
       >
         <div
@@ -705,21 +708,21 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
             <Port
               id="agentOut"
               register={register}
-              side={compact ? "right" : "right"}
+              side={compact ? "bottom" : "right"}
               lit={nodeState("agent") === "active"}
             />
             <Port
               id="agentModel"
               register={register}
-              side="bottom"
+              side={compact ? "right" : "bottom"}
               shape="diamond"
-              offset={28}
+              offset={compact ? 28 : 28}
               lit={nodeState("model") === "active" || (compact && nodeState("contract") === "active")}
             />
             <Port
               id="agentMemory"
               register={register}
-              side="bottom"
+              side={compact ? "right" : "bottom"}
               shape="diamond"
               offset={50}
               lit={nodeState("memory") === "active"}
@@ -727,9 +730,9 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
             <Port
               id="agentTools"
               register={register}
-              side="bottom"
+              side={compact ? "right" : "bottom"}
               shape="diamond"
-              offset={72}
+              offset={compact ? 72 : 72}
               lit={nodeState("crm") === "active"}
             />
             <div className="flex items-center gap-2">
@@ -785,7 +788,7 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
         <div
           style={{
             gridColumn: compact ? "1" : "4",
-            gridRow: compact ? "4" : "1",
+            gridRow: compact ? "3" : "1",
             display: "flex",
             justifyContent: compact ? "center" : "flex-end",
             width: compact ? "min(220px, 72%)" : undefined,
@@ -794,7 +797,7 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
         >
           <motion.div
             animate={{ margin: approvalExpanded ? 4 : 0 }}
-            transition={{ duration: 0.28, ease: EASE }}
+            transition={{ duration: 0.42, ease: EASE }}
           >
             <WorkflowNode
               state={nodeState("approval")}
@@ -806,7 +809,7 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
               <Port
                 id="approvalIn"
                 register={register}
-                side={compact ? "right" : "left"}
+                side={compact ? "top" : "left"}
                 lit={nodeState("approval") === "active"}
               />
               <Port
@@ -865,33 +868,28 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
           </motion.div>
         </div>
 
-        <div
-          className="flex flex-wrap items-start justify-center"
-          style={{
-            gridColumn: compact ? "1" : "1 / 4",
-            gridRow: compact ? "3" : "2",
-            gap: compact ? 6 : 8,
-            paddingLeft: compact ? 0 : 8,
-            flexWrap: "nowrap",
-          }}
-        >
-          {!compact && showModel ? (
+        {compact ? (
+          <div
+            className="pointer-events-none absolute z-[2] overflow-visible"
+            style={{ gridColumn: "1 / -1", gridRow: "1 / -1", inset: 0 }}
+          >
+            <div
+              className="pointer-events-auto absolute flex flex-col gap-2"
+              style={{ top: "28%", left: "calc(50% + 118px)" }}
+            >
             <ToolNode
-              id="model"
-              title="Model"
-              idleMeta="Claude / LLM"
-              hoverMeta="Sonnet"
-              icon={
-                <StrokeIcon d="M3 8.5 6 2.5l3 6M4.2 7h3.6" />
-              }
-              portId="modelIn"
-              state={nodeState("model")}
+              id="contract"
+              title="Contract"
+              idleMeta="MSA"
+              hoverMeta="MSA-118"
+              icon={<StrokeIcon d="M2.2 5h7.6M4.4 2.4v2.6M7.6 2.4v2.6" extra={<rect x="2.2" y="2.4" width="7.6" height="7.2" rx="1.4" stroke="currentColor" strokeWidth="1.2" />} />}
+              portId="contractIn"
+              portSide="left"
+              state={nodeState("contract")}
               hovered={hovered}
               setHovered={setHovered}
               register={register}
             />
-          ) : null}
-          {!compact ? (
             <ToolNode
               id="memory"
               title="Memory"
@@ -908,12 +906,85 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
                 </svg>
               }
               portId="memoryIn"
+              portSide="left"
               state={nodeState("memory")}
               hovered={hovered}
               setHovered={setHovered}
               register={register}
             />
+            <ToolNode
+              id="crm"
+              title="CRM"
+              idleMeta="Accounts"
+              hoverMeta="AC-4421"
+              icon={
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
+                  <circle cx="6" cy="4" r="2" stroke="currentColor" strokeWidth="1.2" />
+                  <path
+                    d="M2.4 9.4c.6-1.6 2-2.4 3.6-2.4s3 .8 3.6 2.4"
+                    stroke="currentColor"
+                    strokeWidth="1.2"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              }
+              portId="crmIn"
+              portSide="left"
+              state={nodeState("crm")}
+              hovered={hovered}
+              setHovered={setHovered}
+              register={register}
+            />
+          </div>
+          </div>
+        ) : (
+        <div
+          className="flex items-start justify-center"
+          style={{
+            gridColumn: "1 / 4",
+            gridRow: "2",
+            gap: 8,
+            paddingLeft: 8,
+            flexWrap: "nowrap",
+          }}
+        >
+          {showModel ? (
+            <ToolNode
+              id="model"
+              title="Model"
+              idleMeta="Claude / LLM"
+              hoverMeta="Sonnet"
+              icon={
+                <StrokeIcon d="M3 8.5 6 2.5l3 6M4.2 7h3.6" />
+              }
+              portId="modelIn"
+              state={nodeState("model")}
+              hovered={hovered}
+              setHovered={setHovered}
+              register={register}
+            />
           ) : null}
+          <ToolNode
+            id="memory"
+            title="Memory"
+            idleMeta="Account"
+            hoverMeta="Acme context"
+            icon={
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
+                <ellipse cx="6" cy="3.2" rx="3.4" ry="1.3" stroke="currentColor" strokeWidth="1.2" />
+                <path
+                  d="M2.6 3.2v5.4c0 .8 1.5 1.4 3.4 1.4s3.4-.6 3.4-1.4V3.2"
+                  stroke="currentColor"
+                  strokeWidth="1.2"
+                />
+              </svg>
+            }
+            portId="memoryIn"
+            state={nodeState("memory")}
+            hovered={hovered}
+            setHovered={setHovered}
+            register={register}
+          />
           <ToolNode
             id="crm"
             title="CRM"
@@ -936,29 +1007,6 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
             setHovered={setHovered}
             register={register}
           />
-          {compact ? (
-            <ToolNode
-              id="memory"
-              title="Memory"
-              idleMeta="Account"
-              hoverMeta="Acme context"
-              icon={
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
-                  <ellipse cx="6" cy="3.2" rx="3.4" ry="1.3" stroke="currentColor" strokeWidth="1.2" />
-                  <path
-                    d="M2.6 3.2v5.4c0 .8 1.5 1.4 3.4 1.4s3.4-.6 3.4-1.4V3.2"
-                    stroke="currentColor"
-                    strokeWidth="1.2"
-                  />
-                </svg>
-              }
-              portId="memoryIn"
-              state={nodeState("memory")}
-              hovered={hovered}
-              setHovered={setHovered}
-              register={register}
-            />
-          ) : null}
           <ToolNode
             id="contract"
             title="Contract"
@@ -971,7 +1019,7 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
             setHovered={setHovered}
             register={register}
           />
-          {!compact && showPricing ? (
+          {showPricing ? (
             <ToolNode
               id="pricing"
               title="Pricing"
@@ -992,6 +1040,7 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
             />
           ) : null}
         </div>
+        )}
 
         {!compact ? (
           <div
@@ -1047,7 +1096,7 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
           <div
             style={{
               gridColumn: "1",
-              gridRow: "5",
+              gridRow: "4",
               display: "flex",
               justifyContent: "center",
               width: "min(220px, 72%)",
