@@ -311,7 +311,7 @@ function Meta({
 }) {
   const color = tone === "accent" ? accent : tone === "ok" ? health : inkMuted;
   return (
-    <p className="mt-0.5 truncate leading-none tracking-tight" style={{ fontSize: 10, color }}>
+    <p className="mt-0.5 whitespace-nowrap leading-none tracking-tight" style={{ fontSize: 10, color }}>
       {children}
     </p>
   );
@@ -386,7 +386,7 @@ function ToolNode({
       <Port id={portId} register={register} side="top" lit={state === "active"} />
       <div className="flex items-center gap-1.5 pr-0.5">
         <NodeIcon>{icon}</NodeIcon>
-        <div className="min-w-0">
+        <div>
           <Title>{title}</Title>
           <Meta tone={state === "done" ? "ok" : state === "active" ? "accent" : "muted"}>
             {isHovered ? hoverMeta : state === "done" ? "Ready" : idleMeta}
@@ -742,7 +742,7 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
               <div className="min-w-0">
                 <Title>Renewal Agent</Title>
                 <Meta tone={nodeState("agent") === "active" ? "accent" : nodeState("agent") === "ready" ? "ok" : "muted"}>
-                  AI Agent · {agentMeta}
+                  {agentMeta}
                 </Meta>
               </div>
             </div>
