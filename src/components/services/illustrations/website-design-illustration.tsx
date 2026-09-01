@@ -116,14 +116,14 @@ export function WebsiteDesignIllustration() {
         style={{ perspective: "1100px" }}
       >
         <motion.div
-          className="absolute top-[8%] left-[4%] hidden h-[62%] w-[46%] md:block"
+          className="absolute top-[4%] left-0 hidden h-[70%] w-[48%] sm:block"
           animate={{
-            x: settled ? pointer.x * 3 - 4 : -10,
-            y: settled ? pointer.y * 2 : 6,
-            rotate: -1.2,
+            x: settled ? pointer.x * 3 - 6 : -8,
+            y: settled ? pointer.y * 2 : 4,
+            rotate: -1.1,
             filter:
               focused && focused !== rearLeft.id ? "blur(2px)" : "blur(0px)",
-            opacity: focused && focused !== rearLeft.id ? 0.62 : 0.9,
+            opacity: focused && focused !== rearLeft.id ? 0.55 : 1,
           }}
           transition={illustrationHover}
           onPointerEnter={() => setFocused(rearLeft.id)}
@@ -154,14 +154,14 @@ export function WebsiteDesignIllustration() {
         </motion.div>
 
         <motion.div
-          className="absolute top-[6%] right-[2%] hidden h-[58%] w-[44%] md:block"
+          className="absolute top-[2%] right-0 hidden h-[66%] w-[46%] sm:block"
           animate={{
-            x: settled ? pointer.x * 2 + 6 : 10,
-            y: settled ? pointer.y * 1.5 - 2 : 4,
-            rotate: 1.4,
+            x: settled ? pointer.x * 2 + 8 : 8,
+            y: settled ? pointer.y * 1.5 : 2,
+            rotate: 1.2,
             filter:
               focused && focused !== rearRight.id ? "blur(2px)" : "blur(0px)",
-            opacity: focused && focused !== rearRight.id ? 0.62 : 0.88,
+            opacity: focused && focused !== rearRight.id ? 0.55 : 1,
           }}
           transition={illustrationHover}
           onPointerEnter={() => setFocused(rearRight.id)}
@@ -192,7 +192,7 @@ export function WebsiteDesignIllustration() {
         </motion.div>
 
         <motion.div
-          className="absolute inset-x-[10%] top-[18%] bottom-[6%] z-10 md:inset-x-[16%] md:top-[14%]"
+          className="absolute inset-x-[8%] top-[20%] bottom-[4%] z-10 sm:inset-x-[14%] sm:top-[16%]"
           animate={{
             x: settled ? pointer.x * 5 : 0,
             y: settled ? pointer.y * 4 : 8,

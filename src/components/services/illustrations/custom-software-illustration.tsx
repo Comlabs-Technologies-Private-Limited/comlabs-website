@@ -151,15 +151,14 @@ export function CustomSoftwareIllustration() {
                     }
                     animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                     transition={{ duration: reduce ? 0 : 0.32, ease: [0.25, 0.1, 0, 1] }}
-                    className="group relative flex items-center gap-2 border-b px-3 py-2 lg:px-3.5"
+                    className="group relative flex items-center gap-2 border-b px-3 py-2 transition-colors duration-150 hover:bg-black/[0.03] lg:px-3.5"
                     style={{
                       borderColor: illustrationColors.border,
                       background: selected
                         ? illustrationColors.surfaceMuted
-                        : "transparent",
+                        : "rgba(28,25,23,0)",
                       boxShadow: selected ? `inset 2px 0 0 ${illustrationColors.ink}` : undefined,
                     }}
-                    whileHover={reduce ? undefined : { backgroundColor: "rgba(28,25,23,0.03)" }}
                   >
                     <span className="min-w-0 flex-1">
                       <span

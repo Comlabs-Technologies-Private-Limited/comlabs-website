@@ -13,7 +13,6 @@ import {
 import { IllustrationStage, useIllustrationState } from "./service-illustration-frame";
 import {
   illustrationColors,
-  illustrationHover,
   illustrationPopHidden,
   illustrationPopShown,
   illustrationSwap,
@@ -147,16 +146,10 @@ export function ApplicationSupportIllustration() {
               <div key={level.id} className="flex flex-col">
                 <motion.div
                   layout
-                  className="group flex items-start gap-2 rounded-[8px] px-2 py-1.5 lg:px-2.5"
+                  className="group flex items-start gap-2 rounded-[8px] px-2 py-1.5 transition-colors duration-150 hover:bg-black/[0.035] lg:px-2.5"
                   style={{
-                    background: "transparent",
+                    background: "rgba(28,25,23,0)",
                   }}
-                  whileHover={
-                    reduce
-                      ? undefined
-                      : { backgroundColor: "rgba(28,25,23,0.035)" }
-                  }
-                  transition={illustrationHover}
                 >
                   <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center">
                     {state === "complete" || state === "fix" ? (

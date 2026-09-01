@@ -176,13 +176,9 @@ export function ServiceIllustrationFrame({
       <motion.div
         aria-hidden
         className="absolute inset-0 overflow-hidden"
-        initial={reduce ? false : { ...illustrationBlurHidden, y: 8 }}
-        animate={
-          inView
-            ? { ...illustrationBlurShown, y: 0 }
-            : { ...illustrationBlurHidden, y: 8 }
-        }
-        transition={{ duration: reduce ? 0 : 0.5, ease: illustrationEase }}
+        initial={reduce ? false : { ...illustrationBlurHidden, y: 6 }}
+        animate={{ ...illustrationBlurShown, y: 0 }}
+        transition={{ duration: reduce ? 0 : 0.45, ease: illustrationEase }}
       >
         <IllustrationStateContext.Provider
           value={{

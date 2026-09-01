@@ -130,4 +130,4 @@ export const illustrationPopShown = {
 } as const;
 
 /** Viewport trigger shared by every illustration frame. Play once, then hold. */
-export const illustrationViewport = { amount: 0.32, once: true } as const;
+export const illustrationViewport = { amount: 0.2, once: true } as const;
