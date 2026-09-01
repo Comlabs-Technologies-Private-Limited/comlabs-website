@@ -8,11 +8,10 @@ import {
   useRef,
   useState,
   type CSSProperties,
-  type PointerEvent as ReactPointerEvent,
   type ReactNode,
 } from "react";
 import Image from "next/image";
-import { motion, useInView, useMotionValue, useReducedMotion, useSpring } from "framer-motion";
+import { motion, useInView, useReducedMotion } from "framer-motion";
 
 import { cn } from "@/lib/utils";
 
@@ -88,29 +87,11 @@ export function ServiceIllustrationFrame({
   const reduce = useReducedMotion() ?? false;
   const inView = useInView(frameRef, illustrationViewport);
   const finePointer = useFinePointer();
-
-  const tiltX = useMotionValue(0);
-  const tiltY = useMotionValue(0);
-  const springX = useSpring(tiltX, { stiffness: 160, damping: 22, mass: 0.4 });
-  const springY = useSpring(tiltY, { stiffness: 160, damping: 22, mass: 0.4 });
-
-  const handlePointerMove = useCallback(
-    (event: ReactPointerEvent<HTMLDivElement>) => {
-      if (!finePointer || reduce) return;
-      const bounds = event.currentTarget.getBoundingClientRect();
-      const offsetX = (event.clientX - bounds.left) / bounds.width - 0.5;
-      const offsetY = (event.clientY - bounds.top) / bounds.height - 0.5;
-      // Maximum 3px of perspective response — presence, not a 3D toy.
-      tiltX.set(offsetY * -3);
-      tiltY.set(offsetX * 3);
-    },
-    [finePointer, reduce, tiltX, tiltY],
-  );
-
-  const handlePointerLeave = useCallback(() => {
-    tiltX.set(0);
-    tiltY.set(0);
-  }, [tiltX, tiltY]);
+  const [hovered, setHovered] = useState(false);
+  const activate = useCallback(() => setHovered(true), []);
+  const deactivate = useCallback(() => setHovered(false), []);
+  // Touch and keyboard users get the same finite story on viewport entry/focus.
+  const sequenceActive = inView && (!finePointer || hovered);
 
   const isDark = tone === "dark";
 
@@ -119,8 +100,10 @@ export function ServiceIllustrationFrame({
       ref={frameRef}
       role="img"
       aria-label={label}
-      onPointerMove={handlePointerMove}
-      onPointerLeave={handlePointerLeave}
+      onPointerEnter={activate}
+      onPointerLeave={deactivate}
+      onFocusCapture={activate}
+      onBlurCapture={deactivate}
       className={cn(
         "relative aspect-[5/4] overflow-hidden md:aspect-[4/3]",
         chrome && "rounded-2xl border md:rounded-3xl",
@@ -130,7 +113,7 @@ export function ServiceIllustrationFrame({
             : "border-[rgba(28,25,23,0.10)] bg-[#F4F3EF]"),
         className,
       )}
-      style={{ perspective: 1200, ...style }}
+      style={style}
     >
       {chrome && background ? (
         <Image
@@ -163,11 +146,6 @@ export function ServiceIllustrationFrame({
       <motion.div
         aria-hidden
         className="absolute inset-0 overflow-hidden"
-        style={{
-          rotateX: reduce ? 0 : springX,
-          rotateY: reduce ? 0 : springY,
-          transformStyle: "preserve-3d",
-        }}
         initial={reduce ? false : { ...illustrationBlurHidden, y: 8 }}
         animate={
           inView
@@ -176,7 +154,7 @@ export function ServiceIllustrationFrame({
         }
         transition={{ duration: reduce ? 0 : 0.5, ease: illustrationEase }}
       >
-        <IllustrationStateContext.Provider value={{ active: inView, reduce, stageClassName }}>
+        <IllustrationStateContext.Provider value={{ active: sequenceActive, reduce, stageClassName }}>
           {children}
         </IllustrationStateContext.Provider>
       </motion.div>
