@@ -26,7 +26,7 @@ export const serviceIllustrations: Record<string, ServiceIllustration> = {
   "agentic-infrastructure": {
     Component: AgenticWorkflowIllustration,
     label:
-      "Agentic infrastructure illustration: Renewal Agent orchestrating a Q3 Acme renewal across CRM, database, email and approval.",
+      "Agentic infrastructure illustration: a workflow canvas preparing the Q3 Acme renewal — request, Renewal Agent, tools, human approval, then a sent proposal.",
   },
   "website-design": {
     Component: WebsiteDesignIllustration,
