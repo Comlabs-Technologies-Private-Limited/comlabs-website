@@ -1,0 +1,17 @@
+{
+  "name": "Comlabs Website",
+  "install": "npm ci",
+  "terminals": [
+    {
+      "name": "next-dev",
+      "command": "npm run dev",
+      "description": "Next.js development server on http://localhost:3000. The marketing site, blog, and API routes run without any secrets; MongoDB, SMTP, and Cloudinary are optional and degrade gracefully when unset."
+    }
+  ],
+  "ports": [
+    {
+      "name": "web",
+      "port": 3000
+    }
+  ]
+}
