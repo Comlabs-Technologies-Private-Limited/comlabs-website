@@ -34,9 +34,25 @@ function caseStudyFallbackEntries(exclude: Set<string> = new Set()): MetadataRou
   }));
 }
 
+function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error("Timed out")), ms);
+    promise.then(
+      (value) => {
+        clearTimeout(timer);
+        resolve(value);
+      },
+      (error: unknown) => {
+        clearTimeout(timer);
+        reject(error);
+      },
+    );
+  });
+}
+
 async function getCaseStudyEntries(): Promise<MetadataRoute.Sitemap> {
   try {
-    const caseStudies = await listCaseStudies({ status: "published" });
+    const caseStudies = await withTimeout(listCaseStudies({ status: "published" }), 8000);
     const entries = caseStudies.map((study) => ({
       url: canonicalUrl(`/work/${study.slug}`),
       lastModified: new Date(study.updatedAt),
@@ -57,7 +73,7 @@ async function getBlogPostEntries(): Promise<MetadataRoute.Sitemap> {
   if (!isBlogEnabled()) return [];
 
   try {
-    const posts = await listPosts({ status: "published" });
+    const posts = await withTimeout(listPosts({ status: "published" }), 8000);
     return posts.map((post) => ({
       url: canonicalUrl(`/blog/${post.slug}`),
       lastModified: new Date(post.updatedAt),
