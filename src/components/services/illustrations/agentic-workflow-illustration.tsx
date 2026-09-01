@@ -261,6 +261,8 @@ function WorkflowNode({
     <motion.div
       onMouseEnter={() => onHover?.(true)}
       onMouseLeave={() => onHover?.(false)}
+      onPointerEnter={() => onHover?.(true)}
+      onPointerLeave={() => onHover?.(false)}
       animate={{ y: hovered ? -1 : 0 }}
       transition={{ duration: 0.18, ease: EASE }}
       className="relative"
@@ -277,6 +279,8 @@ function WorkflowNode({
             ? `0 0 0 1px ${accentLine}, ${illustrationShadow.panel}`
             : illustrationShadow.panel,
         padding: "7px 10px 7px 8px",
+        pointerEvents: "auto",
+        cursor: "default",
       }}
     >
       {children}
@@ -376,7 +380,7 @@ function ToolNode({
   const isHovered = hovered === id;
   return (
     <WorkflowNode state={state} hovered={isHovered} onHover={(v) => setHovered(v ? id : null)}>
-      <Port id={portId} register={register} side="top" lit={state !== "idle"} />
+      <Port id={portId} register={register} side="top" lit={state === "active"} />
       <div className="flex items-center gap-1.5 pr-0.5">
         <NodeIcon>{icon}</NodeIcon>
         <div className="min-w-0">
@@ -539,7 +543,7 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
       ? "Context ready"
       : nodeState("agent") === "active"
         ? "Gathering context"
-        : "Idle";
+        : "AI Agent";
   const prepareMeta =
     nodeState("prepare") === "ready" || settled
       ? "Ready"
@@ -655,7 +659,7 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
               id="requestOut"
               register={register}
               side={compact ? "bottom" : "right"}
-              lit={nodeState("request") !== "idle"}
+              lit={nodeState("request") === "active"}
             />
             <div className="flex items-center gap-2 pr-1">
               <NodeIcon>
@@ -681,7 +685,7 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
         >
           <WorkflowNode
             state={nodeState("agent")}
-            selected={nodeState("agent") === "active" || nodeState("agent") === "ready"}
+            selected={nodeState("agent") === "active"}
             hovered={hovered === "agent"}
             onHover={(v) => setHovered(v ? "agent" : null)}
             wide
@@ -690,13 +694,13 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
               id="agentIn"
               register={register}
               side={compact ? "top" : "left"}
-              lit={nodeState("agent") !== "idle"}
+              lit={nodeState("agent") === "active"}
             />
             <Port
               id="agentOut"
               register={register}
               side={compact ? "right" : "right"}
-              lit={nodeState("agent") === "ready" || settled}
+              lit={nodeState("agent") === "active"}
             />
             <Port
               id="agentModel"
@@ -704,7 +708,7 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
               side="bottom"
               shape="diamond"
               offset={28}
-              lit={nodeState("model") !== "idle" || (compact && nodeState("contract") !== "idle")}
+              lit={nodeState("model") === "active" || (compact && nodeState("contract") === "active")}
             />
             <Port
               id="agentMemory"
@@ -712,7 +716,7 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
               side="bottom"
               shape="diamond"
               offset={50}
-              lit={nodeState("memory") !== "idle"}
+              lit={nodeState("memory") === "active"}
             />
             <Port
               id="agentTools"
@@ -720,7 +724,7 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
               side="bottom"
               shape="diamond"
               offset={72}
-              lit={nodeState("crm") !== "idle"}
+              lit={nodeState("crm") === "active"}
             />
             <div className="flex items-center gap-2">
               <NodeIcon>
@@ -746,12 +750,12 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
               hovered={hovered === "prepare"}
               onHover={(v) => setHovered(v ? "prepare" : null)}
             >
-              <Port id="prepareIn" register={register} side="left" lit={nodeState("prepare") !== "idle"} />
+              <Port id="prepareIn" register={register} side="left" lit={nodeState("prepare") === "active"} />
               <Port
                 id="prepareOut"
                 register={register}
                 side="right"
-                lit={nodeState("prepare") === "ready" || settled}
+                lit={nodeState("prepare") === "active"}
               />
               <div className="flex items-center gap-2 pr-1">
                 <NodeIcon>
@@ -783,7 +787,7 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
           }}
         >
           <motion.div
-            animate={{ padding: approvalExpanded ? 4 : 0 }}
+            animate={{ margin: approvalExpanded ? 4 : 0 }}
             transition={{ duration: 0.28, ease: EASE }}
           >
             <WorkflowNode
@@ -797,13 +801,13 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
                 id="approvalIn"
                 register={register}
                 side={compact ? "right" : "left"}
-                lit={nodeState("approval") !== "idle"}
+                lit={nodeState("approval") === "active"}
               />
               <Port
                 id="approvalOut"
                 register={register}
                 side={compact ? "bottom" : "bottom"}
-                lit={nodeState("approval") === "done" || settled}
+                lit={nodeState("approval") === "active"}
               />
               <div className="flex items-center gap-2">
                 <NodeIcon>
@@ -881,6 +885,29 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
               register={register}
             />
           ) : null}
+          {!compact ? (
+            <ToolNode
+              id="memory"
+              title="Memory"
+              idleMeta="Account"
+              hoverMeta="Acme context"
+              icon={
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
+                  <ellipse cx="6" cy="3.2" rx="3.4" ry="1.3" stroke="currentColor" strokeWidth="1.2" />
+                  <path
+                    d="M2.6 3.2v5.4c0 .8 1.5 1.4 3.4 1.4s3.4-.6 3.4-1.4V3.2"
+                    stroke="currentColor"
+                    strokeWidth="1.2"
+                  />
+                </svg>
+              }
+              portId="memoryIn"
+              state={nodeState("memory")}
+              hovered={hovered}
+              setHovered={setHovered}
+              register={register}
+            />
+          ) : null}
           <ToolNode
             id="crm"
             title="CRM"
@@ -903,27 +930,29 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
             setHovered={setHovered}
             register={register}
           />
-          <ToolNode
-            id="memory"
-            title="Memory"
-            idleMeta="Account"
-            hoverMeta="Acme context"
-            icon={
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
-                <ellipse cx="6" cy="3.2" rx="3.4" ry="1.3" stroke="currentColor" strokeWidth="1.2" />
-                <path
-                  d="M2.6 3.2v5.4c0 .8 1.5 1.4 3.4 1.4s3.4-.6 3.4-1.4V3.2"
-                  stroke="currentColor"
-                  strokeWidth="1.2"
-                />
-              </svg>
-            }
-            portId="memoryIn"
-            state={nodeState("memory")}
-            hovered={hovered}
-            setHovered={setHovered}
-            register={register}
-          />
+          {compact ? (
+            <ToolNode
+              id="memory"
+              title="Memory"
+              idleMeta="Account"
+              hoverMeta="Acme context"
+              icon={
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
+                  <ellipse cx="6" cy="3.2" rx="3.4" ry="1.3" stroke="currentColor" strokeWidth="1.2" />
+                  <path
+                    d="M2.6 3.2v5.4c0 .8 1.5 1.4 3.4 1.4s3.4-.6 3.4-1.4V3.2"
+                    stroke="currentColor"
+                    strokeWidth="1.2"
+                  />
+                </svg>
+              }
+              portId="memoryIn"
+              state={nodeState("memory")}
+              hovered={hovered}
+              setHovered={setHovered}
+              register={register}
+            />
+          ) : null}
           <ToolNode
             id="contract"
             title="Contract"
@@ -969,8 +998,8 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
               onHover={(v) => setHovered(v ? "send" : null)}
               wide
             >
-              <Port id="sendIn" register={register} side="top" lit={nodeState("send") !== "idle"} />
-              <Port id="sendOut" register={register} side="bottom" lit={nodeState("send") === "done" || settled} />
+              <Port id="sendIn" register={register} side="top" lit={nodeState("send") === "active"} />
+              <Port id="sendOut" register={register} side="bottom" lit={nodeState("send") === "active"} />
               <div className="flex items-center gap-2 pr-1">
                 <NodeIcon>
                   <StrokeIcon d="M2 6h8M7.2 3.4 10 6l-2.8 2.6" />
@@ -989,7 +1018,7 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
               onHover={(v) => setHovered(v ? "done" : null)}
               wide
             >
-              <Port id="doneIn" register={register} side="top" lit={nodeState("done") === "done" || settled} />
+              <Port id="doneIn" register={register} side="top" lit={false} />
               <div className="flex items-center gap-2">
                 <span
                   className="flex size-6 items-center justify-center rounded-[6px]"
@@ -1025,7 +1054,7 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
               onHover={(v) => setHovered(v ? "done" : null)}
               wide
             >
-              <Port id="doneIn" register={register} side="top" lit={nodeState("done") === "done" || settled} />
+              <Port id="doneIn" register={register} side="top" lit={false} />
               <div className="flex items-center gap-2">
                 <span
                   className="flex size-6 items-center justify-center rounded-[6px]"
