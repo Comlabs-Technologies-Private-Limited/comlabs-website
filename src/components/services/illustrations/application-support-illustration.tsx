@@ -1,12 +1,20 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronDown, MoreHorizontal } from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 
-import { CheckGlyph, Chip, Panel } from "./illustration-primitives";
+import {
+  ActivitySpinner,
+  Chip,
+  ConnectorBeam,
+  DrawnCheck,
+  Panel,
+} from "./illustration-primitives";
 import { IllustrationStage, useIllustrationState } from "./service-illustration-frame";
 import {
   illustrationColors,
+  illustrationPopHidden,
+  illustrationPopShown,
   illustrationSwap,
   illustrationTextSwapExit,
   illustrationTextSwapHidden,
@@ -14,69 +22,243 @@ import {
 } from "./illustration-tokens";
 import { useIllustrationSequence } from "./use-illustration-sequence";
 
-const TASKS = [
-  ["L1", "Validate user impact", "Support · 2m"],
-  ["L2", "Inspect application logs", "Platform · 4m"],
-  ["L3", "Trace database connection issue", "Engineering · now"],
-  ["L4", "Specialist escalation", "Database team"],
+type LevelState = "queued" | "investigating" | "complete" | "fix";
+
+const LEVELS = [
+  {
+    id: "L1",
+    title: "Initial triage",
+    detail: "User reports confirmed",
+    time: "08:14",
+  },
+  {
+    id: "L2",
+    title: "Logs + service diagnosis",
+    detail: "Payments API 5xx spike",
+    time: "08:16",
+  },
+  {
+    id: "L3",
+    title: "Engineering investigation",
+    detail: "DB connection pool exhausted",
+    time: "08:19",
+  },
+  {
+    id: "L4",
+    title: "Specialist escalation",
+    detail: "Database team on standby",
+    time: "Queued",
+  },
 ] as const;
 
-function TaskIcon({ state, reduce, active }: { state: "done" | "running" | "pending"; reduce: boolean; active: boolean }) {
-  if (state === "done") {
-    return (
-      <motion.span initial={reduce ? false : { scale: 0.85, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="flex h-4 w-4 items-center justify-center rounded-full" style={{ background: illustrationColors.surfaceSunk }}>
-        <CheckGlyph size={9} color={illustrationColors.inkMuted} />
-      </motion.span>
-    );
+function levelState(index: number, step: number): LevelState {
+  if (index === 0) {
+    if (step < 1) return "queued";
+    if (step < 2) return "investigating";
+    return "complete";
   }
-  if (state === "running") {
-    return <motion.span className="h-4 w-4 rounded-full border" style={{ borderColor: illustrationColors.accentLine, borderTopColor: illustrationColors.accent }} animate={!reduce && active ? { rotate: 360 } : undefined} transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }} />;
+  if (index === 1) {
+    if (step < 3) return "queued";
+    if (step < 4) return "investigating";
+    return "complete";
   }
-  return <span className="h-4 w-4 rounded-full border" style={{ borderColor: illustrationColors.borderStrong }} />;
+  if (index === 2) {
+    if (step < 5) return "queued";
+    if (step < 6) return "investigating";
+    return "fix";
+  }
+  return "queued";
+}
+
+function statusLabel(state: LevelState): string {
+  if (state === "complete") return "Complete";
+  if (state === "investigating") return "Investigating";
+  if (state === "fix") return "Fix deployed";
+  return "Queued";
 }
 
 export function ApplicationSupportIllustration() {
   const { active, reduce } = useIllustrationState();
-  const step = useIllustrationSequence({ steps: 6, active, reduce, stepMs: 620 });
-  const completed = step >= 5 ? 4 : step >= 3 ? 3 : 2;
+  const step = useIllustrationSequence({
+    steps: 7,
+    active,
+    reduce,
+    stepMs: [420, 480, 420, 480, 640, 700],
+  });
+  const resolved = step >= 6;
 
   return (
     <IllustrationStage>
-      <Panel className="flex h-full flex-col overflow-hidden">
-        <div className="flex items-center justify-between border-b px-3 py-2.5 lg:px-4" style={{ borderColor: illustrationColors.border }}>
+      <Panel className="flex h-full flex-col overflow-hidden" radius={12}>
+        <motion.div
+          className="flex items-start justify-between gap-3 border-b px-3 py-2.5 lg:px-4"
+          style={{ borderColor: illustrationColors.border }}
+          initial={reduce ? false : { opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: reduce ? 0 : 0.36, ease: [0.25, 0.1, 0, 1] }}
+        >
           <div className="min-w-0">
-            <div className="flex items-center gap-2"><span className="text-[8px] font-medium tabular-nums lg:text-[10px]" style={{ color: illustrationColors.ink }}>INC-2481</span><Chip tone="accent" size="compact">P1</Chip></div>
-            <p className="mt-1 truncate text-[7px] lg:text-[8px]" style={{ color: illustrationColors.inkFaint }}>Production API failure</p>
-          </div>
-          <ChevronDown size={11} strokeWidth={1.5} style={{ color: illustrationColors.inkFaint }} />
-        </div>
-
-        <div className="flex items-center justify-between px-3 py-2 lg:px-4">
-          <span className="text-[7px] lg:text-[8px]" style={{ color: illustrationColors.inkFaint }}>Resolution tasks</span>
-          <span className="flex items-baseline gap-0.5 text-[7px] tabular-nums lg:text-[8px]" style={{ color: illustrationColors.inkMuted }}>
-            <AnimatePresence mode="popLayout" initial={false}><motion.b key={completed} initial={reduce ? false : illustrationTextSwapHidden} animate={illustrationTextSwapShown} exit={illustrationTextSwapExit} transition={illustrationSwap} className="font-medium">{completed}</motion.b></AnimatePresence>/4 done
-          </span>
-        </div>
-
-        <div className="min-h-0 flex-1 px-1.5 lg:px-2">
-          {TASKS.map(([level, label, meta], index) => {
-            const state = index < completed ? "done" : index === completed ? "running" : "pending";
-            return <div key={level} className="group flex min-h-[25%] items-center gap-2 rounded-md px-1.5 transition-colors duration-150 hover:bg-stone-50 lg:px-2">
-              <TaskIcon state={state} reduce={Boolean(reduce)} active={active} />
-              <span className="w-5 shrink-0 text-[7px] font-medium lg:text-[8px]" style={{ color: state === "running" ? illustrationColors.accent : illustrationColors.inkFaint }}>{level}</span>
-              <span className="min-w-0 flex-1">
-                <span className="block truncate text-[8px] lg:text-[9px]" style={{ color: state === "pending" ? illustrationColors.inkMuted : illustrationColors.ink }}>{label}</span>
-                <span className="block max-h-0 translate-y-0.5 overflow-hidden text-[6.5px] opacity-0 transition-all duration-150 group-hover:max-h-3 group-hover:translate-y-0 group-hover:opacity-100 lg:text-[7px]" style={{ color: illustrationColors.inkFaint }}>{meta}</span>
+            <div className="flex items-center gap-2">
+              <span
+                className="text-[8px] font-medium tracking-tight tabular-nums lg:text-[10px]"
+                style={{ color: illustrationColors.ink }}
+              >
+                INC-2481
               </span>
-              <span className="text-[6.5px] lg:text-[7.5px]" style={{ color: state === "running" ? illustrationColors.accent : illustrationColors.inkFaint }}>{state === "done" ? "Completed" : state === "running" ? "Running" : "Pending"}</span>
-              <MoreHorizontal size={10} className="-ml-1 w-0 opacity-0 transition-all duration-150 group-hover:ml-0 group-hover:w-2.5 group-hover:opacity-100" style={{ color: illustrationColors.inkFaint }} />
-            </div>;
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.span
+                  key={resolved ? "resolved" : "p1"}
+                  initial={reduce ? false : illustrationPopHidden}
+                  animate={illustrationPopShown}
+                  exit={reduce ? undefined : illustrationPopHidden}
+                  transition={illustrationSwap}
+                >
+                  <Chip tone={resolved ? "health" : "accent"} size="compact">
+                    {resolved ? "Resolved" : "P1"}
+                  </Chip>
+                </motion.span>
+              </AnimatePresence>
+            </div>
+            <p
+              className="mt-1 truncate text-[7.5px] tracking-tight lg:text-[9px]"
+              style={{ color: illustrationColors.ink }}
+            >
+              Production API failure
+            </p>
+            <p
+              className="mt-1 truncate text-[6.5px] lg:text-[7.5px]"
+              style={{ color: illustrationColors.inkFaint }}
+            >
+              Production · Payments API · Owner: Support
+            </p>
+          </div>
+        </motion.div>
+
+        <div className="flex min-h-0 flex-1 flex-col justify-center px-1.5 py-1 lg:px-2.5">
+          {LEVELS.map((level, index) => {
+            const state = levelState(index, step);
+            const expanded = index === 2 && step >= 5;
+            const beamOn =
+              (index === 0 && step >= 2) ||
+              (index === 1 && step >= 4);
+
+            return (
+              <div key={level.id} className="flex flex-col">
+                <motion.div
+                  layout
+                  className="group flex items-start gap-2 rounded-[8px] px-2 py-1.5 transition-colors duration-150 hover:bg-black/[0.035] lg:px-2.5"
+                  style={{
+                    background: "rgba(28,25,23,0)",
+                  }}
+                >
+                  <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center">
+                    {state === "complete" || state === "fix" ? (
+                      <span
+                        className="flex h-4 w-4 items-center justify-center rounded-full"
+                        style={{ background: illustrationColors.healthSoft }}
+                      >
+                        <DrawnCheck show size={9} reduce={Boolean(reduce)} />
+                      </span>
+                    ) : state === "investigating" ? (
+                      <ActivitySpinner size={12} active={active} reduce={Boolean(reduce)} />
+                    ) : (
+                      <span
+                        className="h-3.5 w-3.5 rounded-full border"
+                        style={{ borderColor: illustrationColors.borderStrong }}
+                      />
+                    )}
+                  </span>
+
+                  <span className="min-w-0 flex-1">
+                    <span className="flex items-center gap-1.5">
+                      <span
+                        className="text-[7px] font-medium tracking-tight lg:text-[8px]"
+                        style={{
+                          color:
+                            state === "queued"
+                              ? illustrationColors.inkFaint
+                              : state === "investigating"
+                                ? illustrationColors.accent
+                                : illustrationColors.inkMuted,
+                        }}
+                      >
+                        {level.id}
+                      </span>
+                      <span
+                        className="truncate text-[8px] tracking-tight lg:text-[9.5px]"
+                        style={{
+                          color:
+                            state === "queued"
+                              ? illustrationColors.inkMuted
+                              : illustrationColors.ink,
+                        }}
+                      >
+                        {level.title}
+                      </span>
+                    </span>
+                    <motion.span
+                      className="mt-0.5 block overflow-hidden text-[6.5px] lg:text-[7.5px]"
+                      initial={false}
+                      animate={{
+                        height: expanded ? "auto" : 0,
+                        opacity: expanded ? 1 : 0,
+                        marginTop: expanded ? 2 : 0,
+                      }}
+                      transition={{ duration: reduce ? 0 : 0.28, ease: [0.25, 0.1, 0, 1] }}
+                      style={{ color: illustrationColors.accent }}
+                    >
+                      {level.detail}
+                    </motion.span>
+                    <span
+                      className="mt-0.5 block max-h-0 overflow-hidden text-[6.5px] opacity-0 transition-all duration-150 group-hover:max-h-4 group-hover:opacity-100 lg:text-[7px]"
+                      style={{ color: illustrationColors.inkFaint }}
+                    >
+                      {level.detail} · {level.time}
+                    </span>
+                  </span>
+
+                  <span className="flex shrink-0 items-center gap-1">
+                    <AnimatePresence mode="wait" initial={false}>
+                      <motion.span
+                        key={state}
+                        initial={reduce ? false : illustrationTextSwapHidden}
+                        animate={illustrationTextSwapShown}
+                        exit={reduce ? undefined : illustrationTextSwapExit}
+                        transition={illustrationSwap}
+                        className="text-[6.5px] lg:text-[7.5px]"
+                        style={{
+                          color:
+                            state === "investigating"
+                              ? illustrationColors.accent
+                              : state === "fix"
+                                ? illustrationColors.health
+                                : illustrationColors.inkFaint,
+                        }}
+                      >
+                        {statusLabel(state)}
+                      </motion.span>
+                    </AnimatePresence>
+                    <MoreHorizontal
+                      size={10}
+                      className="translate-x-0 opacity-0 transition-all duration-150 group-hover:translate-x-0.5 group-hover:opacity-100"
+                      style={{ color: illustrationColors.inkFaint }}
+                    />
+                  </span>
+                </motion.div>
+
+                {index < LEVELS.length - 1 ? (
+                  <div className="flex justify-start pl-[18px] lg:pl-[21px]">
+                    <ConnectorBeam
+                      active={beamOn}
+                      reduce={Boolean(reduce)}
+                      height={10}
+                    />
+                  </div>
+                ) : null}
+              </div>
+            );
           })}
         </div>
-
-        <motion.div className="grid shrink-0 grid-cols-3 border-t px-3 py-2 lg:px-4" style={{ borderColor: illustrationColors.border }} initial={false} animate={{ opacity: step >= 2 ? 1 : 0.45, y: step >= 2 ? 0 : 3 }} transition={{ duration: reduce ? 0 : 0.26 }}>
-          {[["SLA", "Response 08m"], ["Environment", "Production"], ["Owner", "Engineering"]].map(([key, value]) => <span key={key}><span className="block text-[6px] lg:text-[7px]" style={{ color: illustrationColors.inkFaint }}>{key}</span><span className="mt-0.5 block truncate text-[7px] lg:text-[8px]" style={{ color: illustrationColors.inkMuted }}>{value}</span></span>)}
-        </motion.div>
       </Panel>
     </IllustrationStage>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { illustrationTiming } from "./illustration-tokens";
 
@@ -11,14 +11,15 @@ type SequenceOptions = {
   active: boolean;
   /** User prefers reduced motion — jump straight to the resolved state. */
   reduce: boolean;
-  stepMs?: number;
+  /** Milliseconds between steps, or per-step delays from 0→1, 1→2, … */
+  stepMs?: number | readonly number[];
   startDelayMs?: number;
 };
 
 /**
  * Advances an illustration through a finite narrative sequence and then stops.
- * The sequence resets when the frame leaves the viewport so it replays on
- * re-entry instead of looping continuously in the background.
+ * With a once-in-view frame the finished state is held; the sequence only
+ * rewinds if the illustration unmounts.
  */
 export function useIllustrationSequence({
   steps,
@@ -29,23 +30,29 @@ export function useIllustrationSequence({
 }: SequenceOptions): number {
   const finalStep = Math.max(0, steps - 1);
   const [step, setStep] = useState(0);
+  const delayKey = useMemo(
+    () => (typeof stepMs === "number" ? String(stepMs) : stepMs.join(",")),
+    [stepMs],
+  );
 
   useEffect(() => {
     if (reduce || !active) return;
 
+    const delays = delayKey.includes(",")
+      ? delayKey.split(",").map(Number)
+      : Array.from({ length: finalStep }, () => Number(delayKey));
+
     const timers: ReturnType<typeof setTimeout>[] = [];
+    let elapsed = startDelayMs;
     for (let index = 1; index <= finalStep; index += 1) {
-      timers.push(
-        setTimeout(() => setStep(index), startDelayMs + index * stepMs),
-      );
+      elapsed += delays[index - 1] ?? illustrationTiming.stepMs;
+      timers.push(setTimeout(() => setStep(index), elapsed));
     }
 
-    // Rewind on teardown so the sequence replays on the next viewport entry.
     return () => {
       timers.forEach(clearTimeout);
-      setStep(0);
     };
-  }, [active, finalStep, reduce, startDelayMs, stepMs]);
+  }, [active, delayKey, finalStep, reduce, startDelayMs]);
 
   return reduce ? finalStep : step;
 }

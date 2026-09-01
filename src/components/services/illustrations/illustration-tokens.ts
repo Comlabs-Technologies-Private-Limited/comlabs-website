@@ -38,24 +38,34 @@ export const illustrationShadow = {
 export const illustrationRadius = {
   chip: 6,
   control: 8,
-  panel: 10,
-  device: 12,
+  panel: 12,
+  device: 16,
 } as const;
 
 /** Site-wide easing — calm, mechanical, no overshoot. */
 export const illustrationEase = [0.25, 0.1, 0, 1] as const;
 
+export const illustrationSpring = {
+  micro: { type: "spring" as const, stiffness: 420, damping: 34, mass: 0.55 },
+  panel: { type: "spring" as const, stiffness: 280, damping: 30, mass: 0.8 },
+  island: { type: "spring" as const, stiffness: 340, damping: 28, mass: 0.7 },
+  sheet: { type: "spring" as const, stiffness: 380, damping: 32, mass: 0.75 },
+} as const;
+
 export const illustrationTiming = {
   /** Sequences begin almost immediately so nothing sits in a holding state. */
-  startDelayMs: 200,
+  startDelayMs: 180,
   /** Gap between narrative steps — paced so each change is read before the next. */
-  stepMs: 900,
+  stepMs: 520,
   /** Standard element transition (marketing/explanatory). */
-  transitionSec: 0.4,
+  transitionSec: 0.38,
   /** Status flips and in-place swaps — stay under 300ms. */
   feedbackSec: 0.2,
   /** Delay between staggered siblings. */
-  staggerSec: 0.05,
+  staggerSec: 0.06,
+  hoverSec: 0.16,
+  rowSec: 0.26,
+  panelSec: 0.38,
 } as const;
 
 export const illustrationFade = {
@@ -65,6 +75,11 @@ export const illustrationFade = {
 
 export const illustrationSwap = {
   duration: illustrationTiming.feedbackSec,
+  ease: illustrationEase,
+} as const;
+
+export const illustrationHover = {
+  duration: illustrationTiming.hoverSec,
   ease: illustrationEase,
 } as const;
 
@@ -114,5 +129,5 @@ export const illustrationPopShown = {
   filter: "blur(0px)",
 } as const;
 
-/** Viewport trigger shared by every illustration frame. */
-export const illustrationViewport = { amount: 0.4 } as const;
+/** Viewport trigger shared by every illustration frame. Play once, then hold. */
+export const illustrationViewport = { amount: 0.2, once: true } as const;

@@ -1,434 +1,345 @@
 "use client";
 
+import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Inbox, LayoutGrid, Search, Settings2, Users } from "lucide-react";
+import { Inbox, LayoutGrid, MoreHorizontal, Users } from "lucide-react";
 
+import { CheckGlyph, Chip, Panel } from "./illustration-primitives";
+import { IllustrationStage, useIllustrationState } from "./service-illustration-frame";
 import {
-  OutlookMark,
-  SalesforceMark,
-  SlackMark,
-} from "./brand-marks";
-import { CheckGlyph, Chip, StatusDot, WindowDots } from "./illustration-primitives";
-import {
-  IllustrationStage,
-  useIllustrationState,
-} from "./service-illustration-frame";
-import {
-  illustrationBlurShown,
   illustrationColors,
-  illustrationEase,
+  illustrationHover,
   illustrationPopHidden,
   illustrationPopShown,
   illustrationRadius,
   illustrationShadow,
+  illustrationSpring,
   illustrationSwap,
   illustrationTextSwapExit,
   illustrationTextSwapHidden,
   illustrationTextSwapShown,
-  illustrationTiming,
 } from "./illustration-tokens";
 import { useIllustrationSequence } from "./use-illustration-sequence";
-
-type Stage = "Request" | "Review" | "Build" | "Live";
 
 const NAV = [
   { label: "Requests", Icon: Inbox, active: true },
   { label: "Workspaces", Icon: LayoutGrid, active: false },
   { label: "Teams", Icon: Users, active: false },
-  { label: "Settings", Icon: Settings2, active: false },
 ] as const;
 
-const REQUESTS = [
-  { company: "Acme Corp", plan: "Enterprise", owner: "Priya", Source: SlackMark },
-  { company: "Helio", plan: "Growth", owner: "Arjun", Source: SalesforceMark },
-  { company: "Vithub", plan: "Studio", owner: "Meera", Source: OutlookMark },
-  { company: "Formial", plan: "Scale", owner: "Jeet", Source: SalesforceMark },
-] as const;
-
-const FIELDS = [
-  { label: "Plan", value: "Enterprise" },
-  { label: "Owner", value: "Priya Shah" },
-  { label: "Source", value: "Slack · #ops-requests" },
-  { label: "Region", value: "ap-south-1" },
-] as const;
-
-const PROVISION = [
-  { label: "Workspace created", hint: "atlas.app/acme", step: 3 },
-  { label: "CRM record", hint: "Salesforce · AC-4421", step: 4 },
-  { label: "Admin seats", hint: "12 seats assigned", step: 4 },
-  { label: "Calendar invite", hint: "Outlook · kickoff", step: 5 },
-] as const;
-
-const INTEGRATIONS = [
-  { name: "Slack", Mark: SlackMark, detail: "#ops-requests", step: 0 },
-  { name: "Salesforce", Mark: SalesforceMark, detail: "AC-4421", step: 4 },
-  { name: "Outlook", Mark: OutlookMark, detail: "Invites", step: 5 },
-] as const;
-
-const STEPS = 6;
-
-const fade = {
-  duration: illustrationTiming.transitionSec,
-  ease: illustrationEase,
+type RequestRow = {
+  id: string;
+  company: string;
+  plan: string;
+  owner: string;
+  incoming?: boolean;
 };
 
-function acmeStage(step: number): Stage {
-  if (step >= 5) return "Live";
-  if (step >= 3) return "Build";
-  if (step >= 2) return "Review";
-  return "Request";
-}
+const BASE_REQUESTS: readonly RequestRow[] = [
+  { id: "helio", company: "Helio", plan: "Growth", owner: "Arjun" },
+  { id: "vithub", company: "Vithub", plan: "Studio", owner: "Meera" },
+  { id: "formial", company: "Formial", plan: "Scale", owner: "Jeet" },
+];
 
-function rowStage(index: number, step: number): Stage {
-  if (index === 0) return acmeStage(step);
-  if (index === 1) return "Review";
-  return "Live";
-}
+const ACME: RequestRow = {
+  id: "acme",
+  company: "Acme Corp",
+  plan: "Enterprise",
+  owner: "Priya",
+  incoming: true,
+};
 
-function AppMark() {
-  return (
-    <span
-      className="flex h-[16px] w-[16px] shrink-0 items-center justify-center rounded-[5px] lg:h-[18px] lg:w-[18px]"
-      style={{ background: illustrationColors.ink }}
-    >
-      <svg width={10} height={10} viewBox="0 0 10 10" fill="none" aria-hidden>
-        <rect x="0.5" y="0.5" width="4" height="4" rx="0.8" fill={illustrationColors.surface} />
-        <rect x="5.5" y="0.5" width="4" height="4" rx="0.8" fill={illustrationColors.surface} opacity="0.45" />
-        <rect x="0.5" y="5.5" width="4" height="4" rx="0.8" fill={illustrationColors.surface} opacity="0.45" />
-        <rect x="5.5" y="5.5" width="4" height="4" rx="0.8" fill={illustrationColors.accent} />
-      </svg>
-    </span>
-  );
-}
-
-function StatusLabel({ stage }: { stage: Stage }) {
-  const live = stage === "Live";
-  return (
-    <span
-      className="shrink-0 text-[6.5px] leading-none lg:text-[7.5px]"
-      style={{
-        color: live ? illustrationColors.health : illustrationColors.inkFaint,
-      }}
-    >
-      {stage}
-    </span>
-  );
-}
+const TASKS = [
+  { label: "Workspace created", hint: "atlas.app/acme", at: 5 },
+  { label: "CRM record", hint: "Salesforce · AC-4421", at: 6 },
+  { label: "Admin seats", hint: "12 seats assigned", at: 7 },
+  { label: "Calendar invite", hint: "Outlook · kickoff", at: 8 },
+] as const;
 
 export function CustomSoftwareIllustration() {
   const { active, reduce } = useIllustrationState();
-  const step = useIllustrationSequence({ steps: STEPS, active, reduce });
+  const step = useIllustrationSequence({
+    steps: 10,
+    active,
+    reduce,
+    stepMs: [420, 380, 420, 480, 420, 420, 420, 480, 560],
+  });
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  const stage = acmeStage(step);
-  const live = stage === "Live";
-  const building = stage === "Build" || live;
+  const showAcme = step >= 1;
+  const selectedId = step >= 2 ? "acme" : "helio";
+  const rows = showAcme ? [ACME, ...BASE_REQUESTS] : [...BASE_REQUESTS];
+  const count = showAcme ? 4 : 3;
+  const ready = step >= 9;
 
   return (
-    <IllustrationStage className="p-2 lg:p-3">
-      <div
-        className="flex h-full min-h-0 flex-col overflow-hidden"
-        style={{
-          borderRadius: illustrationRadius.device,
-          background: illustrationColors.surface,
-          border: `1px solid ${illustrationColors.border}`,
-          boxShadow: illustrationShadow.panel,
-        }}
-      >
+    <IllustrationStage>
+      <Panel className="flex h-full overflow-hidden" radius={12}>
         <div
-          className="flex shrink-0 items-center justify-between gap-2 px-3 py-2.5 lg:px-3.5 lg:py-3"
+          className="hidden w-[22%] shrink-0 flex-col border-r lg:flex"
           style={{
-            borderBottom: `1px solid ${illustrationColors.border}`,
+            borderColor: illustrationColors.border,
+            background: illustrationColors.surfaceMuted,
           }}
         >
-          <span className="flex min-w-0 items-center gap-2">
-            <WindowDots />
-            <AppMark />
-            <span
-              className="truncate text-[8px] leading-none lg:text-[10px]"
-              style={{ color: illustrationColors.ink }}
-            >
-              Atlas
-            </span>
-            <span
-              className="hidden truncate text-[7px] leading-none lg:inline"
-              style={{ color: illustrationColors.inkFaint }}
-            >
-              Operations
-            </span>
-          </span>
-          <Chip tone={live ? "health" : building ? "neutral" : "quiet"} size="compact">
-            {live ? "Live" : building ? "Provisioning" : "New request"}
-          </Chip>
-        </div>
-
-        <div className="flex min-h-0 flex-1">
-          <div
-            className="hidden w-[22%] shrink-0 flex-col border-r lg:flex"
-            style={{
-              borderColor: illustrationColors.border,
-              background: illustrationColors.surfaceMuted,
-            }}
-          >
-            <div className="flex items-center gap-1.5 px-3 pt-3 pb-2">
-              <Search size={9} strokeWidth={1.5} color={illustrationColors.inkFaint} />
+          <div className="flex flex-col gap-0.5 px-1.5 pt-3">
+            {NAV.map((item) => (
               <span
-                className="text-[7.5px] leading-none"
-                style={{ color: illustrationColors.inkFaint }}
+                key={item.label}
+                className="flex items-center gap-2 px-2 py-[7px]"
+                style={{
+                  borderRadius: illustrationRadius.control,
+                  background: item.active ? illustrationColors.surface : "transparent",
+                }}
               >
-                Search
-              </span>
-            </div>
-
-            <div className="flex flex-col px-1.5">
-              {NAV.map((item) => (
+                <item.Icon
+                  size={10}
+                  strokeWidth={1.5}
+                  color={item.active ? illustrationColors.ink : illustrationColors.inkFaint}
+                />
                 <span
-                  key={item.label}
-                  className="flex items-center gap-2 px-2 py-[8px]"
+                  className="text-[8px] tracking-tight"
                   style={{
-                    borderRadius: illustrationRadius.control,
-                    background: item.active ? illustrationColors.surface : "transparent",
+                    color: item.active ? illustrationColors.ink : illustrationColors.inkMuted,
                   }}
                 >
-                  <item.Icon
-                    size={11}
-                    strokeWidth={1.5}
-                    color={item.active ? illustrationColors.ink : illustrationColors.inkFaint}
-                  />
-                  <span
-                    className="truncate text-[8px] leading-none"
-                    style={{
-                      color: item.active ? illustrationColors.ink : illustrationColors.inkMuted,
-                    }}
-                  >
-                    {item.label}
-                  </span>
+                  {item.label}
                 </span>
-              ))}
-            </div>
-
-            <div
-              className="mt-auto flex items-center gap-2 px-3 py-3"
-              style={{ borderTop: `1px solid ${illustrationColors.border}` }}
-            >
-              {INTEGRATIONS.map((app) => {
-                const connected = step >= app.step;
-                return (
-                  <span
-                    key={app.name}
-                    className="flex h-[16px] w-[16px] items-center justify-center"
-                    style={{ opacity: connected ? 1 : 0.35, transition: "opacity 380ms ease" }}
-                  >
-                    <app.Mark className="h-[11px] w-[11px]" />
-                  </span>
-                );
-              })}
-            </div>
-          </div>
-
-          <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-            <div
-              className="flex shrink-0 items-center gap-2 px-3 py-2.5 lg:px-3.5"
-              style={{ borderBottom: `1px solid ${illustrationColors.border}` }}
-            >
-              <span
-                className="text-[8px] leading-none font-medium lg:text-[9.5px]"
-                style={{ color: illustrationColors.ink }}
-              >
-                Requests
               </span>
-              <span
-                className="ml-auto text-[7px] leading-none tabular-nums lg:text-[8px]"
+            ))}
+          </div>
+        </div>
+
+        <div className="flex min-w-0 flex-1 flex-col">
+          <div
+            className="flex items-center justify-between border-b px-3 py-2 lg:px-3.5"
+            style={{ borderColor: illustrationColors.border }}
+          >
+            <span
+              className="text-[8px] font-medium tracking-tight lg:text-[9.5px]"
+              style={{ color: illustrationColors.ink }}
+            >
+              Requests
+            </span>
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.span
+                key={count}
+                initial={reduce ? false : illustrationTextSwapHidden}
+                animate={illustrationTextSwapShown}
+                exit={reduce ? undefined : illustrationTextSwapExit}
+                transition={illustrationSwap}
+                className="text-[7px] tabular-nums lg:text-[8px]"
                 style={{ color: illustrationColors.inkFaint }}
               >
-                4
-              </span>
-            </div>
+                {count}
+              </motion.span>
+            </AnimatePresence>
+          </div>
 
-            <div className="min-h-0 flex-1 overflow-hidden">
-              {REQUESTS.map((row, index) => {
-                const selected = index === 0;
-                const current = rowStage(index, step);
-
+          <div className="min-h-0 flex-1 overflow-hidden">
+            <AnimatePresence initial={false}>
+              {rows.map((row) => {
+                const selected = row.id === selectedId;
                 return (
-                  <div
-                    key={row.company}
-                    className="flex items-center gap-2 px-3 py-[9px] lg:px-3.5 lg:py-2.5"
+                  <motion.div
+                    layout
+                    key={row.id}
+                    initial={
+                      row.incoming && !reduce
+                        ? { opacity: 0, y: -10, filter: "blur(2px)" }
+                        : false
+                    }
+                    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                    transition={{ duration: reduce ? 0 : 0.32, ease: [0.25, 0.1, 0, 1] }}
+                    className="group relative flex items-center gap-2 border-b px-3 py-2 transition-colors duration-150 hover:bg-black/[0.03] lg:px-3.5"
                     style={{
-                      background: selected ? illustrationColors.surfaceMuted : "transparent",
-                      boxShadow: selected
-                        ? `inset 2px 0 0 ${illustrationColors.ink}`
-                        : undefined,
-                      borderBottom: `1px solid ${illustrationColors.border}`,
+                      borderColor: illustrationColors.border,
+                      background: selected
+                        ? illustrationColors.surfaceMuted
+                        : "rgba(28,25,23,0)",
+                      boxShadow: selected ? `inset 2px 0 0 ${illustrationColors.ink}` : undefined,
                     }}
                   >
-                    <span
-                      className="flex h-[16px] w-[16px] shrink-0 items-center justify-center rounded-[5px] lg:h-[18px] lg:w-[18px]"
-                      style={{
-                        background: illustrationColors.surface,
-                      }}
-                    >
-                      <row.Source className="h-[9px] w-[9px] lg:h-[10px] lg:w-[10px]" />
-                    </span>
                     <span className="min-w-0 flex-1">
-                      <span className="flex items-center justify-between gap-1">
-                        <span
-                          className="truncate text-[7.5px] leading-none lg:text-[9px]"
-                          style={{ color: illustrationColors.ink }}
-                        >
-                          {row.company}
-                        </span>
-                        {selected ? (
-                          <AnimatePresence mode="wait" initial={false}>
-                            <motion.span
-                              key={current}
-                              initial={reduce ? false : illustrationTextSwapHidden}
-                              animate={illustrationTextSwapShown}
-                              exit={reduce ? undefined : illustrationTextSwapExit}
-                              transition={illustrationSwap}
-                              className="inline-flex"
-                            >
-                              <StatusLabel stage={current} />
-                            </motion.span>
-                          </AnimatePresence>
-                        ) : (
-                          <StatusLabel stage={current} />
-                        )}
+                      <span
+                        className="block truncate text-[8px] tracking-tight lg:text-[9px]"
+                        style={{ color: illustrationColors.ink }}
+                      >
+                        {row.company}
                       </span>
                       <span
-                        className="mt-1 block truncate text-[6.5px] leading-none lg:text-[7.5px]"
+                        className="mt-0.5 block truncate text-[6.5px] lg:text-[7.5px]"
                         style={{ color: illustrationColors.inkFaint }}
                       >
                         {row.plan} · {row.owner}
                       </span>
                     </span>
-                  </div>
+                    <span className="hidden items-center gap-1 opacity-0 transition-opacity duration-150 group-hover:flex group-hover:opacity-100">
+                      <span
+                        className="rounded-[6px] border px-1.5 py-0.5 text-[6px]"
+                        style={{
+                          borderColor: illustrationColors.border,
+                          color: illustrationColors.inkMuted,
+                        }}
+                      >
+                        Open
+                      </span>
+                      <button
+                        type="button"
+                        tabIndex={-1}
+                        className="relative"
+                        onPointerEnter={() => {
+                          if (selected) setMenuOpen(true);
+                        }}
+                        onPointerLeave={() => setMenuOpen(false)}
+                      >
+                        <MoreHorizontal size={10} color={illustrationColors.inkFaint} />
+                        <AnimatePresence>
+                          {selected && menuOpen ? (
+                            <motion.span
+                              initial={reduce ? false : { opacity: 0, scale: 0.96, y: -4 }}
+                              animate={{ opacity: 1, scale: 1, y: 0 }}
+                              exit={reduce ? undefined : { opacity: 0, scale: 0.96, y: -4 }}
+                              transition={illustrationSpring.micro}
+                              style={{
+                                transformOrigin: "top right",
+                                background: illustrationColors.surface,
+                                borderColor: illustrationColors.border,
+                                boxShadow: illustrationShadow.raised,
+                                borderRadius: illustrationRadius.control,
+                              }}
+                              className="absolute top-full right-0 z-20 mt-1 w-[78px] border px-1.5 py-1"
+                            >
+                              {["Assign", "Archive"].map((action) => (
+                                <span
+                                  key={action}
+                                  className="block px-1 py-1 text-[6.5px]"
+                                  style={{ color: illustrationColors.inkMuted }}
+                                >
+                                  {action}
+                                </span>
+                              ))}
+                            </motion.span>
+                          ) : null}
+                        </AnimatePresence>
+                      </button>
+                    </span>
+                    {row.id === "acme" && selected ? (
+                      <Chip tone={ready ? "health" : "quiet"} size="compact">
+                        {ready ? "Ready" : "New"}
+                      </Chip>
+                    ) : null}
+                  </motion.div>
                 );
               })}
-            </div>
-          </div>
-
-          <div
-            className="flex w-[42%] shrink-0 flex-col md:w-[36%] lg:w-[32%]"
-            style={{
-              borderLeft: `1px solid ${illustrationColors.border}`,
-            }}
-          >
-            <div className="flex shrink-0 items-center justify-between gap-2 px-3 py-2.5 lg:px-3.5">
-              <span className="min-w-0">
-                <span
-                  className="block truncate text-[8.5px] leading-none lg:text-[10px]"
-                  style={{ color: illustrationColors.ink }}
-                >
-                  Acme Corp
-                </span>
-                <span
-                  className="mt-1.5 block truncate text-[7px] leading-none"
-                  style={{ color: illustrationColors.inkFaint }}
-                >
-                  Workspace onboarding
-                </span>
-              </span>
-            </div>
-
-            <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-hidden px-3 pb-3 lg:px-3.5">
-              <div className="flex flex-col gap-2">
-                {FIELDS.map((field) => (
-                  <div key={field.label} className="flex items-baseline justify-between gap-3">
-                    <span
-                      className="shrink-0 text-[7px] leading-[1.3] lg:text-[8px]"
-                      style={{ color: illustrationColors.inkFaint }}
-                    >
-                      {field.label}
-                    </span>
-                    <span
-                      className="truncate text-[7.5px] leading-[1.3] lg:text-[8.5px]"
-                      style={{ color: illustrationColors.ink }}
-                    >
-                      {field.value}
-                    </span>
-                  </div>
-                ))}
-              </div>
-
-              <div
-                className="flex min-h-0 flex-1 flex-col pt-3"
-                style={{ borderTop: `1px solid ${illustrationColors.border}` }}
-              >
-                <span
-                  className="mb-2 text-[7px] leading-none lg:text-[8px]"
-                  style={{ color: illustrationColors.inkFaint }}
-                >
-                  Provisioning
-                </span>
-                {PROVISION.map((item) => {
-                  const done = step >= item.step;
-                  return (
-                    <div key={item.label} className="flex items-start gap-2 py-[6px]">
-                      <span className="mt-px flex h-[12px] w-[12px] shrink-0 items-center justify-center">
-                        {done ? (
-                          <CheckGlyph size={8} color={illustrationColors.health} />
-                        ) : (
-                          <StatusDot tone="idle" />
-                        )}
-                      </span>
-                      <span className="min-w-0">
-                        <span
-                          className="block truncate text-[8px] leading-none lg:text-[9px]"
-                          style={{
-                            color: done ? illustrationColors.ink : illustrationColors.inkFaint,
-                          }}
-                        >
-                          {item.label}
-                        </span>
-                        <span
-                          className="mt-1 block truncate text-[7px] leading-none"
-                          style={{
-                            color: done
-                              ? illustrationColors.inkMuted
-                              : illustrationColors.inkFaint,
-                          }}
-                        >
-                          {done ? item.hint : "Pending"}
-                        </span>
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
-
-              <AnimatePresence>
-                {live ? (
-                  <motion.div
-                    key="live"
-                    initial={reduce ? false : illustrationPopHidden}
-                    animate={illustrationPopShown}
-                    transition={fade}
-                    className="flex items-center gap-1.5 pt-1"
-                  >
-                    <CheckGlyph size={8} color={illustrationColors.health} />
-                    <span
-                      className="truncate text-[8px] leading-none lg:text-[9px]"
-                      style={{ color: illustrationColors.health }}
-                    >
-                      Workspace live
-                    </span>
-                  </motion.div>
-                ) : (
-                  <motion.span
-                    key="progress"
-                    initial={false}
-                    animate={illustrationBlurShown}
-                    className="truncate text-[7.5px] leading-none"
-                    style={{ color: illustrationColors.inkFaint }}
-                  >
-                    {building ? "Provisioning systems…" : "Waiting to start…"}
-                  </motion.span>
-                )}
-              </AnimatePresence>
-            </div>
+            </AnimatePresence>
           </div>
         </div>
-      </div>
+
+        <div
+          className="flex w-[44%] shrink-0 flex-col border-l md:w-[38%]"
+          style={{ borderColor: illustrationColors.border }}
+        >
+          <div className="px-3 py-2.5 lg:px-3.5">
+            <span
+              className="block text-[8.5px] tracking-tight lg:text-[10px]"
+              style={{ color: illustrationColors.ink }}
+            >
+              {selectedId === "acme" ? "Acme Corp" : "Helio"}
+            </span>
+            <span
+              className="mt-1 block text-[7px]"
+              style={{ color: illustrationColors.inkFaint }}
+            >
+              Workspace onboarding
+            </span>
+          </div>
+
+          <motion.div
+            className="flex flex-col gap-1.5 px-3 lg:px-3.5"
+            initial={false}
+            animate={{ opacity: step >= 3 ? 1 : 0.35 }}
+          >
+            {[
+              ["Owner", selectedId === "acme" ? "Priya" : "Arjun"],
+              ["Region", "ap-south-1"],
+              ["Plan", selectedId === "acme" ? "Enterprise" : "Growth"],
+            ].map(([label, value]) => (
+              <div key={label} className="flex justify-between gap-2">
+                <span className="text-[7px]" style={{ color: illustrationColors.inkFaint }}>
+                  {label}
+                </span>
+                <span className="truncate text-[7.5px]" style={{ color: illustrationColors.ink }}>
+                  {value}
+                </span>
+              </div>
+            ))}
+          </motion.div>
+
+          <div
+            className="mt-2 min-h-0 flex-1 border-t px-3 pt-2 lg:px-3.5"
+            style={{ borderColor: illustrationColors.border }}
+          >
+            <span
+              className="mb-1 block text-[7px]"
+              style={{ color: illustrationColors.inkFaint }}
+            >
+              Provisioning
+            </span>
+            {TASKS.map((task) => {
+              const done = step >= task.at;
+              return (
+                <div key={task.label} className="flex items-center gap-1.5 py-[5px]">
+                  <span className="flex h-3 w-3 items-center justify-center">
+                    {done ? (
+                      <CheckGlyph size={8} color={illustrationColors.health} />
+                    ) : (
+                      <span
+                        className="h-1.5 w-1.5 rounded-full"
+                        style={{ background: illustrationColors.wire }}
+                      />
+                    )}
+                  </span>
+                  <span
+                    className="truncate text-[7.5px] lg:text-[8.5px]"
+                    style={{
+                      color: done ? illustrationColors.ink : illustrationColors.inkFaint,
+                    }}
+                  >
+                    {task.label}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="px-3 pb-2.5 lg:px-3.5">
+            <AnimatePresence>
+              {ready ? (
+                <motion.div
+                  key="toast"
+                  initial={reduce ? false : illustrationPopHidden}
+                  animate={illustrationPopShown}
+                  transition={illustrationHover}
+                  className="flex items-center gap-1.5 rounded-[8px] border px-2 py-1.5"
+                  style={{
+                    borderColor: "rgba(63,122,90,0.18)",
+                    background: illustrationColors.healthSoft,
+                  }}
+                >
+                  <CheckGlyph size={8} color={illustrationColors.health} />
+                  <span
+                    className="text-[7.5px] tracking-tight lg:text-[8.5px]"
+                    style={{ color: illustrationColors.health }}
+                  >
+                    Workspace ready
+                  </span>
+                </motion.div>
+              ) : null}
+            </AnimatePresence>
+          </div>
+        </div>
+      </Panel>
     </IllustrationStage>
   );
 }

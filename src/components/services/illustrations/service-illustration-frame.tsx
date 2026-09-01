@@ -8,6 +8,7 @@ import {
   useRef,
   useState,
   type CSSProperties,
+  type PointerEvent as ReactPointerEvent,
   type ReactNode,
 } from "react";
 import Image from "next/image";
@@ -22,11 +23,20 @@ import {
   illustrationViewport,
 } from "./illustration-tokens";
 
+type IllustrationPointer = {
+  x: number;
+  y: number;
+};
+
 type IllustrationState = {
-  /** Frame is currently inside the viewport. */
+  /** Frame is currently inside the viewport (once: true — stays true). */
   active: boolean;
   /** User prefers reduced motion. */
   reduce: boolean;
+  /** Pointer is over the illustration. */
+  hovered: boolean;
+  /** Normalised pointer offset, -1…1. Zero on touch / reduced motion. */
+  pointer: IllustrationPointer;
   /** Optional padding override for IllustrationStage (e.g. tighter homepage cards). */
   stageClassName?: string;
 };
@@ -34,6 +44,8 @@ type IllustrationState = {
 const IllustrationStateContext = createContext<IllustrationState>({
   active: false,
   reduce: false,
+  hovered: false,
+  pointer: { x: 0, y: 0 },
 });
 
 export function useIllustrationState(): IllustrationState {
@@ -88,10 +100,27 @@ export function ServiceIllustrationFrame({
   const inView = useInView(frameRef, illustrationViewport);
   const finePointer = useFinePointer();
   const [hovered, setHovered] = useState(false);
+  const [pointer, setPointer] = useState<IllustrationPointer>({ x: 0, y: 0 });
   const activate = useCallback(() => setHovered(true), []);
-  const deactivate = useCallback(() => setHovered(false), []);
-  // Touch and keyboard users get the same finite story on viewport entry/focus.
-  const sequenceActive = inView && (!finePointer || hovered);
+  const deactivate = useCallback(() => {
+    setHovered(false);
+    setPointer({ x: 0, y: 0 });
+  }, []);
+
+  const onPointerMove = useCallback(
+    (event: ReactPointerEvent<HTMLDivElement>) => {
+      if (reduce || !finePointer || !frameRef.current) return;
+      const rect = frameRef.current.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) return;
+      const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+      const y = ((event.clientY - rect.top) / rect.height) * 2 - 1;
+      setPointer({
+        x: Math.max(-1, Math.min(1, x)),
+        y: Math.max(-1, Math.min(1, y)),
+      });
+    },
+    [finePointer, reduce],
+  );
 
   const isDark = tone === "dark";
 
@@ -102,6 +131,7 @@ export function ServiceIllustrationFrame({
       aria-label={label}
       onPointerEnter={activate}
       onPointerLeave={deactivate}
+      onPointerMove={onPointerMove}
       onFocusCapture={activate}
       onBlurCapture={deactivate}
       className={cn(
@@ -146,15 +176,19 @@ export function ServiceIllustrationFrame({
       <motion.div
         aria-hidden
         className="absolute inset-0 overflow-hidden"
-        initial={reduce ? false : { ...illustrationBlurHidden, y: 8 }}
-        animate={
-          inView
-            ? { ...illustrationBlurShown, y: 0 }
-            : { ...illustrationBlurHidden, y: 8 }
-        }
-        transition={{ duration: reduce ? 0 : 0.5, ease: illustrationEase }}
+        initial={reduce ? false : { ...illustrationBlurHidden, y: 6 }}
+        animate={{ ...illustrationBlurShown, y: 0 }}
+        transition={{ duration: reduce ? 0 : 0.45, ease: illustrationEase }}
       >
-        <IllustrationStateContext.Provider value={{ active: sequenceActive, reduce, stageClassName }}>
+        <IllustrationStateContext.Provider
+          value={{
+            active: inView,
+            reduce,
+            hovered,
+            pointer: reduce || !finePointer ? { x: 0, y: 0 } : pointer,
+            stageClassName,
+          }}
+        >
           {children}
         </IllustrationStateContext.Provider>
       </motion.div>

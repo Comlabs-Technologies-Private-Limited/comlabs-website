@@ -1,43 +1,321 @@
 "use client";
 
+import { useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Check, Info } from "lucide-react";
 
-import { Chip, Panel } from "./illustration-primitives";
+import { AnimatedBeam } from "./animated-beam";
+import {
+  ActivitySpinner,
+  Chip,
+  DrawnCheck,
+  Panel,
+} from "./illustration-primitives";
 import { IllustrationStage, useIllustrationState } from "./service-illustration-frame";
-import { illustrationColors, illustrationSwap, illustrationTextSwapExit, illustrationTextSwapHidden, illustrationTextSwapShown } from "./illustration-tokens";
+import {
+  illustrationColors,
+  illustrationHover,
+  illustrationRadius,
+  illustrationShadow,
+  illustrationSpring,
+  illustrationSwap,
+  illustrationTextSwapExit,
+  illustrationTextSwapHidden,
+  illustrationTextSwapShown,
+} from "./illustration-tokens";
 import { useIllustrationSequence } from "./use-illustration-sequence";
 
-const SERVICES = [["API", "124 ms", "99.99% uptime"], ["Database", "38 connections", "4 ms query p95"], ["Workers", "12 active", "0 queued jobs"]] as const;
+const NODES = [
+  { id: "cf", label: "CloudFront", hint: "Edge cache · HIT 94%" },
+  { id: "alb", label: "ALB", hint: "3/3 targets in service" },
+  { id: "ecs", label: "ECS", hint: "prod-api · 4 tasks" },
+  { id: "rds", label: "RDS", hint: "Primary · 12ms" },
+] as const;
+
+const LOGS = [
+  "deploying service…",
+  "health check passed",
+  "3/3 targets healthy",
+] as const;
+
+function deployLabel(step: number): string {
+  if (step >= 8) return "Healthy";
+  if (step >= 7) return "Health check";
+  if (step >= 6) return "Deploying";
+  return "Queued";
+}
 
 export function CloudScalingIllustration() {
   const { active, reduce } = useIllustrationState();
-  const step = useIllustrationSequence({ steps: 5, active, reduce, stepMs: 720 });
-  const tab = step >= 2 && step < 4 ? 1 : 0;
-  const deployed = step >= 4;
+  const step = useIllustrationSequence({
+    steps: 9,
+    active,
+    reduce,
+    stepMs: [380, 420, 420, 420, 480, 520, 520, 560],
+  });
+  const [deployOpen, setDeployOpen] = useState(false);
 
-  return <IllustrationStage>
-    <Panel className="flex h-full flex-col overflow-hidden">
-      <div className="flex items-center justify-between border-b px-3 py-2.5 lg:px-4" style={{ borderColor: illustrationColors.border }}>
-        <span><span className="block text-[8px] font-medium lg:text-[10px]" style={{ color: illustrationColors.ink }}>Production</span><span className="mt-1 block text-[7px] lg:text-[8px]" style={{ color: illustrationColors.inkFaint }}>ap-south-1 · prod-api</span></span>
-        <Chip tone="health" size="compact">Healthy</Chip>
-      </div>
-      <div className="relative flex gap-4 border-b px-3 lg:px-4" style={{ borderColor: illustrationColors.border }}>
-        {["Overview", "Deployments", "Logs"].map((label, index) => <span key={label} className="relative py-2 text-[7px] lg:text-[8px]" style={{ color: tab === index ? illustrationColors.ink : illustrationColors.inkFaint }}>{label}{tab === index ? <motion.span layoutId="cloud-tab" className="absolute inset-x-0 bottom-0 h-px" style={{ background: illustrationColors.ink }} transition={{ duration: reduce ? 0 : 0.22 }} /> : null}</span>)}
-      </div>
-      <div className="flex items-center justify-between px-3 pt-2.5 pb-1 lg:px-4"><span className="text-[7px] lg:text-[8px]" style={{ color: illustrationColors.inkFaint }}>Services</span><span className="text-[6.5px] tabular-nums lg:text-[7.5px]" style={{ color: illustrationColors.inkFaint }}>3 of 3 healthy</span></div>
-      <div className="min-h-0 flex-1 px-2 lg:px-3">
-        {SERVICES.map(([label, metric, tooltip]) => <div key={label} className="group flex h-1/3 items-center gap-2 rounded-md px-1.5 transition-colors duration-150 hover:bg-stone-50 lg:px-2">
-          <span className="h-1.5 w-1.5 rounded-full" style={{ background: illustrationColors.health }} />
-          <span className="flex-1 text-[8px] lg:text-[9px]" style={{ color: illustrationColors.ink }}>{label}</span>
-          <span className="relative flex items-center gap-1 text-[7px] tabular-nums lg:text-[8px]" style={{ color: illustrationColors.inkMuted }}>{metric}<Info size={8} style={{ color: illustrationColors.inkFaint }} /><span className="pointer-events-none absolute right-0 bottom-full z-10 mb-1 translate-y-1 rounded-md border bg-white px-2 py-1 text-[6.5px] whitespace-nowrap opacity-0 shadow-sm transition-all duration-150 group-hover:translate-y-0 group-hover:opacity-100" style={{ borderColor: illustrationColors.border, color: illustrationColors.inkMuted }}>{tooltip}</span></span>
-          <span className="text-[6.5px] lg:text-[7.5px]" style={{ color: illustrationColors.health }}>Healthy</span>
-        </div>)}
-      </div>
-      <div className="grid grid-cols-2 border-t px-3 py-2.5 lg:px-4" style={{ borderColor: illustrationColors.border }}>
-        <span><span className="block text-[6.5px] lg:text-[7.5px]" style={{ color: illustrationColors.inkFaint }}>Latest deployment</span><span className="mt-1 flex items-center gap-1.5 text-[7.5px] lg:text-[8.5px]" style={{ color: illustrationColors.ink }}><AnimatePresence mode="wait" initial={false}><motion.span key={deployed ? "done" : "spin"} initial={reduce ? false : { opacity: 0, scale: .9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} transition={illustrationSwap}>{deployed ? <Check size={9} /> : <motion.span className="block h-2 w-2 rounded-full border" style={{ borderColor: illustrationColors.borderStrong, borderTopColor: illustrationColors.inkMuted }} animate={!reduce && active ? { rotate: 360 } : undefined} transition={{ repeat: Infinity, duration: .8, ease: "linear" }} />}</motion.span></AnimatePresence>v2.8.4 · <AnimatePresence mode="wait" initial={false}><motion.b key={deployed ? "Healthy" : "Deploying"} initial={reduce ? false : illustrationTextSwapHidden} animate={illustrationTextSwapShown} exit={illustrationTextSwapExit} transition={illustrationSwap} className="font-normal">{deployed ? "Healthy" : "Deploying"}</motion.b></AnimatePresence></span></span>
-        <span><span className="block text-[6.5px] lg:text-[7.5px]" style={{ color: illustrationColors.inkFaint }}>Backup</span><span className="mt-1 block text-[7.5px] lg:text-[8.5px]" style={{ color: illustrationColors.ink }}>Successful · 12 min ago</span></span>
-      </div>
-    </Panel>
-  </IllustrationStage>;
+  const canvasRef = useRef<HTMLDivElement>(null);
+  const requestRef = useRef<HTMLDivElement>(null);
+  const cfRef = useRef<HTMLDivElement>(null);
+  const albRef = useRef<HTMLDivElement>(null);
+  const ecsRef = useRef<HTMLDivElement>(null);
+  const rdsRef = useRef<HTMLDivElement>(null);
+
+  const requests = step >= 5 ? 1240 : 1184;
+  const healthy = step >= 8;
+  const logCount = step >= 8 ? 3 : step >= 7 ? 2 : step >= 6 ? 1 : 0;
+
+  return (
+    <IllustrationStage>
+      <Panel className="flex h-full flex-col overflow-hidden" radius={12}>
+        <div
+          className="flex items-center justify-between border-b px-3 py-2 lg:px-3.5"
+          style={{ borderColor: illustrationColors.border }}
+        >
+          <span>
+            <span
+              className="block text-[8px] font-medium tracking-tight lg:text-[10px]"
+              style={{ color: illustrationColors.ink }}
+            >
+              Production
+            </span>
+            <span
+              className="mt-0.5 block text-[6.5px] lg:text-[7.5px]"
+              style={{ color: illustrationColors.inkFaint }}
+            >
+              ap-south-1
+            </span>
+          </span>
+          <Chip tone="health" size="compact">
+            {healthy ? "Healthy" : "Live"}
+          </Chip>
+        </div>
+
+        <div ref={canvasRef} className="relative border-b px-2 py-3 lg:px-3" style={{ borderColor: illustrationColors.border }}>
+          <div className="pointer-events-none absolute inset-0 z-0">
+            <AnimatedBeam
+              containerRef={canvasRef}
+              fromRef={requestRef}
+              toRef={cfRef}
+              curvature={-8}
+              enabled={step >= 1}
+              loop={step >= 8}
+              duration={1.1}
+            />
+            <AnimatedBeam
+              containerRef={canvasRef}
+              fromRef={cfRef}
+              toRef={albRef}
+              curvature={10}
+              enabled={step >= 2}
+              duration={1}
+              delay={0.08}
+            />
+            <AnimatedBeam
+              containerRef={canvasRef}
+              fromRef={albRef}
+              toRef={ecsRef}
+              curvature={-8}
+              enabled={step >= 3}
+              duration={1}
+              delay={0.12}
+            />
+            <AnimatedBeam
+              containerRef={canvasRef}
+              fromRef={ecsRef}
+              toRef={rdsRef}
+              curvature={8}
+              enabled={step >= 4}
+              duration={1}
+              delay={0.16}
+            />
+          </div>
+
+          <div className="relative z-10 flex items-center justify-between gap-1">
+            <motion.div
+              ref={requestRef}
+              className="hidden flex-col items-center sm:flex"
+              animate={
+                !reduce && step >= 1 && step < 8
+                  ? { opacity: [0.45, 1, 0.45] }
+                  : { opacity: 1 }
+              }
+              transition={{ duration: 1.2, repeat: step >= 1 && step < 8 ? Infinity : 0 }}
+            >
+              <span
+                className="h-1.5 w-1.5 rounded-full"
+                style={{ background: illustrationColors.accent }}
+              />
+              <span
+                className="mt-1 text-[6px] lg:text-[7px]"
+                style={{ color: illustrationColors.inkFaint }}
+              >
+                Request
+              </span>
+            </motion.div>
+
+            {NODES.map((node, index) => {
+              const lit = step >= index + 2;
+              const nodeRef =
+                node.id === "cf" ? cfRef : node.id === "alb" ? albRef : node.id === "ecs" ? ecsRef : rdsRef;
+              return (
+                <motion.div
+                  key={node.id}
+                  ref={nodeRef}
+                  className="group relative flex min-w-0 flex-1 flex-col items-center"
+                  whileHover={reduce ? undefined : { y: -2 }}
+                  transition={illustrationHover}
+                >
+                  <span
+                    className="flex h-8 w-full max-w-[72px] items-center justify-center rounded-[8px] border text-[7px] tracking-tight lg:h-9 lg:text-[8px]"
+                    style={{
+                      borderColor: lit
+                        ? illustrationColors.accentLine
+                        : illustrationColors.border,
+                      background: lit
+                        ? illustrationColors.accentSoft
+                        : illustrationColors.surfaceMuted,
+                      color: illustrationColors.ink,
+                      boxShadow: illustrationShadow.panel,
+                    }}
+                  >
+                    {node.label}
+                  </span>
+                  <span
+                    className="pointer-events-none absolute top-full z-20 mt-1 hidden rounded-[8px] border bg-white px-1.5 py-1 text-[6px] whitespace-nowrap opacity-0 shadow-sm group-hover:opacity-100 lg:block lg:text-[6.5px]"
+                    style={{
+                      borderColor: illustrationColors.border,
+                      color: illustrationColors.inkMuted,
+                    }}
+                  >
+                    {node.hint}
+                  </span>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="grid shrink-0 grid-cols-4 gap-1 border-b px-2 py-2 lg:px-3" style={{ borderColor: illustrationColors.border }}>
+          {[
+            ["Requests", `${requests.toLocaleString()}/min`],
+            ["p95", "128ms"],
+            ["Deploy", "v2.8.4"],
+            ["Backup", "Successful"],
+          ].map(([label, value]) => (
+            <button
+              key={label}
+              type="button"
+              tabIndex={-1}
+              onClick={() => {
+                if (label === "Deploy") setDeployOpen((open) => !open);
+              }}
+              onPointerEnter={() => {
+                if (label === "Deploy") setDeployOpen(true);
+              }}
+              onPointerLeave={() => {
+                if (label === "Deploy") setDeployOpen(false);
+              }}
+              className="relative rounded-[8px] px-1 py-1 text-left"
+            >
+              <span
+                className="block text-[6px] lg:text-[7px]"
+                style={{ color: illustrationColors.inkFaint }}
+              >
+                {label}
+              </span>
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.span
+                  key={value}
+                  initial={reduce ? false : illustrationTextSwapHidden}
+                  animate={illustrationTextSwapShown}
+                  exit={reduce ? undefined : illustrationTextSwapExit}
+                  transition={illustrationSwap}
+                  className="mt-0.5 block truncate text-[7px] tabular-nums lg:text-[8px]"
+                  style={{ color: illustrationColors.ink }}
+                >
+                  {value}
+                </motion.span>
+              </AnimatePresence>
+              <AnimatePresence>
+                {label === "Deploy" && deployOpen ? (
+                  <motion.span
+                    initial={reduce ? false : { opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={reduce ? undefined : { opacity: 0, y: 4 }}
+                    transition={illustrationSpring.micro}
+                    className="absolute top-full left-0 z-30 mt-1 w-[108px] rounded-[8px] border px-2 py-1.5"
+                    style={{
+                      background: illustrationColors.surface,
+                      borderColor: illustrationColors.border,
+                      boxShadow: illustrationShadow.raised,
+                      borderRadius: illustrationRadius.control,
+                    }}
+                  >
+                    <span
+                      className="block text-[6.5px]"
+                      style={{ color: illustrationColors.ink }}
+                    >
+                      {deployLabel(step)}
+                    </span>
+                    <span
+                      className="mt-0.5 block text-[6px]"
+                      style={{ color: illustrationColors.inkFaint }}
+                    >
+                      prod-api · 4 tasks
+                    </span>
+                  </motion.span>
+                ) : null}
+              </AnimatePresence>
+            </button>
+          ))}
+        </div>
+
+        <div className="flex min-h-0 flex-1 flex-col justify-between px-3 py-2 lg:px-3.5">
+          <div
+            className="rounded-[8px] px-2 py-1.5 font-mono"
+            style={{ background: illustrationColors.surfaceSunk }}
+          >
+            {LOGS.map((line, index) => (
+              <motion.p
+                key={line}
+                initial={false}
+                animate={{
+                  opacity: index < logCount ? 1 : 0.2,
+                  x: index < logCount ? 0 : 4,
+                }}
+                transition={{ duration: reduce ? 0 : 0.28, ease: [0.25, 0.1, 0, 1] }}
+                className="truncate text-[6.5px] lg:text-[7.5px]"
+                style={{ color: illustrationColors.inkMuted }}
+              >
+                {line}
+              </motion.p>
+            ))}
+          </div>
+          <div className="mt-2 flex items-center gap-1.5">
+            {healthy ? (
+              <DrawnCheck show reduce={Boolean(reduce)} size={11} />
+            ) : (
+              <ActivitySpinner size={11} active={active && step >= 6} reduce={Boolean(reduce)} />
+            )}
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.span
+                key={healthy ? "ok" : deployLabel(step)}
+                initial={reduce ? false : illustrationTextSwapHidden}
+                animate={illustrationTextSwapShown}
+                exit={reduce ? undefined : illustrationTextSwapExit}
+                transition={illustrationSwap}
+                className="text-[7.5px] tracking-tight lg:text-[8.5px]"
+                style={{
+                  color: healthy ? illustrationColors.health : illustrationColors.inkMuted,
+                }}
+              >
+                {healthy ? "Production healthy" : deployLabel(step)}
+              </motion.span>
+            </AnimatePresence>
+          </div>
+        </div>
+      </Panel>
+    </IllustrationStage>
+  );
 }
