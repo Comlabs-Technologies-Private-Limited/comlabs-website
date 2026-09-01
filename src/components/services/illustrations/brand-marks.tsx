@@ -1,8 +1,53 @@
 /** Recognisable enterprise app marks at illustration scale. */
 
-import { siGithubcopilot } from "simple-icons";
+import {
+  siGmail,
+  siGithubcopilot,
+  siGoogledrive,
+  siGooglesheets,
+  siNotion,
+  siStripe,
+} from "simple-icons";
 
 type MarkProps = { className?: string };
+
+const MARK = "h-3.5 w-3.5";
+
+function SimpleBrandMark({
+  path,
+  hex,
+  className = MARK,
+}: {
+  path: string;
+  hex: string;
+  className?: string;
+}) {
+  return (
+    <svg className={`shrink-0 ${className}`} viewBox="0 0 24 24" aria-hidden>
+      <path fill={`#${hex}`} d={path} />
+    </svg>
+  );
+}
+
+export function GmailMark({ className = MARK }: MarkProps) {
+  return <SimpleBrandMark path={siGmail.path} hex={siGmail.hex} className={className} />;
+}
+
+export function NotionMark({ className = MARK }: MarkProps) {
+  return <SimpleBrandMark path={siNotion.path} hex={siNotion.hex} className={className} />;
+}
+
+export function StripeMark({ className = MARK }: MarkProps) {
+  return <SimpleBrandMark path={siStripe.path} hex={siStripe.hex} className={className} />;
+}
+
+export function DriveMark({ className = MARK }: MarkProps) {
+  return <SimpleBrandMark path={siGoogledrive.path} hex={siGoogledrive.hex} className={className} />;
+}
+
+export function SheetsMark({ className = MARK }: MarkProps) {
+  return <SimpleBrandMark path={siGooglesheets.path} hex={siGooglesheets.hex} className={className} />;
+}
 
 export function CopilotMark({
   className = "h-[11px] w-[11px] lg:h-[13px] lg:w-[13px]",

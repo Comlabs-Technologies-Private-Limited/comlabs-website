@@ -26,7 +26,7 @@ export const serviceIllustrations: Record<string, ServiceIllustration> = {
   "agentic-infrastructure": {
     Component: AgenticWorkflowIllustration,
     label:
-      "Agentic infrastructure illustration: a workflow canvas preparing the Q3 Acme renewal — request, Renewal Agent, tools, human approval, then a sent proposal.",
+      "Agentic infrastructure illustration: a Gmail trigger routes through a copilot that calls Claude, Notion, Salesforce, Drive, and Stripe, then prepares a packet in Sheets and posts to Slack for approval.",
   },
   "website-design": {
     Component: WebsiteDesignIllustration,

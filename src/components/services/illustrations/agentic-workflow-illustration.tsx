@@ -17,6 +17,16 @@ import {
   illustrationShadow,
 } from "@/components/services/illustrations/illustration-tokens";
 import {
+  ClaudeMark,
+  DriveMark,
+  GmailMark,
+  NotionMark,
+  SalesforceMark,
+  SheetsMark,
+  SlackMark,
+  StripeMark,
+} from "@/components/services/illustrations/brand-marks";
+import {
   IllustrationStage,
   useIllustrationState,
 } from "@/components/services/illustrations/service-illustration-frame";
@@ -143,9 +153,9 @@ const COMPACT_EDGES: EdgeDef[] = [
   { id: "e-req-agent", from: "requestOut", to: "agentIn", kind: "main", dir: "v" },
   { id: "e-agent-appr", from: "agentOut", to: "approvalIn", kind: "main", dir: "v" },
   { id: "e-appr-done", from: "approvalOut", to: "doneIn", kind: "main", dir: "v" },
-  { id: "e-agent-crm", from: "agentTools", to: "crmIn", kind: "ai", dir: "h" },
+  { id: "e-agent-model", from: "agentModel", to: "modelIn", kind: "ai", dir: "h" },
   { id: "e-agent-mem", from: "agentMemory", to: "memoryIn", kind: "ai", dir: "h" },
-  { id: "e-agent-con", from: "agentModel", to: "contractIn", kind: "ai", dir: "h" },
+  { id: "e-agent-crm", from: "agentTools", to: "crmIn", kind: "ai", dir: "h" },
 ];
 
 const NODE_PORTS: Record<NodeId, PortId[]> = {
@@ -227,12 +237,12 @@ function Port({
   );
 }
 
-function NodeIcon({ children }: { children: ReactNode }) {
+function NodeIcon({ children, brand = false }: { children: ReactNode; brand?: boolean }) {
   return (
     <span
       className="flex size-6 shrink-0 items-center justify-center rounded-[6px]"
       style={{
-        background: surfaceSunk,
+        background: brand ? surface : surfaceSunk,
         color: ink,
         border: `1px solid ${border}`,
       }}
@@ -268,10 +278,10 @@ function WorkflowNode({
       onPointerLeave={() => onHover?.(false)}
       animate={{ y: hovered ? -1 : 0 }}
       transition={{ duration: 0.18, ease: EASE }}
-      className="relative"
+      className={wide ? "relative min-w-0" : "relative shrink-0"}
       style={{
         width: wide ? "100%" : "max-content",
-        maxWidth: "100%",
+        maxWidth: wide ? "100%" : undefined,
         borderRadius: 10,
         background: hovered ? surfaceMuted : surface,
         border: `1px solid ${
@@ -387,7 +397,7 @@ function ToolNode({
     <WorkflowNode state={state} hovered={isHovered} onHover={(v) => setHovered(v ? id : null)}>
       <Port id={portId} register={register} side={portSide} lit={state === "active"} />
       <div className="flex items-center gap-1.5 pr-0.5">
-        <NodeIcon>{icon}</NodeIcon>
+        <NodeIcon brand>{icon}</NodeIcon>
         <div>
           <Title>{title}</Title>
           <Meta tone={state === "done" ? "ok" : state === "active" ? "accent" : "muted"}>
@@ -671,12 +681,12 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
               lit={nodeState("request") === "active"}
             />
             <div className="flex items-center gap-2 pr-1">
-              <NodeIcon>
-                <StrokeIcon d="M2 6h8M7 3l3 3-3 3" />
+              <NodeIcon brand>
+                <GmailMark />
               </NodeIcon>
               <div className="min-w-0">
-                <Title>Renewal request</Title>
-                <Meta>Acme Corp</Meta>
+                <Title>Gmail</Title>
+                <Meta>{hovered === "request" ? "Q3 renewal" : "Acme Corp"}</Meta>
               </div>
             </div>
           </WorkflowNode>
@@ -717,7 +727,7 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
               side={compact ? "right" : "bottom"}
               shape="diamond"
               offset={compact ? 28 : 28}
-              lit={nodeState("model") === "active" || (compact && nodeState("contract") === "active")}
+              lit={nodeState("model") === "active"}
             />
             <Port
               id="agentMemory"
@@ -767,17 +777,17 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
                 lit={nodeState("prepare") === "active"}
               />
               <div className="flex items-center gap-2 pr-1">
-                <NodeIcon>
-                  <StrokeIcon d="M3 2.5h6v7L6 8.2 3 9.5v-7Z" />
+                <NodeIcon brand>
+                  <SheetsMark />
                 </NodeIcon>
                 <div className="min-w-0">
-                  <Title>Prepare renewal</Title>
+                  <Title>Sheets</Title>
                   <Meta
                     tone={
                       nodeState("prepare") === "active" ? "accent" : nodeState("prepare") === "ready" ? "ok" : "muted"
                     }
                   >
-                    {prepareMeta}
+                    {hovered === "prepare" ? "Q3 quote" : prepareMeta}
                   </Meta>
                 </div>
               </div>
@@ -878,33 +888,24 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
               style={{ top: "28%", left: "calc(50% + 118px)" }}
             >
             <ToolNode
-              id="contract"
-              title="Contract"
-              idleMeta="MSA"
-              hoverMeta="MSA-118"
-              icon={<StrokeIcon d="M2.2 5h7.6M4.4 2.4v2.6M7.6 2.4v2.6" extra={<rect x="2.2" y="2.4" width="7.6" height="7.2" rx="1.4" stroke="currentColor" strokeWidth="1.2" />} />}
-              portId="contractIn"
+              id="model"
+              title="Claude"
+              idleMeta="Sonnet"
+              hoverMeta="Sonnet"
+              icon={<ClaudeMark className="h-3.5 w-3.5" />}
+              portId="modelIn"
               portSide="left"
-              state={nodeState("contract")}
+              state={nodeState("model")}
               hovered={hovered}
               setHovered={setHovered}
               register={register}
             />
             <ToolNode
               id="memory"
-              title="Memory"
-              idleMeta="Account"
+              title="Notion"
+              idleMeta="Wiki"
               hoverMeta="Acme context"
-              icon={
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
-                  <ellipse cx="6" cy="3.2" rx="3.4" ry="1.3" stroke="currentColor" strokeWidth="1.2" />
-                  <path
-                    d="M2.6 3.2v5.4c0 .8 1.5 1.4 3.4 1.4s3.4-.6 3.4-1.4V3.2"
-                    stroke="currentColor"
-                    strokeWidth="1.2"
-                  />
-                </svg>
-              }
+              icon={<NotionMark />}
               portId="memoryIn"
               portSide="left"
               state={nodeState("memory")}
@@ -914,20 +915,10 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
             />
             <ToolNode
               id="crm"
-              title="CRM"
-              idleMeta="Accounts"
+              title="Salesforce"
+              idleMeta="CRM"
               hoverMeta="AC-4421"
-              icon={
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
-                  <circle cx="6" cy="4" r="2" stroke="currentColor" strokeWidth="1.2" />
-                  <path
-                    d="M2.4 9.4c.6-1.6 2-2.4 3.6-2.4s3 .8 3.6 2.4"
-                    stroke="currentColor"
-                    strokeWidth="1.2"
-                    strokeLinecap="round"
-                  />
-                </svg>
-              }
+              icon={<SalesforceMark className="h-3.5 w-3.5" />}
               portId="crmIn"
               portSide="left"
               state={nodeState("crm")}
@@ -951,12 +942,10 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
           {showModel ? (
             <ToolNode
               id="model"
-              title="Model"
-              idleMeta="Claude / LLM"
+              title="Claude"
+              idleMeta="Sonnet"
               hoverMeta="Sonnet"
-              icon={
-                <StrokeIcon d="M3 8.5 6 2.5l3 6M4.2 7h3.6" />
-              }
+              icon={<ClaudeMark className="h-3.5 w-3.5" />}
               portId="modelIn"
               state={nodeState("model")}
               hovered={hovered}
@@ -966,19 +955,10 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
           ) : null}
           <ToolNode
             id="memory"
-            title="Memory"
-            idleMeta="Account"
+            title="Notion"
+            idleMeta="Wiki"
             hoverMeta="Acme context"
-            icon={
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
-                <ellipse cx="6" cy="3.2" rx="3.4" ry="1.3" stroke="currentColor" strokeWidth="1.2" />
-                <path
-                  d="M2.6 3.2v5.4c0 .8 1.5 1.4 3.4 1.4s3.4-.6 3.4-1.4V3.2"
-                  stroke="currentColor"
-                  strokeWidth="1.2"
-                />
-              </svg>
-            }
+            icon={<NotionMark />}
             portId="memoryIn"
             state={nodeState("memory")}
             hovered={hovered}
@@ -987,20 +967,10 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
           />
           <ToolNode
             id="crm"
-            title="CRM"
-            idleMeta="Accounts"
+            title="Salesforce"
+            idleMeta="CRM"
             hoverMeta="AC-4421"
-            icon={
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
-                <circle cx="6" cy="4" r="2" stroke="currentColor" strokeWidth="1.2" />
-                <path
-                  d="M2.4 9.4c.6-1.6 2-2.4 3.6-2.4s3 .8 3.6 2.4"
-                  stroke="currentColor"
-                  strokeWidth="1.2"
-                  strokeLinecap="round"
-                />
-              </svg>
-            }
+            icon={<SalesforceMark className="h-3.5 w-3.5" />}
             portId="crmIn"
             state={nodeState("crm")}
             hovered={hovered}
@@ -1009,10 +979,10 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
           />
           <ToolNode
             id="contract"
-            title="Contract"
+            title="Drive"
             idleMeta="MSA"
             hoverMeta="MSA-118"
-            icon={<StrokeIcon d="M2.2 5h7.6M4.4 2.4v2.6M7.6 2.4v2.6" extra={<rect x="2.2" y="2.4" width="7.6" height="7.2" rx="1.4" stroke="currentColor" strokeWidth="1.2" />} />}
+            icon={<DriveMark />}
             portId="contractIn"
             state={nodeState("contract")}
             hovered={hovered}
@@ -1022,16 +992,10 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
           {showPricing ? (
             <ToolNode
               id="pricing"
-              title="Pricing"
-              idleMeta="API"
+              title="Stripe"
+              idleMeta="Pricing"
               hoverMeta="Enterprise band"
-              icon={
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
-                  <path d="M4 3.2h4M4 8.8h4M6 3.2v5.6" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-                  <circle cx="6" cy="3.2" r="1" fill="currentColor" />
-                  <circle cx="6" cy="8.8" r="1" fill="currentColor" />
-                </svg>
-              }
+              icon={<StripeMark />}
               portId="pricingIn"
               state={nodeState("pricing")}
               hovered={hovered}
@@ -1056,13 +1020,13 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
               <Port id="sendIn" register={register} side="top" lit={nodeState("send") === "active"} />
               <Port id="sendOut" register={register} side="bottom" lit={nodeState("send") === "active"} />
               <div className="flex items-center gap-2 pr-1">
-                <NodeIcon>
-                  <StrokeIcon d="M2 6h8M7.2 3.4 10 6l-2.8 2.6" />
+                <NodeIcon brand>
+                  <SlackMark className="h-3.5 w-3.5" />
                 </NodeIcon>
                 <div className="min-w-0">
-                  <Title>Send proposal</Title>
+                  <Title>Slack</Title>
                   <Meta tone={nodeState("send") === "active" ? "accent" : nodeState("send") === "done" ? "ok" : "muted"}>
-                    {sendMeta}
+                    {hovered === "send" ? "#acme-renewal" : sendMeta}
                   </Meta>
                 </div>
               </div>
