@@ -22,6 +22,7 @@ export async function generateMetadata({ params }: ServicePageProps): Promise<Me
     title: service.metaTitle,
     description: service.metaDescription,
     path: service.path,
+    absoluteTitle: true,
   });
 }
 

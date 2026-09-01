@@ -105,34 +105,34 @@ export const RELATED_SERVICE_BY_SLUG: Record<
 > = {
   radiant: [
     {
-      label: "Website Design & Development",
+      label: "Web & Digital Experience",
       href: "/services/website-design-development",
       description:
-        "High-performance websites designed around positioning, usability and conversion.",
+        "High-performance websites and product interfaces with frontend engineering behind them.",
     },
     {
-      label: "SEO / AEO Optimisation & Copywriting",
+      label: "SEO, AEO & Search Engineering",
       href: "/services/seo-aeo-copywriting",
       description:
-        "Search strategy and writing that make an expressive site discoverable.",
+        "Technical SEO and AEO so an expressive site stays discoverable in search and AI answers.",
     },
   ],
   "formial-labs": {
-    label: "Custom Software Development",
+    label: "Custom Software Engineering",
     href: "/services/custom-software-development",
-    description: "Software built around how your business actually works.",
+    description: "Software built around how the operation actually runs.",
   },
   "global-services": {
-    label: "Website Design & Development",
+    label: "Web & Digital Experience",
     href: "/services/website-design-development",
     description:
-      "High-performance websites designed around positioning, usability and conversion.",
+      "High-performance websites and product interfaces with frontend engineering behind them.",
   },
   vithub: {
-    label: "Website Design & Development",
+    label: "Web & Digital Experience",
     href: "/services/website-design-development",
     description:
-      "High-performance websites designed around positioning, usability and conversion.",
+      "High-performance websites and product interfaces with frontend engineering behind them.",
   },
 };
 

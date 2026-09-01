@@ -1,10 +1,8 @@
-import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 import { MarketingOrangeHighlight } from "@/components/marketing/marketing-section-header";
-import { getCanonicalService } from "@/lib/canonical-services";
-import type { ServicePageData } from "@/lib/services-data";
+import type { CanonicalService } from "@/lib/canonical-services";
 import { canonicalPath } from "@/lib/site";
 
 type ServiceCardTitleProps = {
@@ -27,83 +25,50 @@ function ServiceCardTitle({ title, highlight }: ServiceCardTitleProps) {
   );
 }
 
-type ServiceCardProps = {
-  service: ServicePageData;
-  /** Span both columns — used for the last tile when the count is odd. */
-  spanFull?: boolean;
-};
-
-export function ServiceCard({ service, spanFull = false }: ServiceCardProps) {
-  const image = service.editorialImage;
-  const canonical = getCanonicalService(service.slug);
-  const highlight = canonical?.cardTitleHighlight ?? service.title.split(" ")[0] ?? service.title;
-
-  if (!image) {
-    return null;
-  }
-
+export function ServicesIndexGrid({
+  services,
+}: {
+  services: readonly CanonicalService[];
+}) {
   return (
-    <Link
-      href={canonicalPath(service.path)}
-      className={`group relative block overflow-hidden bg-[#f7f7f4] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30 focus-visible:ring-offset-2 ${
-        spanFull ? "md:col-span-2" : ""
-      }`}
-    >
-      <div className="relative min-h-[12rem] sm:min-h-[14rem] md:min-h-[16rem] lg:min-h-[18rem]">
-        <Image
-          src={image.src}
-          alt=""
-          aria-hidden
-          fill
-          sizes={
-            spanFull
-              ? "(max-width: 768px) 100vw, 960px"
-              : "(max-width: 768px) 100vw, 50vw"
-          }
-          className="object-cover saturate-[0.92] motion-safe:transition-transform motion-safe:duration-[900ms] motion-safe:ease-[cubic-bezier(0.16,1,0.3,1)] motion-safe:group-hover:scale-[1.03] motion-safe:group-focus-visible:scale-[1.03]"
-        />
-
-        <div
-          className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[#f7f7f4]/92 via-[#f7f7f4]/58 to-[#f7f7f4]/28"
-          aria-hidden
-        />
-
-        <div className="relative h-full p-6 sm:p-8 md:p-10 lg:p-12">
-          <h3 className="max-w-[16ch] text-pretty font-sans text-[1.0625rem] font-medium leading-[1.2] tracking-[-0.02em] text-neutral-900 sm:max-w-[18ch] sm:text-lg md:text-xl md:leading-tight">
-            <ServiceCardTitle title={service.title} highlight={highlight} />
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+      {services.map((service) => (
+        <article
+          key={service.slug}
+          className="flex h-full min-w-0 flex-col overflow-hidden rounded-3xl border border-border bg-background p-6 md:p-8"
+        >
+          <h3
+            className="text-lg leading-[1.2] font-medium tracking-tight md:text-xl"
+            style={{ letterSpacing: "-0.03em" }}
+          >
+            <ServiceCardTitle title={service.title} highlight={service.cardTitleHighlight} />
           </h3>
-
-          <span className="absolute bottom-6 right-6 inline-flex items-center gap-1 text-[11px] font-normal tracking-tight text-neutral-500 transition-colors group-hover:text-neutral-700 sm:bottom-8 sm:right-8 sm:text-xs">
-            Read more
-            <ArrowUpRight
-              size={12}
-              strokeWidth={1.75}
-              className="shrink-0 opacity-60 motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover:translate-x-px motion-safe:group-hover:-translate-y-px motion-safe:group-hover:opacity-80"
+          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+            {service.cardDescription}
+          </p>
+          <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{service.cardBody}</p>
+          <ul className="mt-5 flex flex-1 flex-col gap-2">
+            {service.capabilities.map((item) => (
+              <li key={item} className="flex items-start gap-2 text-sm text-muted-foreground">
+                <span className="mt-0.5 shrink-0 font-medium" style={{ color: "var(--warm-orange)" }}>
+                  →
+                </span>
+                {item}
+              </li>
+            ))}
+          </ul>
+          <Link
+            href={canonicalPath(service.path)}
+            className="group mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--warm-orange)] transition-opacity hover:opacity-80"
+          >
+            {service.linkLabel}
+            <ArrowRight
+              size={15}
+              className="transition-transform duration-200 group-hover:translate-x-0.5"
               aria-hidden
             />
-          </span>
-        </div>
-      </div>
-    </Link>
-  );
-}
-
-type ServicesGridProps = {
-  services: ServicePageData[];
-};
-
-export function ServicesGrid({ services }: ServicesGridProps) {
-  const lastIndex = services.length - 1;
-  const lastSpansFull = services.length % 2 !== 0;
-
-  return (
-    <div className="grid grid-cols-1 gap-0 md:grid-cols-2">
-      {services.map((service, index) => (
-        <ServiceCard
-          key={service.slug}
-          service={service}
-          spanFull={lastSpansFull && index === lastIndex}
-        />
+          </Link>
+        </article>
       ))}
     </div>
   );

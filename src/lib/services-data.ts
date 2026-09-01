@@ -1,9 +1,13 @@
 import { editorialImages } from "@/lib/editorial-images";
-import { canonicalServices } from "@/lib/canonical-services";
 
 export type ServiceFaq = {
   question: string;
   answer: string;
+};
+
+export type ServiceNamedItem = {
+  title: string;
+  description: string;
 };
 
 export type ServicePageData = {
@@ -14,15 +18,32 @@ export type ServicePageData = {
   metaDescription: string;
   eyebrow: string;
   headline: string;
-  subheadline: string;
+  heroCopy: string[];
+  proofItems?: string[];
   serviceType: string;
   schemaDescription: string;
   editorialImage?: (typeof editorialImages)[keyof typeof editorialImages];
+  overviewEyebrow?: string;
   proposition: string[];
+  problemsEyebrow?: string;
+  problemsHeading?: string;
   problems: string[];
+  deliverablesEyebrow?: string;
+  deliverablesHeading?: string;
   deliverables: string[];
+  detailEyebrow?: string;
+  detailHeading?: string;
+  detailItems?: ServiceNamedItem[];
+  processEyebrow?: string;
+  processHeading?: string;
+  processIntro?: string;
   process: { step: string; title: string; description: string }[];
+  capabilitiesEyebrow?: string;
   capabilities: string[];
+  outcomesEyebrow?: string;
+  outcomesHeading?: string;
+  outcomes?: string[];
+  suitableForHeading?: string;
   suitableFor: string[];
   relatedCaseStudy?: {
     client: string;
@@ -31,514 +52,881 @@ export type ServicePageData = {
   };
   relatedServices: { label: string; href: string }[];
   faqs: ServiceFaq[];
+  ctaTitle: string;
+  ctaDescription: string;
+  ctaLabel: string;
 };
 
-const processSteps = {
-  website: [
-    {
-      step: "01",
-      title: "Discover",
-      description:
-        "We review goals, audience, existing content, and constraints — then define the pages and flows that matter most.",
-    },
-    {
-      step: "02",
-      title: "Structure",
-      description:
-        "Information architecture and messaging are mapped so visitors understand the offer before design begins.",
-    },
-    {
-      step: "03",
-      title: "Design & Build",
-      description:
-        "UI and front-end code ship together — responsive templates, CMS hooks, and performance basics built in.",
-    },
-    {
-      step: "04",
-      title: "Launch",
-      description:
-        "We deploy, verify analytics and forms, and hand over a site your team can keep improving.",
-    },
-  ],
-  customSoftware: [
-    {
-      step: "01",
-      title: "Map Workflows",
-      description:
-        "We document how work happens today — bottlenecks, handoffs, and the modules worth automating first.",
-    },
-    {
-      step: "02",
-      title: "Design Architecture",
-      description:
-        "Data models, permissions, and UI patterns are shaped around real operator and customer tasks.",
-    },
-    {
-      step: "03",
-      title: "Build & Integrate",
-      description:
-        "Backend services, admin UI, and third-party integrations are delivered in focused releases.",
-    },
-    {
-      step: "04",
-      title: "Roll Out",
-      description:
-        "Modules go live incrementally with training and documentation so teams adopt new workflows safely.",
-    },
-  ],
-  mobile: [
-    {
-      step: "01",
-      title: "Define Product",
-      description:
-        "Core jobs-to-be-done, platform choice, and backend requirements are scoped before screens are designed.",
-    },
-    {
-      step: "02",
-      title: "Design Experience",
-      description:
-        "Flows and UI patterns are designed for small screens, real usage, and store-ready presentation.",
-    },
-    {
-      step: "03",
-      title: "Engineer",
-      description:
-        "Production builds connect to APIs, auth, and integrations with quality checks throughout.",
-    },
-    {
-      step: "04",
-      title: "Release",
-      description:
-        "We support store submission, launch verification, and the first iteration after go-live.",
-    },
-  ],
-  seoAeo: [
-    {
-      step: "01",
-      title: "Audit",
-      description:
-        "Technical SEO, page structure, metadata, and content gaps are reviewed against how people search.",
-    },
-    {
-      step: "02",
-      title: "Map Opportunities",
-      description:
-        "Priority pages, queries, and AEO targets are defined — including how AI systems read your content.",
-    },
-    {
-      step: "03",
-      title: "Implement",
-      description:
-        "On-page copy, schema, internal links, and technical fixes ship in a sequence that preserves rankings.",
-    },
-    {
-      step: "04",
-      title: "Measure",
-      description:
-        "Indexing, rankings, and conversion signals are verified so improvements can be tracked after launch.",
-    },
-  ],
-  cloud: [
-    {
-      step: "01",
-      title: "Assess",
-      description:
-        "Current deployments, bottlenecks, and reliability risks are mapped against how the product runs today.",
-    },
-    {
-      step: "02",
-      title: "Architect",
-      description:
-        "Target environments, caching, databases, and pipelines are designed for your stack and growth path.",
-    },
-    {
-      step: "03",
-      title: "Implement",
-      description:
-        "Infrastructure, CI/CD, and performance improvements are built and tested before cutover.",
-    },
-    {
-      step: "04",
-      title: "Observe & Scale",
-      description:
-        "Logging, monitoring, and scaling patterns are put in place so usage growth stays predictable.",
-    },
-  ],
-} as const;
-
-function relatedServicesFor(
-  slug: string,
-  hrefs: `/services/${string}`[],
+function related(
+  items: { label: string; href: `/services/${string}` }[],
 ): { label: string; href: string }[] {
-  return hrefs.map((href) => {
-    const match = canonicalServices.find((service) => service.path === href);
-    return { label: match?.title ?? href, href };
-  });
+  return items;
 }
 
 export const servicesIndex = {
   path: "/services",
-  metaTitle: "Website, Software & Mobile Development Services",
+  metaTitle: "IT Support, AI, AWS Cloud & Software Engineering | Comlabs",
   metaDescription:
-    "Website design, custom software, mobile apps, SEO/AEO, and cloud infrastructure from Comlabs Technologies Pvt Ltd — a Pune-based design and engineering studio.",
+    "Comlabs provides L1–L4 application support, AI agent development, AWS cloud and DevOps, custom software, web engineering and mobile development.",
   eyebrow: "Services",
-  headline: "Design and engineering for products that need to ship.",
-  subheadline:
-    "Comlabs Technologies Pvt Ltd builds high-performance websites, custom software, mobile products, and scalable digital infrastructure for teams in Pune, India, and worldwide.",
+  headline: "Technology that stays responsible after launch.",
+  heroCopy: [
+    "Comlabs builds, operates and supports the systems businesses depend on—from production applications and AI agents to AWS infrastructure and custom software.",
+    "We work across engineering, infrastructure and operations so technical problems do not disappear between vendors.",
+  ],
+  heroCtaLabel: "Talk to our engineering team",
+  sectionEyebrow: "Services",
+  sectionHeading: "Engineering across the production stack.",
+  sectionCopy: [
+    "Technology rarely fails inside a single boundary. Applications depend on APIs. APIs depend on infrastructure. AI depends on context, tools and controls.",
+    "Comlabs works across those layers.",
+  ],
+  pillarsHeading: "One technical partner. Fewer gaps.",
+  pillars: [
+    {
+      title: "Build",
+      copy: "New applications, platforms, AI systems and digital products.",
+    },
+    {
+      title: "Operate",
+      copy: "Cloud, deployments, monitoring and production environments.",
+    },
+    {
+      title: "Support",
+      copy: "User issues through engineering-level escalation.",
+    },
+    {
+      title: "Improve",
+      copy: "Performance, automation, reliability and continuous engineering.",
+    },
+  ],
+  ctaTitle: "Bring us the system. Or bring us the problem.",
+  ctaDescription:
+    "New product, inherited application, unreliable infrastructure or an AI workflow that needs to reach production—we will identify the engineering path forward.",
+  ctaLabel: "Discuss your requirements",
 } as const;
 
 export { canonicalServicePaths } from "@/lib/canonical-services";
 
 export const servicePages: ServicePageData[] = [
   {
-    slug: "website-design-development",
-    path: "/services/website-design-development",
-    title: "Website Design & Development",
-    metaTitle: "Website Design & Development Company in Pune",
+    slug: "application-support",
+    path: "/services/application-support",
+    title: "L1–L4 Application Support",
+    metaTitle: "L1–L4 Application Support Services | Comlabs Technologies",
     metaDescription:
-      "Comlabs designs and develops fast, conversion-focused websites — new builds, redesigns, landing pages, and CMS-backed marketing sites from wireframe to production.",
-    eyebrow: "Website design & development",
-    headline: "Websites designed to earn trust and convert.",
-    subheadline:
-      "We plan, design, and build marketing and company sites with clear messaging, responsive UI, and performance that holds up under real traffic.",
-    serviceType: "Website design and development",
+      "L1, L2, L3 and L4 application support for production software, APIs, databases and cloud systems. Technical support backed by software engineers.",
+    eyebrow: "Application support",
+    headline: "Support that escalates all the way to engineering.",
+    heroCopy: [
+      "Production problems do not care which team owns which layer.",
+      "Comlabs provides L1–L4 application support across users, applications, APIs, databases and infrastructure—with a clear escalation path from first report to engineering resolution.",
+    ],
+    proofItems: ["Issue → Diagnose → Escalate → Resolve"],
+    serviceType: "Application support",
     schemaDescription:
-      "Website design and development including new sites, redesigns, landing pages, front-end builds, and CMS-backed marketing websites.",
-    editorialImage: editorialImages.websiteDesign,
+      "L1, L2, L3 and L4 application support for production software, APIs, databases and cloud systems, with a defined escalation path from first-line handling to engineering resolution.",
+    overviewEyebrow: "Ownership",
     proposition: [
-      "Comlabs combines UX structure, visual design, and front-end development so your site ships as one coherent product — not a handoff between teams.",
-      "Engagements cover new websites, full redesigns, campaign landing pages, and CMS-backed marketing sites — built around how your team publishes and sells.",
+      "One path from reported issue to technical resolution.",
+      "We support production software after launch.",
+      "Simple issues can be resolved quickly at the service layer. Deeper failures move into technical investigation. Code defects reach engineers. Platform-specific problems reach specialist escalation.",
+      "You do not need multiple vendors deciding whose problem it is.",
     ],
+    problemsEyebrow: "Failure modes",
+    problemsHeading: "Where support breaks down.",
     problems: [
-      "Visitors leave because the site looks outdated or unclear about what you offer.",
-      "Pages load slowly or break on mobile, undermining trust before a sales conversation starts.",
-      "Marketing wants updates but the current stack makes every change slow or risky.",
-      "A redesign is overdue but you cannot afford to lose search visibility or brand equity.",
+      "Your developers lose roadmap time handling recurring production tickets.",
+      "Support can identify a symptom but cannot investigate APIs, logs or infrastructure.",
+      "Technical incidents bounce between vendors because ownership is fragmented.",
+      "The original development team has moved on and nobody fully owns the application.",
     ],
+    deliverablesEyebrow: "Scope",
+    deliverablesHeading: "What Comlabs can take responsibility for.",
     deliverables: [
-      "Information architecture and page wireframes aligned to your offer",
-      "High-fidelity UI design for key templates and components",
-      "Responsive front-end build with analytics and form integrations",
-      "CMS setup or integration for pages your team can maintain",
-      "Launch support, documentation, and a path for post-launch iteration",
+      "Application incidents",
+      "Bug resolution",
+      "Production troubleshooting",
+      "API failures",
+      "Database issues",
+      "Release support",
+      "Application monitoring",
+      "Minor engineering changes",
+      "Technical documentation",
+      "Root-cause analysis",
     ],
-    process: [...processSteps.website],
-    capabilities: [
-      "New company and marketing websites",
-      "Website redesigns and conversion-focused rebuilds",
-      "Landing pages for launches, waitlists, and campaigns",
-      "Next.js and React front-end development",
-      "CMS-backed page templates and content models",
-      "Core Web Vitals–aware implementation",
+    detailEyebrow: "Escalation model",
+    detailHeading: "L1–L4",
+    detailItems: [
+      {
+        title: "L1 — Service Support",
+        description:
+          "Ticket intake, issue classification, known-error resolution, user and access issues, initial diagnostics and escalation.",
+      },
+      {
+        title: "L2 — Technical Support",
+        description:
+          "Log investigation, API failures, application configuration, database investigation, environment issues and deployment troubleshooting.",
+      },
+      {
+        title: "L3 — Engineering Support",
+        description:
+          "Code-level debugging, hotfixes, complex defects, performance remediation, integration failures and root-cause analysis.",
+      },
+      {
+        title: "L4 — Specialist Engineering",
+        description:
+          "Architecture-level issues, platform and vendor escalation, major upgrades, deep infrastructure defects, complex third-party integrations and specialist remediation.",
+      },
     ],
+    processEyebrow: "Engagement",
+    processHeading: "How we take over support.",
+    process: [
+      {
+        step: "01",
+        title: "Assess",
+        description:
+          "We understand the application, environments, dependencies, known issues and current escalation model.",
+      },
+      {
+        step: "02",
+        title: "Transition",
+        description:
+          "Access, repositories, documentation, runbooks and ownership are organised before support begins.",
+      },
+      {
+        step: "03",
+        title: "Operate",
+        description:
+          "Issues enter a structured queue and escalate according to technical depth and impact.",
+      },
+      {
+        step: "04",
+        title: "Improve",
+        description:
+          "Recurring failures become engineering work: automation, fixes, documentation and stronger operational controls.",
+      },
+    ],
+    capabilities: [],
+    suitableForHeading: "Built for teams that need ownership after launch.",
     suitableFor: [
-      "Companies launching or repositioning online",
-      "Teams replacing a template site with something credible",
-      "Marketing leaders who need measurable uplift, not just new visuals",
-      "Founders who need one partner for design through deployment",
+      "SaaS products",
+      "Internal business applications",
+      "Customer portals",
+      "ERP and operational software",
+      "Applications inherited from another vendor",
+      "Engineering teams that need support capacity",
     ],
-    relatedCaseStudy: {
-      client: "Global Services",
-      href: "/work/global-services",
-      summary:
-        "A full website rebuild that improved conversion and helped position Global Services for enterprise telecom clients.",
-    },
-    relatedServices: relatedServicesFor("website-design-development", [
-      "/services/seo-aeo-copywriting",
-      "/services/custom-software-development",
-      "/services/cloud-infrastructure-scaling",
+    relatedServices: related([
+      { label: "AWS Cloud & DevOps", href: "/services/cloud-infrastructure-scaling" },
+      { label: "Custom Software Engineering", href: "/services/custom-software-development" },
+      { label: "Agentic Infrastructure & AI Agents", href: "/services/ai-agent-development" },
     ]),
     faqs: [
       {
-        question: "Do you handle both design and development?",
+        question: "Can Comlabs take over an application built by another company?",
         answer:
-          "Yes. Most website projects include UX structure, visual design, and front-end implementation in one engagement so nothing gets lost between handoffs.",
+          "Yes. We can begin with an application takeover assessment covering the codebase, architecture, environments, dependencies and operational risks before establishing ongoing support.",
       },
       {
-        question: "Can you redesign an existing site without starting from scratch?",
+        question: "Is L4 the same for every application?",
         answer:
-          "Yes. We audit messaging, page flow, and technical debt first — then rebuild what is holding the business back while planning redirects and metadata carefully.",
+          "No. L4 depends on the system. It may involve deeper architecture engineering, a platform specialist or escalation to a third-party product vendor.",
       },
       {
-        question: "What stack do you typically use?",
+        question: "Can support include code changes?",
         answer:
-          "We usually build with Next.js, React, and TypeScript, paired with a CMS or content approach that fits how your team publishes updates.",
+          "Yes. L3/L4 engagements can include engineering remediation, hotfixes and agreed application changes.",
+      },
+      {
+        question: "Do you provide 24/7 support?",
+        answer:
+          "Coverage is defined around the application and engagement requirements. We do not present a coverage commitment until the operating model and escalation requirements are agreed.",
       },
     ],
+    ctaTitle: "Stop routing production problems between vendors.",
+    ctaDescription: "Put one engineering path behind the application.",
+    ctaLabel: "Discuss Application Support",
+  },
+  {
+    slug: "ai-agent-development",
+    path: "/services/ai-agent-development",
+    title: "Agentic Infrastructure & AI Agents",
+    metaTitle: "AI Agent Development & Agentic AI Engineering | Comlabs",
+    metaDescription:
+      "Build production AI agents with RAG, tool calling, agent workflows, model orchestration, evaluations, guardrails and human approval systems.",
+    eyebrow: "AI engineering",
+    headline: "AI agents built to work inside real systems.",
+    heroCopy: [
+      "A useful agent needs more than a model.",
+      "It needs context, tools, permissions, evaluations, observability and clear boundaries around what it can do.",
+      "Comlabs engineers the infrastructure that turns AI from an interface into an operational system.",
+    ],
+    serviceType: "AI agent development",
+    schemaDescription:
+      "Production AI agent development including RAG, tool orchestration, agent workflows, model routing, evaluations, guardrails, observability and human approval systems.",
+    editorialImage: editorialImages.appliedAi,
+    overviewEyebrow: "System design",
+    proposition: [
+      "From model response to controlled execution.",
+      "We connect AI to the applications, APIs, knowledge and workflows where real work happens.",
+      "The model is one component.",
+      "The system around it determines whether the agent is reliable enough to use.",
+    ],
+    problemsEyebrow: "Failure modes",
+    problemsHeading: "Where AI projects fail.",
+    problems: [
+      "The prototype works with perfect prompts but falls apart on real company data.",
+      "The model can answer questions but cannot safely interact with business systems.",
+      "Agents execute workflows without enough visibility, evaluation or human control.",
+      "Context is fragmented across documents, databases, CRMs and APIs.",
+    ],
+    deliverablesEyebrow: "Build",
+    deliverablesHeading: "Systems we can build.",
+    deliverables: [
+      "Internal knowledge agents",
+      "Customer support automation",
+      "Operations agents",
+      "Research workflows",
+      "Document processing",
+      "Engineering copilots",
+      "Sales operations automation",
+      "Approval workflows",
+      "AI search",
+      "Internal copilots",
+    ],
+    detailEyebrow: "Platform",
+    detailHeading: "Agentic infrastructure",
+    detailItems: [
+      {
+        title: "AI Agents",
+        description: "Purpose-built agents for defined operational jobs.",
+      },
+      {
+        title: "Tool Orchestration",
+        description: "Controlled access to APIs, databases, CRMs, email and internal systems.",
+      },
+      {
+        title: "RAG & Context Systems",
+        description: "Retrieval pipelines that give models relevant company context at execution time.",
+      },
+      {
+        title: "Workflow Architecture",
+        description:
+          "Multi-step workflows combining model reasoning with deterministic application logic.",
+      },
+      {
+        title: "Human Approval",
+        description: "High-impact actions stop at explicit review points when required.",
+      },
+      {
+        title: "Evaluations & Observability",
+        description: "Trace what agents retrieved, decided, called and returned.",
+      },
+      {
+        title: "Model Routing",
+        description:
+          "Use the right model for the job rather than coupling the entire system to one provider.",
+      },
+      {
+        title: "Guardrails & Permissions",
+        description: "Define what an agent can access, call, change and expose.",
+      },
+    ],
+    processEyebrow: "Delivery",
+    processHeading: "How we build production AI.",
+    process: [
+      {
+        step: "01",
+        title: "Define the job",
+        description:
+          "We identify where AI creates leverage and where deterministic software should remain in control.",
+      },
+      {
+        step: "02",
+        title: "Build context and tools",
+        description:
+          "Data, APIs, permissions and integrations become a controlled execution layer.",
+      },
+      {
+        step: "03",
+        title: "Evaluate",
+        description:
+          "We test retrieval, outputs, tool use and failure modes against representative workflows.",
+      },
+      {
+        step: "04",
+        title: "Deploy & improve",
+        description:
+          "The system enters production with tracing, monitoring and an explicit path for iteration.",
+      },
+    ],
+    capabilities: [],
+    suitableFor: [],
+    relatedServices: related([
+      { label: "Custom Software Engineering", href: "/services/custom-software-development" },
+      { label: "AWS Cloud & DevOps", href: "/services/cloud-infrastructure-scaling" },
+      { label: "L1–L4 Application Support", href: "/services/application-support" },
+    ]),
+    faqs: [
+      {
+        question: "Do you build chatbots?",
+        answer:
+          "We can, but chat is only an interface. Most valuable engagements involve agents, search or workflow automation connected to existing systems.",
+      },
+      {
+        question: "Can an AI agent access our internal tools?",
+        answer:
+          "Yes, through explicitly designed integrations and permissions. Access should be scoped to the task rather than exposing entire systems unnecessarily.",
+      },
+      {
+        question: "Do you use one AI model provider?",
+        answer:
+          "No. Architecture should allow the model layer to evolve as requirements, cost and model capability change.",
+      },
+      {
+        question: "Can humans approve actions before execution?",
+        answer:
+          "Yes. Human-in-the-loop approval is a core design pattern for actions where reversibility, financial impact or business risk matters.",
+      },
+    ],
+    ctaTitle: "If the agent cannot use your systems, it cannot transform the workflow.",
+    ctaDescription: "Build the infrastructure around the model.",
+    ctaLabel: "Discuss an AI system",
+  },
+  {
+    slug: "cloud-infrastructure-scaling",
+    path: "/services/cloud-infrastructure-scaling",
+    title: "AWS Cloud & DevOps",
+    metaTitle: "AWS Cloud & DevOps Services | Comlabs Technologies",
+    metaDescription:
+      "AWS cloud and DevOps engineering for production systems: CI/CD, Terraform, Docker, ECS, RDS, monitoring, backups, reliability and cost optimisation.",
+    eyebrow: "AWS Cloud & DevOps",
+    headline: "AWS infrastructure built for production.",
+    heroCopy: [
+      "Reliable software needs predictable infrastructure.",
+      "Comlabs designs and improves AWS environments, deployment systems and operational tooling so engineering teams can ship with visibility, repeatability and control.",
+    ],
+    serviceType: "AWS cloud and DevOps",
+    schemaDescription:
+      "AWS cloud and DevOps engineering including architecture, CI/CD, Terraform, Docker, ECS, RDS, observability, backup and recovery, reliability and cost optimisation.",
+    editorialImage: editorialImages.cloudInfrastructure,
+    overviewEyebrow: "Operations",
+    proposition: [
+      "Make production less fragile.",
+      "Infrastructure should not require heroics every time something ships.",
+      "We work across AWS architecture, deployments, environments, databases, observability, recovery and cost to create systems teams can understand and operate.",
+    ],
+    problemsEyebrow: "Failure modes",
+    problemsHeading: "Problems we solve",
+    problems: [
+      "Deployments depend on manual steps and tribal knowledge.",
+      "Nobody knows something is failing until users report it.",
+      "AWS environments have grown without clear ownership or architecture.",
+      "Cloud spend rises faster than traffic.",
+      "Backups exist, but recovery has never been tested.",
+    ],
+    deliverables: [],
+    processEyebrow: "Engagement",
+    processHeading: "How we work",
+    process: [
+      {
+        step: "01",
+        title: "Assess",
+        description:
+          "Architecture, deployments, reliability risks and operational bottlenecks are mapped.",
+      },
+      {
+        step: "02",
+        title: "Architect",
+        description: "We define the target environment and the changes required to get there.",
+      },
+      {
+        step: "03",
+        title: "Automate",
+        description:
+          "Infrastructure, deployment and environment configuration move toward repeatable workflows.",
+      },
+      {
+        step: "04",
+        title: "Operate & Improve",
+        description:
+          "Monitoring, cost, reliability and release patterns improve as the system evolves.",
+      },
+    ],
+    capabilitiesEyebrow: "Capabilities",
+    capabilities: [
+      "AWS architecture",
+      "EC2 / ECS / Lambda",
+      "RDS",
+      "S3",
+      "CloudFront",
+      "Route 53",
+      "IAM",
+      "VPC & networking",
+      "Load balancing",
+      "Docker",
+      "Terraform",
+      "GitHub Actions / CI/CD",
+      "Environment management",
+      "Secrets",
+      "Logging",
+      "Monitoring",
+      "Alerting",
+      "Backup & recovery",
+      "Performance optimisation",
+      "Cost optimisation",
+    ],
+    outcomesEyebrow: "Result",
+    outcomesHeading: "What changes after the engagement.",
+    outcomes: [
+      "Deployments become repeatable.",
+      "Production becomes observable.",
+      "Infrastructure changes become reviewable.",
+      "Recovery becomes planned.",
+      "Costs become easier to explain.",
+    ],
+    suitableFor: [],
+    relatedServices: related([
+      { label: "L1–L4 Application Support", href: "/services/application-support" },
+      { label: "Custom Software Engineering", href: "/services/custom-software-development" },
+      { label: "Agentic Infrastructure & AI Agents", href: "/services/ai-agent-development" },
+    ]),
+    faqs: [
+      {
+        question: "Do you only work with AWS?",
+        answer:
+          "AWS is our primary cloud focus for this service. Adjacent infrastructure may still involve Vercel, Cloudflare and other systems when they are part of the production stack.",
+      },
+      {
+        question: "Can you improve our current AWS setup without rebuilding it?",
+        answer:
+          "Yes. Most environments should be improved incrementally rather than replaced for the sake of architecture purity.",
+      },
+      {
+        question: "Do you implement CI/CD?",
+        answer:
+          "Yes. Deployment pipelines, environment controls, testing gates and rollback strategy can form part of the engagement.",
+      },
+      {
+        question: "Can you help reduce AWS spend?",
+        answer:
+          "Yes. Cost optimisation can include resource utilisation, architecture choices, storage, transfer, databases and longer-term AWS purchasing decisions where appropriate.",
+      },
+    ],
+    ctaTitle: "Production should be boring for the right reasons.",
+    ctaDescription: "Build infrastructure your team can trust.",
+    ctaLabel: "Discuss AWS & DevOps",
   },
   {
     slug: "custom-software-development",
     path: "/services/custom-software-development",
-    title: "Custom Software Development",
-    metaTitle: "Custom Software Development Services in Pune",
+    title: "Custom Software Engineering",
+    metaTitle: "Custom Software Development Company | Comlabs Technologies",
     metaDescription:
-      "Custom web applications, SaaS products, dashboards, ERP modules, and internal tools — designed and built around how your business actually operates.",
-    eyebrow: "Custom software development",
-    headline: "Software shaped around how your business runs.",
-    subheadline:
-      "We build web applications, SaaS products, dashboards, ERP modules, and internal tools when off-the-shelf products do not fit the workflow.",
+      "Custom software development for SaaS, internal platforms, ERP workflows, web applications and business systems built around real operations.",
+    eyebrow: "Custom software engineering",
+    headline: "Software that fits the business. Not the other way around.",
+    heroCopy: [
+      "When off-the-shelf software starts defining how your team has to work, build the system around the operation instead.",
+      "Comlabs engineers SaaS products, internal platforms, workflow systems and integrations around the processes that actually make the business run.",
+    ],
     serviceType: "Custom software development",
     schemaDescription:
-      "Custom software development including web applications, SaaS, dashboards, ERP systems, CMS platforms, internal tools, APIs, and product UI.",
+      "Custom software development for SaaS products, internal platforms, ERP workflows, web applications, APIs and business systems built around real operations.",
     editorialImage: editorialImages.customSoftware,
+    overviewEyebrow: "Build",
     proposition: [
-      "We scope software around concrete operational problems — not a generic platform pitch.",
-      "Engagements combine data modeling, role-based admin UI, product front-ends, integrations, and phased rollout so teams adopt new workflows without a big-bang cutover.",
+      "Software shaped around how the operation actually runs.",
+      "We engineer the product, architecture and integrations together so the system fits the work rather than forcing the work to fit the software.",
     ],
+    problemsEyebrow: "Signals",
+    problemsHeading: "Where custom software earns its place.",
     problems: [
-      "Spreadsheets and disconnected tools create errors and slow reporting.",
-      "Off-the-shelf products handle your edge cases poorly or require expensive customization.",
-      "Product UI has grown cluttered as features accumulate without a coherent system.",
-      "Marketing and operations depend on developers for changes that should be self-serve.",
+      "Critical operations still depend on spreadsheets and manual handoffs.",
+      "Your existing platform forces teams into workflows that do not match the business.",
+      "Disconnected systems require repeated data entry and reconciliation.",
+      "A growing internal tool has become too important to remain a collection of patches.",
     ],
+    deliverablesEyebrow: "Scope",
+    deliverablesHeading: "What we build",
     deliverables: [
-      "Process mapping and module scope for phase one",
-      "Data models, permissions, and API contracts",
-      "Admin, dashboard, and customer-facing UI",
-      "Integrations with CRM, accounting, or third-party tools where required",
-      "Deployment plan with documentation and handover",
+      "Web applications",
+      "SaaS platforms",
+      "Internal tools",
+      "Customer portals",
+      "Operations software",
+      "ERP modules",
+      "Admin systems",
+      "API platforms",
+      "Workflow automation",
+      "System integrations",
     ],
-    process: [...processSteps.customSoftware],
-    capabilities: [
-      "Web applications and SaaS products",
-      "Dashboards, settings, and operator interfaces",
-      "ERP modules and internal operations tools",
-      "Custom CMS platforms and structured content systems",
-      "Product UI and front-end for customer-facing flows",
-      "APIs, integrations, and workflow automation",
+    detailEyebrow: "System",
+    detailHeading: "Engineering across the system",
+    detailItems: [
+      {
+        title: "Product Interfaces",
+        description: "Operator screens, dashboards, settings and customer workflows.",
+      },
+      {
+        title: "Application Architecture",
+        description: "Business logic, permissions, services and data models.",
+      },
+      {
+        title: "Integrations",
+        description: "CRM, finance, payments, communication and third-party platforms.",
+      },
+      {
+        title: "Infrastructure",
+        description: "Deployment and production architecture when the application requires it.",
+      },
+      {
+        title: "Operations",
+        description: "Documentation, monitoring and ongoing engineering where required.",
+      },
     ],
-    suitableFor: [
-      "Operations teams outgrowing spreadsheets",
-      "SaaS teams improving activation, retention, or internal tooling",
-      "Businesses with specialized workflows in manufacturing, distribution, or services",
-      "Leaders who need phased delivery rather than a massive platform rollout",
+    processEyebrow: "Process",
+    processHeading: "Map → Architect → Build → Operate",
+    processIntro:
+      "We understand how work happens before deciding what software should exist. Then we build in focused releases rather than betting everything on one massive launch.",
+    process: [
+      {
+        step: "01",
+        title: "Map",
+        description:
+          "We document how work happens today before deciding what software should exist.",
+      },
+      {
+        step: "02",
+        title: "Architect",
+        description:
+          "Data models, permissions, services and interfaces are shaped around the operation.",
+      },
+      {
+        step: "03",
+        title: "Build",
+        description:
+          "We ship in focused releases rather than betting everything on one massive launch.",
+      },
+      {
+        step: "04",
+        title: "Operate",
+        description:
+          "Documentation, monitoring and ongoing engineering where the system requires it.",
+      },
     ],
+    capabilities: [],
+    suitableFor: [],
     relatedCaseStudy: {
       client: "Formial Labs",
       href: "/work/formial-labs",
       summary:
         "A structured product onboarding flow and dashboard UI built to move users from signup to first value with less friction.",
     },
-    relatedServices: relatedServicesFor("custom-software-development", [
-      "/services/website-design-development",
-      "/services/mobile-app-development",
-      "/services/cloud-infrastructure-scaling",
+    relatedServices: related([
+      { label: "L1–L4 Application Support", href: "/services/application-support" },
+      { label: "Agentic Infrastructure & AI Agents", href: "/services/ai-agent-development" },
+      { label: "Mobile Engineering", href: "/services/mobile-app-development" },
     ]),
-    faqs: [
+    faqs: [],
+    ctaTitle: "Stop forcing the operation into software that does not fit.",
+    ctaDescription: "Build the system around the work.",
+    ctaLabel: "Discuss Custom Software",
+  },
+  {
+    slug: "website-design-development",
+    path: "/services/website-design-development",
+    title: "Web & Digital Experience",
+    metaTitle: "Website Design & Frontend Development Company | Comlabs",
+    metaDescription:
+      "High-performance website design and frontend engineering for technology, enterprise and growing companies. UX, Next.js, performance, SEO and AEO.",
+    eyebrow: "Web & digital experience",
+    headline: "Digital experiences built to carry the weight of the business.",
+    heroCopy: [
+      "Your website is often the first system a customer uses to judge the company.",
+      "We combine positioning, interface design and frontend engineering to create digital experiences that are fast, clear and difficult to dismiss.",
+    ],
+    serviceType: "Website design and frontend development",
+    schemaDescription:
+      "Website design and frontend engineering including corporate and technology websites, product interfaces, Next.js implementation, performance, CMS architecture, technical SEO and AEO.",
+    editorialImage: editorialImages.websiteDesign,
+    overviewEyebrow: "Practice",
+    proposition: [
+      "Positioning, interface design and frontend engineering as one system.",
+      "We build digital experiences that hold up in production, not just in a design file.",
+    ],
+    problemsEyebrow: "Standard",
+    problemsHeading: "The standard is higher than “looks modern.”",
+    problems: [
+      "The company has grown but the website still communicates an earlier version of the business.",
+      "The interface looks polished in a design file but performs poorly in production.",
+      "Important information is buried behind generic copy and weak information architecture.",
+      "SEO, performance and content architecture are treated as launch-week tasks.",
+    ],
+    deliverablesEyebrow: "Scope",
+    deliverablesHeading: "What we do",
+    deliverables: [
+      "Corporate websites",
+      "Technology websites",
+      "Marketing platforms",
+      "Product interfaces",
+      "Landing experiences",
+      "Design systems",
+      "Frontend engineering",
+      "CMS architecture",
+      "Performance optimisation",
+      "Technical SEO",
+      "AEO",
+    ],
+    processEyebrow: "Process",
+    processHeading: "How we work",
+    process: [
       {
-        question: "Do you replace entire ERP suites like SAP or Oracle?",
-        answer:
-          "Usually no. We build targeted modules or internal tools that integrate with existing systems, or replace only the parts that block daily operations.",
+        step: "01",
+        title: "Position",
+        description: "Define what visitors must understand and believe.",
       },
       {
-        question: "Can software work start with a single module?",
-        answer:
-          "Yes. Phased delivery is the default — prove value on one workflow, then expand.",
+        step: "02",
+        title: "Structure",
+        description: "Build the information hierarchy and conversion paths.",
       },
       {
-        question: "Do you work from existing product designs?",
-        answer:
-          "Yes. We can implement your Figma files, or design and build when product UX is part of the scope.",
+        step: "03",
+        title: "Design & Engineer",
+        description: "Interface and implementation evolve as one system.",
+      },
+      {
+        step: "04",
+        title: "Launch & Improve",
+        description:
+          "Validate production behaviour, performance, analytics and search fundamentals.",
       },
     ],
+    capabilitiesEyebrow: "Together",
+    capabilities: [
+      "Positioning",
+      "Information architecture",
+      "Interaction design",
+      "Product-grade UI",
+      "Next.js / React engineering",
+      "Responsive implementation",
+      "Core Web Vitals",
+      "CMS",
+      "Analytics",
+      "Technical SEO & AEO",
+    ],
+    suitableFor: [],
+    relatedCaseStudy: {
+      client: "Global Services",
+      href: "/work/global-services",
+      summary:
+        "A full website rebuild that improved conversion and helped position Global Services for enterprise telecom clients.",
+    },
+    relatedServices: related([
+      { label: "Custom Software Engineering", href: "/services/custom-software-development" },
+      { label: "SEO, AEO & Search Engineering", href: "/services/seo-aeo-copywriting" },
+      { label: "Mobile Engineering", href: "/services/mobile-app-development" },
+    ]),
+    faqs: [],
+    ctaTitle: "A serious company should look serious before the first meeting.",
+    ctaDescription: "Build the digital experience around the business, not a template.",
+    ctaLabel: "Build the digital experience",
   },
   {
     slug: "mobile-app-development",
     path: "/services/mobile-app-development",
-    title: "Mobile App Development",
-    metaTitle: "Mobile App Development Services",
+    title: "Mobile Engineering",
+    metaTitle: "Mobile App Development & Engineering | Comlabs Technologies",
     metaDescription:
-      "iOS and Android product development with clear UX, production-ready engineering, and the backend infrastructure to support them.",
-    eyebrow: "Mobile app development",
-    headline: "Mobile products built for daily use.",
-    subheadline:
-      "We design and build iOS and Android applications with polished UX, reliable engineering, and the APIs and infrastructure they depend on.",
-    serviceType: "Mobile app development",
+      "Mobile app engineering for iOS, Android and cross-platform products with backend APIs, authentication, payments and production infrastructure.",
+    eyebrow: "Mobile engineering",
+    headline: "Mobile products built beyond the screen.",
+    heroCopy: [
+      "A production mobile application is not a collection of polished screens.",
+      "It is authentication, APIs, state, notifications, payments, infrastructure and product decisions working together in the hands of a real user.",
+      "Comlabs engineers the full system.",
+    ],
+    serviceType: "Mobile app engineering",
     schemaDescription:
-      "Mobile app development including iOS and Android products, cross-platform apps, mobile UI, application APIs, and integrations.",
+      "Mobile app engineering for iOS, Android and cross-platform products, including backend APIs, authentication, payments, notifications and production infrastructure.",
     editorialImage: editorialImages.mobileApp,
+    overviewEyebrow: "Product",
     proposition: [
-      "Mobile work spans product UX, native or cross-platform engineering, and the backend services that power accounts, data, and notifications.",
-      "We treat mobile as part of the product system — not an isolated screen design exercise.",
+      "The application and the systems behind it are the same engagement.",
+      "We build mobile products with the APIs, authentication, payments and operational systems required to run them in production.",
     ],
+    problemsEyebrow: "Failure modes",
+    problemsHeading: "Problems we solve",
     problems: [
-      "A web product needs a credible mobile experience but the team lacks mobile delivery capacity.",
-      "An existing app feels slow, dated, or hard to extend as features accumulate.",
-      "Onboarding and core flows were never designed for small screens and real usage patterns.",
-      "Backend APIs and integrations were bolted on after the UI, causing reliability issues.",
+      "Your product works on desktop but critical workflows break down on mobile.",
+      "The interface is polished but the APIs underneath it cannot support real product behaviour.",
+      "An existing mobile application has accumulated performance and maintainability problems.",
+      "Your team can build backend systems but lacks dedicated mobile product capacity.",
     ],
+    deliverablesEyebrow: "Scope",
+    deliverablesHeading: "What we build",
     deliverables: [
-      "Mobile UX flows for core jobs-to-be-done",
-      "UI design for iOS and Android (or cross-platform) patterns",
-      "Production app builds with store-ready assets",
-      "Application APIs and integration points where required",
-      "Launch support and a plan for post-release iteration",
+      "Customer applications",
+      "Operational applications",
+      "Cross-platform products",
+      "Companion applications",
+      "Internal mobile tools",
+      "Mobile-first workflows",
     ],
-    process: [...processSteps.mobile],
+    processEyebrow: "Process",
+    processHeading: "Define → Engineer → Integrate → Release",
+    processIntro:
+      "We scope the jobs the mobile product must perform, build the interface and application architecture around them, connect the backend systems, then validate the production release.",
+    process: [
+      {
+        step: "01",
+        title: "Define",
+        description: "We scope the jobs the mobile product must perform before screens are designed.",
+      },
+      {
+        step: "02",
+        title: "Engineer",
+        description:
+          "Interface and application architecture are built around those jobs, not a gallery of screens.",
+      },
+      {
+        step: "03",
+        title: "Integrate",
+        description:
+          "Backend APIs, authentication, payments and notifications are connected as part of the product.",
+      },
+      {
+        step: "04",
+        title: "Release",
+        description: "We validate the production release, store submission and first operational checks.",
+      },
+    ],
+    capabilitiesEyebrow: "Engineering",
     capabilities: [
-      "iOS and Android product development",
-      "Cross-platform apps where it fits the product",
-      "Mobile product UI and interaction design",
-      "Application APIs and backend services",
-      "Push notifications, auth, and third-party integrations",
-      "App store submission support",
+      "Product UX",
+      "React Native / cross-platform engineering where appropriate",
+      "Backend APIs",
+      "Authentication",
+      "Payments",
+      "Push notifications",
+      "Deep links",
+      "Data synchronisation",
+      "Analytics",
+      "Application release",
+      "Production monitoring",
     ],
-    suitableFor: [
-      "Product teams extending a web platform to mobile",
-      "Founders shipping an MVP app without hiring a full mobile team",
-      "Businesses replacing a legacy app with something maintainable",
-    ],
-    relatedServices: relatedServicesFor("mobile-app-development", [
-      "/services/custom-software-development",
-      "/services/cloud-infrastructure-scaling",
-      "/services/website-design-development",
+    suitableFor: [],
+    relatedServices: related([
+      { label: "Custom Software Engineering", href: "/services/custom-software-development" },
+      { label: "AWS Cloud & DevOps", href: "/services/cloud-infrastructure-scaling" },
+      { label: "L1–L4 Application Support", href: "/services/application-support" },
     ]),
-    faqs: [
-      {
-        question: "Do you build native or cross-platform apps?",
-        answer:
-          "We choose based on product requirements, timeline, and team constraints — native when platform-specific quality matters most, cross-platform when speed and shared logic are the priority.",
-      },
-      {
-        question: "Can you connect a mobile app to our existing backend?",
-        answer:
-          "Yes. We often extend existing APIs or build the services needed to support mobile accounts, data sync, and integrations.",
-      },
-    ],
+    faqs: [],
+    ctaTitle: "Build the application people actually carry with them.",
+    ctaDescription: "Engineer the product and the systems behind it.",
+    ctaLabel: "Discuss Mobile Engineering",
   },
   {
     slug: "seo-aeo-copywriting",
     path: "/services/seo-aeo-copywriting",
-    title: "SEO / AEO Optimisation & Copywriting",
-    metaTitle: "SEO, AEO & Copywriting Services",
+    title: "SEO, AEO & Search Engineering",
+    metaTitle: "SEO & AEO Services for Search and AI Visibility | Comlabs",
     metaDescription:
-      "Technical SEO, search positioning, AI search optimisation, structured content, schema, and conversion copywriting for websites that need to be found and understood.",
-    eyebrow: "SEO / AEO & copywriting",
-    headline: "Found in search. Clear on the page.",
-    subheadline:
-      "We improve how your site ranks, reads, and converts — across Google and AI-powered search — with technical SEO, structured content, and copy that earns attention.",
-    serviceType: "SEO, AEO optimisation and copywriting",
+      "Technical SEO, AEO and search architecture for stronger Google visibility, AI search discovery, structured content and high-performance websites.",
+    eyebrow: "SEO, AEO & search engineering",
+    headline: "Be discoverable wherever people ask questions.",
+    heroCopy: [
+      "Technical SEO, content architecture and AI-search optimisation built into the systems that publish your content—not added after launch.",
+    ],
+    serviceType: "SEO and AEO",
     schemaDescription:
-      "SEO and AEO optimisation, technical search improvements, structured content, schema markup, and conversion copywriting for websites and product pages.",
+      "Technical SEO, AEO and search architecture including metadata, schema, internal linking, Core Web Vitals, content structure and AI search discovery.",
     editorialImage: editorialImages.seoAeo,
+    overviewEyebrow: "Search",
     proposition: [
-      "Search work combines technical fixes, page structure, and copy that matches what people actually search for — including how AI systems summarise and cite content.",
-      "We align metadata, schema, internal linking, and on-page copy so visibility and conversion improve together.",
+      "Search is an engineering problem as much as a content problem.",
+      "We work on the technical surface that Google and AI systems actually read: metadata, schema, internal links, page structure, performance and the content model behind them.",
+      "This is a supporting capability of Web & Digital Experience, used when a site needs to be found, cited and understood, not only launched.",
     ],
+    problemsEyebrow: "Failure modes",
+    problemsHeading: "Where visibility is lost.",
     problems: [
-      "Good traffic arrives but visitors leave because the message is vague or the page structure is confusing.",
-      "Technical issues — slow pages, poor metadata, broken indexing — limit reach regardless of content quality.",
-      "AI search and answer engines surface competitors because your content lacks structure and clarity.",
-      "Marketing copy was written for the brand, not for the queries that drive qualified visits.",
+      "Pages are slow, poorly marked up or weakly interlinked, so crawl and ranking stall regardless of the offer.",
+      "Metadata, headings and schema do not describe the page the way people and AI systems query it.",
+      "Content is unstructured, so answer engines cannot lift a clear, citable explanation.",
+      "A redesign ships without URL, redirect and index planning, and search equity is spent by accident.",
     ],
+    deliverablesEyebrow: "Work",
+    deliverablesHeading: "What the engagement covers.",
     deliverables: [
-      "Technical SEO audit and priority fix list",
-      "Page-level metadata, headings, and internal link updates",
-      "Schema and structured data where it adds clarity for search",
-      "Conversion-focused copy for key pages and landing templates",
-      "Content guidelines your team can follow after handover",
+      "Technical SEO audit and a sequenced fix list",
+      "Metadata, heading and internal-link architecture",
+      "Schema and structured data where it clarifies the page",
+      "Content structure for search and AI retrieval",
+      "Core Web Vitals and indexation checks",
+      "Redirect and canonical planning for launches or migrations",
     ],
-    process: [...processSteps.seoAeo],
+    processEyebrow: "Process",
+    processHeading: "How we work",
+    process: [
+      {
+        step: "01",
+        title: "Audit",
+        description:
+          "Technical SEO, page structure, metadata, schema, internal links and content gaps are reviewed against how people and AI systems search.",
+      },
+      {
+        step: "02",
+        title: "Map",
+        description:
+          "Priority pages, queries and AEO targets are defined, including how answer engines read and cite the site.",
+      },
+      {
+        step: "03",
+        title: "Implement",
+        description:
+          "On-page structure, schema, internal links and technical fixes ship in a sequence that preserves existing indexation.",
+      },
+      {
+        step: "04",
+        title: "Measure",
+        description:
+          "Indexing, visibility and conversion signals are verified so the next round of work has a baseline.",
+      },
+    ],
+    capabilitiesEyebrow: "Capabilities",
     capabilities: [
-      "Technical SEO and on-page optimisation",
-      "Search positioning and keyword-informed page structure",
-      "AI search / answer-engine optimisation (AEO)",
-      "Structured content and schema markup",
-      "Website and landing page copywriting",
-      "Redirect and metadata planning for site migrations",
+      "Technical SEO",
+      "Metadata",
+      "Schema",
+      "Internal linking",
+      "Core Web Vitals",
+      "Content structure",
+      "AI search / AEO",
+      "Search indexing",
     ],
-    suitableFor: [
-      "Companies launching or relaunching a site that needs to rank from day one",
-      "Marketing teams with traffic but weak conversion on key pages",
-      "Businesses repositioning and needing copy that matches the new offer",
-    ],
-    relatedCaseStudy: {
-      client: "Vithub",
-      href: "/work/vithub",
-      summary:
-        "A design-led marketing website built to give Vithub a strong digital identity and clearer positioning online.",
-    },
-    relatedServices: relatedServicesFor("seo-aeo-copywriting", [
-      "/services/website-design-development",
-      "/services/custom-software-development",
-      "/services/cloud-infrastructure-scaling",
+    suitableFor: [],
+    relatedServices: related([
+      { label: "Web & Digital Experience", href: "/services/website-design-development" },
+      { label: "Custom Software Engineering", href: "/services/custom-software-development" },
     ]),
     faqs: [
       {
         question: "What is AEO and why does it matter?",
         answer:
-          "Answer-engine optimisation focuses on how AI-powered search tools read, summarise, and cite your content. Clear structure, accurate metadata, and authoritative copy help your pages appear in those results.",
+          "Answer-engine optimisation focuses on how AI-powered search tools read, summarise and cite your content. Clear structure, accurate metadata and authoritative pages help those systems use your material instead of a competitor's.",
       },
       {
-        question: "Will SEO work hurt our existing rankings during a redesign?",
+        question: "Will SEO work hurt existing rankings during a redesign?",
         answer:
-          "Not when planned correctly. We map URLs, redirects, and metadata before launch so search equity is preserved while pages improve.",
+          "Not when planned correctly. We map URLs, redirects, canonicals and metadata before launch so search equity is preserved while pages improve.",
       },
     ],
-  },
-  {
-    slug: "cloud-infrastructure-scaling",
-    path: "/services/cloud-infrastructure-scaling",
-    title: "Cloud Infrastructure & Scaling",
-    metaTitle: "Cloud Infrastructure & Scaling Services",
-    metaDescription:
-      "Cloud architecture, deployments, databases, caching, performance engineering, and observability — built to keep products fast and reliable as usage grows.",
-    eyebrow: "Cloud infrastructure & scaling",
-    headline: "Infrastructure that keeps pace with usage.",
-    subheadline:
-      "We design, deploy and optimise cloud architecture for production applications that need reliable performance as usage grows.",
-    serviceType: "Cloud infrastructure and scaling",
-    schemaDescription:
-      "Cloud infrastructure and scaling including architecture, application deployments, databases, CDN and caching, performance, observability, and reliability engineering.",
-    editorialImage: editorialImages.cloudInfrastructure,
-    proposition: [
-      "Infrastructure work is tied to product outcomes — uptime, response times, deployment confidence, and cost that scales sensibly.",
-      "We help teams move from fragile manual deploys to environments they can trust as traffic and complexity grow.",
-    ],
-    problems: [
-      "Production deploys are manual, risky, or slow — blocking releases and fixes.",
-      "Performance degrades under load because caching, databases, or architecture were not planned for growth.",
-      "Incidents are hard to diagnose without logging, monitoring, or clear environment separation.",
-      "Cloud costs climb without a clear map of what is running or why.",
-    ],
-    deliverables: [
-      "Infrastructure review and target architecture outline",
-      "Deployment pipelines and environment configuration",
-      "Database, CDN, and caching strategy for your stack",
-      "Observability setup — logging, monitoring, and alerts",
-      "Runbooks and handover for your team",
-    ],
-    process: [...processSteps.cloud],
-    capabilities: [
-      "Cloud architecture and environment design",
-      "Application deployments and CI/CD pipelines",
-      "Database setup, migrations, and scaling patterns",
-      "CDN, caching, and performance optimisation",
-      "Observability, logging, and monitoring setup",
-      "Infrastructure cost and reliability reviews",
-    ],
-    suitableFor: [
-      "Product teams preparing for launch or a traffic spike",
-      "Companies outgrowing a single-server or manual deploy setup",
-      "Engineering leads who need production confidence without hiring a full platform team",
-    ],
-    relatedServices: relatedServicesFor("cloud-infrastructure-scaling", [
-      "/services/custom-software-development",
-      "/services/mobile-app-development",
-      "/services/website-design-development",
-    ]),
-    faqs: [
-      {
-        question: "Which cloud providers do you work with?",
-        answer:
-          "Most engagements use AWS, Google Cloud, or Vercel-style edge hosting depending on the product stack. We recommend based on your requirements, not a fixed vendor preference.",
-      },
-      {
-        question: "Can you improve an existing deployment without a full rebuild?",
-        answer:
-          "Yes. Many projects start with observability, caching, and deployment fixes that deliver immediate reliability gains before larger architectural changes.",
-      },
-    ],
+    ctaTitle: "Search should be designed into the site, not bolted on after launch.",
+    ctaDescription: "Build the technical surface that Google and AI systems can actually use.",
+    ctaLabel: "Discuss SEO & AEO",
   },
 ];
 

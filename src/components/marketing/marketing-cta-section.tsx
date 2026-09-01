@@ -35,12 +35,14 @@ export function MarketingCtaSection({
         transition={{ duration: 0.55, ease: EASE }}
         className="mx-auto max-w-2xl px-8 py-20 text-center md:px-10 md:py-24"
       >
-        <p
-          className="mb-5 text-xs font-semibold tracking-widest uppercase"
-          style={{ color: "rgba(247,247,244,0.45)" }}
-        >
-          {eyebrow}
-        </p>
+        {eyebrow ? (
+          <p
+            className="mb-5 text-xs font-semibold tracking-widest uppercase"
+            style={{ color: "rgba(247,247,244,0.45)" }}
+          >
+            {eyebrow}
+          </p>
+        ) : null}
         <h2
           className="mb-5 text-2xl font-bold tracking-tight md:text-4xl lg:text-5xl"
           style={{ color: "var(--background)", letterSpacing: "-0.03em" }}

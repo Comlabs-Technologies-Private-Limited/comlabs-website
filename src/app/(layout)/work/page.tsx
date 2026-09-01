@@ -24,9 +24,9 @@ export const metadata: Metadata = buildPageMetadata({
 });
 
 const RELATED_SERVICES = [
-  { label: "Website design & development", href: "/services/website-design-development" },
-  { label: "Custom software development", href: "/services/custom-software-development" },
-  { label: "SEO / AEO & copywriting", href: "/services/seo-aeo-copywriting" },
+  { label: "Web & Digital Experience", href: "/services/website-design-development" },
+  { label: "Custom Software Engineering", href: "/services/custom-software-development" },
+  { label: "SEO, AEO & Search Engineering", href: "/services/seo-aeo-copywriting" },
 ] as const;
 
 export default function WorkIndexPage() {

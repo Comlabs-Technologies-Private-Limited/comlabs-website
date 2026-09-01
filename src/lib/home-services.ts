@@ -19,9 +19,7 @@ export type HomeService = {
 };
 
 /**
- * Homepage capability cards. Destinations reuse existing service URLs until
- * dedicated pages exist. Application Support and Software Engineering both
- * map to custom software; AI Engineering maps to the Applied AI section.
+ * Homepage capability cards. Destinations use canonical service routes.
  */
 export const HOME_SERVICES: readonly HomeService[] = [
   {
@@ -36,7 +34,7 @@ export const HOME_SERVICES: readonly HomeService[] = [
       "L4 Specialist Engineering",
     ],
     linkLabel: "Explore application support",
-    href: "/services/custom-software-development",
+    href: "/services/application-support",
     background: "/services-bg/service-bg-2.png",
   },
   {
@@ -68,7 +66,7 @@ export const HOME_SERVICES: readonly HomeService[] = [
       "Evaluations & Guardrails",
     ],
     linkLabel: "Explore AI engineering",
-    href: "/#applied-ai",
+    href: "/services/ai-agent-development",
     background: "/services-bg/service-bg-4.png",
     featured: true,
   },

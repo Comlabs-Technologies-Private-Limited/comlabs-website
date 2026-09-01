@@ -16,7 +16,7 @@ export type ServiceIllustration = {
   label: string;
 };
 
-/** Keyed by the homepage service card id in `canonical-services.ts`. */
+/** Keyed by the homepage service card id in `home-services.ts`. */
 export const serviceIllustrations: Record<string, ServiceIllustration> = {
   "application-support": {
     Component: ApplicationSupportIllustration,

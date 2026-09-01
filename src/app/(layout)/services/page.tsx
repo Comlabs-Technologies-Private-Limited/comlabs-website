@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
 import { FigmaFooter } from "@/components/layout/figma-footer";
 import { FigmaNav } from "@/components/layout/figma-nav";
@@ -9,16 +10,20 @@ import {
   MarketingOrangeHighlight,
   MarketingSectionHeader,
 } from "@/components/marketing/marketing-section-header";
-import { ServicesGrid } from "@/components/services/service-card";
+import { ServicesIndexGrid } from "@/components/services/service-card";
 import { PageBreadcrumbs } from "@/components/seo/page-breadcrumbs";
+import { JsonLdScript } from "@/components/seo/json-ld-script";
+import { primaryServices } from "@/lib/canonical-services";
 import { buildPageMetadata } from "@/lib/metadata";
-import { servicePages, servicesIndex } from "@/lib/services-data";
+import { getServiceCollectionSchema } from "@/lib/schema";
+import { servicesIndex } from "@/lib/services-data";
 import { canonicalPath } from "@/lib/site";
 
 export const metadata: Metadata = buildPageMetadata({
   title: servicesIndex.metaTitle,
   description: servicesIndex.metaDescription,
   path: servicesIndex.path,
+  absoluteTitle: true,
 });
 
 export default function ServicesIndexPage() {
@@ -27,6 +32,18 @@ export default function ServicesIndexPage() {
       className="min-h-screen bg-background text-foreground antialiased"
       style={{ fontFamily: "var(--font-sans)" }}
     >
+      <JsonLdScript
+        data={getServiceCollectionSchema({
+          url: servicesIndex.path,
+          name: servicesIndex.metaTitle,
+          description: servicesIndex.metaDescription,
+          services: primaryServices.map((service) => ({
+            name: service.title,
+            url: service.path,
+          })),
+        })}
+      />
+
       <FigmaNav />
 
       <main>
@@ -34,11 +51,26 @@ export default function ServicesIndexPage() {
           eyebrow={servicesIndex.eyebrow}
           title={
             <>
-              Design and engineering for products that need to{" "}
-              <MarketingOrangeHighlight>ship</MarketingOrangeHighlight>.
+              Technology that stays{" "}
+              <MarketingOrangeHighlight>responsible</MarketingOrangeHighlight> after launch.
             </>
           }
-          description={servicesIndex.subheadline}
+          description={
+            <>
+              {servicesIndex.heroCopy.map((paragraph) => (
+                <p key={paragraph}>{paragraph}</p>
+              ))}
+            </>
+          }
+          action={
+            <Link
+              href={canonicalPath("/contact")}
+              className="inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30 focus-visible:ring-offset-2"
+            >
+              {servicesIndex.heroCtaLabel}
+              <ArrowRight size={14} aria-hidden />
+            </Link>
+          }
         >
           <PageBreadcrumbs currentPath="/services" items={[{ label: "Services" }]} />
         </MarketingPageHero>
@@ -47,36 +79,56 @@ export default function ServicesIndexPage() {
           <div className="mx-auto max-w-6xl">
             <MarketingSectionHeader
               className="mb-10 md:mb-12"
-              eyebrow="Our services"
-              title={
+              eyebrow={servicesIndex.sectionEyebrow}
+              title={servicesIndex.sectionHeading}
+              description={
                 <>
-                  Focused expertise for every{" "}
-                  <MarketingOrangeHighlight>stage</MarketingOrangeHighlight>.
+                  {servicesIndex.sectionCopy.map((paragraph) => (
+                    <p key={paragraph}>{paragraph}</p>
+                  ))}
                 </>
               }
             />
-            <Link
-              href={canonicalPath("/digital-marketing")}
-              className="mb-10 flex flex-col justify-between gap-4 rounded-[16px] border border-border bg-background p-6 transition-colors hover:border-foreground/20 md:mb-12 md:flex-row md:items-end md:p-8"
-            >
-              <div>
-                <p className="text-[11px] tracking-[0.16em] text-muted-foreground uppercase">
-                  Digital Marketing
-                </p>
-                <p className="mt-3 max-w-xl text-xl font-medium tracking-tight md:text-2xl" style={{ letterSpacing: "-0.03em" }}>
-                  Strategy, creative and performance as one system.
-                </p>
-              </div>
-              <span className="text-sm text-[var(--warm-orange)]">View the growth practice →</span>
-            </Link>
-            <ServicesGrid services={servicePages} />
+            <ServicesIndexGrid services={primaryServices} />
+          </div>
+        </section>
+
+        <section className="px-6 py-24 md:py-28">
+          <div className="mx-auto max-w-6xl">
+            <MarketingSectionHeader
+              eyebrow="Operating model"
+              title={servicesIndex.pillarsHeading}
+            />
+            <div className="relative grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-4 lg:gap-8">
+              <div
+                className="pointer-events-none absolute top-[0.65rem] right-0 left-0 hidden border-t border-neutral-200 lg:block"
+                aria-hidden
+              />
+              {servicesIndex.pillars.map((pillar, index) => (
+                <article key={pillar.title} className="relative lg:pt-8">
+                  <p
+                    className="mb-3 inline-block bg-background pr-2 text-[11px] font-medium tabular-nums text-neutral-400 lg:mb-4"
+                    style={{ fontFamily: "var(--font-mono)" }}
+                  >
+                    {String(index + 1).padStart(2, "0")}
+                  </p>
+                  <h3 className="mb-2 text-sm font-medium tracking-tight text-neutral-900">
+                    {pillar.title}
+                  </h3>
+                  <p className="text-sm font-normal leading-relaxed text-neutral-600">
+                    {pillar.copy}
+                  </p>
+                </article>
+              ))}
+            </div>
           </div>
         </section>
 
         <MarketingCtaSection
-          title="Not sure where to start?"
-          description="Share your goal — website, custom software, mobile app, SEO/AEO, or cloud infrastructure — and we will recommend the right starting point."
-          ctaLabel="Contact us"
+          eyebrow=""
+          title={servicesIndex.ctaTitle}
+          description={servicesIndex.ctaDescription}
+          ctaLabel={servicesIndex.ctaLabel}
         />
       </main>
 

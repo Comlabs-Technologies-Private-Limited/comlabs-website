@@ -101,20 +101,22 @@ export function ServiceRelatedServices({
 }: {
   services: readonly RelatedServiceLink[];
 }) {
+  const columns = services.length === 2 ? "md:grid-cols-2" : "md:grid-cols-3";
+
   return (
     <section className="border-t border-border bg-card px-6 py-24 md:py-28">
       <div className="mx-auto max-w-6xl">
         <MarketingSectionHeader
-          eyebrow="Related services"
+          eyebrow="Related capabilities"
           title={
             <>
-              Keep going through the{" "}
-              <MarketingOrangeHighlight>practice</MarketingOrangeHighlight>.
+              Adjacent work across the{" "}
+              <MarketingOrangeHighlight>stack</MarketingOrangeHighlight>.
             </>
           }
         />
 
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className={`grid gap-4 ${columns}`}>
           {services.map((item, index) => {
             const canonical = canonicalServices.find(
               (service) => service.path === item.href,
@@ -156,7 +158,7 @@ export function ServiceRelatedServices({
                       </p>
                     ) : null}
                     <span className="mt-5 inline-flex items-center gap-1 text-[13px] text-muted-foreground transition-colors duration-[180ms] group-hover:text-foreground">
-                      View service
+                      {canonical?.linkLabel ?? item.label}
                       <ArrowUpRight size={13} />
                     </span>
                   </div>
