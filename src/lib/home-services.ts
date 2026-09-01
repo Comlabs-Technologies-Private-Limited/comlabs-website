@@ -14,6 +14,8 @@ export type HomeService = {
   linkLabel: string;
   href: string;
   background: string;
+  /** Full-width bento tile on the homepage services grid. */
+  featured?: boolean;
 };
 
 /**
@@ -38,6 +40,22 @@ export const HOME_SERVICES: readonly HomeService[] = [
     background: "/services-bg/service-bg-2.png",
   },
   {
+    id: "website-design",
+    title: "Web & Digital Experience",
+    description:
+      "High-performance digital experiences with engineering behind them. From corporate websites to product interfaces, we build fast, clear and technically robust digital experiences designed to perform in production.",
+    capabilities: [
+      "Websites",
+      "Product UI",
+      "Frontend Engineering",
+      "Performance",
+      "Technical SEO & AEO",
+    ],
+    linkLabel: "Explore digital experiences",
+    href: "/services/website-design-development",
+    background: "/services-bg/service-bg-1.png",
+  },
+  {
     id: "agentic-infrastructure",
     title: "Agentic Infrastructure & AI Agents",
     description:
@@ -52,6 +70,23 @@ export const HOME_SERVICES: readonly HomeService[] = [
     linkLabel: "Explore AI engineering",
     href: "/#applied-ai",
     background: "/services-bg/service-bg-4.png",
+    featured: true,
+  },
+  {
+    id: "mobile-app",
+    title: "Mobile Engineering",
+    description:
+      "Production-ready mobile products without disconnected backend thinking. We build mobile applications alongside the APIs, infrastructure and operational systems required to support them reliably.",
+    capabilities: [
+      "Cross-platform Apps",
+      "Backend Integrations",
+      "Authentication",
+      "Payments",
+      "Production Deployment",
+    ],
+    linkLabel: "Explore mobile engineering",
+    href: "/services/mobile-app-development",
+    background: "/services-bg/service-bg-3.png",
   },
   {
     id: "cloud-infrastructure",
@@ -85,37 +120,6 @@ export const HOME_SERVICES: readonly HomeService[] = [
     linkLabel: "Explore software engineering",
     href: "/services/custom-software-development",
     background: "/services-bg/service-bg-2.png",
-  },
-  {
-    id: "website-design",
-    title: "Web & Digital Experience",
-    description:
-      "High-performance digital experiences with engineering behind them. From corporate websites to product interfaces, we build fast, clear and technically robust digital experiences designed to perform in production.",
-    capabilities: [
-      "Websites",
-      "Product UI",
-      "Frontend Engineering",
-      "Performance",
-      "Technical SEO & AEO",
-    ],
-    linkLabel: "Explore digital experiences",
-    href: "/services/website-design-development",
-    background: "/services-bg/service-bg-1.png",
-  },
-  {
-    id: "mobile-app",
-    title: "Mobile Engineering",
-    description:
-      "Production-ready mobile products without disconnected backend thinking. We build mobile applications alongside the APIs, infrastructure and operational systems required to support them reliably.",
-    capabilities: [
-      "Cross-platform Apps",
-      "Backend Integrations",
-      "Authentication",
-      "Payments",
-      "Production Deployment",
-    ],
-    linkLabel: "Explore mobile engineering",
-    href: "/services/mobile-app-development",
-    background: "/services-bg/service-bg-3.png",
+    featured: true,
   },
 ] as const;
