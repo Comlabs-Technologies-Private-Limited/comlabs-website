@@ -63,7 +63,9 @@ export function getServiceSchema(input: {
     description: input.description,
     serviceType: input.serviceType,
     provider: {
+      "@type": "Organization",
       "@id": organizationId,
+      name: siteName,
     },
     areaServed: [
       {
@@ -106,6 +108,36 @@ export function getBreadcrumbSchema(
       name: item.name,
       item: canonicalUrl(item.url),
     })),
+  } as const;
+}
+
+export function getServiceCollectionSchema(input: {
+  url: string;
+  name: string;
+  description: string;
+  services: { name: string; url: string }[];
+}) {
+  const url = canonicalUrl(input.url);
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "@id": url,
+    url,
+    name: input.name,
+    description: input.description,
+    publisher: {
+      "@id": organizationId,
+    },
+    mainEntity: {
+      "@type": "ItemList",
+      itemListElement: input.services.map((service, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        name: service.name,
+        url: canonicalUrl(service.url),
+      })),
+    },
   } as const;
 }
 

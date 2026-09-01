@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import {
   appliedAiIllustration,
   ServiceIllustrationFrame,
@@ -7,6 +9,7 @@ import {
 import { editorialImages } from "@/lib/editorial-images";
 import { EDITORIAL_HERO_OVERLAY } from "@/lib/editorial-hero-styles";
 import { mediaUrl } from "@/lib/cloudinary";
+import { canonicalPath } from "@/lib/site";
 
 const APPLIED_AI_CAPABILITIES = [
   "AI Agents",
@@ -66,6 +69,13 @@ export function FigmaAppliedAiSection() {
               </li>
             ))}
           </ul>
+          <Link
+            href={canonicalPath("/services/ai-agent-development")}
+            className="mt-8 inline-flex items-center text-sm font-medium transition-opacity hover:opacity-80"
+            style={{ color: "var(--warm-orange)" }}
+          >
+            Explore AI Engineering →
+          </Link>
         </div>
 
         <ServiceIllustrationFrame

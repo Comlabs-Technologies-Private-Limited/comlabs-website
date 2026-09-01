@@ -7,6 +7,7 @@ import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import type { FocusEvent, ReactNode } from "react";
 
 import { ComlabsLogo } from "@/components/brand/comlabs-logo";
+import { SERVICE_NAV_ITEMS } from "@/lib/canonical-services";
 import { cn } from "@/lib/utils";
 import { canonicalPath, isBlogPublic } from "@/lib/site";
 
@@ -15,58 +16,20 @@ const SIMPLE_LINKS = [
   { label: "Careers", href: "/careers" },
 ] as const;
 
-const SERVICE_ITEMS = [
-  {
-    title: "Digital Marketing",
-    description: "Strategy, creative, search and performance.",
-    href: "/digital-marketing",
-  },
-  {
-    title: "Application Support",
-    description: "L1–L4 support that escalates to engineering.",
-    href: "/services/custom-software-development",
-  },
-  {
-    title: "AI Engineering",
-    description: "Agents, tools and context infrastructure.",
-    href: "/#applied-ai",
-  },
-  {
-    title: "Cloud & DevOps",
-    description: "AWS, pipelines and production reliability.",
-    href: "/services/cloud-infrastructure-scaling",
-  },
-  {
-    title: "Software Engineering",
-    description: "SaaS, platforms and internal systems.",
-    href: "/services/custom-software-development",
-  },
-  {
-    title: "Digital Experience",
-    description: "Websites, product UI and frontend engineering.",
-    href: "/services/website-design-development",
-  },
-  {
-    title: "Mobile Engineering",
-    description: "Production-ready apps with the systems behind them.",
-    href: "/services/mobile-app-development",
-  },
-] as const;
-
 const WORK_ITEMS = [
   {
     title: "Formial Labs",
-    description: "Custom Software Development",
+    description: "Custom Software Engineering",
     href: "/work/formial-labs",
   },
   {
     title: "Global Services",
-    description: "Website Design & Development",
+    description: "Web & Digital Experience",
     href: "/work/global-services",
   },
   {
     title: "Vithub",
-    description: "Website Design & Development",
+    description: "Web & Digital Experience",
     href: "/work/vithub",
   },
 ] as const;
@@ -207,7 +170,7 @@ export function FigmaNav({ showBlogLink = true, tone = "light" }: FigmaNavProps)
               onScheduleClose={scheduleClose}
             >
               <div className="grid grid-cols-2 gap-1">
-                {SERVICE_ITEMS.map((item) => (
+                {SERVICE_NAV_ITEMS.map((item) => (
                   <DropdownItem
                     key={item.title}
                     href={item.href}
@@ -352,7 +315,7 @@ export function FigmaNav({ showBlogLink = true, tone = "light" }: FigmaNavProps)
                 }
                 onNavigate={closeMobile}
               >
-                {SERVICE_ITEMS.map((item) => (
+                {SERVICE_NAV_ITEMS.map((item) => (
                   <Link
                     key={item.title}
                     href={canonicalPath(item.href)}

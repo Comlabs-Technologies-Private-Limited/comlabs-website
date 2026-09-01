@@ -16,8 +16,9 @@ const EASE = [0.25, 0.1, 0, 1] as const;
 type MarketingPageHeroProps = {
   eyebrow: string;
   title: ReactNode;
-  description: string;
+  description: ReactNode;
   children?: ReactNode;
+  action?: ReactNode;
   backgroundImage?: EditorialImage;
   /** Use a lighter wash when editorial photos are warm / high-key (service detail pages). */
   editorialOverlay?: "default" | "warm";
@@ -30,6 +31,7 @@ export function MarketingPageHero({
   title,
   description,
   children,
+  action,
   backgroundImage,
   editorialOverlay = "default",
   compactSpacing = false,
@@ -86,15 +88,26 @@ export function MarketingPageHero({
             {title}
           </motion.h1>
 
-          <motion.p
+          <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.18, ease: EASE }}
-            className={`max-w-2xl text-base leading-[1.7] md:text-lg ${compactSpacing ? "mt-4" : "mt-5 md:mt-6"}`}
+            className={`max-w-2xl space-y-4 text-base leading-[1.7] md:text-lg ${compactSpacing ? "mt-4" : "mt-5 md:mt-6"}`}
             style={{ color: editorialHeroText.description }}
           >
             {description}
-          </motion.p>
+          </motion.div>
+
+          {action ? (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.45, delay: 0.22, ease: EASE }}
+              className={compactSpacing ? "mt-5" : "mt-6"}
+            >
+              {action}
+            </motion.div>
+          ) : null}
 
           {proofItems && proofItems.length > 0 ? (
             <motion.div
@@ -177,14 +190,48 @@ export function MarketingPageHero({
           {title}
         </motion.h1>
 
-        <motion.p
+        <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.18, ease: EASE }}
-          className="mt-5 max-w-2xl text-base leading-[1.7] text-muted-foreground md:mt-6 md:text-lg"
+          className="mt-5 max-w-2xl space-y-4 text-base leading-[1.7] text-muted-foreground md:mt-6 md:text-lg"
         >
           {description}
-        </motion.p>
+        </motion.div>
+
+        {action ? (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, delay: 0.22, ease: EASE }}
+            className="mt-8"
+          >
+            {action}
+          </motion.div>
+        ) : null}
+
+        {proofItems && proofItems.length > 0 ? (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, delay: 0.24, ease: EASE }}
+            className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-0"
+          >
+            {proofItems.map((item, index) => (
+              <div key={item} className="flex items-center sm:contents">
+                {index > 0 ? (
+                  <span
+                    className="mx-4 hidden h-3 w-px shrink-0 bg-foreground/15 sm:inline-block"
+                    aria-hidden
+                  />
+                ) : null}
+                <span className="font-sans text-[11px] font-light uppercase tracking-[0.16em] text-muted-foreground">
+                  {item}
+                </span>
+              </div>
+            ))}
+          </motion.div>
+        ) : null}
       </div>
     </section>
   );
