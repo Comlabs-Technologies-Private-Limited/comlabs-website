@@ -1,158 +1,47 @@
 "use client";
 
-import { Database, Mail, Radio, Table2 } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Check, Database, Mail, Table2, WalletCards } from "lucide-react";
 
-import { Chip, Panel, StatusDot, WindowDots } from "./illustration-primitives";
+import { Chip, Panel } from "./illustration-primitives";
 import { IllustrationStage, useIllustrationState } from "./service-illustration-frame";
-import { illustrationColors } from "./illustration-tokens";
+import { illustrationColors, illustrationSwap } from "./illustration-tokens";
 import { useIllustrationSequence } from "./use-illustration-sequence";
 
-const STEPS = 6;
-
-const PIPELINE = [
-  "Request",
-  "Context",
-  "Agent",
-  "Tools",
-  "Approval",
-  "Action",
-] as const;
-
-const TOOLS = [
-  { label: "CRM", Icon: Table2 },
-  { label: "Database", Icon: Database },
-  { label: "Email", Icon: Mail },
-  { label: "API", Icon: Radio },
-] as const;
+const TASKS = ["Retrieve account history", "Check renewal conditions", "Prepare renewal action", "Send proposal"] as const;
+const TOOLS = [["CRM", Table2], ["Database", Database], ["Email", Mail], ["Billing", WalletCards]] as const;
 
 export function AgenticWorkflowIllustration() {
   const { active, reduce } = useIllustrationState();
-  const step = useIllustrationSequence({ steps: STEPS, active, reduce });
+  const step = useIllustrationSequence({ steps: 7, active, reduce, stepMs: 560 });
 
-  const toolsLive = step >= 3;
-  const approved = step >= 5;
-  const awaiting = step >= 4 && !approved;
+  return <IllustrationStage>
+    <Panel className="flex h-full flex-col overflow-hidden">
+      <div className="flex items-center justify-between border-b px-3 py-2.5 lg:px-4" style={{ borderColor: illustrationColors.border }}>
+        <span><span className="block text-[8px] font-medium lg:text-[10px]" style={{ color: illustrationColors.ink }}>Renewal operator</span><span className="mt-1 block text-[7px] lg:text-[8px]" style={{ color: illustrationColors.inkFaint }}>Acme Corp · supervised run</span></span>
+        <AnimatePresence mode="wait" initial={false}><motion.span key={step < 2 ? "thinking" : step < 5 ? "working" : "approval"} initial={reduce ? false : { opacity: 0, y: 2 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -2 }} transition={illustrationSwap}><Chip tone={step >= 5 ? "accent" : "quiet"} size="compact">{step < 2 ? "Thinking…" : step < 5 ? "Working" : "Approval"}</Chip></motion.span></AnimatePresence>
+      </div>
 
-  return (
-    <IllustrationStage>
-      <Panel className="flex h-full flex-col overflow-hidden" elevation="panel">
-        <div
-          className="flex shrink-0 items-center justify-between gap-3 px-3 py-2.5 lg:px-4 lg:py-3"
-          style={{ borderBottom: `1px solid ${illustrationColors.border}` }}
-        >
-          <span className="flex min-w-0 items-center gap-2">
-            <WindowDots />
-            <span
-              className="truncate text-[8px] leading-none font-medium tracking-tight lg:text-[10px]"
-              style={{ color: illustrationColors.ink }}
-            >
-              Agent run
-            </span>
-          </span>
-          <Chip tone="quiet" size="compact">
-            Guarded
-          </Chip>
-        </div>
+      <div className="flex gap-1.5 border-b px-3 py-2 lg:px-4" style={{ borderColor: illustrationColors.border }}>
+        {TOOLS.map(([label, Icon], index) => <span key={label} className="flex items-center gap-1 rounded-md border px-1.5 py-1 transition-colors duration-150" style={{ borderColor: index === Math.min(step, 3) ? illustrationColors.accentLine : illustrationColors.border, background: index === Math.min(step, 3) ? illustrationColors.accentSoft : illustrationColors.surface }}><Icon size={8} strokeWidth={1.5} style={{ color: illustrationColors.inkMuted }} /><span className="text-[6.5px] lg:text-[7.5px]" style={{ color: illustrationColors.inkMuted }}>{label}</span></span>)}
+      </div>
 
-        <div className="flex min-h-0 flex-1 flex-col px-3 py-3 lg:px-4 lg:py-4">
-          <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
-            {PIPELINE.map((label, index) => {
-              const reached = step >= index;
-              const current = step === index;
-              return (
-                <span key={label} className="flex items-center gap-1.5">
-                  <span
-                    className="text-[7px] leading-none lg:text-[8px]"
-                    style={{
-                      color: current
-                        ? illustrationColors.ink
-                        : reached
-                          ? illustrationColors.inkMuted
-                          : illustrationColors.inkFaint,
-                    }}
-                  >
-                    {label}
-                  </span>
-                  {index < PIPELINE.length - 1 ? (
-                    <span
-                      className="text-[7px] leading-none"
-                      style={{ color: illustrationColors.wire }}
-                    >
-                      /
-                    </span>
-                  ) : null}
-                </span>
-              );
-            })}
-          </div>
+      <div className="min-h-0 flex-1 px-2 py-1 lg:px-3">
+        {TASKS.map((task, index) => {
+          const done = step > index + 1;
+          const current = !done && step === index + 1;
+          return <div key={task} className="flex h-1/4 items-center gap-2 border-b last:border-0" style={{ borderColor: illustrationColors.border }}>
+            <span className="flex h-4 w-4 items-center justify-center rounded-full border" style={{ borderColor: done ? illustrationColors.border : current ? illustrationColors.accentLine : illustrationColors.border, background: done ? illustrationColors.surfaceSunk : "transparent" }}>{done ? <Check size={9} strokeWidth={1.7} style={{ color: illustrationColors.inkMuted }} /> : current ? <motion.span className="h-1.5 w-1.5 rounded-full" style={{ background: illustrationColors.accent }} animate={reduce ? undefined : { opacity: [0.35, 1, 0.35] }} transition={{ duration: 1.1, repeat: Infinity }} /> : null}</span>
+            <span className="flex-1 truncate text-[7.5px] lg:text-[8.5px]" style={{ color: current || done ? illustrationColors.ink : illustrationColors.inkMuted }}>{task}</span>
+            <span className="text-[6.5px] lg:text-[7.5px]" style={{ color: current ? illustrationColors.accent : illustrationColors.inkFaint }}>{done ? "Completed" : current ? "Running" : index === 3 ? "Approval" : "Pending"}</span>
+          </div>;
+        })}
+      </div>
 
-          <div className="mt-4 min-h-0 flex-1">
-            <p
-              className="text-[7px] leading-none lg:text-[8px]"
-              style={{ color: illustrationColors.inkFaint }}
-            >
-              Current task
-            </p>
-            <p
-              className="mt-2 text-[9px] leading-[1.45] lg:text-[11px]"
-              style={{ color: illustrationColors.ink }}
-            >
-              Pull Q3 renewal context and draft a reply for approval.
-            </p>
-          </div>
-
-          <div
-            className="flex items-center gap-4 py-3"
-            style={{ borderTop: `1px solid ${illustrationColors.border}` }}
-          >
-            {TOOLS.map((tool, index) => {
-              const live = toolsLive && (reduce || index <= step - 2);
-              const Icon = tool.Icon;
-              return (
-                <span key={tool.label} className="flex items-center gap-1.5">
-                  <Icon
-                    size={10}
-                    strokeWidth={1.5}
-                    style={{
-                      color: live ? illustrationColors.ink : illustrationColors.inkFaint,
-                    }}
-                  />
-                  <span
-                    className="text-[7px] leading-none lg:text-[8px]"
-                    style={{
-                      color: live ? illustrationColors.inkMuted : illustrationColors.inkFaint,
-                    }}
-                  >
-                    {tool.label}
-                  </span>
-                </span>
-              );
-            })}
-          </div>
-
-          <div
-            className="mt-auto flex items-center justify-between gap-3 pt-3"
-            style={{ borderTop: `1px solid ${illustrationColors.border}` }}
-          >
-            <span className="flex min-w-0 items-center gap-1.5">
-              <StatusDot tone={approved ? "health" : awaiting ? "accent" : "idle"} />
-              <span
-                className="truncate text-[8px] leading-none lg:text-[9px]"
-                style={{ color: illustrationColors.ink }}
-              >
-                {approved
-                  ? "Action queued"
-                  : awaiting
-                    ? "Waiting on approval"
-                    : "Gathering context"}
-              </span>
-            </span>
-            <Chip tone={approved ? "health" : awaiting ? "accent" : "quiet"} size="compact">
-              {approved ? "Approved" : awaiting ? "Review" : "Hold"}
-            </Chip>
-          </div>
-        </div>
-      </Panel>
-    </IllustrationStage>
-  );
+      <motion.div className="mx-3 mb-2 flex items-center justify-between gap-2 rounded-lg border px-2.5 py-2 lg:mx-4" style={{ borderColor: illustrationColors.borderStrong, boxShadow: "0 6px 18px -16px rgba(28,25,23,.3)" }} initial={false} animate={{ opacity: step >= 5 ? 1 : 0, y: step >= 5 ? 0 : 4 }} transition={{ duration: reduce ? 0 : 0.28 }}>
+        <span className="min-w-0"><span className="block truncate text-[7.5px] font-medium lg:text-[8.5px]" style={{ color: illustrationColors.ink }}>Apply renewal change?</span><span className="mt-0.5 block truncate text-[6.5px] lg:text-[7px]" style={{ color: illustrationColors.inkFaint }}>CRM record · proposal email</span></span>
+        <span className="flex gap-1"><button tabIndex={-1} className="rounded-md border px-2 py-1 text-[6.5px]" style={{ borderColor: illustrationColors.border, color: illustrationColors.inkMuted }}>Review</button><button tabIndex={-1} className="rounded-md px-2 py-1 text-[6.5px] text-white" style={{ background: illustrationColors.ink }}>Approve</button></span>
+      </motion.div>
+    </Panel>
+  </IllustrationStage>;
 }
