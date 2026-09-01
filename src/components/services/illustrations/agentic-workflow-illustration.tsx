@@ -130,10 +130,13 @@ const DESKTOP_EDGES: EdgeDef[] = [
   { id: "e-agent-price", from: "agentTools", to: "pricingIn", kind: "ai", dir: "v" },
 ];
 
-function edgesFor(compact: boolean, showPricing: boolean): EdgeDef[] {
+function edgesFor(compact: boolean, showModel: boolean, showPricing: boolean): EdgeDef[] {
   if (compact) return COMPACT_EDGES;
-  if (showPricing) return DESKTOP_EDGES;
-  return DESKTOP_EDGES.filter((edge) => edge.id !== "e-agent-price");
+  return DESKTOP_EDGES.filter((edge) => {
+    if (!showModel && edge.id === "e-agent-model") return false;
+    if (!showPricing && edge.id === "e-agent-price") return false;
+    return true;
+  });
 }
 
 const COMPACT_EDGES: EdgeDef[] = [
@@ -416,6 +419,7 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
   const portsRef = useRef<Partial<Record<PortId, HTMLSpanElement | null>>>({});
   const [size, setSize] = useState({ w: 1000, h: 560 });
   const [compact, setCompact] = useState(false);
+  const [showModel, setShowModel] = useState(true);
   const [showPricing, setShowPricing] = useState(true);
   const [points, setPoints] = useState<Partial<Record<PortId, Point>>>({});
   const [hovered, setHovered] = useState<NodeId | null>(null);
@@ -433,9 +437,11 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
     const rect = root.getBoundingClientRect();
     if (rect.width < 8 || rect.height < 8) return;
     const nextCompact = rect.width < COMPACT_AT;
-    const nextPricing = rect.width >= 500;
+    const nextModel = rect.width >= 460;
+    const nextPricing = rect.width >= 520;
     setSize((prev) => (prev.w === rect.width && prev.h === rect.height ? prev : { w: rect.width, h: rect.height }));
     setCompact((prev) => (prev === nextCompact ? prev : nextCompact));
+    setShowModel((prev) => (prev === nextModel ? prev : nextModel));
     setShowPricing((prev) => (prev === nextPricing ? prev : nextPricing));
     const next: Partial<Record<PortId, Point>> = {};
     for (const [id, el] of Object.entries(portsRef.current) as [PortId, HTMLSpanElement | null][]) {
@@ -475,9 +481,9 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
       ro.disconnect();
       cancelAnimationFrame(frame);
     };
-  }, [measure, compact, showPricing, step, hovered]);
+  }, [measure, compact, showModel, showPricing, step, hovered]);
 
-  const edges = edgesFor(compact, showPricing);
+  const edges = edgesFor(compact, showModel, showPricing);
 
   const nodeState = (id: NodeId): NodeState => {
     if (settled) {
@@ -866,10 +872,10 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
             gridRow: compact ? "3" : "2",
             gap: compact ? 6 : 8,
             paddingLeft: compact ? 0 : 8,
-            flexWrap: compact ? "nowrap" : "wrap",
+            flexWrap: "nowrap",
           }}
         >
-          {!compact ? (
+          {!compact && showModel ? (
             <ToolNode
               id="model"
               title="Model"
