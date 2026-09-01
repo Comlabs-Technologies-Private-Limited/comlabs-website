@@ -86,6 +86,7 @@ interface EdgeDef {
 
 const EASE = illustrationEase;
 const COMPACT_AT = 400;
+const TOOLS_WRAP_AT = 620;
 const PORT = 7;
 
 const ink = illustrationColors.ink;
@@ -116,15 +117,17 @@ const S = {
   pulsePrepare: 9,
   prepareReady: 10,
   approval: 11,
-  approved: 12,
-  pulseSend: 13,
-  sent: 14,
-  complete: 15,
+  cursorMove: 12,
+  cursorClick: 13,
+  approved: 14,
+  pulseSend: 15,
+  sent: 16,
+  complete: 17,
 } as const;
 
-const STEP_COUNT = 16;
+const STEP_COUNT = 18;
 const DELAYS = [
-  640, 720, 840, 520, 560, 560, 620, 780, 760, 840, 1100, 740, 760, 820, 520,
+  640, 720, 840, 520, 560, 560, 620, 780, 760, 840, 1100, 480, 920, 320, 740, 760, 820,
 ] as const;
 
 const DESKTOP_EDGES: EdgeDef[] = [
@@ -140,10 +143,16 @@ const DESKTOP_EDGES: EdgeDef[] = [
   { id: "e-agent-price", from: "agentTools", to: "pricingIn", kind: "ai", dir: "v" },
 ];
 
-function edgesFor(compact: boolean, showModel: boolean, showPricing: boolean): EdgeDef[] {
+function edgesFor(
+  compact: boolean,
+  showModel: boolean,
+  showContract: boolean,
+  showPricing: boolean,
+): EdgeDef[] {
   if (compact) return COMPACT_EDGES;
   return DESKTOP_EDGES.filter((edge) => {
     if (!showModel && edge.id === "e-agent-model") return false;
+    if (!showContract && edge.id === "e-agent-con") return false;
     if (!showPricing && edge.id === "e-agent-price") return false;
     return true;
   });
@@ -367,6 +376,49 @@ function EdgePulse({ d, run }: { d: string; run: boolean }) {
   );
 }
 
+function ApprovalCursor({
+  target,
+  phase,
+}: {
+  target: Point | null;
+  phase: "hidden" | "travel" | "press";
+}) {
+  if (!target || phase === "hidden") return null;
+
+  const start = { x: target.x + 54, y: target.y - 42 };
+  const end = { x: target.x + 5, y: target.y + 4 };
+
+  return (
+    <motion.div
+      className="pointer-events-none absolute z-30"
+      initial={{ left: start.x, top: start.y, opacity: 0, scale: 1 }}
+      animate={{
+        left: end.x,
+        top: end.y,
+        opacity: 1,
+        scale: phase === "press" ? 0.88 : 1,
+      }}
+      transition={{
+        left: { duration: 0.88, ease: EASE },
+        top: { duration: 0.88, ease: EASE },
+        opacity: { duration: 0.18, ease: EASE },
+        scale: { duration: 0.12, ease: EASE },
+      }}
+      aria-hidden
+    >
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+        <path
+          d="M2.5 1.75 2.5 11.2 5.35 8.35 8.15 13.25 10.1 12.15 7.3 7.25 11.35 7.25 2.5 1.75Z"
+          fill="#fff"
+          stroke={ink}
+          strokeWidth="1.1"
+          strokeLinejoin="round"
+        />
+      </svg>
+    </motion.div>
+  );
+}
+
 function ToolNode({
   id,
   title,
@@ -429,12 +481,17 @@ export function AgenticWorkflowIllustration() {
 
 function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
   const canvasRef = useRef<HTMLDivElement>(null);
+  const approveButtonRef = useRef<HTMLSpanElement>(null);
   const portsRef = useRef<Partial<Record<PortId, HTMLSpanElement | null>>>({});
   const [size, setSize] = useState({ w: 1000, h: 560 });
   const [compact, setCompact] = useState(false);
+  const [cozy, setCozy] = useState(true);
+  const [toolsWrap, setToolsWrap] = useState(false);
   const [showModel, setShowModel] = useState(true);
+  const [showContract, setShowContract] = useState(true);
   const [showPricing, setShowPricing] = useState(true);
   const [points, setPoints] = useState<Partial<Record<PortId, Point>>>({});
+  const [approveCursorTarget, setApproveCursorTarget] = useState<Point | null>(null);
   const [hovered, setHovered] = useState<NodeId | null>(null);
 
   const finished = step >= S.complete;
@@ -450,11 +507,17 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
     const rect = root.getBoundingClientRect();
     if (rect.width < 8 || rect.height < 8) return;
     const nextCompact = rect.width < COMPACT_AT;
-    const nextModel = rect.width >= 460;
-    const nextPricing = rect.width >= 520;
+    const nextCozy = rect.height >= 300;
+    const nextToolsWrap = rect.width < TOOLS_WRAP_AT;
+    const nextModel = rect.width >= 500;
+    const nextContract = rect.width >= 660;
+    const nextPricing = rect.width >= 740;
     setSize((prev) => (prev.w === rect.width && prev.h === rect.height ? prev : { w: rect.width, h: rect.height }));
     setCompact((prev) => (prev === nextCompact ? prev : nextCompact));
+    setCozy((prev) => (prev === nextCozy ? prev : nextCozy));
+    setToolsWrap((prev) => (prev === nextToolsWrap ? prev : nextToolsWrap));
     setShowModel((prev) => (prev === nextModel ? prev : nextModel));
+    setShowContract((prev) => (prev === nextContract ? prev : nextContract));
     setShowPricing((prev) => (prev === nextPricing ? prev : nextPricing));
     const next: Partial<Record<PortId, Point>> = {};
     for (const [id, el] of Object.entries(portsRef.current) as [PortId, HTMLSpanElement | null][]) {
@@ -481,6 +544,20 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
       }
       return next;
     });
+
+    const approveEl = approveButtonRef.current;
+    if (approveEl) {
+      const approveRect = approveEl.getBoundingClientRect();
+      const nextTarget = {
+        x: approveRect.left - rect.left + approveRect.width / 2,
+        y: approveRect.top - rect.top + approveRect.height / 2,
+      };
+      setApproveCursorTarget((prev) =>
+        prev && Math.abs(prev.x - nextTarget.x) < 0.4 && Math.abs(prev.y - nextTarget.y) < 0.4
+          ? prev
+          : nextTarget,
+      );
+    }
   }, []);
 
   useLayoutEffect(() => {
@@ -494,9 +571,9 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
       ro.disconnect();
       cancelAnimationFrame(frame);
     };
-  }, [measure, compact, showModel, showPricing, step, hovered]);
+  }, [measure, compact, cozy, showModel, showContract, showPricing, step, hovered]);
 
-  const edges = edgesFor(compact, showModel, showPricing);
+  const edges = edgesFor(compact, showModel, showContract, showPricing);
 
   const nodeState = (id: NodeId): NodeState => {
     if (settled) {
@@ -578,12 +655,19 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
 
   const statusLabel = settled
     ? "Action completed"
-    : step >= S.approval
+    : step >= S.approval && step < S.approved
       ? "Awaiting approval"
       : "Orchestrating";
   const stepsDone = settled ? 6 : Math.min(6, Math.max(0, Math.round((step / S.complete) * 6)));
 
-  const approvalExpanded = !reduce && step === S.approval && !finished;
+  const showApprovalActions = !settled && step >= S.approval && step < S.approved;
+  const approvePressed = !settled && step >= S.cursorClick && step < S.approved;
+  const cursorPhase: "hidden" | "travel" | "press" =
+    settled || step < S.cursorMove || step >= S.approved
+      ? "hidden"
+      : step === S.cursorClick
+        ? "press"
+        : "travel";
 
   return (
     <div
@@ -645,16 +729,23 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
         })}
       </svg>
 
+      <ApprovalCursor target={approveCursorTarget} phase={cursorPhase} />
+
       <div
         className="relative z-[2] grid h-full w-full"
         style={{
-          padding: compact ? "36px 20px 28px" : "44px 24px 40px",
+          padding: compact
+            ? "36px 20px 28px"
+            : cozy
+              ? "46px 28px 44px"
+              : "40px 22px 36px",
           gridTemplateColumns: compact
             ? "1fr"
-            : "minmax(0, 0.95fr) minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1.15fr)",
+            : "minmax(0, 0.9fr) minmax(0, 1.15fr) minmax(0, 0.95fr) minmax(0, 1fr)",
           gridTemplateRows: compact ? "auto auto auto auto" : "auto auto auto",
-          columnGap: compact ? 0 : 10,
-          rowGap: compact ? 16 : 16,
+          columnGap: compact ? 0 : cozy ? 20 : 14,
+          rowGap: compact ? 18 : cozy ? 28 : 22,
+          alignItems: "start",
           alignContent: compact ? "start" : "center",
         }}
       >
@@ -663,7 +754,7 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
             gridColumn: "1",
             gridRow: "1",
             display: "flex",
-            justifyContent: compact ? "center" : "flex-start",
+            justifyContent: "center",
             width: compact ? "min(220px, 72%)" : undefined,
             justifySelf: compact ? "center" : undefined,
           }}
@@ -799,83 +890,93 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
           style={{
             gridColumn: compact ? "1" : "4",
             gridRow: compact ? "3" : "1",
+            position: "relative",
             display: "flex",
-            justifyContent: compact ? "center" : "flex-end",
+            justifyContent: "center",
             width: compact ? "min(220px, 72%)" : undefined,
             justifySelf: compact ? "center" : undefined,
           }}
         >
-          <motion.div
-            animate={{ margin: approvalExpanded ? 4 : 0 }}
-            transition={{ duration: 0.42, ease: EASE }}
+          <WorkflowNode
+            state={nodeState("approval")}
+            selected={nodeState("approval") === "active"}
+            hovered={hovered === "approval"}
+            onHover={(v) => setHovered(v ? "approval" : null)}
+            wide={compact}
           >
-            <WorkflowNode
-              state={nodeState("approval")}
-              selected={nodeState("approval") === "active"}
-              hovered={hovered === "approval"}
-              onHover={(v) => setHovered(v ? "approval" : null)}
-              wide={compact}
-            >
-              <Port
-                id="approvalIn"
-                register={register}
-                side={compact ? "top" : "left"}
-                lit={nodeState("approval") === "active"}
-              />
-              <Port
-                id="approvalOut"
-                register={register}
-                side={compact ? "bottom" : "bottom"}
-                lit={nodeState("approval") === "active"}
-              />
-              <div className="flex items-center gap-2">
-                <NodeIcon>
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
-                    <circle cx="6" cy="6" r="4.2" stroke="currentColor" strokeWidth="1.2" />
-                    <path
-                      d="M4.1 6.15 5.4 7.5 8 4.7"
-                      stroke="currentColor"
-                      strokeWidth="1.2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </NodeIcon>
-                <div className="min-w-0">
-                  <Title>Human approval</Title>
-                  <Meta
-                    tone={
-                      nodeState("approval") === "done" ? "ok" : nodeState("approval") === "active" ? "accent" : "muted"
-                    }
-                  >
-                    {nodeState("approval") === "done" || settled
-                      ? "Approved ✓"
-                      : "Renew at existing pricing?"}
-                  </Meta>
-                </div>
+            <Port
+              id="approvalIn"
+              register={register}
+              side={compact ? "top" : "left"}
+              lit={nodeState("approval") === "active"}
+            />
+            <Port
+              id="approvalOut"
+              register={register}
+              side={compact ? "bottom" : "bottom"}
+              lit={nodeState("approval") === "active"}
+            />
+            <div className="flex items-center gap-2">
+              <NodeIcon>
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
+                  <circle cx="6" cy="6" r="4.2" stroke="currentColor" strokeWidth="1.2" />
+                  <path
+                    d="M4.1 6.15 5.4 7.5 8 4.7"
+                    stroke="currentColor"
+                    strokeWidth="1.2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </NodeIcon>
+              <div className="min-w-0">
+                <Title>Human approval</Title>
+                <Meta
+                  tone={
+                    nodeState("approval") === "done" ? "ok" : nodeState("approval") === "active" ? "accent" : "muted"
+                  }
+                >
+                  {nodeState("approval") === "done" || settled
+                    ? "Approved ✓"
+                    : "Renew at existing pricing?"}
+                </Meta>
               </div>
-              {nodeState("approval") === "active" && !settled ? (
-                <div className="mt-1.5 flex gap-1">
-                  <span
-                    className="rounded px-1.5 py-0.5 tracking-tight"
-                    style={{ fontSize: 10, color: inkMuted, border: `1px solid ${border}` }}
-                  >
-                    Review
-                  </span>
-                  <span
-                    className="rounded px-1.5 py-0.5 font-medium tracking-tight"
-                    style={{
-                      fontSize: 10,
-                      color: "#fff",
-                      background: accent,
-                    }}
-                  >
-                    Approve
-                  </span>
-                </div>
-              ) : null}
-            </WorkflowNode>
-          </motion.div>
+            </div>
+          </WorkflowNode>
+          <div
+            className="absolute top-full left-1/2 z-20 mt-1 flex -translate-x-1/2 gap-1 whitespace-nowrap"
+            aria-hidden={!showApprovalActions}
+            style={{
+              opacity: showApprovalActions ? 1 : 0,
+              pointerEvents: showApprovalActions ? "auto" : "none",
+            }}
+          >
+            <span
+              className="rounded px-1.5 py-0.5 tracking-tight"
+              style={{
+                fontSize: 10,
+                color: inkMuted,
+                border: `1px solid ${border}`,
+                background: surface,
+              }}
+            >
+              Review
+            </span>
+            <motion.span
+              ref={approveButtonRef}
+              className="rounded px-1.5 py-0.5 font-medium tracking-tight"
+              animate={{ scale: approvePressed ? 0.94 : 1 }}
+              transition={{ duration: 0.12, ease: EASE }}
+              style={{
+                fontSize: 10,
+                color: "#fff",
+                background: approvePressed ? "#B85638" : accent,
+                boxShadow: approvePressed ? "inset 0 1px 2px rgba(0,0,0,0.12)" : "none",
+              }}
+            >
+              Approve
+            </motion.span>
+          </div>
         </div>
 
         {compact ? (
@@ -932,11 +1033,13 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
         <div
           className="flex items-start justify-center"
           style={{
-            gridColumn: "1 / 4",
+            gridColumn: "2",
             gridRow: "2",
-            gap: 8,
-            paddingLeft: 8,
-            flexWrap: "nowrap",
+            gap: toolsWrap ? 8 : 10,
+            paddingTop: 4,
+            flexWrap: toolsWrap ? "wrap" : "nowrap",
+            maxWidth: "100%",
+            justifySelf: "center",
           }}
         >
           {showModel ? (
@@ -977,18 +1080,20 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
             setHovered={setHovered}
             register={register}
           />
-          <ToolNode
-            id="contract"
-            title="Drive"
-            idleMeta="MSA"
-            hoverMeta="MSA-118"
-            icon={<DriveMark />}
-            portId="contractIn"
-            state={nodeState("contract")}
-            hovered={hovered}
-            setHovered={setHovered}
-            register={register}
-          />
+          {showContract ? (
+            <ToolNode
+              id="contract"
+              title="Drive"
+              idleMeta="MSA"
+              hoverMeta="MSA-118"
+              icon={<DriveMark />}
+              portId="contractIn"
+              state={nodeState("contract")}
+              hovered={hovered}
+              setHovered={setHovered}
+              register={register}
+            />
+          ) : null}
           {showPricing ? (
             <ToolNode
               id="pricing"
@@ -1007,55 +1112,73 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
         )}
 
         {!compact ? (
-          <div
-            className="flex flex-col items-stretch justify-end gap-3"
-            style={{ gridColumn: "4", gridRow: "2 / 4" }}
-          >
-            <WorkflowNode
-              state={nodeState("send")}
-              hovered={hovered === "send"}
-              onHover={(v) => setHovered(v ? "send" : null)}
-              wide
+          <>
+            <div
+              style={{
+                gridColumn: "4",
+                gridRow: "2",
+                display: "flex",
+                justifyContent: "center",
+                alignSelf: "start",
+                paddingTop: 4,
+              }}
             >
-              <Port id="sendIn" register={register} side="top" lit={nodeState("send") === "active"} />
-              <Port id="sendOut" register={register} side="bottom" lit={nodeState("send") === "active"} />
-              <div className="flex items-center gap-2 pr-1">
-                <NodeIcon brand>
-                  <SlackMark className="h-3.5 w-3.5" />
-                </NodeIcon>
-                <div className="min-w-0">
-                  <Title>Slack</Title>
-                  <Meta tone={nodeState("send") === "active" ? "accent" : nodeState("send") === "done" ? "ok" : "muted"}>
-                    {hovered === "send" ? "#acme-renewal" : sendMeta}
-                  </Meta>
+              <WorkflowNode
+                state={nodeState("send")}
+                hovered={hovered === "send"}
+                onHover={(v) => setHovered(v ? "send" : null)}
+                wide
+              >
+                <Port id="sendIn" register={register} side="top" lit={nodeState("send") === "active"} />
+                <Port id="sendOut" register={register} side="bottom" lit={nodeState("send") === "active"} />
+                <div className="flex items-center gap-2 pr-1">
+                  <NodeIcon brand>
+                    <SlackMark className="h-3.5 w-3.5" />
+                  </NodeIcon>
+                  <div className="min-w-0">
+                    <Title>Slack</Title>
+                    <Meta tone={nodeState("send") === "active" ? "accent" : nodeState("send") === "done" ? "ok" : "muted"}>
+                      {hovered === "send" ? "#acme-renewal" : sendMeta}
+                    </Meta>
+                  </div>
                 </div>
-              </div>
-            </WorkflowNode>
-            <WorkflowNode
-              state={nodeState("done")}
-              hovered={hovered === "done"}
-              onHover={(v) => setHovered(v ? "done" : null)}
-              wide
+              </WorkflowNode>
+            </div>
+            <div
+              style={{
+                gridColumn: "4",
+                gridRow: "3",
+                display: "flex",
+                justifyContent: "center",
+                alignSelf: "start",
+              }}
             >
-              <Port id="doneIn" register={register} side="top" lit={false} />
-              <div className="flex items-center gap-2">
-                <span
-                  className="flex size-6 items-center justify-center rounded-[6px]"
-                  style={{
-                    background: nodeState("done") === "done" || settled ? healthSoft : surfaceSunk,
-                    color: nodeState("done") === "done" || settled ? health : ink,
-                    border: `1px solid ${border}`,
-                  }}
-                >
-                  <StrokeIcon d="M2.6 6.2 5 8.6 9.5 3.6" />
-                </span>
-                <div>
-                  <Title>Completed</Title>
-                  <Meta tone="ok">{settled ? "Done" : "Pending"}</Meta>
+              <WorkflowNode
+                state={nodeState("done")}
+                hovered={hovered === "done"}
+                onHover={(v) => setHovered(v ? "done" : null)}
+                wide
+              >
+                <Port id="doneIn" register={register} side="top" lit={false} />
+                <div className="flex items-center gap-2">
+                  <span
+                    className="flex size-6 items-center justify-center rounded-[6px]"
+                    style={{
+                      background: nodeState("done") === "done" || settled ? healthSoft : surfaceSunk,
+                      color: nodeState("done") === "done" || settled ? health : ink,
+                      border: `1px solid ${border}`,
+                    }}
+                  >
+                    <StrokeIcon d="M2.6 6.2 5 8.6 9.5 3.6" />
+                  </span>
+                  <div>
+                    <Title>Completed</Title>
+                    <Meta tone="ok">{settled ? "Done" : "Pending"}</Meta>
+                  </div>
                 </div>
-              </div>
-            </WorkflowNode>
-          </div>
+              </WorkflowNode>
+            </div>
+          </>
         ) : (
           <div
             style={{
