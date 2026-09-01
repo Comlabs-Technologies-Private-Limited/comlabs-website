@@ -10,10 +10,19 @@ import {
 } from "@/components/services/illustrations";
 import { HOME_SERVICES, type HomeService } from "@/lib/home-services";
 import { canonicalPath } from "@/lib/site";
+import { cn } from "@/lib/utils";
 
 const ease = [0.25, 0.1, 0, 1] as const;
 
-function ServiceCardVisual({ service, index }: { service: HomeService; index: number }) {
+function ServiceCardVisual({
+  service,
+  index,
+  featured = false,
+}: {
+  service: HomeService;
+  index: number;
+  featured?: boolean;
+}) {
   const illustration = serviceIllustrations[service.id];
   if (!illustration) return null;
 
@@ -23,8 +32,11 @@ function ServiceCardVisual({ service, index }: { service: HomeService; index: nu
       label={label}
       background={service.background}
       priority={index < 2}
-      className="w-full shrink-0 rounded-none border-0 md:rounded-none"
-      style={{ aspectRatio: "5 / 4" }}
+      className={cn(
+        "w-full shrink-0 rounded-none border-0 md:rounded-none",
+        featured && "md:h-full md:min-h-[360px] md:flex-1 md:aspect-auto",
+      )}
+      style={featured ? undefined : { aspectRatio: "5 / 4" }}
       stageClassName="p-2 lg:p-3"
     >
       <Component />
@@ -40,6 +52,7 @@ export function HomeServiceCard({
   index: number;
 }) {
   const reduceMotion = useReducedMotion();
+  const featured = Boolean(service.featured);
 
   return (
     <motion.article
@@ -51,9 +64,14 @@ export function HomeServiceCard({
         delay: reduceMotion ? 0 : (index % 2) * 0.06,
         ease,
       }}
-      className="flex h-full min-w-0 flex-col overflow-hidden rounded-3xl border border-border bg-background transition-[border-color,box-shadow] duration-300 hover:border-foreground/20 hover:shadow-[0_8px_32px_rgba(28,25,23,0.06)]"
+      className={cn(
+        "flex h-full min-w-0 flex-col overflow-hidden rounded-3xl border border-border bg-background transition-[border-color,box-shadow] duration-300 hover:border-foreground/20 hover:shadow-[0_8px_32px_rgba(28,25,23,0.06)]",
+        featured && "md:col-span-2 md:flex-row",
+      )}
     >
-      <ServiceCardVisual service={service} index={index} />
+      <div className={cn("min-w-0", featured && "md:flex md:h-full md:w-[55%] md:shrink-0 md:flex-col")}>
+        <ServiceCardVisual service={service} index={index} featured={featured} />
+      </div>
       <div className="flex flex-1 flex-col p-6 md:p-8">
         <h3
           className="text-lg leading-[1.2] font-bold tracking-tight md:text-xl"
