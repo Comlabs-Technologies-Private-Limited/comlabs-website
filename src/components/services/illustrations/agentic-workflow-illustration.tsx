@@ -477,24 +477,6 @@ function ToolNode({
   );
 }
 
-const AGENTIC_MOBILE_STILL = "/illustrations/agentic-infra-mobile.png";
-
-function AgenticMobileStill() {
-  return (
-    <div className="absolute inset-0 overflow-hidden md:hidden">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={AGENTIC_MOBILE_STILL}
-        alt=""
-        width={640}
-        height={306}
-        draggable={false}
-        className="absolute top-0 left-0 h-full w-auto max-w-none"
-      />
-    </div>
-  );
-}
-
 export function AgenticWorkflowIllustration() {
   const { active, reduce, hovered: frameHovered } = useIllustrationState();
 
@@ -508,10 +490,7 @@ export function AgenticWorkflowIllustration() {
 
   return (
     <IllustrationStage className="p-0 lg:p-0">
-      <AgenticMobileStill />
-      <div className="hidden h-full md:block">
-        <WorkflowCanvas step={step} reduce={reduce} />
-      </div>
+      <WorkflowCanvas step={step} reduce={reduce} />
     </IllustrationStage>
   );
 }
@@ -709,7 +688,7 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
   return (
     <div
       ref={canvasRef}
-      className="relative h-full min-h-0 w-full overflow-hidden"
+      className="relative h-full min-h-0 w-full overflow-hidden max-md:w-[720px] max-md:min-w-[720px]"
       style={{
         backgroundColor: surfaceMuted,
         backgroundImage: `radial-gradient(circle, rgba(28, 25, 23, 0.20) 0.7px, transparent 0.8px)`,
