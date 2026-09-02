@@ -27,6 +27,7 @@ function ServiceCardVisual({
   if (!illustration) return null;
 
   const { Component, label } = illustration;
+  const agentic = service.id === "agentic-infrastructure";
   return (
     <ServiceIllustrationFrame
       label={label}
@@ -35,6 +36,7 @@ function ServiceCardVisual({
       className={cn(
         "w-full shrink-0 rounded-none border-0 md:rounded-none",
         featured && "md:h-full md:min-h-[360px] md:flex-1 md:aspect-auto",
+        agentic && "max-md:aspect-auto max-md:h-full max-md:min-h-[280px]",
       )}
       style={featured ? undefined : { aspectRatio: "5 / 4" }}
       stageClassName="p-2 lg:p-3"
@@ -53,6 +55,7 @@ export function HomeServiceCard({
 }) {
   const reduceMotion = useReducedMotion();
   const featured = Boolean(service.featured);
+  const agentic = service.id === "agentic-infrastructure";
 
   return (
     <motion.article
@@ -67,12 +70,25 @@ export function HomeServiceCard({
       className={cn(
         "flex h-full min-w-0 flex-col overflow-hidden rounded-3xl border border-border bg-background transition-[border-color,box-shadow] duration-300 hover:border-foreground/20 hover:shadow-[0_8px_32px_rgba(28,25,23,0.06)]",
         featured && "md:col-span-2 md:flex-row",
+        agentic && "max-md:flex-row",
       )}
     >
-      <div className={cn("min-w-0", featured && "md:flex md:h-full md:w-[55%] md:shrink-0 md:flex-col")}>
+      <div
+        className={cn(
+          "min-w-0",
+          featured && "md:flex md:h-full md:w-[55%] md:shrink-0 md:flex-col",
+          agentic &&
+            "max-md:flex max-md:w-[46%] max-md:min-w-[148px] max-md:shrink-0 max-md:flex-col max-md:self-stretch",
+        )}
+      >
         <ServiceCardVisual service={service} index={index} featured={featured} />
       </div>
-      <div className="flex flex-1 flex-col p-6 md:p-8">
+      <div
+        className={cn(
+          "flex min-w-0 flex-1 flex-col p-6 md:p-8",
+          agentic && "max-md:p-4",
+        )}
+      >
         <h3
           className="text-lg leading-[1.2] font-bold tracking-tight md:text-xl"
           style={{ letterSpacing: "-0.03em" }}
