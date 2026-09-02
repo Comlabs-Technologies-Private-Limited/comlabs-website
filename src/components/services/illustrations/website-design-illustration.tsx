@@ -184,25 +184,8 @@ function UserFrame() {
       <div className="mt-3 flex flex-col gap-2">
         <Bar width="78%" height={4} />
         <div className="flex items-center gap-1">
-          <Bar width="28%" height={4} />
-          <span
-            className="inline-flex items-center gap-1 rounded-full px-1.5 py-0.5"
-            style={{
-              background: surfaceSunk,
-              border: `1px solid ${border}`,
-            }}
-          >
-            <span
-              className="block size-2.5 rounded-full"
-              style={{ background: "rgba(28,25,23,0.28)" }}
-            />
-            <span
-              className="text-[7px] leading-none font-medium tracking-tight lg:text-[8px]"
-              style={{ color: ink }}
-            >
-              Manu
-            </span>
-          </span>
+          <Bar width="36%" height={4} />
+
         </div>
       </div>
       <div className="mt-auto flex justify-center pt-2">

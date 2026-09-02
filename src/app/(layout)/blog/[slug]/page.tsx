@@ -18,6 +18,7 @@ import { canonicalPath, canonicalUrl, isBlogEnabled, siteUrl } from "@/lib/site"
 import type { Post as PostType } from "@/types/post";
 
 export const revalidate = 60;
+export const dynamicParams = true;
 
 async function getPost(slug: string): Promise<PostType | null> {
   try {

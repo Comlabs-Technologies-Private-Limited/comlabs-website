@@ -8,6 +8,8 @@ type RevalidateContentInput = {
 /** Bust cached sitemap and public content routes after admin CRUD. */
 export function revalidateContentPaths({ type, slug }: RevalidateContentInput): void {
   revalidatePath("/sitemap.xml");
+  revalidatePath("/work/[slug]", "page");
+  revalidatePath("/blog/[slug]", "page");
 
   if (type === "post") {
     revalidatePath("/blog");
