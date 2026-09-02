@@ -33,8 +33,8 @@ const PAGES = [
 ] as const;
 
 const CURSOR_HOPS = {
-  left: ["16%", "48%", "82%", "22%", "16%"],
-  top: ["74%", "40%", "70%", "20%", "74%"],
+  left: ["18%", "50%", "84%", "18%"],
+  top: ["78%", "38%", "72%", "78%"],
 } as const;
 
 function AppMark() {
@@ -153,7 +153,7 @@ function FillButton() {
 
 function PhoneFrame() {
   return (
-    <FrameCard className="absolute top-[10%] left-[4%] flex h-[80%] w-[24%] min-w-[72px] flex-col">
+    <FrameCard className="row-span-2 flex min-h-0 flex-col">
       <FrameHeader />
       <div
         className="mt-2 min-h-0 flex-1 rounded-[10px]"
@@ -179,12 +179,12 @@ function PhoneFrame() {
 
 function UserFrame() {
   return (
-    <FrameCard className="absolute top-[16%] left-[32%] flex h-[42%] w-[30%] min-w-[92px] flex-col">
+    <FrameCard className="row-span-2 flex h-[58%] min-h-[92px] flex-col self-center">
       <FrameHeader />
       <div className="mt-3 flex flex-col gap-2">
         <Bar width="78%" height={4} />
         <div className="flex items-center gap-1">
-          <Bar width="36%" height={4} />
+          <Bar width="28%" height={4} />
           <span
             className="inline-flex items-center gap-1 rounded-full px-1.5 py-0.5"
             style={{
@@ -218,7 +218,7 @@ function UserFrame() {
 
 function BoardFrame() {
   return (
-    <FrameCard className="absolute top-[26%] right-[4%] flex h-[52%] w-[34%] min-w-[108px] flex-col">
+    <FrameCard className="row-span-2 flex h-[82%] min-h-0 flex-col self-end">
       <FrameHeader trailing={false} />
       <div className="mt-2 flex min-h-0 flex-1 gap-2">
         <div
@@ -262,7 +262,7 @@ function DesignCursor({ reduce, active }: { reduce: boolean; active: boolean }) 
               duration: 16,
               ease: EASE,
               repeat: Infinity,
-              times: [0, 0.22, 0.48, 0.74, 1],
+              times: [0, 0.32, 0.64, 1],
             }
       }
       aria-hidden
@@ -385,9 +385,16 @@ export function WebsiteDesignIllustration() {
             backgroundSize: "16px 16px",
           }}
         >
-          <PhoneFrame />
-          <UserFrame />
-          <BoardFrame />
+          <div
+            className="grid h-full min-h-0 grid-rows-2 gap-3 p-3 lg:gap-4 lg:p-4"
+            style={{
+              gridTemplateColumns: "minmax(0, 2fr) minmax(80px, 1fr) minmax(0, 2fr)",
+            }}
+          >
+            <PhoneFrame />
+            <UserFrame />
+            <BoardFrame />
+          </div>
           <DesignCursor reduce={reduce} active={active} />
         </div>
       </div>
