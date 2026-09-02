@@ -31,7 +31,7 @@ export const serviceIllustrations: Record<string, ServiceIllustration> = {
   "website-design": {
     Component: WebsiteDesignIllustration,
     label:
-      "Website design illustration: stacked live previews of Radiant, Formial Labs and Global Services, Comlabs-built digital experiences.",
+      "Website design illustration: a Figma-like design tool with Agency v2.2 pages on a canvas of mobile, user, and board frames, and a cursor moving slowly between them.",
     },
   "custom-software": {
     Component: CustomSoftwareIllustration,
