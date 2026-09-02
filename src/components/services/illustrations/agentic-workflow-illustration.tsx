@@ -268,6 +268,8 @@ function WorkflowNode({
   hovered = false,
   onHover,
   wide = false,
+  iconOnly = false,
+  tall = false,
 }: {
   children: ReactNode;
   state: NodeState;
@@ -275,6 +277,8 @@ function WorkflowNode({
   hovered?: boolean;
   onHover?: (value: boolean) => void;
   wide?: boolean;
+  iconOnly?: boolean;
+  tall?: boolean;
 }) {
   const active = state === "active";
   const complete = state === "done" || state === "ready";
@@ -291,7 +295,7 @@ function WorkflowNode({
       style={{
         width: wide ? "100%" : "max-content",
         maxWidth: wide ? "100%" : undefined,
-        borderRadius: 10,
+        borderRadius: iconOnly ? 8 : 10,
         background: hovered ? surfaceMuted : surface,
         border: `1px solid ${
           selected || active ? borderStrong : hovered ? borderStrong : complete ? borderStrong : border
@@ -300,7 +304,8 @@ function WorkflowNode({
           selected || active
             ? `0 0 0 1px ${accentLine}, ${illustrationShadow.panel}`
             : illustrationShadow.panel,
-        padding: "7px 10px 7px 8px",
+        padding: iconOnly ? (tall ? "14px 8px" : 6) : "7px 10px 7px 8px",
+        color: ink,
         pointerEvents: "auto",
         cursor: "default",
       }}
@@ -431,6 +436,7 @@ function ToolNode({
   setHovered,
   register,
   portSide = "top",
+  iconOnly = false,
 }: {
   id: NodeId;
   title: string;
@@ -443,21 +449,49 @@ function ToolNode({
   setHovered: (id: NodeId | null) => void;
   register: (id: PortId, el: HTMLSpanElement | null) => void;
   portSide?: PortSide;
+  iconOnly?: boolean;
 }) {
   const isHovered = hovered === id;
   return (
-    <WorkflowNode state={state} hovered={isHovered} onHover={(v) => setHovered(v ? id : null)}>
+    <WorkflowNode
+      state={state}
+      hovered={isHovered}
+      onHover={(v) => setHovered(v ? id : null)}
+      iconOnly={iconOnly}
+    >
       <Port id={portId} register={register} side={portSide} lit={state === "active"} />
-      <div className="flex items-center gap-1.5 pr-0.5">
-        <NodeIcon brand>{icon}</NodeIcon>
-        <div>
-          <Title>{title}</Title>
-          <Meta tone={state === "done" ? "ok" : state === "active" ? "accent" : "muted"}>
-            {isHovered ? hoverMeta : state === "done" ? "Ready" : idleMeta}
-          </Meta>
+      {iconOnly ? (
+        icon
+      ) : (
+        <div className="flex items-center gap-1.5 pr-0.5">
+          <NodeIcon brand>{icon}</NodeIcon>
+          <div>
+            <Title>{title}</Title>
+            <Meta tone={state === "done" ? "ok" : state === "active" ? "accent" : "muted"}>
+              {isHovered ? hoverMeta : state === "done" ? "Ready" : idleMeta}
+            </Meta>
+          </div>
         </div>
-      </div>
+      )}
     </WorkflowNode>
+  );
+}
+
+const AGENTIC_MOBILE_STILL = "/illustrations/agentic-infra-mobile.png";
+
+function AgenticMobileStill() {
+  return (
+    <div className="absolute inset-0 overflow-hidden md:hidden">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={AGENTIC_MOBILE_STILL}
+        alt=""
+        width={640}
+        height={306}
+        draggable={false}
+        className="absolute top-0 left-0 h-full w-auto max-w-none"
+      />
+    </div>
   );
 }
 
@@ -474,7 +508,10 @@ export function AgenticWorkflowIllustration() {
 
   return (
     <IllustrationStage className="p-0 lg:p-0">
-      <WorkflowCanvas step={step} reduce={reduce} />
+      <AgenticMobileStill />
+      <div className="hidden h-full md:block">
+        <WorkflowCanvas step={step} reduce={reduce} />
+      </div>
     </IllustrationStage>
   );
 }
@@ -660,10 +697,10 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
       : "Orchestrating";
   const stepsDone = settled ? 6 : Math.min(6, Math.max(0, Math.round((step / S.complete) * 6)));
 
-  const showApprovalActions = !settled && step >= S.approval && step < S.approved;
+  const showApprovalActions = !compact && !settled && step >= S.approval && step < S.approved;
   const approvePressed = !settled && step >= S.cursorClick && step < S.approved;
   const cursorPhase: "hidden" | "travel" | "press" =
-    settled || step < S.cursorMove || step >= S.approved
+    compact || settled || step < S.cursorMove || step >= S.approved
       ? "hidden"
       : step === S.cursorClick
         ? "press"
@@ -735,18 +772,19 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
         className="relative z-[2] grid h-full w-full"
         style={{
           padding: compact
-            ? "36px 20px 28px"
+            ? "36px 8px 28px 16px"
             : cozy
               ? "46px 28px 44px"
               : "40px 22px 36px",
           gridTemplateColumns: compact
-            ? "1fr"
+            ? "auto auto minmax(0, 1fr)"
             : "minmax(0, 0.9fr) minmax(0, 1.15fr) minmax(0, 0.95fr) minmax(0, 1fr)",
           gridTemplateRows: compact ? "auto auto auto auto" : "auto auto auto",
-          columnGap: compact ? 0 : cozy ? 20 : 14,
+          columnGap: compact ? 12 : cozy ? 20 : 14,
           rowGap: compact ? 18 : cozy ? 28 : 22,
           alignItems: "start",
           alignContent: compact ? "start" : "center",
+          justifyItems: compact ? "start" : undefined,
         }}
       >
         <div
@@ -754,16 +792,15 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
             gridColumn: "1",
             gridRow: "1",
             display: "flex",
-            justifyContent: "center",
-            width: compact ? "min(220px, 72%)" : undefined,
-            justifySelf: compact ? "center" : undefined,
+            justifyContent: compact ? "flex-start" : "center",
+            justifySelf: compact ? "start" : undefined,
           }}
         >
           <WorkflowNode
             state={nodeState("request")}
             hovered={hovered === "request"}
             onHover={(v) => setHovered(v ? "request" : null)}
-            wide={compact}
+            iconOnly={compact}
           >
             <Port
               id="requestOut"
@@ -771,15 +808,19 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
               side={compact ? "bottom" : "right"}
               lit={nodeState("request") === "active"}
             />
-            <div className="flex items-center gap-2 pr-1">
-              <NodeIcon brand>
-                <GmailMark />
-              </NodeIcon>
-              <div className="min-w-0">
-                <Title>Gmail</Title>
-                <Meta>{hovered === "request" ? "Q3 renewal" : "Acme Corp"}</Meta>
+            {compact ? (
+              <GmailMark />
+            ) : (
+              <div className="flex items-center gap-2 pr-1">
+                <NodeIcon brand>
+                  <GmailMark />
+                </NodeIcon>
+                <div className="min-w-0">
+                  <Title>Gmail</Title>
+                  <Meta>{hovered === "request" ? "Q3 renewal" : "Acme Corp"}</Meta>
+                </div>
               </div>
-            </div>
+            )}
           </WorkflowNode>
         </div>
 
@@ -788,9 +829,8 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
             gridColumn: compact ? "1" : "2",
             gridRow: compact ? "2" : "1",
             display: "flex",
-            justifyContent: "center",
-            width: compact ? "min(220px, 72%)" : undefined,
-            justifySelf: compact ? "center" : undefined,
+            justifyContent: compact ? "flex-start" : "center",
+            justifySelf: compact ? "start" : undefined,
           }}
         >
           <WorkflowNode
@@ -798,7 +838,9 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
             selected={nodeState("agent") === "active"}
             hovered={hovered === "agent"}
             onHover={(v) => setHovered(v ? "agent" : null)}
-            wide
+            wide={!compact}
+            iconOnly={compact}
+            tall={compact}
           >
             <Port
               id="agentIn"
@@ -836,20 +878,27 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
               offset={compact ? 72 : 72}
               lit={nodeState("crm") === "active"}
             />
-            <div className="flex items-center gap-2">
-              <NodeIcon>
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
-                  <circle cx="6" cy="6" r="4.15" stroke="currentColor" strokeWidth="1.2" />
-                  <circle cx="6" cy="6" r="1.15" fill="currentColor" />
-                </svg>
-              </NodeIcon>
-              <div className="min-w-0">
-                <Title>Renewal Agent</Title>
-                <Meta tone={nodeState("agent") === "active" ? "accent" : nodeState("agent") === "ready" ? "ok" : "muted"}>
-                  {agentMeta}
-                </Meta>
+            {compact ? (
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
+                <circle cx="6" cy="6" r="4.15" stroke="currentColor" strokeWidth="1.2" />
+                <circle cx="6" cy="6" r="1.15" fill="currentColor" />
+              </svg>
+            ) : (
+              <div className="flex items-center gap-2">
+                <NodeIcon>
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
+                    <circle cx="6" cy="6" r="4.15" stroke="currentColor" strokeWidth="1.2" />
+                    <circle cx="6" cy="6" r="1.15" fill="currentColor" />
+                  </svg>
+                </NodeIcon>
+                <div className="min-w-0">
+                  <Title>Renewal Agent</Title>
+                  <Meta tone={nodeState("agent") === "active" ? "accent" : nodeState("agent") === "ready" ? "ok" : "muted"}>
+                    {agentMeta}
+                  </Meta>
+                </div>
               </div>
-            </div>
+            )}
           </WorkflowNode>
         </div>
 
@@ -892,9 +941,8 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
             gridRow: compact ? "3" : "1",
             position: "relative",
             display: "flex",
-            justifyContent: "center",
-            width: compact ? "min(220px, 72%)" : undefined,
-            justifySelf: compact ? "center" : undefined,
+            justifyContent: compact ? "flex-start" : "center",
+            justifySelf: compact ? "start" : undefined,
           }}
         >
           <WorkflowNode
@@ -902,7 +950,7 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
             selected={nodeState("approval") === "active"}
             hovered={hovered === "approval"}
             onHover={(v) => setHovered(v ? "approval" : null)}
-            wide={compact}
+            iconOnly={compact}
           >
             <Port
               id="approvalIn"
@@ -916,32 +964,45 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
               side={compact ? "bottom" : "bottom"}
               lit={nodeState("approval") === "active"}
             />
-            <div className="flex items-center gap-2">
-              <NodeIcon>
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
-                  <circle cx="6" cy="6" r="4.2" stroke="currentColor" strokeWidth="1.2" />
-                  <path
-                    d="M4.1 6.15 5.4 7.5 8 4.7"
-                    stroke="currentColor"
-                    strokeWidth="1.2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </NodeIcon>
-              <div className="min-w-0">
-                <Title>Human approval</Title>
-                <Meta
-                  tone={
-                    nodeState("approval") === "done" ? "ok" : nodeState("approval") === "active" ? "accent" : "muted"
-                  }
-                >
-                  {nodeState("approval") === "done" || settled
-                    ? "Approved ✓"
-                    : "Renew at existing pricing?"}
-                </Meta>
+            {compact ? (
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
+                <circle cx="6" cy="6" r="4.2" stroke="currentColor" strokeWidth="1.2" />
+                <path
+                  d="M4.1 6.15 5.4 7.5 8 4.7"
+                  stroke="currentColor"
+                  strokeWidth="1.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            ) : (
+              <div className="flex items-center gap-2">
+                <NodeIcon>
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
+                    <circle cx="6" cy="6" r="4.2" stroke="currentColor" strokeWidth="1.2" />
+                    <path
+                      d="M4.1 6.15 5.4 7.5 8 4.7"
+                      stroke="currentColor"
+                      strokeWidth="1.2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </NodeIcon>
+                <div className="min-w-0">
+                  <Title>Human approval</Title>
+                  <Meta
+                    tone={
+                      nodeState("approval") === "done" ? "ok" : nodeState("approval") === "active" ? "accent" : "muted"
+                    }
+                  >
+                    {nodeState("approval") === "done" || settled
+                      ? "Approved ✓"
+                      : "Renew at existing pricing?"}
+                  </Meta>
+                </div>
               </div>
-            </div>
+            )}
           </WorkflowNode>
           <div
             className="absolute top-full left-1/2 z-20 mt-1 flex -translate-x-1/2 gap-1 whitespace-nowrap"
@@ -981,13 +1042,14 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
 
         {compact ? (
           <div
-            className="pointer-events-none absolute z-[2] overflow-visible"
-            style={{ gridColumn: "1 / -1", gridRow: "1 / -1", inset: 0 }}
+            className="flex flex-col gap-2 overflow-visible"
+            style={{
+              gridColumn: "2",
+              gridRow: "2 / 4",
+              justifySelf: "start",
+              alignSelf: "center",
+            }}
           >
-            <div
-              className="pointer-events-auto absolute flex flex-col gap-2"
-              style={{ top: "28%", left: "calc(50% + 118px)" }}
-            >
             <ToolNode
               id="model"
               title="Claude"
@@ -1000,6 +1062,7 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
               hovered={hovered}
               setHovered={setHovered}
               register={register}
+              iconOnly
             />
             <ToolNode
               id="memory"
@@ -1013,6 +1076,7 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
               hovered={hovered}
               setHovered={setHovered}
               register={register}
+              iconOnly
             />
             <ToolNode
               id="crm"
@@ -1026,8 +1090,8 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
               hovered={hovered}
               setHovered={setHovered}
               register={register}
+              iconOnly
             />
-          </div>
           </div>
         ) : (
         <div
@@ -1185,34 +1249,25 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
               gridColumn: "1",
               gridRow: "4",
               display: "flex",
-              justifyContent: "center",
-              width: "min(220px, 72%)",
-              justifySelf: "center",
+              justifyContent: "flex-start",
+              justifySelf: "start",
             }}
           >
             <WorkflowNode
               state={nodeState("done")}
               hovered={hovered === "done"}
               onHover={(v) => setHovered(v ? "done" : null)}
-              wide
+              iconOnly
             >
               <Port id="doneIn" register={register} side="top" lit={false} />
-              <div className="flex items-center gap-2">
-                <span
-                  className="flex size-6 items-center justify-center rounded-[6px]"
-                  style={{
-                    background: nodeState("done") === "done" || settled ? healthSoft : surfaceSunk,
-                    color: nodeState("done") === "done" || settled ? health : ink,
-                    border: `1px solid ${border}`,
-                  }}
-                >
-                  <StrokeIcon d="M2.6 6.2 5 8.6 9.5 3.6" />
-                </span>
-                <div>
-                  <Title>Completed</Title>
-                  <Meta tone="ok">{settled ? "Done" : "Pending"}</Meta>
-                </div>
-              </div>
+              <span
+                className="flex size-3.5 items-center justify-center"
+                style={{
+                  color: nodeState("done") === "done" || settled ? health : ink,
+                }}
+              >
+                <StrokeIcon d="M2.6 6.2 5 8.6 9.5 3.6" />
+              </span>
             </WorkflowNode>
           </div>
         )}

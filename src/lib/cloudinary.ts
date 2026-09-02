@@ -21,7 +21,7 @@ const LOCAL_ONLY_PATHS = new Set([
   "/apple-touch-icon.png",
 ]);
 
-const LOCAL_ONLY_PREFIXES = ["/media/digital-marketing/"] as const;
+const LOCAL_ONLY_PREFIXES = ["/media/digital-marketing/", "/illustrations/"] as const;
 
 function isLocalStaticAsset(src: string): boolean {
   const path = src.split("?")[0] ?? src;
