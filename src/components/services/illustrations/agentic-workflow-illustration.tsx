@@ -751,18 +751,19 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
         className="relative z-[2] grid h-full w-full"
         style={{
           padding: compact
-            ? "36px 20px 28px"
+            ? "36px 8px 28px 16px"
             : cozy
               ? "46px 28px 44px"
               : "40px 22px 36px",
           gridTemplateColumns: compact
-            ? "1fr"
+            ? "auto auto minmax(0, 1fr)"
             : "minmax(0, 0.9fr) minmax(0, 1.15fr) minmax(0, 0.95fr) minmax(0, 1fr)",
           gridTemplateRows: compact ? "auto auto auto auto" : "auto auto auto",
-          columnGap: compact ? 0 : cozy ? 20 : 14,
+          columnGap: compact ? 12 : cozy ? 20 : 14,
           rowGap: compact ? 18 : cozy ? 28 : 22,
           alignItems: "start",
           alignContent: compact ? "start" : "center",
+          justifyItems: compact ? "start" : undefined,
         }}
       >
         <div
@@ -770,8 +771,8 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
             gridColumn: "1",
             gridRow: "1",
             display: "flex",
-            justifyContent: "center",
-            justifySelf: compact ? "center" : undefined,
+            justifyContent: compact ? "flex-start" : "center",
+            justifySelf: compact ? "start" : undefined,
           }}
         >
           <WorkflowNode
@@ -807,8 +808,8 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
             gridColumn: compact ? "1" : "2",
             gridRow: compact ? "2" : "1",
             display: "flex",
-            justifyContent: "center",
-            justifySelf: compact ? "center" : undefined,
+            justifyContent: compact ? "flex-start" : "center",
+            justifySelf: compact ? "start" : undefined,
           }}
         >
           <WorkflowNode
@@ -919,8 +920,8 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
             gridRow: compact ? "3" : "1",
             position: "relative",
             display: "flex",
-            justifyContent: "center",
-            justifySelf: compact ? "center" : undefined,
+            justifyContent: compact ? "flex-start" : "center",
+            justifySelf: compact ? "start" : undefined,
           }}
         >
           <WorkflowNode
@@ -1020,13 +1021,14 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
 
         {compact ? (
           <div
-            className="pointer-events-none absolute z-[2] overflow-visible"
-            style={{ gridColumn: "1 / -1", gridRow: "1 / -1", inset: 0 }}
+            className="flex flex-col gap-2 overflow-visible"
+            style={{
+              gridColumn: "2",
+              gridRow: "2 / 4",
+              justifySelf: "start",
+              alignSelf: "center",
+            }}
           >
-            <div
-              className="pointer-events-auto absolute flex flex-col gap-2"
-              style={{ top: "28%", right: -10 }}
-            >
             <ToolNode
               id="model"
               title="Claude"
@@ -1069,7 +1071,6 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
               register={register}
               iconOnly
             />
-          </div>
           </div>
         ) : (
         <div
@@ -1227,8 +1228,8 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
               gridColumn: "1",
               gridRow: "4",
               display: "flex",
-              justifyContent: "center",
-              justifySelf: "center",
+              justifyContent: "flex-start",
+              justifySelf: "start",
             }}
           >
             <WorkflowNode
