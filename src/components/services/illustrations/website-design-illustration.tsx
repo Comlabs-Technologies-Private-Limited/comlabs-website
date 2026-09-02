@@ -1,247 +1,395 @@
 "use client";
 
-import Image from "next/image";
-import { useState, type ReactNode } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
+import type { CSSProperties, ReactNode } from "react";
 
-import { mediaUrl } from "@/lib/cloudinary";
-
-import { WindowDots } from "./illustration-primitives";
+import { Bar, Panel } from "./illustration-primitives";
 import { IllustrationStage, useIllustrationState } from "./service-illustration-frame";
 import {
   illustrationColors,
-  illustrationHover,
+  illustrationEase,
   illustrationRadius,
   illustrationShadow,
 } from "./illustration-tokens";
-import { useIllustrationSequence } from "./use-illustration-sequence";
 
-type ProjectPreview = {
-  id: string;
-  name: string;
-  domain: string;
-  src: string;
-};
+const EASE = illustrationEase;
+const ink = illustrationColors.ink;
+const inkMuted = illustrationColors.inkMuted;
+const inkFaint = illustrationColors.inkFaint;
+const border = illustrationColors.border;
+const borderStrong = illustrationColors.borderStrong;
+const surface = illustrationColors.surface;
+const surfaceMuted = illustrationColors.surfaceMuted;
+const surfaceSunk = illustrationColors.surfaceSunk;
 
-const PROJECTS: readonly ProjectPreview[] = [
-  {
-    id: "radiant",
-    name: "Radiant",
-    domain: "radiant.comlabstechnologies.com",
-    src: "/work/radiant/radiant-homepage.webp",
-  },
-  {
-    id: "formial",
-    name: "Formial Labs",
-    domain: "formial.in",
-    src: "/work/formial-labs/formial-marketing.webp",
-  },
-  {
-    id: "global",
-    name: "Global Services",
-    domain: "global-services-website.vercel.app",
-    src: "/work/global-services/global-services-case-study-hero.webp",
-  },
-];
+const PAGES = [
+  "Blog",
+  "Home",
+  "About",
+  "Contact",
+  "Services",
+  "Pitch Deck",
+  "Animations",
+] as const;
 
-function workPreviewSrc(localPath: string, width = 900): string {
-  const resolved = mediaUrl(localPath, { width });
-  if (resolved.startsWith("http")) return resolved;
-  const publicId = localPath.replace(/^\//, "").replace(/\.[a-z0-9]+$/i, "");
-  return `https://res.cloudinary.com/p8osc4y4/image/upload/f_auto,q_auto,c_limit,w_${width}/comlabs-website/${publicId}`;
+const CURSOR_HOPS = {
+  left: ["16%", "48%", "82%", "22%", "16%"],
+  top: ["74%", "40%", "70%", "20%", "74%"],
+} as const;
+
+function AppMark() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
+      <rect x="1" y="1" width="4.4" height="4.4" rx="1.4" fill={ink} />
+      <rect x="6.6" y="1" width="4.4" height="4.4" rx="2.2" fill={inkMuted} />
+      <rect x="1" y="6.6" width="4.4" height="4.4" rx="2.2" fill={inkMuted} />
+      <rect x="6.6" y="6.6" width="4.4" height="4.4" rx="1.4" fill={ink} />
+    </svg>
+  );
 }
 
-function BrowserChrome({
-  domain,
+function SidebarToggle() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
+      <rect
+        x="1.4"
+        y="2.1"
+        width="9.2"
+        height="7.8"
+        rx="1.6"
+        stroke={inkMuted}
+        strokeWidth="1.1"
+      />
+      <path d="M4.4 2.1v7.8" stroke={inkMuted} strokeWidth="1.1" />
+    </svg>
+  );
+}
+
+function PageGlyph() {
+  return (
+    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden>
+      <path
+        d="M2.2 1.4h3.4L7.8 3.6v4.8H2.2V1.4Z"
+        stroke={inkFaint}
+        strokeWidth="1"
+        strokeLinejoin="round"
+      />
+      <path d="M5.6 1.4v2.2h2.2" stroke={inkFaint} strokeWidth="1" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function FrameCard({
   children,
+  className,
+  style,
 }: {
-  domain: string;
   children: ReactNode;
+  className?: string;
+  style?: CSSProperties;
 }) {
   return (
-    <div
-      className="flex h-full flex-col overflow-hidden"
+    <Panel
+      elevation="raised"
+      radius={illustrationRadius.device}
+      className={className}
       style={{
-        borderRadius: illustrationRadius.panel,
-        background: illustrationColors.surface,
-        border: `1px solid ${illustrationColors.border}`,
-        boxShadow: illustrationShadow.raised,
+        background: surface,
+        padding: 8,
+        ...style,
       }}
     >
-      <div
-        className="flex shrink-0 items-center gap-2 border-b px-2 py-[6px]"
-        style={{
-          borderColor: illustrationColors.border,
-          background: illustrationColors.surfaceMuted,
-        }}
-      >
-        <WindowDots />
+      {children}
+    </Panel>
+  );
+}
+
+function FrameHeader({ trailing }: { trailing?: ReactNode }) {
+  return (
+    <div className="flex items-center justify-between gap-2">
+      <span
+        className="block h-1.5 w-8 rounded-full"
+        style={{ background: "rgba(28,25,23,0.10)" }}
+      />
+      {trailing === undefined ? <Dots n={3} /> : trailing}
+    </div>
+  );
+}
+
+function Dots({ n }: { n: number }) {
+  return (
+    <span className="flex items-center gap-0.5">
+      {Array.from({ length: n }, (_, index) => (
         <span
-          className="min-w-0 flex-1 truncate rounded-full px-2 py-[3px] text-[6.5px] lg:text-[7.5px]"
-          style={{
-            background: illustrationColors.surface,
-            color: illustrationColors.inkFaint,
-            border: `1px solid ${illustrationColors.border}`,
-          }}
-        >
-          {domain}
+          key={index}
+          className="block size-1 rounded-full"
+          style={{ background: "rgba(28,25,23,0.16)" }}
+        />
+      ))}
+    </span>
+  );
+}
+
+function OutlineButton() {
+  return (
+    <span
+      className="block h-3.5 w-8 rounded-full"
+      style={{
+        border: `1px solid ${borderStrong}`,
+        background: surface,
+      }}
+    />
+  );
+}
+
+function FillButton() {
+  return (
+    <span
+      className="block h-3.5 w-8 rounded-full"
+      style={{ background: "rgba(28,25,23,0.72)" }}
+    />
+  );
+}
+
+function PhoneFrame() {
+  return (
+    <FrameCard className="absolute top-[10%] left-[4%] flex h-[80%] w-[24%] min-w-[72px] flex-col">
+      <FrameHeader />
+      <div
+        className="mt-2 min-h-0 flex-1 rounded-[10px]"
+        style={{
+          background: surfaceMuted,
+          boxShadow: "inset 0 0 0 1px rgba(28,25,23,0.04)",
+        }}
+      />
+      <div className="mt-2 flex justify-center">
+        <Dots n={3} />
+      </div>
+      <div className="mt-2 flex flex-col gap-1">
+        <Bar width="84%" height={3} />
+        <Bar width="58%" height={3} />
+      </div>
+      <div className="mt-2 flex items-center gap-1">
+        <FillButton />
+        <OutlineButton />
+      </div>
+    </FrameCard>
+  );
+}
+
+function UserFrame() {
+  return (
+    <FrameCard className="absolute top-[16%] left-[32%] flex h-[42%] w-[30%] min-w-[92px] flex-col">
+      <FrameHeader />
+      <div className="mt-3 flex flex-col gap-2">
+        <Bar width="78%" height={4} />
+        <div className="flex items-center gap-1">
+          <Bar width="36%" height={4} />
+          <span
+            className="inline-flex items-center gap-1 rounded-full px-1.5 py-0.5"
+            style={{
+              background: surfaceSunk,
+              border: `1px solid ${border}`,
+            }}
+          >
+            <span
+              className="block size-2.5 rounded-full"
+              style={{ background: "rgba(28,25,23,0.28)" }}
+            />
+            <span
+              className="text-[7px] leading-none font-medium tracking-tight lg:text-[8px]"
+              style={{ color: ink }}
+            >
+              Manu
+            </span>
+          </span>
+        </div>
+      </div>
+      <div className="mt-auto flex justify-center pt-2">
+        <span className="flex items-center gap-1">
+          <span className="block h-px w-2" style={{ background: "rgba(28,25,23,0.16)" }} />
+          <span className="block h-px w-3" style={{ background: "rgba(28,25,23,0.16)" }} />
+          <span className="block h-px w-2" style={{ background: "rgba(28,25,23,0.16)" }} />
         </span>
       </div>
-      <div className="relative min-h-0 flex-1 overflow-hidden bg-[#111]">
-        {children}
+    </FrameCard>
+  );
+}
+
+function BoardFrame() {
+  return (
+    <FrameCard className="absolute top-[26%] right-[4%] flex h-[52%] w-[34%] min-w-[108px] flex-col">
+      <FrameHeader trailing={false} />
+      <div className="mt-2 flex min-h-0 flex-1 gap-2">
+        <div
+          className="h-full w-[38%] rounded-[10px]"
+          style={{ background: surfaceSunk }}
+        />
+        <div className="flex min-w-0 flex-1 flex-col gap-1.5 pt-1">
+          <Bar width="92%" height={3} />
+          <Bar width="74%" height={3} />
+          <Bar width="84%" height={3} />
+          <Bar width="60%" height={3} />
+          <Bar width="78%" height={3} />
+        </div>
       </div>
+      <div className="mt-2 flex items-center justify-end gap-1">
+        <FillButton />
+        <OutlineButton />
+        <span
+          className="block size-3.5 rounded-full"
+          style={{ border: `1px solid ${borderStrong}` }}
+        />
+      </div>
+    </FrameCard>
+  );
+}
+
+function DesignCursor({ reduce, active }: { reduce: boolean; active: boolean }) {
+  return (
+    <motion.div
+      className="pointer-events-none absolute z-20"
+      initial={false}
+      animate={
+        reduce || !active
+          ? { left: "48%", top: "40%", opacity: 1 }
+          : { left: [...CURSOR_HOPS.left], top: [...CURSOR_HOPS.top], opacity: 1 }
+      }
+      transition={
+        reduce || !active
+          ? { duration: 0.4, ease: EASE }
+          : {
+              duration: 16,
+              ease: EASE,
+              repeat: Infinity,
+              times: [0, 0.22, 0.48, 0.74, 1],
+            }
+      }
+      aria-hidden
+    >
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+        <path
+          d="M2.5 1.75 2.5 11.2 5.35 8.35 8.15 13.25 10.1 12.15 7.3 7.25 11.35 7.25 2.5 1.75Z"
+          fill="#fff"
+          stroke={ink}
+          strokeWidth="1.1"
+          strokeLinejoin="round"
+        />
+      </svg>
+    </motion.div>
+  );
+}
+
+function Sidebar() {
+  return (
+    <div
+      className="flex h-full w-[118px] shrink-0 flex-col lg:w-[132px]"
+      style={{
+        background: surface,
+        borderRight: `1px solid ${border}`,
+      }}
+    >
+      <div className="flex items-center justify-between px-3 pt-3">
+        <AppMark />
+        <SidebarToggle />
+      </div>
+      <p
+        className="mt-3 px-3 text-[9px] leading-none font-medium tracking-tight lg:text-[10px]"
+        style={{ color: ink }}
+      >
+        Agency v2.2
+      </p>
+      <div className="mt-2 flex items-center gap-1 px-3">
+        <span className="text-[7px] leading-none tracking-tight lg:text-[8px]" style={{ color: inkMuted }}>
+          Drafts
+        </span>
+        <span
+          className="rounded-full px-1.5 py-0.5 text-[6.5px] leading-none font-medium tracking-tight"
+          style={{
+            color: inkMuted,
+            border: `1px solid ${borderStrong}`,
+            background: surfaceMuted,
+          }}
+        >
+          Pro
+        </span>
+      </div>
+      <div
+        className="mx-2 mt-3 grid grid-cols-2 rounded-[8px] p-0.5"
+        style={{ background: surfaceSunk }}
+      >
+        <span
+          className="rounded-[6px] px-2 py-1 text-center text-[7px] leading-none font-medium tracking-tight lg:text-[8px]"
+          style={{ color: ink, background: surface, boxShadow: illustrationShadow.panel }}
+        >
+          File
+        </span>
+        <span
+          className="rounded-[6px] px-2 py-1 text-center text-[7px] leading-none tracking-tight lg:text-[8px]"
+          style={{ color: inkMuted }}
+        >
+          Assets
+        </span>
+      </div>
+      <p
+        className="mt-4 px-3 text-[7px] leading-none font-medium tracking-tight"
+        style={{ color: inkFaint }}
+      >
+        Pages
+      </p>
+      <ul className="mt-2 flex min-h-0 flex-1 flex-col gap-0.5 overflow-hidden px-2 pb-3">
+        {PAGES.map((page) => {
+          const selected = page === "Home";
+          return (
+            <li
+              key={page}
+              className="flex items-center gap-1.5 rounded-[6px] px-1.5 py-1"
+              style={{
+                background: selected ? surfaceSunk : "transparent",
+                color: selected ? ink : inkMuted,
+              }}
+            >
+              <PageGlyph />
+              <span className="truncate text-[7.5px] leading-none tracking-tight lg:text-[8.5px]">
+                {page}
+              </span>
+            </li>
+          );
+        })}
+      </ul>
     </div>
   );
 }
 
 export function WebsiteDesignIllustration() {
-  const { active, reduce, pointer } = useIllustrationState();
-  const step = useIllustrationSequence({
-    steps: 3,
-    active,
-    reduce,
-    stepMs: [480, 720],
-  });
-  const [focused, setFocused] = useState<string | null>(null);
-
-  const settled = step >= 1;
-  const primary = PROJECTS[0];
-  const rearLeft = PROJECTS[1];
-  const rearRight = PROJECTS[2];
+  const { active, reduce } = useIllustrationState();
 
   return (
-    <IllustrationStage className="p-3 lg:p-4">
+    <IllustrationStage className="p-2 lg:p-3">
       <div
-        className="relative h-full"
-        style={{ perspective: "1100px" }}
+        className="flex h-full min-h-0 overflow-hidden"
+        style={{
+          borderRadius: 20,
+          background: surface,
+          border: `1px solid ${borderStrong}`,
+          boxShadow: illustrationShadow.raised,
+        }}
       >
-        <motion.div
-          className="absolute top-[4%] left-0 hidden h-[70%] w-[48%] sm:block"
-          animate={{
-            x: settled ? pointer.x * 3 - 6 : -8,
-            y: settled ? pointer.y * 2 : 4,
-            rotate: -1.1,
-            filter:
-              focused && focused !== rearLeft.id ? "blur(2px)" : "blur(0px)",
-            opacity: focused && focused !== rearLeft.id ? 0.55 : 1,
+        <Sidebar />
+        <div
+          className="relative min-h-0 min-w-0 flex-1 overflow-hidden"
+          style={{
+            backgroundColor: surfaceMuted,
+            backgroundImage: `linear-gradient(45deg, rgba(28,25,23,0.035) 25%, transparent 25%, transparent 75%, rgba(28,25,23,0.035) 75%), linear-gradient(45deg, rgba(28,25,23,0.035) 25%, transparent 25%, transparent 75%, rgba(28,25,23,0.035) 75%)`,
+            backgroundPosition: "0 0, 8px 8px",
+            backgroundSize: "16px 16px",
           }}
-          transition={illustrationHover}
-          onPointerEnter={() => setFocused(rearLeft.id)}
-          onPointerLeave={() => setFocused(null)}
         >
-          <BrowserChrome domain={rearLeft.domain}>
-            <Image
-              src={workPreviewSrc(rearLeft.src, 640)}
-              alt=""
-              fill
-              sizes="240px"
-              className="object-cover object-top"
-            />
-          </BrowserChrome>
-          <AnimatePresence>
-            {focused === rearLeft.id ? (
-              <motion.span
-                initial={reduce ? false : { opacity: 0, y: 4 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 4 }}
-                className="absolute -bottom-5 left-2 text-[7px] tracking-tight"
-                style={{ color: illustrationColors.inkMuted }}
-              >
-                {rearLeft.name}
-              </motion.span>
-            ) : null}
-          </AnimatePresence>
-        </motion.div>
-
-        <motion.div
-          className="absolute top-[2%] right-0 hidden h-[66%] w-[46%] sm:block"
-          animate={{
-            x: settled ? pointer.x * 2 + 8 : 8,
-            y: settled ? pointer.y * 1.5 : 2,
-            rotate: 1.2,
-            filter:
-              focused && focused !== rearRight.id ? "blur(2px)" : "blur(0px)",
-            opacity: focused && focused !== rearRight.id ? 0.55 : 1,
-          }}
-          transition={illustrationHover}
-          onPointerEnter={() => setFocused(rearRight.id)}
-          onPointerLeave={() => setFocused(null)}
-        >
-          <BrowserChrome domain={rearRight.domain}>
-            <Image
-              src={workPreviewSrc(rearRight.src, 640)}
-              alt=""
-              fill
-              sizes="240px"
-              className="object-cover object-top"
-            />
-          </BrowserChrome>
-          <AnimatePresence>
-            {focused === rearRight.id ? (
-              <motion.span
-                initial={reduce ? false : { opacity: 0, y: 4 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 4 }}
-                className="absolute -bottom-5 right-2 text-[7px] tracking-tight"
-                style={{ color: illustrationColors.inkMuted }}
-              >
-                {rearRight.name}
-              </motion.span>
-            ) : null}
-          </AnimatePresence>
-        </motion.div>
-
-        <motion.div
-          className="absolute inset-x-[8%] top-[20%] bottom-[4%] z-10 sm:inset-x-[14%] sm:top-[16%]"
-          animate={{
-            x: settled ? pointer.x * 5 : 0,
-            y: settled ? pointer.y * 4 : 8,
-            filter:
-              focused && focused !== primary.id ? "blur(1.5px)" : "blur(0px)",
-            opacity: 1,
-          }}
-          transition={illustrationHover}
-          onPointerEnter={() => setFocused(primary.id)}
-          onPointerLeave={() => setFocused(null)}
-        >
-          <BrowserChrome domain={primary.domain}>
-            <Image
-              src={workPreviewSrc(primary.src, 960)}
-              alt=""
-              fill
-              sizes="420px"
-              className="object-cover object-top"
-            />
-            <AnimatePresence>
-              {focused === primary.id ? (
-                <motion.span
-                  initial={reduce ? false : { opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  className="absolute top-[42%] left-[58%] z-10 h-3 w-3 rounded-full border"
-                  style={{
-                    borderColor: "rgba(255,255,255,0.9)",
-                    background: "rgba(255,255,255,0.35)",
-                    boxShadow: "0 2px 8px rgba(28,25,23,0.2)",
-                  }}
-                />
-              ) : null}
-            </AnimatePresence>
-          </BrowserChrome>
-          <AnimatePresence>
-            {focused === primary.id || step >= 2 ? (
-              <motion.span
-                initial={reduce ? false : { opacity: 0, y: 4 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
-                className="absolute -bottom-5 left-1 text-[7.5px] tracking-tight lg:text-[8.5px]"
-                style={{ color: illustrationColors.ink }}
-              >
-                {primary.name} · {primary.domain}
-              </motion.span>
-            ) : null}
-          </AnimatePresence>
-        </motion.div>
+          <PhoneFrame />
+          <UserFrame />
+          <BoardFrame />
+          <DesignCursor reduce={reduce} active={active} />
+        </div>
       </div>
     </IllustrationStage>
   );
