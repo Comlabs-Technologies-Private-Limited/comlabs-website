@@ -695,24 +695,22 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
         backgroundSize: "18px 18px",
       }}
     >
-      {compact ? null : (
-        <div className="pointer-events-none absolute inset-x-4 top-2.5 z-10 flex items-center justify-between gap-3">
-          <p className="truncate font-medium tracking-tight" style={{ fontSize: 10, color: inkFaint }}>
-            Prepare the Q3 renewal for Acme
-          </p>
-          <span
-            className="shrink-0 rounded px-1.5 py-0.5 font-medium tracking-tight"
-            style={{
-              fontSize: 10,
-              color: settled ? health : inkMuted,
-              border: `1px solid ${border}`,
-              background: surface,
-            }}
-          >
-            {statusLabel}
-          </span>
-        </div>
-      )}
+      <div className="pointer-events-none absolute inset-x-4 top-2.5 z-10 flex items-center justify-between gap-3">
+        <p className="truncate font-medium tracking-tight" style={{ fontSize: 10, color: inkFaint }}>
+          Prepare the Q3 renewal for Acme
+        </p>
+        <span
+          className="shrink-0 rounded px-1.5 py-0.5 font-medium tracking-tight"
+          style={{
+            fontSize: 10,
+            color: settled ? health : inkMuted,
+            border: `1px solid ${border}`,
+            background: surface,
+          }}
+        >
+          {statusLabel}
+        </span>
+      </div>
 
       <svg
         className="pointer-events-none absolute inset-0 z-[1]"
@@ -753,19 +751,18 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
         className="relative z-[2] grid h-full w-full"
         style={{
           padding: compact
-            ? "40px 8px 28px 12px"
+            ? "36px 20px 28px"
             : cozy
               ? "46px 28px 44px"
               : "40px 22px 36px",
           gridTemplateColumns: compact
-            ? "auto minmax(0, 1fr)"
+            ? "1fr"
             : "minmax(0, 0.9fr) minmax(0, 1.15fr) minmax(0, 0.95fr) minmax(0, 1fr)",
           gridTemplateRows: compact ? "auto auto auto auto" : "auto auto auto",
-          columnGap: compact ? 10 : cozy ? 20 : 14,
-          rowGap: compact ? 20 : cozy ? 28 : 22,
+          columnGap: compact ? 0 : cozy ? 20 : 14,
+          rowGap: compact ? 18 : cozy ? 28 : 22,
           alignItems: "start",
-          alignContent: compact ? "center" : "center",
-          justifyItems: compact ? "start" : undefined,
+          alignContent: compact ? "start" : "center",
         }}
       >
         <div
@@ -773,8 +770,8 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
             gridColumn: "1",
             gridRow: "1",
             display: "flex",
-            justifyContent: compact ? "flex-start" : "center",
-            justifySelf: compact ? "start" : undefined,
+            justifyContent: "center",
+            justifySelf: compact ? "center" : undefined,
           }}
         >
           <WorkflowNode
@@ -810,8 +807,8 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
             gridColumn: compact ? "1" : "2",
             gridRow: compact ? "2" : "1",
             display: "flex",
-            justifyContent: compact ? "flex-start" : "center",
-            justifySelf: compact ? "start" : undefined,
+            justifyContent: "center",
+            justifySelf: compact ? "center" : undefined,
           }}
         >
           <WorkflowNode
@@ -922,8 +919,8 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
             gridRow: compact ? "3" : "1",
             position: "relative",
             display: "flex",
-            justifyContent: compact ? "flex-start" : "center",
-            justifySelf: compact ? "start" : undefined,
+            justifyContent: "center",
+            justifySelf: compact ? "center" : undefined,
           }}
         >
           <WorkflowNode
@@ -1023,15 +1020,13 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
 
         {compact ? (
           <div
-            className="flex flex-col gap-2 overflow-visible"
-            style={{
-              gridColumn: "2",
-              gridRow: "2 / 4",
-              justifySelf: "start",
-              alignSelf: "center",
-              marginRight: -12,
-            }}
+            className="pointer-events-none absolute z-[2] overflow-visible"
+            style={{ gridColumn: "1 / -1", gridRow: "1 / -1", inset: 0 }}
           >
+            <div
+              className="pointer-events-auto absolute flex flex-col gap-2"
+              style={{ top: "28%", right: -10 }}
+            >
             <ToolNode
               id="model"
               title="Claude"
@@ -1074,6 +1069,7 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
               register={register}
               iconOnly
             />
+          </div>
           </div>
         ) : (
         <div
@@ -1231,8 +1227,8 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
               gridColumn: "1",
               gridRow: "4",
               display: "flex",
-              justifyContent: "flex-start",
-              justifySelf: "start",
+              justifyContent: "center",
+              justifySelf: "center",
             }}
           >
             <WorkflowNode
@@ -1255,23 +1251,21 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
         )}
       </div>
 
-      {compact ? null : (
-        <div className="pointer-events-none absolute bottom-2.5 left-4 z-10 flex items-center gap-2">
-          <span className="font-medium tracking-tight" style={{ fontSize: 10, color: inkFaint }}>
-            Run #184
-          </span>
-          <span aria-hidden style={{ fontSize: 10, color: inkFaint }}>
-            ·
-          </span>
-          <span style={{ fontSize: 10, color: inkFaint }}>1.8s</span>
-          <span aria-hidden style={{ fontSize: 10, color: inkFaint }}>
-            ·
-          </span>
-          <span style={{ fontSize: 10, color: inkFaint }}>
-            {stepsDone} / 6 complete
-          </span>
-        </div>
-      )}
+      <div className="pointer-events-none absolute bottom-2.5 left-4 z-10 flex items-center gap-2">
+        <span className="font-medium tracking-tight" style={{ fontSize: 10, color: inkFaint }}>
+          Run #184
+        </span>
+        <span aria-hidden style={{ fontSize: 10, color: inkFaint }}>
+          ·
+        </span>
+        <span style={{ fontSize: 10, color: inkFaint }}>1.8s</span>
+        <span aria-hidden style={{ fontSize: 10, color: inkFaint }}>
+          ·
+        </span>
+        <span style={{ fontSize: 10, color: inkFaint }}>
+          {stepsDone} / 6 complete
+        </span>
+      </div>
     </div>
   );
 }
