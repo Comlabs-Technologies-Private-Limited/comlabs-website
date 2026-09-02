@@ -33,8 +33,8 @@ const PAGES = [
 ] as const;
 
 const CURSOR_HOPS = {
-  left: ["18%", "50%", "84%", "18%"],
-  top: ["78%", "38%", "72%", "78%"],
+  left: ["24%", "76%", "50%", "24%", "76%", "50%", "24%"],
+  top: ["16%", "16%", "40%", "64%", "64%", "86%", "16%"],
 } as const;
 
 function AppMark() {
@@ -151,9 +151,9 @@ function FillButton() {
   );
 }
 
-function PhoneFrame() {
+function PhoneFrame({ className }: { className?: string }) {
   return (
-    <FrameCard className="row-span-2 flex min-h-0 flex-col">
+    <FrameCard className={className ?? "flex min-h-0 flex-col"}>
       <FrameHeader />
       <div
         className="mt-2 min-h-0 flex-1 rounded-[10px]"
@@ -177,15 +177,32 @@ function PhoneFrame() {
   );
 }
 
-function UserFrame() {
+function UserFrame({ className, name = "Manu" }: { className?: string; name?: string }) {
   return (
-    <FrameCard className="row-span-2 flex h-[58%] min-h-[92px] flex-col self-center">
+    <FrameCard className={className ?? "flex min-h-0 flex-col"}>
       <FrameHeader />
       <div className="mt-3 flex flex-col gap-2">
         <Bar width="78%" height={4} />
         <div className="flex items-center gap-1">
-          <Bar width="36%" height={4} />
-
+          <Bar width="28%" height={4} />
+          <span
+            className="inline-flex items-center gap-1 rounded-full px-1.5 py-0.5"
+            style={{
+              background: surfaceSunk,
+              border: `1px solid ${border}`,
+            }}
+          >
+            <span
+              className="block size-2.5 rounded-full"
+              style={{ background: "rgba(28,25,23,0.28)" }}
+            />
+            <span
+              className="text-[7px] leading-none font-medium tracking-tight lg:text-[8px]"
+              style={{ color: ink }}
+            >
+              {name}
+            </span>
+          </span>
         </div>
       </div>
       <div className="mt-auto flex justify-center pt-2">
@@ -199,13 +216,13 @@ function UserFrame() {
   );
 }
 
-function BoardFrame() {
+function BoardFrame({ className }: { className?: string }) {
   return (
-    <FrameCard className="row-span-2 flex h-[82%] min-h-0 flex-col self-end">
+    <FrameCard className={className ?? "flex min-h-0 flex-col"}>
       <FrameHeader trailing={false} />
       <div className="mt-2 flex min-h-0 flex-1 gap-2">
         <div
-          className="h-full w-[38%] rounded-[10px]"
+          className="h-full w-[32%] rounded-[10px]"
           style={{ background: surfaceSunk }}
         />
         <div className="flex min-w-0 flex-1 flex-col gap-1.5 pt-1">
@@ -213,7 +230,6 @@ function BoardFrame() {
           <Bar width="74%" height={3} />
           <Bar width="84%" height={3} />
           <Bar width="60%" height={3} />
-          <Bar width="78%" height={3} />
         </div>
       </div>
       <div className="mt-2 flex items-center justify-end gap-1">
@@ -223,6 +239,79 @@ function BoardFrame() {
           className="block size-3.5 rounded-full"
           style={{ border: `1px solid ${borderStrong}` }}
         />
+      </div>
+    </FrameCard>
+  );
+}
+
+function ListFrame({ className }: { className?: string }) {
+  return (
+    <FrameCard className={className ?? "flex min-h-0 flex-col"}>
+      <FrameHeader />
+      <div className="mt-2 flex min-h-0 flex-1 flex-col gap-1.5">
+        {[76, 88, 64, 80].map((width) => (
+          <div key={width} className="flex items-center gap-1.5">
+            <span
+              className="block size-2 shrink-0 rounded-full"
+              style={{ background: "rgba(28,25,23,0.12)" }}
+            />
+            <Bar width={`${width}%`} height={3} />
+          </div>
+        ))}
+      </div>
+      <div className="mt-2 flex items-center gap-1">
+        <OutlineButton />
+      </div>
+    </FrameCard>
+  );
+}
+
+function MetricFrame({ className }: { className?: string }) {
+  return (
+    <FrameCard className={className ?? "flex min-h-0 flex-col"}>
+      <FrameHeader trailing={false} />
+      <div className="mt-2 grid min-h-0 flex-1 grid-cols-2 gap-1.5">
+        <div className="rounded-[8px]" style={{ background: surfaceSunk }} />
+        <div className="flex flex-col justify-center gap-1">
+          <Bar width="90%" height={3} />
+          <Bar width="62%" height={3} />
+          <Bar width="74%" height={3} />
+        </div>
+      </div>
+      <div className="mt-2 flex items-center justify-end gap-1">
+        <FillButton />
+        <span
+          className="block size-3.5 rounded-full"
+          style={{ border: `1px solid ${borderStrong}` }}
+        />
+      </div>
+    </FrameCard>
+  );
+}
+
+function WideHeroFrame({ className }: { className?: string }) {
+  return (
+    <FrameCard className={className ?? "flex min-h-0 flex-col"}>
+      <FrameHeader />
+      <div className="mt-2 flex min-h-0 flex-1 gap-2">
+        <div
+          className="h-full w-[44%] rounded-[10px]"
+          style={{
+            background: surfaceMuted,
+            boxShadow: "inset 0 0 0 1px rgba(28,25,23,0.04)",
+          }}
+        />
+        <div className="flex min-w-0 flex-1 flex-col justify-between">
+          <div className="flex flex-col gap-1.5">
+            <Bar width="88%" height={3} />
+            <Bar width="70%" height={3} />
+            <Bar width="54%" height={3} />
+          </div>
+          <div className="flex items-center gap-1">
+            <FillButton />
+            <OutlineButton />
+          </div>
+        </div>
       </div>
     </FrameCard>
   );
@@ -242,10 +331,10 @@ function DesignCursor({ reduce, active }: { reduce: boolean; active: boolean }) 
         reduce || !active
           ? { duration: 0.4, ease: EASE }
           : {
-              duration: 16,
+              duration: 20,
               ease: EASE,
               repeat: Infinity,
-              times: [0, 0.32, 0.64, 1],
+              times: [0, 0.16, 0.33, 0.5, 0.66, 0.83, 1],
             }
       }
       aria-hidden
@@ -368,15 +457,13 @@ export function WebsiteDesignIllustration() {
             backgroundSize: "16px 16px",
           }}
         >
-          <div
-            className="grid h-full min-h-0 grid-rows-2 gap-3 p-3 lg:gap-4 lg:p-4"
-            style={{
-              gridTemplateColumns: "minmax(0, 2fr) minmax(80px, 1fr) minmax(0, 2fr)",
-            }}
-          >
+          <div className="grid h-full min-h-0 grid-cols-2 grid-rows-4 gap-2 p-2 lg:gap-3 lg:p-3">
             <PhoneFrame />
             <UserFrame />
-            <BoardFrame />
+            <BoardFrame className="col-span-2 flex min-h-0 flex-col" />
+            <ListFrame />
+            <MetricFrame />
+            <WideHeroFrame className="col-span-2 flex min-h-0 flex-col" />
           </div>
           <DesignCursor reduce={reduce} active={active} />
         </div>
