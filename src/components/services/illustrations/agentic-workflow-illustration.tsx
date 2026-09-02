@@ -159,12 +159,13 @@ function edgesFor(
 }
 
 const COMPACT_EDGES: EdgeDef[] = [
-  { id: "e-req-agent", from: "requestOut", to: "agentIn", kind: "main", dir: "v" },
-  { id: "e-agent-appr", from: "agentOut", to: "approvalIn", kind: "main", dir: "v" },
-  { id: "e-appr-done", from: "approvalOut", to: "doneIn", kind: "main", dir: "v" },
-  { id: "e-agent-model", from: "agentModel", to: "modelIn", kind: "ai", dir: "h" },
-  { id: "e-agent-mem", from: "agentMemory", to: "memoryIn", kind: "ai", dir: "h" },
-  { id: "e-agent-crm", from: "agentTools", to: "crmIn", kind: "ai", dir: "h" },
+  { id: "e-req-agent", from: "requestOut", to: "agentIn", kind: "main", dir: "h" },
+  { id: "e-agent-appr", from: "agentOut", to: "approvalIn", kind: "main", dir: "h" },
+  { id: "e-appr-send", from: "approvalOut", to: "sendIn", kind: "main", dir: "h" },
+  { id: "e-send-done", from: "sendOut", to: "doneIn", kind: "main", dir: "h" },
+  { id: "e-agent-model", from: "agentModel", to: "modelIn", kind: "ai", dir: "v" },
+  { id: "e-agent-mem", from: "agentMemory", to: "memoryIn", kind: "ai", dir: "v" },
+  { id: "e-agent-crm", from: "agentTools", to: "crmIn", kind: "ai", dir: "v" },
 ];
 
 const NODE_PORTS: Record<NodeId, PortId[]> = {
@@ -304,7 +305,7 @@ function WorkflowNode({
           selected || active
             ? `0 0 0 1px ${accentLine}, ${illustrationShadow.panel}`
             : illustrationShadow.panel,
-        padding: iconOnly ? (tall ? "14px 8px" : 6) : "7px 10px 7px 8px",
+        padding: iconOnly ? (tall ? "16px 10px" : 8) : "7px 10px 7px 8px",
         color: ink,
         pointerEvents: "auto",
         cursor: "default",
@@ -486,6 +487,8 @@ export function AgenticWorkflowIllustration() {
     reduce,
     stepMs: DELAYS,
     startDelayMs: 480,
+    loop: true,
+    loopDelayMs: 1600,
   });
 
   return (
@@ -644,6 +647,21 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
     return false;
   };
 
+  /** Paths stay accent-coloured once their pulse has fired. */
+  const edgeComplete = (id: string) => {
+    if (settled) return true;
+    if (id === "e-req-agent") return step >= S.pulseToAgent;
+    if (id === "e-agent-model") return step >= S.aiModel;
+    if (id === "e-agent-mem") return step >= S.aiMemory;
+    if (id === "e-agent-crm") return step >= S.aiCrm;
+    if (id === "e-agent-con" || id === "e-agent-price") return step >= S.aiRest;
+    if (id === "e-agent-prep") return step >= S.pulsePrepare;
+    if (id === "e-prep-appr" || id === "e-agent-appr") return step >= S.prepareReady;
+    if (id === "e-appr-send") return step >= S.pulseSend;
+    if (id === "e-send-done" || id === "e-appr-done") return step >= S.sent;
+    return false;
+  };
+
   const related = (edge: EdgeDef) => {
     if (!hovered || !settled) return false;
     const ports = NODE_PORTS[hovered];
@@ -688,10 +706,10 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
   return (
     <div
       ref={canvasRef}
-      className="relative h-full min-h-0 w-full overflow-hidden max-md:w-[720px] max-md:min-w-[720px]"
+      className="relative h-full min-h-0 w-full overflow-hidden"
       style={{
-        backgroundColor: surfaceMuted,
-        backgroundImage: `radial-gradient(circle, rgba(28, 25, 23, 0.20) 0.7px, transparent 0.8px)`,
+        backgroundColor: surface,
+        backgroundImage: `radial-gradient(circle, rgba(28, 25, 23, 0.12) 0.7px, transparent 0.8px)`,
         backgroundSize: "18px 18px",
       }}
     >
@@ -727,17 +745,18 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
           const d = cubic(from, to, edge.dir, size.w);
           const highlight = related(edge);
           const pulsing = pulseOn(edge.id);
-          const activeStroke = highlight || pulsing;
+          const completed = edgeComplete(edge.id);
+          const activeStroke = highlight || pulsing || completed;
           return (
             <g key={edge.id}>
               <path
                 d={d}
                 stroke={activeStroke ? accent : edge.kind === "ai" ? connectorAi : connector}
-                strokeWidth={highlight ? 1.25 : 1.1}
+                strokeWidth={highlight || completed ? 1.25 : 1.1}
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeDasharray={edge.kind === "ai" ? "4 5" : undefined}
-                opacity={edge.kind === "ai" ? (activeStroke ? 0.8 : 0.5) : activeStroke ? 1 : 0.88}
+                opacity={edge.kind === "ai" ? (activeStroke ? 0.85 : 0.5) : activeStroke ? 1 : 0.88}
               />
               <EdgePulse d={d} run={pulsing} />
             </g>
@@ -751,28 +770,28 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
         className="relative z-[2] grid h-full w-full"
         style={{
           padding: compact
-            ? "36px 8px 28px 16px"
+            ? "40px 12px 32px"
             : cozy
               ? "46px 28px 44px"
               : "40px 22px 36px",
           gridTemplateColumns: compact
-            ? "auto auto minmax(0, 1fr)"
+            ? "repeat(5, minmax(0, auto))"
             : "minmax(0, 0.9fr) minmax(0, 1.15fr) minmax(0, 0.95fr) minmax(0, 1fr)",
-          gridTemplateRows: compact ? "auto auto auto auto" : "auto auto auto",
-          columnGap: compact ? 12 : cozy ? 20 : 14,
-          rowGap: compact ? 18 : cozy ? 28 : 22,
-          alignItems: "start",
-          alignContent: compact ? "start" : "center",
-          justifyItems: compact ? "start" : undefined,
+          gridTemplateRows: compact ? "auto auto" : "auto auto auto",
+          columnGap: compact ? 10 : cozy ? 20 : 14,
+          rowGap: compact ? 28 : cozy ? 28 : 22,
+          alignItems: "center",
+          alignContent: compact ? "center" : "center",
+          justifyContent: compact ? "center" : undefined,
+          justifyItems: compact ? "center" : undefined,
         }}
       >
         <div
           style={{
-            gridColumn: "1",
-            gridRow: "1",
+            gridColumn: compact ? "1" : "1",
+            gridRow: compact ? "2" : "1",
             display: "flex",
-            justifyContent: compact ? "flex-start" : "center",
-            justifySelf: compact ? "start" : undefined,
+            justifyContent: "center",
           }}
         >
           <WorkflowNode
@@ -784,7 +803,7 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
             <Port
               id="requestOut"
               register={register}
-              side={compact ? "bottom" : "right"}
+              side="right"
               lit={nodeState("request") === "active"}
             />
             {compact ? (
@@ -805,11 +824,10 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
 
         <div
           style={{
-            gridColumn: compact ? "1" : "2",
+            gridColumn: compact ? "2" : "2",
             gridRow: compact ? "2" : "1",
             display: "flex",
-            justifyContent: compact ? "flex-start" : "center",
-            justifySelf: compact ? "start" : undefined,
+            justifyContent: "center",
           }}
         >
           <WorkflowNode
@@ -819,32 +837,31 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
             onHover={(v) => setHovered(v ? "agent" : null)}
             wide={!compact}
             iconOnly={compact}
-            tall={compact}
           >
             <Port
               id="agentIn"
               register={register}
-              side={compact ? "top" : "left"}
+              side="left"
               lit={nodeState("agent") === "active"}
             />
             <Port
               id="agentOut"
               register={register}
-              side={compact ? "bottom" : "right"}
+              side="right"
               lit={nodeState("agent") === "active"}
             />
             <Port
               id="agentModel"
               register={register}
-              side={compact ? "right" : "bottom"}
+              side={compact ? "top" : "bottom"}
               shape="diamond"
-              offset={compact ? 28 : 28}
+              offset={compact ? 22 : 28}
               lit={nodeState("model") === "active"}
             />
             <Port
               id="agentMemory"
               register={register}
-              side={compact ? "right" : "bottom"}
+              side={compact ? "top" : "bottom"}
               shape="diamond"
               offset={50}
               lit={nodeState("memory") === "active"}
@@ -852,9 +869,9 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
             <Port
               id="agentTools"
               register={register}
-              side={compact ? "right" : "bottom"}
+              side={compact ? "top" : "bottom"}
               shape="diamond"
-              offset={compact ? 72 : 72}
+              offset={compact ? 78 : 72}
               lit={nodeState("crm") === "active"}
             />
             {compact ? (
@@ -916,12 +933,11 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
 
         <div
           style={{
-            gridColumn: compact ? "1" : "4",
-            gridRow: compact ? "3" : "1",
+            gridColumn: compact ? "3" : "4",
+            gridRow: compact ? "2" : "1",
             position: "relative",
             display: "flex",
-            justifyContent: compact ? "flex-start" : "center",
-            justifySelf: compact ? "start" : undefined,
+            justifyContent: "center",
           }}
         >
           <WorkflowNode
@@ -934,13 +950,13 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
             <Port
               id="approvalIn"
               register={register}
-              side={compact ? "top" : "left"}
+              side="left"
               lit={nodeState("approval") === "active"}
             />
             <Port
               id="approvalOut"
               register={register}
-              side={compact ? "bottom" : "bottom"}
+              side={compact ? "right" : "bottom"}
               lit={nodeState("approval") === "active"}
             />
             {compact ? (
@@ -1020,58 +1036,117 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
         </div>
 
         {compact ? (
-          <div
-            className="flex flex-col gap-2 overflow-visible"
-            style={{
-              gridColumn: "2",
-              gridRow: "2 / 4",
-              justifySelf: "start",
-              alignSelf: "center",
-            }}
-          >
-            <ToolNode
-              id="model"
-              title="Claude"
-              idleMeta="Sonnet"
-              hoverMeta="Sonnet"
-              icon={<ClaudeMark className="h-3.5 w-3.5" />}
-              portId="modelIn"
-              portSide="left"
-              state={nodeState("model")}
-              hovered={hovered}
-              setHovered={setHovered}
-              register={register}
-              iconOnly
-            />
-            <ToolNode
-              id="memory"
-              title="Notion"
-              idleMeta="Wiki"
-              hoverMeta="Acme context"
-              icon={<NotionMark />}
-              portId="memoryIn"
-              portSide="left"
-              state={nodeState("memory")}
-              hovered={hovered}
-              setHovered={setHovered}
-              register={register}
-              iconOnly
-            />
-            <ToolNode
-              id="crm"
-              title="Salesforce"
-              idleMeta="CRM"
-              hoverMeta="AC-4421"
-              icon={<SalesforceMark className="h-3.5 w-3.5" />}
-              portId="crmIn"
-              portSide="left"
-              state={nodeState("crm")}
-              hovered={hovered}
-              setHovered={setHovered}
-              register={register}
-              iconOnly
-            />
-          </div>
+          <>
+            {/* Tools sit above the agent (former right column, rotated 90° CCW) */}
+            <div
+              className="flex items-end justify-center gap-2 overflow-visible"
+              style={{
+                gridColumn: "2",
+                gridRow: "1",
+                justifySelf: "center",
+                paddingBottom: 4,
+              }}
+            >
+              <ToolNode
+                id="model"
+                title="Claude"
+                idleMeta="Sonnet"
+                hoverMeta="Sonnet"
+                icon={<ClaudeMark className="h-3.5 w-3.5" />}
+                portId="modelIn"
+                portSide="bottom"
+                state={nodeState("model")}
+                hovered={hovered}
+                setHovered={setHovered}
+                register={register}
+                iconOnly
+              />
+              <ToolNode
+                id="memory"
+                title="Notion"
+                idleMeta="Wiki"
+                hoverMeta="Acme context"
+                icon={<NotionMark />}
+                portId="memoryIn"
+                portSide="bottom"
+                state={nodeState("memory")}
+                hovered={hovered}
+                setHovered={setHovered}
+                register={register}
+                iconOnly
+              />
+              <ToolNode
+                id="crm"
+                title="Salesforce"
+                idleMeta="CRM"
+                hoverMeta="AC-4421"
+                icon={<SalesforceMark className="h-3.5 w-3.5" />}
+                portId="crmIn"
+                portSide="bottom"
+                state={nodeState("crm")}
+                hovered={hovered}
+                setHovered={setHovered}
+                register={register}
+                iconOnly
+              />
+            </div>
+
+            <div
+              style={{
+                gridColumn: "4",
+                gridRow: "2",
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <WorkflowNode
+                state={nodeState("send")}
+                hovered={hovered === "send"}
+                onHover={(v) => setHovered(v ? "send" : null)}
+                iconOnly
+              >
+                <Port
+                  id="sendIn"
+                  register={register}
+                  side="left"
+                  lit={nodeState("send") === "active"}
+                />
+                <Port
+                  id="sendOut"
+                  register={register}
+                  side="right"
+                  lit={nodeState("send") === "active"}
+                />
+                <SlackMark className="h-3.5 w-3.5" />
+              </WorkflowNode>
+            </div>
+
+            <div
+              style={{
+                gridColumn: "5",
+                gridRow: "2",
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <WorkflowNode
+                state={nodeState("done")}
+                hovered={hovered === "done"}
+                onHover={(v) => setHovered(v ? "done" : null)}
+                iconOnly
+              >
+                <Port id="doneIn" register={register} side="left" lit={false} />
+                <span
+                  className="flex size-3.5 items-center justify-center"
+                  style={{
+                    color: nodeState("done") === "done" || settled ? health : ink,
+                  }}
+                >
+                  <StrokeIcon d="M2.6 6.2 5 8.6 9.5 3.6" />
+                </span>
+              </WorkflowNode>
+            </div>
+          </>
         ) : (
         <div
           className="flex items-start justify-center"
@@ -1222,34 +1297,7 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
               </WorkflowNode>
             </div>
           </>
-        ) : (
-          <div
-            style={{
-              gridColumn: "1",
-              gridRow: "4",
-              display: "flex",
-              justifyContent: "flex-start",
-              justifySelf: "start",
-            }}
-          >
-            <WorkflowNode
-              state={nodeState("done")}
-              hovered={hovered === "done"}
-              onHover={(v) => setHovered(v ? "done" : null)}
-              iconOnly
-            >
-              <Port id="doneIn" register={register} side="top" lit={false} />
-              <span
-                className="flex size-3.5 items-center justify-center"
-                style={{
-                  color: nodeState("done") === "done" || settled ? health : ink,
-                }}
-              >
-                <StrokeIcon d="M2.6 6.2 5 8.6 9.5 3.6" />
-              </span>
-            </WorkflowNode>
-          </div>
-        )}
+        ) : null}
       </div>
 
       <div className="pointer-events-none absolute bottom-2.5 left-4 z-10 flex items-center gap-2">

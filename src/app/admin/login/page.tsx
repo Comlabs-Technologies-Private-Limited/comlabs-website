@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 
 import { AdminLoginForm } from "@/components/admin/admin-login-form";
 import { FigmaFooter } from "@/components/layout/figma-footer";
-import { FigmaNav } from "@/components/layout/figma-nav";
+import { FigmaNavLoader } from "@/components/layout/figma-nav-loader";
 import { getAdminSession } from "@/lib/admin/session";
 import { isAdminConfigured } from "@/lib/auth";
 
@@ -27,7 +27,7 @@ export default async function AdminLoginPage() {
       className="min-h-screen bg-background text-foreground antialiased"
       style={{ fontFamily: "var(--font-sans)" }}
     >
-      <FigmaNav showBlogLink={false} />
+      <FigmaNavLoader showBlogLink={false} />
 
       <main className="flex items-center justify-center px-6 py-16 md:py-24">
         <div className="w-full max-w-md rounded-3xl border border-border bg-card p-8 md:p-10">

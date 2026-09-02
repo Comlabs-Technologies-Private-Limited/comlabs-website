@@ -19,40 +19,10 @@ export type HomeService = {
 };
 
 /**
- * Homepage capability cards. Destinations use canonical service routes.
+ * Homepage capability cards in 1-2-1-2 bento order:
+ * AI Agents (full) → AWS + Web → Custom Software (full) → Mobile + Application Support.
  */
 export const HOME_SERVICES: readonly HomeService[] = [
-  {
-    id: "application-support",
-    title: "L1–L4 Application Support",
-    description:
-      "Support that escalates all the way to engineering. We manage application issues from first-line support to complex production defects, code-level fixes and specialist escalation.",
-    capabilities: [
-      "L1 Service Support",
-      "L2 Technical Support",
-      "L3 Engineering Support",
-      "L4 Specialist Engineering",
-    ],
-    linkLabel: "Explore application support",
-    href: "/services/application-support",
-    background: "/services-bg/service-bg-2.png",
-  },
-  {
-    id: "website-design",
-    title: "Web & Digital Experience",
-    description:
-      "High-performance digital experiences with engineering behind them. From corporate websites to product interfaces, we build fast, clear and technically robust digital experiences designed to perform in production.",
-    capabilities: [
-      "Websites",
-      "Product UI",
-      "Frontend Engineering",
-      "Performance",
-      "Technical SEO & AEO",
-    ],
-    linkLabel: "Explore digital experiences",
-    href: "/services/website-design-development",
-    background: "/services-bg/service-bg-1.png",
-  },
   {
     id: "agentic-infrastructure",
     title: "Agentic Infrastructure & AI Agents",
@@ -69,22 +39,6 @@ export const HOME_SERVICES: readonly HomeService[] = [
     href: "/services/ai-agent-development",
     background: "/services-bg/service-bg-4.png",
     featured: true,
-  },
-  {
-    id: "mobile-app",
-    title: "Mobile Engineering",
-    description:
-      "Production-ready mobile products without disconnected backend thinking. We build mobile applications alongside the APIs, infrastructure and operational systems required to support them reliably.",
-    capabilities: [
-      "Cross-platform Apps",
-      "Backend Integrations",
-      "Authentication",
-      "Payments",
-      "Production Deployment",
-    ],
-    linkLabel: "Explore mobile engineering",
-    href: "/services/mobile-app-development",
-    background: "/services-bg/service-bg-3.png",
   },
   {
     id: "cloud-infrastructure",
@@ -104,6 +58,22 @@ export const HOME_SERVICES: readonly HomeService[] = [
     background: "/services-bg/service-bg-5.png",
   },
   {
+    id: "website-design",
+    title: "Web & Digital Experience",
+    description:
+      "High-performance digital experiences with engineering behind them. From corporate websites to product interfaces, we build fast, clear and technically robust digital experiences designed to perform in production.",
+    capabilities: [
+      "Websites",
+      "Product UI",
+      "Frontend Engineering",
+      "Performance",
+      "Technical SEO & AEO",
+    ],
+    linkLabel: "Explore digital experiences",
+    href: "/services/website-design-development",
+    background: "/services-bg/service-bg-1.png",
+  },
+  {
     id: "custom-software",
     title: "Custom Software Engineering",
     description:
@@ -119,5 +89,36 @@ export const HOME_SERVICES: readonly HomeService[] = [
     href: "/services/custom-software-development",
     background: "/services-bg/service-bg-2.png",
     featured: true,
+  },
+  {
+    id: "mobile-app",
+    title: "Mobile Engineering",
+    description:
+      "Production-ready mobile products without disconnected backend thinking. We build mobile applications alongside the APIs, infrastructure and operational systems required to support them reliably.",
+    capabilities: [
+      "Cross-platform Apps",
+      "Backend Integrations",
+      "Authentication",
+      "Payments",
+      "Production Deployment",
+    ],
+    linkLabel: "Explore mobile engineering",
+    href: "/services/mobile-app-development",
+    background: "/services-bg/service-bg-3.png",
+  },
+  {
+    id: "application-support",
+    title: "L1–L4 Application Support",
+    description:
+      "Support that escalates all the way to engineering. We manage application issues from first-line support to complex production defects, code-level fixes and specialist escalation.",
+    capabilities: [
+      "L1 Service Support",
+      "L2 Technical Support",
+      "L3 Engineering Support",
+      "L4 Specialist Engineering",
+    ],
+    linkLabel: "Explore application support",
+    href: "/services/application-support",
+    background: "/services-bg/service-bg-2.png",
   },
 ] as const;

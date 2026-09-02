@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { FigmaFooter } from "@/components/layout/figma-footer";
-import { FigmaNav } from "@/components/layout/figma-nav";
+import { FigmaNavLoader } from "@/components/layout/figma-nav-loader";
 import { MarketingCtaSection } from "@/components/marketing/marketing-cta-section";
 import { MarketingFadeIn } from "@/components/marketing/marketing-motion";
 import { MarketingPageHero } from "@/components/marketing/marketing-page-hero";
@@ -13,6 +13,7 @@ import {
 } from "@/components/marketing/marketing-section-header";
 import { MarketingWorkGrid } from "@/components/marketing/marketing-work-grid";
 import { PageBreadcrumbs } from "@/components/seo/page-breadcrumbs";
+import { listPublishedCaseStudySummaries } from "@/lib/admin/case-studies";
 import { buildPageMetadata } from "@/lib/metadata";
 import { canonicalPath } from "@/lib/site";
 
@@ -29,13 +30,26 @@ const RELATED_SERVICES = [
   { label: "SEO, AEO & Search Engineering", href: "/services/seo-aeo-copywriting" },
 ] as const;
 
-export default function WorkIndexPage() {
+export default async function WorkIndexPage() {
+  const summaries = await listPublishedCaseStudySummaries();
+  const projects = summaries.map((study) => ({
+    title: study.title,
+    category: study.category,
+    desc: study.description,
+    href: study.href,
+    image: study.image,
+  }));
+  const footerCaseStudies = summaries.map((study) => ({
+    label: study.title,
+    href: study.href,
+  }));
+
   return (
     <div
       className="min-h-screen bg-background text-foreground antialiased"
       style={{ fontFamily: "var(--font-sans)" }}
     >
-      <FigmaNav />
+      <FigmaNavLoader />
 
       <main>
         <MarketingPageHero
@@ -48,22 +62,22 @@ export default function WorkIndexPage() {
           }
           description="Recent projects from Comlabs Technologies Pvt Ltd — from conversion-focused websites to custom software and product onboarding flows."
         >
-          <PageBreadcrumbs currentPath="/work" items={[{ label: "Work" }]} />
+          <PageBreadcrumbs currentPath="/work" items={[{ label: "Case Studies" }]} />
         </MarketingPageHero>
 
         <section className="border-y border-border bg-card px-6 py-24 md:py-32">
           <div className="mx-auto max-w-6xl">
             <MarketingSectionHeader
               className="mb-10 md:mb-12"
-              eyebrow="Selected work"
+              eyebrow="Case Studies"
               title={
                 <>
                   Recent <MarketingOrangeHighlight>projects</MarketingOrangeHighlight>.
                 </>
               }
-              description="Explore selected work across digital products, conversion-focused websites, product onboarding and brand-led digital experiences."
+              description="Explore published case studies across digital products, conversion-focused websites, product onboarding and brand-led digital experiences."
             />
-            <MarketingWorkGrid />
+            <MarketingWorkGrid projects={projects} />
           </div>
         </section>
 
@@ -105,7 +119,7 @@ export default function WorkIndexPage() {
         />
       </main>
 
-      <FigmaFooter />
+      <FigmaFooter caseStudies={footerCaseStudies} />
     </div>
   );
 }

@@ -1,16 +1,20 @@
 import { CareersForm } from "@/components/careers/careers-form";
-import { FigmaNav } from "@/components/layout/figma-nav";
+import { FigmaNav, type NavCaseStudyItem } from "@/components/layout/figma-nav";
 import { HERO_BACKGROUND_PATH, mediaUrl } from "@/lib/cloudinary";
 
 const BACKGROUND_IMAGE = HERO_BACKGROUND_PATH;
 
-export function CareersPage() {
+type CareersPageProps = {
+  caseStudies?: NavCaseStudyItem[];
+};
+
+export function CareersPage({ caseStudies }: CareersPageProps) {
   return (
     <div
       className="min-h-screen bg-background text-foreground antialiased"
       style={{ fontFamily: "var(--font-sans)" }}
     >
-      <FigmaNav />
+      <FigmaNav caseStudies={caseStudies} />
 
       <div className="grid min-h-screen lg:grid-cols-2">
         <div className="relative flex md:min-h-screen flex-col justify-end px-8 py-12 lg:min-h-0 lg:px-12 lg:py-28">

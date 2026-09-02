@@ -16,7 +16,13 @@ const SIMPLE_LINKS = [
   { label: "Careers", href: "/careers" },
 ] as const;
 
-const WORK_ITEMS = [
+export type NavCaseStudyItem = {
+  title: string;
+  description: string;
+  href: string;
+};
+
+const FALLBACK_CASE_STUDIES: NavCaseStudyItem[] = [
   {
     title: "Formial Labs",
     description: "Custom Software Engineering",
@@ -32,7 +38,7 @@ const WORK_ITEMS = [
     description: "Web & Digital Experience",
     href: "/work/vithub",
   },
-] as const;
+];
 
 type DesktopMenu = "services" | "work" | null;
 type MobileAccordion = "services" | "work" | null;
@@ -54,15 +60,22 @@ function navLinkClass(dark: boolean) {
 type FigmaNavProps = {
   showBlogLink?: boolean;
   tone?: "light" | "dark";
+  caseStudies?: NavCaseStudyItem[];
 };
 
-export function FigmaNav({ showBlogLink = true, tone = "light" }: FigmaNavProps) {
+export function FigmaNav({
+  showBlogLink = true,
+  tone = "light",
+  caseStudies,
+}: FigmaNavProps) {
   const dark = tone === "dark";
   const [menuOpen, setMenuOpen] = useState(false);
   const [desktopMenu, setDesktopMenu] = useState<DesktopMenu>(null);
   const [mobileAccordion, setMobileAccordion] = useState<MobileAccordion>(null);
   const closeTimer = useRef<number | null>(null);
   const reduce = useReducedMotion();
+  const workItems =
+    caseStudies && caseStudies.length > 0 ? caseStudies : FALLBACK_CASE_STUDIES;
 
   const blogLinks =
     showBlogLink && isBlogPublic()
@@ -184,7 +197,7 @@ export function FigmaNav({ showBlogLink = true, tone = "light" }: FigmaNavProps)
             </DesktopDropdown>
 
             <DesktopDropdown
-              label="Work"
+              label="Case Studies"
               href="/work"
               open={desktopMenu === "work"}
               reduce={Boolean(reduce)}
@@ -195,7 +208,7 @@ export function FigmaNav({ showBlogLink = true, tone = "light" }: FigmaNavProps)
               onScheduleClose={scheduleClose}
             >
               <div className="flex flex-col gap-1">
-                {WORK_ITEMS.map((item) => (
+                {workItems.map((item) => (
                   <DropdownItem
                     key={item.href}
                     href={item.href}
@@ -205,7 +218,7 @@ export function FigmaNav({ showBlogLink = true, tone = "light" }: FigmaNavProps)
                   />
                 ))}
               </div>
-              <DropdownFooter href="/work" label="View all work" dark={dark} />
+              <DropdownFooter href="/work" label="View all case studies" dark={dark} />
             </DesktopDropdown>
 
             {[...SIMPLE_LINKS, ...blogLinks].map((link) => (
@@ -339,7 +352,7 @@ export function FigmaNav({ showBlogLink = true, tone = "light" }: FigmaNavProps)
 
               <MobileAccordion
                 id="mobile-work"
-                label="Work"
+                label="Case Studies"
                 href="/work"
                 open={mobileAccordion === "work"}
                 onToggle={() =>
@@ -349,7 +362,7 @@ export function FigmaNav({ showBlogLink = true, tone = "light" }: FigmaNavProps)
                 }
                 onNavigate={closeMobile}
               >
-                {WORK_ITEMS.map((item) => (
+                {workItems.map((item) => (
                   <Link
                     key={item.href}
                     href={canonicalPath(item.href)}
@@ -367,7 +380,7 @@ export function FigmaNav({ showBlogLink = true, tone = "light" }: FigmaNavProps)
                   className="block px-3 py-3 text-sm text-muted-foreground"
                   onClick={closeMobile}
                 >
-                  View all work →
+                  View all case studies →
                 </Link>
               </MobileAccordion>
 

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { CareersPage } from "@/components/careers/careers-page";
+import { listPublishedCaseStudySummaries } from "@/lib/admin/case-studies";
 import { buildPageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = buildPageMetadata({
@@ -10,6 +11,13 @@ export const metadata: Metadata = buildPageMetadata({
   path: "/careers",
 });
 
-export default function CareersRoute() {
-  return <CareersPage />;
+export default async function CareersRoute() {
+  const summaries = await listPublishedCaseStudySummaries();
+  const caseStudies = summaries.map((study) => ({
+    title: study.title,
+    description: study.category,
+    href: study.href,
+  }));
+
+  return <CareersPage caseStudies={caseStudies} />;
 }

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { ThankYouPage } from "@/components/contact/thank-you-page";
+import { listPublishedCaseStudySummaries } from "@/lib/admin/case-studies";
 import { buildPageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = {
@@ -22,5 +23,17 @@ export default async function ThankYouRoute({
   searchParams: Promise<{ from?: string }>;
 }) {
   const { from } = await searchParams;
-  return <ThankYouPage variant={from === "careers" ? "careers" : "contact"} />;
+  const summaries = await listPublishedCaseStudySummaries();
+  const caseStudies = summaries.map((study) => ({
+    title: study.title,
+    description: study.category,
+    href: study.href,
+  }));
+
+  return (
+    <ThankYouPage
+      variant={from === "careers" ? "careers" : "contact"}
+      caseStudies={caseStudies}
+    />
+  );
 }

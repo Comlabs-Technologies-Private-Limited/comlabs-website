@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 import { FigmaFooter } from "@/components/layout/figma-footer";
-import { FigmaNav } from "@/components/layout/figma-nav";
+import { FigmaNavLoader } from "@/components/layout/figma-nav-loader";
 import { MarketingCtaSection } from "@/components/marketing/marketing-cta-section";
 import { MarketingFadeIn } from "@/components/marketing/marketing-motion";
 import { MarketingPageHero } from "@/components/marketing/marketing-page-hero";
@@ -13,6 +13,7 @@ import {
 } from "@/components/marketing/marketing-section-header";
 import { MarketingProjectCards } from "@/components/marketing/marketing-work-grid";
 import { PageBreadcrumbs } from "@/components/seo/page-breadcrumbs";
+import { listPublishedCaseStudySummaries } from "@/lib/admin/case-studies";
 import { buildPageMetadata } from "@/lib/metadata";
 import { editorialImages } from "@/lib/editorial-images";
 import { canonicalPath, siteLocation, siteName } from "@/lib/site";
@@ -25,13 +26,26 @@ export const metadata: Metadata = buildPageMetadata({
   absoluteTitle: true,
 });
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const summaries = await listPublishedCaseStudySummaries();
+  const projects = summaries.map((study) => ({
+    title: study.title,
+    category: study.category,
+    desc: study.description,
+    href: study.href,
+    image: study.image,
+  }));
+  const footerCaseStudies = summaries.map((study) => ({
+    label: study.title,
+    href: study.href,
+  }));
+
   return (
     <div
       className="min-h-screen bg-background text-foreground antialiased"
       style={{ fontFamily: "var(--font-sans)" }}
     >
-      <FigmaNav />
+      <FigmaNavLoader />
 
       <main>
         <MarketingPageHero
@@ -85,7 +99,7 @@ export default function AboutPage() {
         <section className="px-6 py-24 md:py-28">
           <div className="mx-auto max-w-6xl">
             <MarketingSectionHeader
-              eyebrow="Selected work"
+              eyebrow="Case Studies"
               title={
                 <>
                   Recent <MarketingOrangeHighlight>projects</MarketingOrangeHighlight>.
@@ -93,7 +107,7 @@ export default function AboutPage() {
               }
               description="Explore case studies across website projects, product onboarding, and brand-led marketing sites."
             />
-            <MarketingProjectCards />
+            <MarketingProjectCards projects={projects} />
             <Link
               href={canonicalPath("/work")}
               className="mt-8 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--warm-orange)] transition-opacity hover:opacity-80"
@@ -110,7 +124,7 @@ export default function AboutPage() {
         />
       </main>
 
-      <FigmaFooter />
+      <FigmaFooter caseStudies={footerCaseStudies} />
     </div>
   );
 }

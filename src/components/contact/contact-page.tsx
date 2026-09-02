@@ -1,18 +1,22 @@
 "use client";
 
-import { FigmaNav } from "@/components/layout/figma-nav";
+import { FigmaNav, type NavCaseStudyItem } from "@/components/layout/figma-nav";
 import { ContactForm } from "@/components/contact/contact-form";
 import { HERO_BACKGROUND_PATH, mediaUrl } from "@/lib/cloudinary";
 
 const BACKGROUND_IMAGE = HERO_BACKGROUND_PATH;
 
-export function ContactPage() {
+type ContactPageProps = {
+  caseStudies?: NavCaseStudyItem[];
+};
+
+export function ContactPage({ caseStudies }: ContactPageProps) {
   return (
     <div
       className="min-h-screen bg-background text-foreground antialiased"
       style={{ fontFamily: "var(--font-sans)" }}
     >
-      <FigmaNav />
+      <FigmaNav caseStudies={caseStudies} />
 
       <div className="grid min-h-screen lg:grid-cols-2">
         {/* LEFT — cinematic panel */}

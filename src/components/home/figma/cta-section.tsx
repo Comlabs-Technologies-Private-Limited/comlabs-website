@@ -17,16 +17,11 @@ export function FigmaCtaSection() {
           Let&apos;s talk
         </p>
         <h2
-          className="mb-6 text-2xl font-bold tracking-tight md:text-5xl"
+          className="mb-10 text-2xl font-bold tracking-tight md:text-5xl"
           style={{ color: "var(--background)", letterSpacing: "-0.03em" }}
         >
           Your technology should not become your operational bottleneck.
         </h2>
-        <p className="mb-10 text-base leading-relaxed" style={{ color: "rgba(247,247,244,0.55)" }}>
-          Whether you need stronger application support, production infrastructure, AI engineering
-          or a new software system, Comlabs brings the engineering depth to take responsibility for
-          it.
-        </p>
         <a
           href={canonicalPath("/contact")}
           className="inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-sm font-semibold transition-opacity hover:opacity-90"
@@ -34,6 +29,15 @@ export function FigmaCtaSection() {
         >
           Talk to our team <ArrowRight size={14} />
         </a>
+        <p className="mt-5">
+          <a
+            href={canonicalPath("/work")}
+            className="text-sm transition-opacity hover:opacity-80"
+            style={{ color: "rgba(247,247,244,0.55)" }}
+          >
+            Explore case studies
+          </a>
+        </p>
       </div>
     </section>
   );

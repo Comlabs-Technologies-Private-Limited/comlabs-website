@@ -3,29 +3,38 @@ export const PROCESS_STEPS = [
     step: "01",
     title: "Assess",
     description:
-      "We understand the system, business requirements, infrastructure and operational constraints before changing anything.",
+      "We map the system, operating constraints and business outcome before changing anything.",
   },
   {
     step: "02",
     title: "Engineer",
     description:
-      "We design, build or improve the software, infrastructure and workflows required to solve the problem properly.",
+      "We design and build the software, infrastructure or workflows required to solve the problem properly.",
   },
   {
     step: "03",
     title: "Deploy",
     description:
-      "Changes move through controlled environments, testing and production validation.",
+      "We release through controlled environments, testing and production validation.",
   },
   {
     step: "04",
     title: "Operate",
     description:
-      "Where required, we stay responsible through monitoring, support, incident resolution and continuous engineering.",
+      "Where needed, we stay responsible through monitoring, support, incident resolution and continuous improvement.",
   },
 ] as const;
 
 export const PROJECTS = [
+  {
+    title: "Global Services",
+    category: "Website Design & Development",
+    desc: "Full website rebuild that lifted conversion and helped land JIO and Vodafone-Idea as enterprise clients.",
+    href: "/work/global-services",
+    liveSiteUrl: "https://global-services-website.vercel.app",
+    image: "/work/global-services/global-services-case-study-hero.webp",
+    featured: true,
+  },
   {
     title: "Radiant",
     category: "Website Design & Development",
@@ -41,14 +50,6 @@ export const PROJECTS = [
     href: "/work/formial-labs",
     liveSiteUrl: "https://formial.in",
     image: "/work/formial-labs/formial-case-study-hero.webp",
-  },
-  {
-    title: "Global Services",
-    category: "Website Design & Development",
-    desc: "Full website rebuild that lifted conversion and helped land JIO and Vodafone-Idea as enterprise clients.",
-    href: "/work/global-services",
-    liveSiteUrl: "https://global-services-website.vercel.app",
-    image: "/work/global-services/global-services-case-study-hero.webp",
   },
   {
     title: "Vithub",
@@ -74,16 +75,6 @@ export type Testimonial = {
 export const TESTIMONIALS: Testimonial[] = [
   {
     quote:
-      "Honestly, I came to Comlabs with a messy idea and not much else. They figured out what I was actually trying to build and turned it into a dashboard that just works. Our users went from confused to comfortable. Felt less like hiring an agency and more like having someone on the team who cared.",
-    name: "Jeet Patel",
-    title: "Founder",
-    company: "Formial",
-    initials: "JP",
-    avatarSrc:
-      "https://res.cloudinary.com/p8osc4y4/image/upload/v1786453596/jeet-patel_hewm25.jpg",
-  },
-  {
-    quote:
       "We deal with companies like JIO and Vodafone, so I didn't want a website that looked small. Comlabs got that immediately. They rebuilt the whole thing and now it actually looks like a company at our level. No hand-holding, no chasing — they just got it done.",
     name: "Pramod Mishra",
     title: "Director",
@@ -91,6 +82,16 @@ export const TESTIMONIALS: Testimonial[] = [
     initials: "PM",
     avatarSrc:
       "https://res.cloudinary.com/p8osc4y4/image/upload/v1786453596/pramod-mishra_rygkvp.jpg",
+  },
+  {
+    quote:
+      "Honestly, I came to Comlabs with a messy idea and not much else. They figured out what I was actually trying to build and turned it into a dashboard that just works. Our users went from confused to comfortable. Felt less like hiring an agency and more like having someone on the team who cared.",
+    name: "Jeet Patel",
+    title: "Founder",
+    company: "Formial",
+    initials: "JP",
+    avatarSrc:
+      "https://res.cloudinary.com/p8osc4y4/image/upload/v1786453596/jeet-patel_hewm25.jpg",
   },
   {
     quote:

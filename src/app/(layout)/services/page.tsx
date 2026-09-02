@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 import { FigmaFooter } from "@/components/layout/figma-footer";
-import { FigmaNav } from "@/components/layout/figma-nav";
+import { FigmaNavLoader } from "@/components/layout/figma-nav-loader";
 import { MarketingCtaSection } from "@/components/marketing/marketing-cta-section";
 import { MarketingPageHero } from "@/components/marketing/marketing-page-hero";
 import {
@@ -44,7 +44,7 @@ export default function ServicesIndexPage() {
         })}
       />
 
-      <FigmaNav />
+      <FigmaNavLoader />
 
       <main>
         <MarketingPageHero

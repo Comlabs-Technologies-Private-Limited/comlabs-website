@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 
 import { FigmaFooter } from "@/components/layout/figma-footer";
-import { FigmaNav } from "@/components/layout/figma-nav";
+import { FigmaNavLoader } from "@/components/layout/figma-nav-loader";
 import { MarketingCtaSection } from "@/components/marketing/marketing-cta-section";
 import { MarketingPageHero } from "@/components/marketing/marketing-page-hero";
 import {
@@ -40,7 +40,7 @@ export function ServicePageLayout({ service }: { service: ServicePageData }) {
       />
       {service.faqs.length > 0 ? <JsonLdScript data={getFaqPageSchema(service.faqs)} /> : null}
 
-      <FigmaNav />
+      <FigmaNavLoader />
 
       <main>
         <MarketingPageHero

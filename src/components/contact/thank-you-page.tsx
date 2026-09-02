@@ -2,22 +2,23 @@ import Link from "next/link";
 import { ArrowRight, Check } from "lucide-react";
 
 import { FigmaFooter } from "@/components/layout/figma-footer";
-import { FigmaNav } from "@/components/layout/figma-nav";
+import { FigmaNav, type NavCaseStudyItem } from "@/components/layout/figma-nav";
 import { HERO_BACKGROUND_PATH, layeredBackgroundImage } from "@/lib/cloudinary";
 import { canonicalPath, siteName } from "@/lib/site";
 
 type ThankYouPageProps = {
   variant?: "contact" | "careers";
+  caseStudies?: NavCaseStudyItem[];
 };
 
-export function ThankYouPage({ variant = "contact" }: ThankYouPageProps) {
+export function ThankYouPage({ variant = "contact", caseStudies }: ThankYouPageProps) {
   const isCareers = variant === "careers";
   return (
     <div
       className="flex min-h-screen flex-col bg-background text-foreground antialiased"
       style={{ fontFamily: "var(--font-sans)" }}
     >
-      <FigmaNav />
+      <FigmaNav caseStudies={caseStudies} />
 
       <main className="relative flex flex-1 flex-col items-center justify-center px-6 py-20 md:py-28">
         <div

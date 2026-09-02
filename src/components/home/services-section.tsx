@@ -31,7 +31,7 @@ function ServiceCardVisual({
     <ServiceIllustrationFrame
       label={label}
       background={service.background}
-      priority={index < 2}
+      priority={index < 3}
       className={cn(
         "w-full shrink-0 rounded-none border-0 md:rounded-none",
         featured && "md:h-full md:min-h-[360px] md:flex-1 md:aspect-auto",
@@ -65,14 +65,17 @@ export function HomeServiceCard({
         ease,
       }}
       className={cn(
-        "flex h-full min-w-0 flex-col overflow-hidden rounded-3xl border border-border bg-background transition-[border-color,box-shadow] duration-300 hover:border-foreground/20 hover:shadow-[0_8px_32px_rgba(28,25,23,0.06)]",
+        "flex h-full min-w-0 flex-col overflow-hidden shadow-md rounded-3xl border border-border bg-background transition-[border-color,box-shadow] duration-300 hover:border-foreground/20 hover:shadow-[0_8px_32px_rgba(28,25,23,0.06)]",
         featured && "md:col-span-2 md:flex-row",
       )}
     >
       <div className={cn("min-w-0", featured && "md:flex md:h-full md:w-[55%] md:shrink-0 md:flex-col")}>
         <ServiceCardVisual service={service} index={index} featured={featured} />
       </div>
-      <div className="flex flex-1 flex-col p-6 md:p-8">
+      <div
+        className="flex flex-1 flex-col justify-center p-6 text-left md:p-8 "
+        style={{ background: "#F7F7F4" }}
+      >
         <h3
           className="text-lg leading-[1.2] font-bold tracking-tight md:text-xl"
           style={{ letterSpacing: "-0.03em" }}
@@ -80,16 +83,6 @@ export function HomeServiceCard({
           {service.title}
         </h3>
         <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{service.description}</p>
-        <ul className="mt-5 flex flex-1 flex-col gap-2">
-          {service.capabilities.map((item) => (
-            <li key={item} className="flex items-start gap-2 text-sm text-muted-foreground">
-              <span className="mt-0.5 shrink-0 font-medium" style={{ color: "var(--warm-orange)" }}>
-                →
-              </span>
-              {item}
-            </li>
-          ))}
-        </ul>
         <Link
           href={canonicalPath(service.href)}
           className="group mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--warm-orange)] transition-opacity hover:opacity-80"

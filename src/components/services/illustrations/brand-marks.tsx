@@ -197,11 +197,36 @@ export function CloudFrontMark({ className = "h-[10px] w-[10px] lg:h-[12px] lg:w
   );
 }
 
+/** Elastic Load Balancing mark — used beside ALB nodes. */
+export function AlbMark({ className = "h-[10px] w-[10px] lg:h-[12px] lg:w-[12px]" }: MarkProps) {
+  return (
+    <svg className={`shrink-0 ${className}`} viewBox="0 0 24 24" fill="none" aria-hidden>
+      <rect x="3" y="4" width="18" height="5" rx="1.5" fill="#8C4FFF" />
+      <path
+        fill="#8C4FFF"
+        d="M5.5 11h3v2H5.5v-2zm5 0h3v2h-3v-2zm5 0h3v2h-3v-2zM4 15.5h4.5V19H4v-3.5zm5.75 0h4.5V19h-4.5v-3.5zm5.75 0H20V19h-4.5v-3.5z"
+      />
+    </svg>
+  );
+}
+
 export function Ec2Mark({ className = "h-[10px] w-[10px] lg:h-[12px] lg:w-[12px]" }: MarkProps) {
   return (
     <svg className={`shrink-0 ${className}`} viewBox="0 0 24 24" fill="none" aria-hidden>
       <rect x="3" y="5" width="18" height="12" rx="2" fill="#ED7100" />
       <rect x="6" y="8" width="12" height="6" rx="1" fill="#fff" fillOpacity="0.9" />
+    </svg>
+  );
+}
+
+/** ECS container mark — orange cube used on cluster nodes. */
+export function EcsMark({ className = "h-[10px] w-[10px] lg:h-[12px] lg:w-[12px]" }: MarkProps) {
+  return (
+    <svg className={`shrink-0 ${className}`} viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path
+        fill="#ED7100"
+        d="M12 2.5 4 7v10l8 4.5 8-4.5V7L12 2.5zm0 2.2 5.6 3.15L12 11 6.4 7.85 12 4.7zM5.5 9.1l5.5 3.1v6.5l-5.5-3.1V9.1zm13 0v6.5l-5.5 3.1v-6.5l5.5-3.1z"
+      />
     </svg>
   );
 }

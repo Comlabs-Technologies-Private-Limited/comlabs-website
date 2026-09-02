@@ -21,7 +21,7 @@ export const serviceIllustrations: Record<string, ServiceIllustration> = {
   "application-support": {
     Component: ApplicationSupportIllustration,
     label:
-      "Application support illustration: incident INC-2481 for a production Payments API failure, escalating from L1 triage through L4 with a resolved finish.",
+      "Application support illustration: Live incident command centre for INC-2481 Payments API, escalating L1 through L4 with a diagnostic strip showing 5xx recovery and deployment verification.",
   },
   "agentic-infrastructure": {
     Component: AgenticWorkflowIllustration,
@@ -36,7 +36,7 @@ export const serviceIllustrations: Record<string, ServiceIllustration> = {
   "custom-software": {
     Component: CustomSoftwareIllustration,
     label:
-      "Custom software illustration: Atlas receiving an Acme workspace request and provisioning CRM, seats and calendar until the workspace is ready.",
+      "Custom software illustration: Atlas Ops onboarding Helio Growth through workspace provisioning, CRM, admin seats and kickoff until the workspace is ready.",
   },
   "mobile-app": {
     Component: MobileAppIllustration,
@@ -51,7 +51,7 @@ export const serviceIllustrations: Record<string, ServiceIllustration> = {
   "cloud-infrastructure": {
     Component: CloudScalingIllustration,
     label:
-      "Cloud infrastructure illustration: live production traffic moving CloudFront to ALB, ECS and RDS in ap-south-1 until the deploy is healthy.",
+      "Cloud infrastructure illustration: production control plane in ap-south-1 with CloudFront, load balancer, autoscaling ECS and RDS, plus a zero-downtime deploy event and live ops metrics.",
   },
 };
 

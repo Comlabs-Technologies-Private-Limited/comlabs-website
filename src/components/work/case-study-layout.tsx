@@ -1,7 +1,7 @@
 "use client";
 
 import { FigmaFooter } from "@/components/layout/figma-footer";
-import { FigmaNav } from "@/components/layout/figma-nav";
+import { FigmaNav, type NavCaseStudyItem } from "@/components/layout/figma-nav";
 import {
   type CaseStudyContent,
   type CaseStudyServiceLink,
@@ -22,7 +22,17 @@ import { RelatedService } from "./case-study/related-service";
 
 export type { CaseStudyContent } from "@/lib/case-studies";
 
-export function CaseStudyLayout({ content }: { content: CaseStudyContent }) {
+type CaseStudyLayoutProps = {
+  content: CaseStudyContent;
+  caseStudies?: NavCaseStudyItem[];
+  footerCaseStudies?: Array<{ label: string; href: string }>;
+};
+
+export function CaseStudyLayout({
+  content,
+  caseStudies,
+  footerCaseStudies,
+}: CaseStudyLayoutProps) {
   const { slug, client, year, headline, standfirst, meta, leadImage, sections } = content;
   const isKnownSlug = CASE_STUDY_ORDER.includes(slug as CaseStudySlug);
   const slugKey = slug as CaseStudySlug;
@@ -40,7 +50,7 @@ export function CaseStudyLayout({ content }: { content: CaseStudyContent }) {
       className="min-h-screen bg-background text-foreground antialiased"
       style={{ fontFamily: "var(--font-sans)" }}
     >
-      <FigmaNav />
+      <FigmaNav caseStudies={caseStudies} />
 
       <main>
         <CaseStudyHero
@@ -96,7 +106,7 @@ export function CaseStudyLayout({ content }: { content: CaseStudyContent }) {
         />
       </main>
 
-      <FigmaFooter />
+      <FigmaFooter caseStudies={footerCaseStudies} />
     </div>
   );
 }

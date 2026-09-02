@@ -18,5 +18,7 @@ export function revalidateContentPaths({ type, slug }: RevalidateContentInput): 
   }
 
   revalidatePath("/work");
+  revalidatePath("/");
+  revalidatePath("/about");
   if (slug) revalidatePath(`/work/${slug}`);
 }

@@ -40,11 +40,6 @@ const clients: ClientLogo[] = [
     src: "/logos/clients/formial-labs.png",
     alt: "Formial Labs logo",
   },
-  {
-    name: "Jindal Steel & Power",
-    src: "/logos/clients/jindal-steel.png",
-    alt: "Jindal Steel & Power logo",
-  },
 ];
 
 function LogoBox({ client }: { client: ClientLogo }) {

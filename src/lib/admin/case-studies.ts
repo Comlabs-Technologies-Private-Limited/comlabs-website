@@ -11,7 +11,9 @@ import { formialLabsCaseStudy } from "@/lib/case-studies/formial-labs";
 import { globalServicesCaseStudy } from "@/lib/case-studies/global-services";
 import { radiantCaseStudy } from "@/lib/case-studies/radiant";
 import { vithubCaseStudy } from "@/lib/case-studies/vithub";
-import { getPrisma } from "@/lib/prisma";
+import { cache } from "react";
+
+import { getPrisma, isDatabaseConfigured } from "@/lib/prisma";
 import { buildCaseStudySeo } from "@/lib/seo/auto-metadata";
 import { revalidateContentPaths } from "@/lib/seo/revalidate-content";
 
@@ -159,15 +161,75 @@ export async function getPublishedCaseStudySlugs(): Promise<string[]> {
     const records = await prisma.caseStudy.findMany({
       where: { status: "published" },
       select: { slug: true },
+      orderBy: { updatedAt: "desc" },
     });
-    // Statically authored case studies stay available before they are seeded.
-    return [
-      ...new Set([...records.map((record) => record.slug), ...Object.keys(STATIC_CASE_STUDIES)]),
-    ];
+    const dbSlugs = records.map((record) => record.slug);
+    // Keep static slugs resolvable for existing authored pages and next-links.
+    return [...new Set([...dbSlugs, ...Object.keys(STATIC_CASE_STUDIES)])];
   } catch {
     return [...CASE_STUDY_ORDER];
   }
 }
+
+export type CaseStudySummary = {
+  slug: string;
+  title: string;
+  description: string;
+  category: string;
+  image: string;
+  href: string;
+  year: string;
+};
+
+function categoryFromMeta(meta: CaseStudyMetaItem[]): string {
+  const hit = meta.find((item) =>
+    /service|categor|discipline|type|industry/i.test(item.label),
+  );
+  return hit?.value ?? "Case study";
+}
+
+function toSummary(record: {
+  slug: string;
+  client: string;
+  standfirst: string;
+  meta: CaseStudyMetaItem[];
+  leadImage: { src: string };
+  year: string;
+}): CaseStudySummary {
+  return {
+    slug: record.slug,
+    title: record.client,
+    description: record.standfirst,
+    category: categoryFromMeta(record.meta),
+    image: record.leadImage.src,
+    href: `/work/${record.slug}`,
+    year: record.year,
+  };
+}
+
+function staticCaseStudySummaries(): CaseStudySummary[] {
+  return CASE_STUDY_ORDER.map((slug) => toSummary(STATIC_CASE_STUDIES[slug]!));
+}
+
+/**
+ * Published case studies for homepage / nav / index grids.
+ * When MongoDB is configured, returns only `published` DB records (no static merge).
+ * Falls back to static authored studies only when the database is unavailable.
+ */
+export const listPublishedCaseStudySummaries = cache(
+  async (): Promise<CaseStudySummary[]> => {
+    if (!isDatabaseConfigured()) {
+      return staticCaseStudySummaries();
+    }
+
+    try {
+      const records = await listCaseStudies({ status: "published" });
+      return records.map(toSummary);
+    } catch {
+      return staticCaseStudySummaries();
+    }
+  },
+);
 
 export async function listCaseStudies(options?: {
   status?: "draft" | "published";

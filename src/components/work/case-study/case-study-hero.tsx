@@ -34,7 +34,7 @@ export function CaseStudyHero({
         <PageBreadcrumbs
           className="mb-10"
           currentPath={`/work/${slug}`}
-          items={[{ label: "Work", href: "/work" }, { label: client }]}
+          items={[{ label: "Case Studies", href: "/work" }, { label: client }]}
         />
 
         <MarketingFadeIn>

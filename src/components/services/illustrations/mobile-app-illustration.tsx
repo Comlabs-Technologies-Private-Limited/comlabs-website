@@ -100,7 +100,7 @@ export function MobileAppIllustration() {
                 style={{
                   background: GRAPHITE,
                   borderRadius: 999,
-                  minHeight: 14,
+                  minHeight: 15.5,
                   minWidth: island.mode === "compact" ? 52 : 96,
                 }}
                 transition={reduce ? { duration: 0 } : illustrationSpring.island}

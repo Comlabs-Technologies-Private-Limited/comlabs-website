@@ -6,21 +6,22 @@ import { PROCESS_STEPS } from "@/components/home/figma/home-data";
 
 export function FigmaProcessSection() {
   return (
-    <section id="process" className="border-y border-border bg-card px-6 py-24">
+    <section id="process" className="bg-[#141414] px-6 py-20 md:py-24">
       <div className="mx-auto max-w-6xl">
-        <div className="mb-12">
-          <p className="mb-4 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
-            Process
+        <div className="mb-10 max-w-2xl md:mb-12">
+          <p className="mb-4 text-xs font-semibold tracking-widest text-neutral-100/55 uppercase">
+            How we work
           </p>
           <h2
-            className="text-2xl font-bold tracking-tight md:text-5xl"
+            className="text-2xl font-bold tracking-tight text-neutral-100 md:text-4xl"
             style={{ letterSpacing: "-0.03em" }}
           >
-            How we <span style={{ color: "var(--warm-orange)" }}>work</span>.
+            From problem to{" "}
+            <span style={{ color: "var(--warm-orange)" }}>dependable</span> operation.
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-8 border-t border-white/10 pt-10 md:grid-cols-2 lg:grid-cols-4 md:gap-6">
           {PROCESS_STEPS.map((step, i) => (
             <motion.div
               key={step.step}
@@ -36,8 +37,10 @@ export function FigmaProcessSection() {
               >
                 {step.step}
               </div>
-              <h3 className="mb-2 text-sm font-semibold">{step.title}</h3>
-              <p className="text-sm leading-relaxed text-muted-foreground">{step.description}</p>
+              <h3 className="mb-2 text-sm font-medium tracking-tight text-neutral-100">
+                {step.title}
+              </h3>
+              <p className="text-sm leading-relaxed text-neutral-100/70">{step.description}</p>
             </motion.div>
           ))}
         </div>

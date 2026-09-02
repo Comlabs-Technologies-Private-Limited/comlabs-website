@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { FigmaFooter } from "@/components/layout/figma-footer";
-import { FigmaNav } from "@/components/layout/figma-nav";
+import { FigmaNavLoader } from "@/components/layout/figma-nav-loader";
 import { canonicalPath } from "@/lib/site";
 
 export default function NotFound() {
@@ -10,7 +10,7 @@ export default function NotFound() {
       className="min-h-screen bg-background text-foreground antialiased"
       style={{ fontFamily: "var(--font-sans)" }}
     >
-      <FigmaNav />
+      <FigmaNavLoader />
       <main className="mx-auto flex max-w-6xl flex-col items-start px-6 py-32">
         <p className="mb-4 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
           404

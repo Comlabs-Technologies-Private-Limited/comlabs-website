@@ -6,6 +6,7 @@ import { CaseStudyJsonLd } from "@/components/work/case-study-json-ld";
 import {
   getPublishedCaseStudyPage,
   getPublishedCaseStudySlugs,
+  listPublishedCaseStudySummaries,
 } from "@/lib/admin/case-studies";
 import { buildPageMetadata } from "@/lib/metadata";
 
@@ -49,6 +50,16 @@ export default async function CaseStudyPage({
   if (!page) notFound();
 
   const { metaTitle, metaDescription, updatedAt, ...content } = page;
+  const summaries = await listPublishedCaseStudySummaries();
+  const caseStudies = summaries.map((study) => ({
+    title: study.title,
+    description: study.category,
+    href: study.href,
+  }));
+  const footerCaseStudies = summaries.map((study) => ({
+    label: study.title,
+    href: study.href,
+  }));
 
   return (
     <>
@@ -58,7 +69,11 @@ export default async function CaseStudyPage({
         metaDescription={metaDescription}
         updatedAt={updatedAt}
       />
-      <CaseStudyLayout content={content} />
+      <CaseStudyLayout
+        content={content}
+        caseStudies={caseStudies}
+        footerCaseStudies={footerCaseStudies}
+      />
     </>
   );
 }

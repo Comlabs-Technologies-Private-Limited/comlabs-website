@@ -3,26 +3,30 @@
 import Link from "next/link";
 import { ArrowRight, ExternalLink } from "lucide-react";
 
-import { PROJECTS } from "@/components/home/figma/home-data";
+import type { WorkProject } from "@/components/home/figma/work-section";
 import { MarketingFadeIn } from "@/components/marketing/marketing-motion";
 import { mediaUrl } from "@/lib/cloudinary";
 import { canonicalPath } from "@/lib/site";
 
 type MarketingWorkGridProps = {
+  projects: WorkProject[];
   showLiveSite?: boolean;
 };
 
-export function MarketingWorkGrid({ showLiveSite = true }: MarketingWorkGridProps) {
+export function MarketingWorkGrid({
+  projects,
+  showLiveSite = true,
+}: MarketingWorkGridProps) {
   return (
     <div className="mx-auto grid max-w-6xl gap-5 md:grid-cols-2 md:gap-6">
-      {PROJECTS.map((project, index) => (
+      {projects.map((project, index) => (
         <MarketingFadeIn key={project.href} delay={index * 0.06} className="h-full">
           <article className="group flex h-full flex-col overflow-hidden rounded-3xl border border-border bg-card transition-all duration-300 hover:border-foreground/20 hover:shadow-[0_8px_32px_rgba(28,25,23,0.06)]">
             <Link href={canonicalPath(project.href)} className="block flex-1">
               <div className="relative aspect-video overflow-hidden bg-secondary">
                 <img
                   src={mediaUrl(project.image)}
-                  alt={`${project.title} website`}
+                  alt={`${project.title} case study`}
                   className="absolute inset-0 h-full w-full max-w-none object-cover object-top transition-transform duration-500 group-hover:scale-[1.02]"
                 />
               </div>
@@ -41,7 +45,7 @@ export function MarketingWorkGrid({ showLiveSite = true }: MarketingWorkGridProp
                 </span>
               </div>
             </Link>
-            {showLiveSite && "liveSiteUrl" in project && project.liveSiteUrl ? (
+            {showLiveSite && project.liveSiteUrl ? (
               <div className="mt-auto border-t border-border px-6 py-3">
                 <a
                   href={project.liveSiteUrl}
@@ -61,13 +65,14 @@ export function MarketingWorkGrid({ showLiveSite = true }: MarketingWorkGridProp
 }
 
 type MarketingProjectCardsProps = {
+  projects: WorkProject[];
   compact?: boolean;
 };
 
-export function MarketingProjectCards({ compact }: MarketingProjectCardsProps) {
+export function MarketingProjectCards({ projects, compact }: MarketingProjectCardsProps) {
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-      {PROJECTS.map((project, index) => (
+      {projects.map((project, index) => (
         <MarketingFadeIn key={project.href} delay={index * 0.06}>
           <Link
             href={canonicalPath(project.href)}

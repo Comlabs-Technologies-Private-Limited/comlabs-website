@@ -7,7 +7,7 @@ import { ArrowLeft } from "lucide-react";
 import { PostBody } from "@/components/blog/PostBody";
 import { BreadcrumbJsonLd, PostJsonLd } from "@/components/blog/JsonLd";
 import { FigmaFooter } from "@/components/layout/figma-footer";
-import { FigmaNav } from "@/components/layout/figma-nav";
+import { FigmaNavLoader } from "@/components/layout/figma-nav-loader";
 import { MarketingCtaSection } from "@/components/marketing/marketing-cta-section";
 import { PageBreadcrumbs } from "@/components/seo/page-breadcrumbs";
 import { getPublishedPostBySlug, getPublishedPostSlugs } from "@/lib/admin/posts";
@@ -110,7 +110,7 @@ export default async function BlogPostPage({
           { name: post.title, url: canonicalUrl(`/blog/${post.slug}`) },
         ]}
       />
-      <FigmaNav />
+      <FigmaNavLoader />
 
       <main>
         <article>

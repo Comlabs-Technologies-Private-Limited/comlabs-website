@@ -1,91 +1,76 @@
 "use client";
 
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
-import {
-  appliedAiIllustration,
-  ServiceIllustrationFrame,
-} from "@/components/services/illustrations";
-import { editorialImages } from "@/lib/editorial-images";
-import { EDITORIAL_HERO_OVERLAY } from "@/lib/editorial-hero-styles";
-import { mediaUrl } from "@/lib/cloudinary";
+import { ForceField } from "@/components/canvasui/ForceField";
 import { canonicalPath } from "@/lib/site";
 
-const APPLIED_AI_CAPABILITIES = [
-  "AI Agents",
-  "Internal Copilots",
-  "Intelligent Search",
-  "Workflow Automation",
-  "Model Integrations",
-] as const;
-
-const APPLIED_AI_IMAGE = editorialImages.appliedAi.src;
+/** Warm orange lattice on charcoal — brand-aligned Force Field. */
+const FIELD_COLOR: [number, number, number] = [0.788, 0.392, 0.259];
+const FIELD_EDGE: [number, number, number] = [0.95, 0.72, 0.55];
 
 export function FigmaAppliedAiSection() {
-  const { Component: AppliedAiVisual, label } = appliedAiIllustration;
-
   return (
-    <section id="applied-ai" className="relative overflow-hidden px-6 py-24 md:py-28">
-      <img
-        src={mediaUrl(APPLIED_AI_IMAGE)}
-        alt=""
-        aria-hidden
-        className="absolute inset-0 h-full w-full object-cover object-center"
-      />
-      <div
-        className="absolute inset-0"
-        style={{ background: EDITORIAL_HERO_OVERLAY }}
-      />
-
-      <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)] lg:gap-12">
-        <div className="max-w-2xl">
-          <p
-            className="mb-4 text-xs font-semibold tracking-widest uppercase"
-            style={{ color: "rgba(247,247,244,0.5)" }}
-          >
-            Applied AI
-          </p>
-          <h2
-            className="mb-6 text-2xl leading-tight font-bold tracking-tight md:text-5xl"
-            style={{ color: "var(--background)", letterSpacing: "-0.03em" }}
-          >
-            AI should do more than{" "}
-            <span style={{ color: "var(--warm-orange)" }}>generate</span> an answer.
-          </h2>
-          <p
-            className="mb-7 text-sm leading-relaxed md:text-base"
-            style={{ color: "rgba(247,247,244,0.62)" }}
-          >
-            We build AI around actual business systems, giving models the context, tools and
-            controls required to complete useful work safely.
-          </p>
-          <ul className="space-y-3 text-sm" style={{ color: "rgba(247,247,244,0.72)" }}>
-            {APPLIED_AI_CAPABILITIES.map((item) => (
-              <li key={item} className="flex items-start gap-2.5">
-                <span className="mt-0.5 shrink-0 font-bold" style={{ color: "var(--warm-orange)" }}>
-                  →
-                </span>
-                {item}
-              </li>
-            ))}
-          </ul>
-          <Link
-            href={canonicalPath("/services/ai-agent-development")}
-            className="mt-8 inline-flex items-center text-sm font-medium transition-opacity hover:opacity-80"
-            style={{ color: "var(--warm-orange)" }}
-          >
-            Explore AI Engineering →
-          </Link>
+    <section id="applied-ai" className="relative overflow-hidden">
+      <ForceField
+        className="min-h-[420px] w-full md:min-h-[480px]"
+        style={{ background: "#141414" }}
+        shape="hexagon"
+        cellScale={16}
+        lineWidth={0.03}
+        gridOpacity={0.18}
+        gridReveal="both"
+        gridRevealStrength={1.5}
+        gridRevealRadius={250}
+        gridFade={0.35}
+        flowIntensity={0}
+        flowSpeed={0.5}
+        flashIntensity={0.1}
+        edgeGlow={0.35}
+        hoverGlow={0.3}
+        hoverRadius={350}
+        hoverCharge={1.6}
+        hideOnHover={false}
+        rippleIntensity={0.18}
+        rippleSpeed={0.5}
+        rippleBlend={1}
+        refraction={30}
+        aberration={2.5}
+        haze={0.5}
+        pageReact={0}
+        tint={0.08}
+        reveal={1}
+        dim={0}
+        bloom={1}
+        grain={0.2}
+        color={FIELD_COLOR}
+        edgeColor={FIELD_EDGE}
+      >
+        <div className="relative z-10 mx-auto flex min-h-[420px] max-w-7xl items-center justify-center px-6 py-24 md:min-h-[480px] md:py-28">
+          <div className="max-w-2xl text-center">
+            <h2
+              className="mb-6 text-2xl leading-tight font-bold tracking-tight text-neutral-100 md:text-5xl"
+              style={{ letterSpacing: "-0.03em" }}
+            >
+              AI should do more than{" "}
+              <span style={{ color: "var(--warm-orange)" }}>generate</span> an answer.
+            </h2>
+            <p className="mb-10 text-sm leading-relaxed text-neutral-100/70 md:text-base">
+              We build AI around actual business systems, giving models the context, tools and
+              controls required to complete useful work safely.
+            </p>
+            <Link
+              href={canonicalPath("/services/ai-agent-development")}
+              className="inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-sm font-medium text-[#141414] transition-opacity hover:opacity-90"
+              style={{ background: "#F7F7F4" }}
+            >
+              Explore AI Engineering
+              <ArrowRight size={14} aria-hidden />
+            </Link>
+          </div>
         </div>
-
-        <ServiceIllustrationFrame
-          label={label}
-          chrome={false}
-          className="md:aspect-[4/3] lg:min-h-[480px]"
-        >
-          <AppliedAiVisual />
-        </ServiceIllustrationFrame>
-      </div>
+      </ForceField>
     </section>
   );
 }

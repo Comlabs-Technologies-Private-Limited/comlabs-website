@@ -36,7 +36,7 @@ export function ServiceRelatedWork({
         <div className="mb-10 flex items-end justify-between gap-6 md:mb-12">
           <MarketingSectionHeader
             className="mb-0"
-            eyebrow="Related work"
+            eyebrow="Related case study"
             title={
               <>
                 Proof from a{" "}
@@ -48,7 +48,7 @@ export function ServiceRelatedWork({
             href={canonicalPath("/work")}
             className="hidden shrink-0 pb-1 text-sm text-muted-foreground transition-colors hover:text-foreground md:inline-flex"
           >
-            All work →
+            All case studies →
           </Link>
         </div>
 

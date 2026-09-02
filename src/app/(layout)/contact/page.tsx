@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { ContactPage } from "@/components/contact/contact-page";
+import { listPublishedCaseStudySummaries } from "@/lib/admin/case-studies";
 import { buildPageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = buildPageMetadata({
@@ -10,6 +11,13 @@ export const metadata: Metadata = buildPageMetadata({
   path: "/contact",
 });
 
-export default function ContactRoute() {
-  return <ContactPage />;
+export default async function ContactRoute() {
+  const summaries = await listPublishedCaseStudySummaries();
+  const caseStudies = summaries.map((study) => ({
+    title: study.title,
+    description: study.category,
+    href: study.href,
+  }));
+
+  return <ContactPage caseStudies={caseStudies} />;
 }
