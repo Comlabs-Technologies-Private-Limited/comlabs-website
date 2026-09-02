@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import {
   useCallback,
   useEffect,
@@ -477,6 +478,24 @@ function ToolNode({
   );
 }
 
+const AGENTIC_MOBILE_STILL = "/illustrations/agentic-infra-mobile.png";
+
+function AgenticMobileStill() {
+  return (
+    <div className="absolute inset-0 overflow-hidden md:hidden">
+      <Image
+        src={AGENTIC_MOBILE_STILL}
+        alt=""
+        width={640}
+        height={306}
+        unoptimized
+        draggable={false}
+        className="absolute top-0 left-0 h-full w-auto max-w-none"
+      />
+    </div>
+  );
+}
+
 export function AgenticWorkflowIllustration() {
   const { active, reduce, hovered: frameHovered } = useIllustrationState();
 
@@ -490,7 +509,10 @@ export function AgenticWorkflowIllustration() {
 
   return (
     <IllustrationStage className="p-0 lg:p-0">
-      <WorkflowCanvas step={step} reduce={reduce} />
+      <AgenticMobileStill />
+      <div className="hidden h-full md:block">
+        <WorkflowCanvas step={step} reduce={reduce} />
+      </div>
     </IllustrationStage>
   );
 }
