@@ -4,25 +4,35 @@ import { ArrowRight } from "lucide-react";
 import { motion } from "motion/react";
 
 import { EnterpriseClientsTrust } from "@/components/home/enterprise-clients-section";
-import { HERO_BACKGROUND_PATH, layeredBackgroundImage } from "@/lib/cloudinary";
+import { ChromaticImage } from "@/components/ui/chromatic-image";
+import { HERO_BACKGROUND_PATH, mediaUrl } from "@/lib/cloudinary";
 import { canonicalPath } from "@/lib/site";
+
+const HERO_OVERLAY =
+  "linear-gradient(180deg, rgba(247,247,244,0.86) 0%, rgba(247,247,244,0.78) 45%, rgba(247,247,244,0.88) 100%)";
 
 export function FigmaHeroSection() {
   return (
-    <section
-      className="relative overflow-hidden px-6 pt-16 pb-16 md:pt-24 md:pb-20"
-      style={{
-        backgroundImage: layeredBackgroundImage(
-          "linear-gradient(180deg, rgba(247,247,244,0.86) 0%, rgba(247,247,244,0.78) 45%, rgba(247,247,244,0.88) 100%)",
-          HERO_BACKGROUND_PATH,
-        ),
-        backgroundSize: "cover",
-        backgroundPosition: "center right",
-      }}
-    >
+    <section className="relative overflow-hidden bg-background px-6 pt-16 pb-16 md:pt-24 md:pb-20">
+      <ChromaticImage
+        src={mediaUrl(HERO_BACKGROUND_PATH)}
+        alt=""
+        trackParent
+        backgroundColor="#f7f7f4"
+        zoom={0.14}
+        displacement={0.035}
+        chromaticShift={0.009}
+        tilt={0}
+        className="pointer-events-none absolute inset-0 z-0 size-full bg-background"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-[1]"
+        style={{ background: HERO_OVERLAY }}
+      />
       <motion.div
         aria-hidden
-        className="pointer-events-none absolute -top-24 right-[-18%] h-[24rem] w-[24rem] rounded-full"
+        className="pointer-events-none absolute -top-24 right-[-18%] z-[2] h-[24rem] w-[24rem] rounded-full"
         style={{
           background:
             "radial-gradient(circle, rgba(201,100,66,0.20) 0%, rgba(201,100,66,0.08) 35%, rgba(201,100,66,0) 70%)",
@@ -33,7 +43,7 @@ export function FigmaHeroSection() {
       />
       <motion.div
         aria-hidden
-        className="pointer-events-none absolute bottom-[-8rem] left-[-8rem] h-[18rem] w-[18rem] rounded-full"
+        className="pointer-events-none absolute bottom-[-8rem] left-[-8rem] z-[2] h-[18rem] w-[18rem] rounded-full"
         style={{
           background:
             "radial-gradient(circle, rgba(201,100,66,0.12) 0%, rgba(201,100,66,0.05) 40%, rgba(201,100,66,0) 72%)",
@@ -43,7 +53,7 @@ export function FigmaHeroSection() {
         transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
       />
 
-      <div className="mx-auto max-w-4xl text-left md:text-center">
+      <div className="relative z-10 mx-auto max-w-4xl text-left md:text-center">
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
@@ -110,7 +120,7 @@ export function FigmaHeroSection() {
         initial={{ opacity: 0, y: 28 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.65, delay: 1.48, ease: "easeOut" }}
-        className="mx-auto mt-16 max-w-5xl"
+        className="relative z-10 mx-auto mt-16 max-w-5xl"
         aria-label="Trusted clients"
       >
         <EnterpriseClientsTrust />

@@ -14,6 +14,8 @@ export type ChromaticImageProps = {
   displacement?: number;
   chromaticShift?: number;
   tilt?: number;
+  /** Listen on the parent so a pointer-events-none background still tracks the cursor. */
+  trackParent?: boolean;
 };
 
 const VERTEX_SHADER = `
@@ -113,6 +115,7 @@ export function ChromaticImage({
   displacement = 0.05,
   chromaticShift = 0.01,
   tilt = 0.3,
+  trackParent = false,
 }: ChromaticImageProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -239,8 +242,11 @@ export function ChromaticImage({
       frame = requestAnimationFrame(render);
     };
 
+    const pointerRoot =
+      trackParent && container.parentElement ? container.parentElement : container;
+
     const updatePointer = (event: PointerEvent) => {
-      const bounds = container.getBoundingClientRect();
+      const bounds = pointerRoot.getBoundingClientRect();
       pointerTarget.x = (event.clientX - bounds.left) / bounds.width;
       pointerTarget.y = 1 - (event.clientY - bounds.top) / bounds.height;
       progressTarget = 1;
@@ -273,8 +279,8 @@ export function ChromaticImage({
       requestRender();
     });
     resizeObserver.observe(container);
-    container.addEventListener("pointermove", updatePointer, { passive: true });
-    container.addEventListener("pointerleave", resetPointer, { passive: true });
+    pointerRoot.addEventListener("pointermove", updatePointer, { passive: true });
+    pointerRoot.addEventListener("pointerleave", resetPointer, { passive: true });
     resize();
     requestRender();
 
@@ -282,8 +288,8 @@ export function ChromaticImage({
       disposed = true;
       cancelAnimationFrame(frame);
       resizeObserver.disconnect();
-      container.removeEventListener("pointermove", updatePointer);
-      container.removeEventListener("pointerleave", resetPointer);
+      pointerRoot.removeEventListener("pointermove", updatePointer);
+      pointerRoot.removeEventListener("pointerleave", resetPointer);
       canvas.style.transform = "";
       gl.deleteTexture(texture);
       gl.deleteBuffer(buffer);
@@ -291,11 +297,12 @@ export function ChromaticImage({
       gl.deleteShader(vertex);
       gl.deleteShader(fragment);
     };
-  }, [backgroundColor, displacement, chromaticShift, src, tilt, zoom]);
+  }, [backgroundColor, displacement, chromaticShift, src, tilt, trackParent, zoom]);
 
   return (
     <div
       ref={containerRef}
+      aria-hidden={alt === "" ? true : undefined}
       className={cn("relative isolate overflow-hidden bg-neutral-100", className)}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
