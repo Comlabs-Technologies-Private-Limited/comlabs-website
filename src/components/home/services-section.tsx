@@ -37,7 +37,7 @@ function ServiceCardVisual({
         featured && "md:h-full md:min-h-[360px] md:flex-1 md:aspect-auto",
       )}
       style={featured ? undefined : { aspectRatio: "5 / 4" }}
-      stageClassName="p-2 lg:p-3"
+      stageClassName={service.id === "mobile-app" ? "p-3 lg:p-4" : "p-0"}
     >
       <Component />
     </ServiceIllustrationFrame>

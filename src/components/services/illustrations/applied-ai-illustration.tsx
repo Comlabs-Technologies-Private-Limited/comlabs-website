@@ -11,8 +11,6 @@ import {
   illustrationColors,
   illustrationPopHidden,
   illustrationPopShown,
-  illustrationRadius,
-  illustrationShadow,
   illustrationSwap,
 } from "./illustration-tokens";
 import { useIllustrationSequence } from "./use-illustration-sequence";
@@ -51,14 +49,11 @@ export function AppliedAiIllustration() {
   const complete = step >= 10;
 
   return (
-    <IllustrationStage className="p-2 lg:p-3">
+    <IllustrationStage className="p-0">
       <div
         className="flex h-full min-h-0 flex-col overflow-hidden"
         style={{
-          borderRadius: illustrationRadius.device,
           background: illustrationColors.surface,
-          border: `1px solid ${illustrationColors.border}`,
-          boxShadow: illustrationShadow.raised,
         }}
       >
         <div

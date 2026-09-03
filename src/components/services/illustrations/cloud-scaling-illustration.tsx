@@ -88,11 +88,11 @@ export function CloudScalingIllustration() {
             : 8;
 
   return (
-    <IllustrationStage className="p-2 lg:p-3">
+    <IllustrationStage className="p-0">
       <Panel
-        className="flex h-full min-h-0 flex-col overflow-hidden"
-        elevation="raised"
-        radius={16}
+        className="flex h-full min-h-0 flex-col overflow-hidden border-0"
+        elevation="flat"
+        radius={0}
         style={{ background: surface }}
       >
         {/* Header */}

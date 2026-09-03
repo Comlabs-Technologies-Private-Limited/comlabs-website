@@ -460,14 +460,11 @@ export function WebsiteDesignIllustration() {
   const { active, reduce } = useIllustrationState();
 
   return (
-    <IllustrationStage className="p-2 lg:p-3">
+    <IllustrationStage className="p-0">
       <div
         className="flex h-full min-h-0 overflow-hidden"
         style={{
-          borderRadius: 20,
           background: surface,
-          border: `1px solid ${borderStrong}`,
-          boxShadow: illustrationShadow.raised,
         }}
       >
         <Sidebar />
