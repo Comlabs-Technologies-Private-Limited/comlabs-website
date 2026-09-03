@@ -16,12 +16,13 @@ export const radiantCaseStudy: CaseStudyContent = {
   },
   standfirst:
     "Radiant brings strategy, identity, digital products and motion into one expressive studio platform. Comlabs designed and engineered the experience around a simple objective: make ambitious work immediately memorable while keeping the path to enquiry clear.",
-  metaTitle: "Radiant Creative Studio Website Case Study | Comlabs Technologies",
+  metaTitle: "Radiant Engineering Case Study | Comlabs",
   metaDescription:
     "See how Comlabs designed and engineered Radiant, a cinematic creative studio website combining editorial storytelling, responsive development and conversion-focused UX.",
   ogImage: "/work/radiant/radiant-case-study-hero.webp",
   meta: [
     { label: "Project", value: "Radiant" },
+    { label: "Service", value: "Web & Digital Experience" },
     { label: "Industry", value: "Creative Services" },
     { label: "Year", value: "2026" },
     { label: "Scope", value: "Strategy · UX · Design · Development" },

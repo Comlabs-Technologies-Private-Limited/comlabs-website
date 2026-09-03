@@ -12,9 +12,12 @@ export const formialLabsCaseStudy: CaseStudyContent = {
   standfirst:
     "We redesigned and developed Formial Labs' multi-step onboarding experience, creating a guided journey from account creation through setup and into the product.",
   ogImage: "/work/formial-labs/formial-case-study-hero.webp",
+  metaTitle: "Formial Labs Engineering Case Study | Comlabs",
+  metaDescription:
+    "How Comlabs engineered Formial Labs’ onboarding flow so new users can move from signup to the first useful moment with less friction.",
   meta: [
     { label: "Client", value: "Formial Labs" },
-    { label: "Service", value: "Custom Software Development" },
+    { label: "Service", value: "Custom Software Engineering" },
     { label: "Scope", value: "Product UX · Frontend Development · Onboarding" },
     { label: "Year", value: "2025" },
     { label: "Website", value: "formial.in", href: "https://formial.in" },

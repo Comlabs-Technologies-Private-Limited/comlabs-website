@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 
 import { PostBody } from "@/components/blog/PostBody";
-import { BreadcrumbJsonLd, PostJsonLd } from "@/components/blog/JsonLd";
+import { PostJsonLd } from "@/components/blog/JsonLd";
 import { FigmaFooter } from "@/components/layout/figma-footer";
 import { FigmaNavLoader } from "@/components/layout/figma-nav-loader";
 import { MarketingCtaSection } from "@/components/marketing/marketing-cta-section";
@@ -14,8 +14,21 @@ import { getPublishedPostBySlug, getPublishedPostSlugs } from "@/lib/admin/posts
 import { buildPageMetadata } from "@/lib/metadata";
 import { HERO_BACKGROUND_PATH, layeredBackgroundImage, absoluteMediaUrl } from "@/lib/cloudinary";
 import { indexableCanonicalUrl } from "@/lib/seo/indexable-canonical";
-import { canonicalPath, canonicalUrl, isBlogEnabled, siteUrl } from "@/lib/site";
+import { canonicalPath, isBlogEnabled, siteUrl } from "@/lib/site";
 import type { Post as PostType } from "@/types/post";
+
+const BLOG_RELATED_SERVICES: Record<string, { label: string; href: string }[]> = {
+  "when-ai-agents-get-stuck-in-loops": [
+    {
+      label: "AI Agent Engineering",
+      href: "/services/ai-agent-development",
+    },
+    {
+      label: "L1–L4 Application Support",
+      href: "/services/application-support",
+    },
+  ],
+};
 
 export const revalidate = 60;
 export const dynamicParams = true;
@@ -56,11 +69,14 @@ export async function generateMetadata({
     siteUrl,
   );
 
+  const title = post.metaTitle || `${post.title} | Comlabs Technologies`;
+
   return {
     ...buildPageMetadata({
-      title: post.metaTitle || post.title,
+      title,
       description: post.metaDescription || post.excerpt,
       path: `/blog/${post.slug}`,
+      absoluteTitle: true,
     }),
     alternates: { canonical },
     openGraph: {
@@ -103,13 +119,6 @@ export default async function BlogPostPage({
       style={{ fontFamily: "var(--font-sans)" }}
     >
       <PostJsonLd post={post} />
-      <BreadcrumbJsonLd
-        items={[
-          { name: "Home", url: canonicalUrl("/") },
-          { name: "Blog", url: canonicalUrl("/blog") },
-          { name: post.title, url: canonicalUrl(`/blog/${post.slug}`) },
-        ]}
-      />
       <FigmaNavLoader />
 
       <main>
@@ -217,6 +226,26 @@ export default async function BlogPostPage({
                     </span>
                   ))}
                 </div>
+              ) : null}
+
+              {BLOG_RELATED_SERVICES[post.slug] ? (
+                <nav aria-label="Related services" className="mt-10 border-t border-border pt-8">
+                  <p className="mb-3 text-xs font-medium tracking-widest text-muted-foreground uppercase">
+                    Related services
+                  </p>
+                  <ul className="flex flex-col gap-2">
+                    {BLOG_RELATED_SERVICES[post.slug]!.map((service) => (
+                      <li key={service.href}>
+                        <Link
+                          href={canonicalPath(service.href)}
+                          className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                        >
+                          {service.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
               ) : null}
 
               <div className="mt-10">

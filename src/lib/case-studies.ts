@@ -203,7 +203,7 @@ export function getNextCaseStudy(slug: CaseStudySlug): {
     slug: nextSlug,
     client: NEXT_CASE_STUDY_CLIENT[slug],
     headline: NEXT_CASE_STUDY_HEADLINE[slug],
-    href: `/work/${nextSlug}`,
+    href: `/case-studies/${nextSlug}`,
     thumbnail: NEXT_CASE_STUDY_THUMBNAIL[slug],
   };
 }

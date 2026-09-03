@@ -37,12 +37,12 @@ export function FigmaWorkSection({ projects }: FigmaWorkSectionProps) {
               Proof in <span style={{ color: "var(--warm-orange)" }}>production</span>.
             </h2>
             <p className="mt-4 text-sm leading-relaxed text-muted-foreground md:text-base">
-              From high-stakes enterprise websites to product systems and internal platforms, here is
-              a selection of case studies we have taken from idea to launch.
+              A selection of engagements across application support, AI systems, infrastructure,
+              custom software, mobile products and digital experiences.
             </p>
           </div>
           <a
-            href={canonicalPath("/work")}
+            href={canonicalPath("/case-studies")}
             className="hidden shrink-0 items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground md:inline-flex"
           >
             View all case studies <ArrowRight size={13} />
@@ -113,6 +113,9 @@ export function FigmaWorkSection({ projects }: FigmaWorkSectionProps) {
                   >
                     {project.desc}
                   </p>
+                  <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--warm-orange)]">
+                    Read case study <ArrowRight size={14} />
+                  </span>
                   {project.liveSiteUrl ? (
                     <span className="mt-4 block text-xs text-[var(--warm-orange)]">
                       {new URL(project.liveSiteUrl).hostname}

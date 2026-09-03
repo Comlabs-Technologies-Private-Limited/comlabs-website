@@ -230,7 +230,7 @@ export const DIGITAL_MARKETING_WORK: readonly DigitalMarketingWorkItem[] = [
     discipline: "Brand credibility · Conversion",
     outcome:
       "A full website rebuild that lifted conversion and helped present the company at the same level as its enterprise clients.",
-    href: "/work/global-services",
+    href: "/case-studies/global-services",
     image: "/work/global-services/global-services-case-study-hero.webp",
     imageAlt: "Global Services website homepage",
     featured: true,
@@ -240,7 +240,7 @@ export const DIGITAL_MARKETING_WORK: readonly DigitalMarketingWorkItem[] = [
     discipline: "Positioning · Digital experience",
     outcome:
       "An editorial studio website built around bold work, expressive motion and clear conversion paths.",
-    href: "/work/radiant",
+    href: "/case-studies/radiant",
     image: "/work/radiant/radiant-case-study-hero.webp",
     imageAlt: "Radiant studio website",
   },
@@ -249,7 +249,7 @@ export const DIGITAL_MARKETING_WORK: readonly DigitalMarketingWorkItem[] = [
     discipline: "Brand identity · Content foundation",
     outcome:
       "A design-led marketing website that gave Vithub a stronger digital identity and a base for growth.",
-    href: "/work/vithub",
+    href: "/case-studies/vithub",
     image: "/work/vithub/vithub-case-study-hero.webp",
     imageAlt: "Vithub marketing website",
   },
@@ -258,7 +258,7 @@ export const DIGITAL_MARKETING_WORK: readonly DigitalMarketingWorkItem[] = [
     discipline: "Acquisition · Activation",
     outcome:
       "A multi-page onboarding flow built to reduce drop-off and get users to the first useful moment faster.",
-    href: "/work/formial-labs",
+    href: "/case-studies/formial-labs",
     image: "/work/formial-labs/formial-case-study-hero.webp",
     imageAlt: "Formial Labs onboarding product",
   },

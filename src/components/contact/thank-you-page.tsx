@@ -83,10 +83,10 @@ export function ThankYouPage({ variant = "contact", caseStudies }: ThankYouPageP
               Back to home <ArrowRight size={14} />
             </Link>
             <Link
-              href={canonicalPath("/work")}
+              href={canonicalPath("/case-studies")}
               className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium transition-colors hover:bg-accent"
             >
-              View our work
+              Explore Case Studies
             </Link>
           </div>
         </div>

@@ -195,29 +195,24 @@ export function getCanonicalService(slug: string): CanonicalService | undefined 
 
 export const SERVICE_NAV_ITEMS = [
   {
-    title: "Application Support",
-    description: "L1–L4 support that escalates to engineering.",
+    title: "L1–L4 Application Support",
+    description: "Support that escalates to engineering.",
     href: "/services/application-support",
   },
   {
-    title: "AI Engineering",
+    title: "Agentic Infrastructure & AI Agents",
     description: "Agents, tools, context and controls.",
     href: "/services/ai-agent-development",
   },
   {
-    title: "Cloud & DevOps",
+    title: "AWS Cloud & DevOps",
     description: "AWS, pipelines and production reliability.",
     href: "/services/cloud-infrastructure-scaling",
   },
   {
-    title: "Software Engineering",
+    title: "Custom Software Engineering",
     description: "SaaS, platforms and internal systems.",
     href: "/services/custom-software-development",
-  },
-  {
-    title: "Web & Digital Experience",
-    description: "Websites, product UI and frontend engineering.",
-    href: "/services/website-design-development",
   },
   {
     title: "Mobile Engineering",
@@ -225,13 +220,8 @@ export const SERVICE_NAV_ITEMS = [
     href: "/services/mobile-app-development",
   },
   {
-    title: "SEO & AEO",
-    description: "Technical SEO and AI-search visibility.",
-    href: "/services/seo-aeo-copywriting",
-  },
-  {
-    title: "Digital Marketing",
-    description: "Strategy, creative, search and performance.",
-    href: "/digital-marketing",
+    title: "Web & Digital Experience",
+    description: "Websites, product UI and frontend engineering.",
+    href: "/services/website-design-development",
   },
 ] as const;

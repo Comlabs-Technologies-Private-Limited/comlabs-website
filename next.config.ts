@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
     "/admin/**": ["./node_modules/.prisma/client/**/*"],
     "/api/**": ["./node_modules/.prisma/client/**/*"],
     "/blog/**": ["./node_modules/.prisma/client/**/*"],
+    "/case-studies/**": ["./node_modules/.prisma/client/**/*"],
   },
   images: {
     loader: "custom",
@@ -30,12 +31,22 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/work/formula-lab",
-        destination: "/work/formial-labs/",
+        destination: "/case-studies/formial-labs/",
         permanent: true,
       },
       {
         source: "/work/with-hub",
-        destination: "/work/vithub/",
+        destination: "/case-studies/vithub/",
+        permanent: true,
+      },
+      {
+        source: "/work",
+        destination: "/case-studies/",
+        permanent: true,
+      },
+      {
+        source: "/work/:slug",
+        destination: "/case-studies/:slug/",
         permanent: true,
       },
       {

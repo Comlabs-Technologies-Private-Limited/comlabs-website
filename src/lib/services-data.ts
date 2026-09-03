@@ -73,9 +73,9 @@ function related(
 
 export const servicesIndex = {
   path: "/services",
-  metaTitle: "IT Support, AI, AWS Cloud & Software Engineering | Comlabs",
+  metaTitle: "Technology Engineering Services | Comlabs Technologies",
   metaDescription:
-    "Comlabs provides L1–L4 application support, AI agent development, AWS cloud and DevOps, custom software, web engineering and mobile development.",
+    "Explore Comlabs services across application support, agentic AI, AWS cloud and DevOps, custom software, mobile engineering and digital experiences.",
   eyebrow: "Services",
   headline: "Technology that stays responsible after launch.",
   heroCopy: [
@@ -121,7 +121,7 @@ export const servicePages: ServicePageData[] = [
     slug: "application-support",
     path: "/services/application-support",
     title: "L1–L4 Application Support",
-    metaTitle: "L1–L4 Application Support Services | Comlabs Technologies",
+    metaTitle: "L1–L4 Application Support | Comlabs Technologies",
     metaDescription:
       "L1, L2, L3 and L4 application support for production software, APIs, databases and cloud systems. Technical support backed by software engineers.",
     eyebrow: "Application support",
@@ -291,9 +291,9 @@ export const servicePages: ServicePageData[] = [
     slug: "ai-agent-development",
     path: "/services/ai-agent-development",
     title: "Agentic Infrastructure & AI Agents",
-    metaTitle: "AI Agent Development & Agentic AI Engineering | Comlabs",
+    metaTitle: "Agentic Infrastructure & AI Agents | Comlabs Technologies",
     metaDescription:
-      "Build production AI agents with RAG, tool calling, agent workflows, model orchestration, evaluations, guardrails and human approval systems.",
+      "Comlabs engineers AI agents with context, tools, evaluations and controls so they can operate inside real business systems.",
     eyebrow: "AI engineering",
     headline: "AI systems built to operate, not just respond.",
     heroCopy: [
@@ -467,7 +467,7 @@ export const servicePages: ServicePageData[] = [
     slug: "cloud-infrastructure-scaling",
     path: "/services/cloud-infrastructure-scaling",
     title: "AWS Cloud & DevOps",
-    metaTitle: "AWS Cloud & DevOps Services | Comlabs Technologies",
+    metaTitle: "AWS Cloud & DevOps | Comlabs Technologies",
     metaDescription:
       "AWS cloud and DevOps engineering for production systems: CI/CD, Terraform, Docker, ECS, RDS, monitoring, backups, reliability and cost optimisation.",
     eyebrow: "AWS Cloud & DevOps",
@@ -622,7 +622,7 @@ export const servicePages: ServicePageData[] = [
     slug: "custom-software-development",
     path: "/services/custom-software-development",
     title: "Custom Software Engineering",
-    metaTitle: "Custom Software Development Company | Comlabs Technologies",
+    metaTitle: "Custom Software Engineering | Comlabs Technologies",
     metaDescription:
       "Custom software development for SaaS, internal platforms, ERP workflows, web applications and business systems built around real operations.",
     eyebrow: "Custom software engineering",
@@ -744,7 +744,7 @@ export const servicePages: ServicePageData[] = [
     suitableFor: [],
     relatedCaseStudy: {
       client: "Formial Labs",
-      href: "/work/formial-labs",
+      href: "/case-studies/formial-labs",
       summary:
         "A structured product onboarding flow and dashboard UI built to move users from signup to first value with less friction.",
     },
@@ -783,9 +783,9 @@ export const servicePages: ServicePageData[] = [
     slug: "website-design-development",
     path: "/services/website-design-development",
     title: "Web & Digital Experience",
-    metaTitle: "Website Design & Frontend Development Company | Comlabs",
+    metaTitle: "Web & Digital Experience | Comlabs Technologies",
     metaDescription:
-      "High-performance website design and frontend engineering for technology, enterprise and growing companies. UX, Next.js, performance, SEO and AEO.",
+      "High-performance websites and product interfaces combining positioning, frontend engineering, performance and search fundamentals.",
     eyebrow: "Web & digital experience",
     headline: "Your digital presence should carry the same weight as your business.",
     heroCopy: [
@@ -891,7 +891,7 @@ export const servicePages: ServicePageData[] = [
     suitableFor: [],
     relatedCaseStudy: {
       client: "Global Services",
-      href: "/work/global-services",
+      href: "/case-studies/global-services",
       summary:
         "A full website rebuild that improved conversion and helped position Global Services for enterprise telecom clients.",
     },
@@ -930,7 +930,7 @@ export const servicePages: ServicePageData[] = [
     slug: "mobile-app-development",
     path: "/services/mobile-app-development",
     title: "Mobile Engineering",
-    metaTitle: "Mobile App Development & Engineering | Comlabs Technologies",
+    metaTitle: "Mobile Engineering | Comlabs Technologies",
     metaDescription:
       "Mobile app engineering for iOS, Android and cross-platform products with backend APIs, authentication, payments and production infrastructure.",
     eyebrow: "Mobile engineering",
@@ -1073,7 +1073,7 @@ export const servicePages: ServicePageData[] = [
     slug: "seo-aeo-copywriting",
     path: "/services/seo-aeo-copywriting",
     title: "SEO, AEO & Search Engineering",
-    metaTitle: "SEO & AEO Services for Search and AI Visibility | Comlabs",
+    metaTitle: "SEO, AEO & Search Engineering | Comlabs Technologies",
     metaDescription:
       "Technical SEO, AEO and search architecture for stronger Google visibility, AI search discovery, structured content and high-performance websites.",
     eyebrow: "SEO, AEO & search engineering",

@@ -2,7 +2,7 @@ import { ComlabsLogo } from "@/components/brand/comlabs-logo";
 import { FigmaFooterSocialLinks } from "@/components/layout/figma-footer-social-links";
 import Link from "next/link";
 
-import { canonicalPath, isBlogPublic, siteDescriptor, siteLocation, siteName } from "@/lib/site";
+import { CASE_STUDIES_PATH, canonicalPath, caseStudyPath, isBlogPublic, siteDescriptor, siteLocation, siteName } from "@/lib/site";
 
 type FooterLink = {
   label: string;
@@ -16,10 +16,10 @@ type FigmaFooterProps = {
 };
 
 const FALLBACK_CASE_STUDY_LINKS: FooterLink[] = [
-  { label: "Radiant", href: "/work/radiant" },
-  { label: "Global Services", href: "/work/global-services" },
-  { label: "Formial Labs", href: "/work/formial-labs" },
-  { label: "Vithub", href: "/work/vithub" },
+  { label: "Radiant", href: caseStudyPath("radiant") },
+  { label: "Global Services", href: caseStudyPath("global-services") },
+  { label: "Formial Labs", href: caseStudyPath("formial-labs") },
+  { label: "Vithub", href: caseStudyPath("vithub") },
 ];
 
 export function FigmaFooter({
@@ -34,30 +34,30 @@ export function FigmaFooter({
     {
       heading: "Company",
       links: [
+        { label: "Services", href: "/services" },
+        { label: "Case Studies", href: CASE_STUDIES_PATH },
         { label: "About", href: "/about" },
-        { label: "Careers", href: "/careers" },
-        { label: "Case Studies", href: "/work" },
-        { label: "Digital Marketing", href: "/digital-marketing" },
-        { label: "Contact", href: "/contact" },
         ...(showBlogLink && isBlogPublic() ? [{ label: "Blog", href: "/blog" }] : []),
+        { label: "Contact", href: "/contact" },
+        { label: "Careers", href: "/careers" },
+        { label: "Digital Marketing", href: "/digital-marketing" },
       ],
     },
     {
       heading: "Services",
       links: [
-        { label: "All services", href: "/services" },
-        { label: "Application Support", href: "/services/application-support" },
-        { label: "AI Engineering", href: "/services/ai-agent-development" },
-        { label: "Cloud & DevOps", href: "/services/cloud-infrastructure-scaling" },
-        { label: "Software Engineering", href: "/services/custom-software-development" },
-        { label: "Web & Digital Experience", href: "/services/website-design-development" },
+        { label: "L1–L4 Application Support", href: "/services/application-support" },
+        { label: "Agentic Infrastructure & AI Agents", href: "/services/ai-agent-development" },
+        { label: "AWS Cloud & DevOps", href: "/services/cloud-infrastructure-scaling" },
+        { label: "Custom Software Engineering", href: "/services/custom-software-development" },
         { label: "Mobile Engineering", href: "/services/mobile-app-development" },
-        { label: "SEO & AEO", href: "/services/seo-aeo-copywriting" },
+        { label: "Web & Digital Experience", href: "/services/website-design-development" },
+        { label: "SEO, AEO & Search Engineering", href: "/services/seo-aeo-copywriting" },
       ],
     },
     {
       heading: "Case Studies",
-      links: [{ label: "All case studies", href: "/work" }, ...studyLinks],
+      links: [{ label: "All case studies", href: CASE_STUDIES_PATH }, ...studyLinks],
     },
   ];
 
@@ -84,7 +84,11 @@ export function FigmaFooter({
               />
             </Link>
             <p className="pt-[2px] text-sm font-medium text-foreground">{siteName}</p>
-            <p className="mt-1 text-sm text-muted-foreground">{siteDescriptor}</p>
+            <p className="mt-1 max-w-xs text-sm text-muted-foreground">
+              Engineering and technology operations for production applications, AI systems, cloud
+              infrastructure and digital products.
+            </p>
+            <p className="mt-2 text-sm text-muted-foreground">{siteDescriptor}</p>
             <p className="mt-1 text-sm text-muted-foreground">{siteLocation}</p>
             <FigmaFooterSocialLinks tone={tone} />
           </div>
@@ -92,7 +96,7 @@ export function FigmaFooter({
           <div className="grid grid-cols-2 gap-10 text-sm md:grid-cols-3">
             {columns.map((col) => (
               <div key={col.heading}>
-                <p className="mb-4 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
+                <p className="mb-4 text-xs font-medium tracking-widest text-muted-foreground uppercase">
                   {col.heading}
                 </p>
                 <ul className="space-y-2.5">

@@ -12,9 +12,12 @@ export const vithubCaseStudy: CaseStudyContent = {
   standfirst:
     "We designed and built Vithub's marketing website — a design-led digital identity and campaign-ready foundation for a brand that needed somewhere credible to send traffic.",
   ogImage: "/work/vithub/vithub-case-study-hero.webp",
+  metaTitle: "Vithub Engineering Case Study | Comlabs",
+  metaDescription:
+    "How Comlabs designed and built Vithub’s marketing website as a credible digital identity and a foundation for growth.",
   meta: [
     { label: "Client", value: "Vithub" },
-    { label: "Service", value: "Website Design & Development" },
+    { label: "Service", value: "Web & Digital Experience" },
     { label: "Scope", value: "Brand Identity · Website Design · Marketing Site Build" },
     { label: "Year", value: "2025" },
     { label: "Website", value: "vithub.in", href: "https://vithub.in" },
