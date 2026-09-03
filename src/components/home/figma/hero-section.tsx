@@ -9,7 +9,7 @@ import { HERO_BACKGROUND_PATH, mediaUrl } from "@/lib/cloudinary";
 import { canonicalPath } from "@/lib/site";
 
 const HERO_OVERLAY =
-  "linear-gradient(180deg, rgba(247,247,244,0.86) 0%, rgba(247,247,244,0.78) 45%, rgba(247,247,244,0.88) 100%)";
+  "linear-gradient(180deg, rgba(247,247,244,0.76) 0%, rgba(247,247,244,0.68) 45%, rgba(247,247,244,0.78) 100%)";
 
 export function FigmaHeroSection() {
   return (
