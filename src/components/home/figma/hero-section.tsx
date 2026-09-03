@@ -10,6 +10,8 @@ import { canonicalPath } from "@/lib/site";
 
 const HERO_OVERLAY =
   "linear-gradient(180deg, rgba(247,247,244,0.76) 0%, rgba(247,247,244,0.68) 45%, rgba(247,247,244,0.78) 100%)";
+const HERO_OVERLAY_MOBILE =
+  "linear-gradient(180deg, rgba(247,247,244,0.64) 0%, rgba(247,247,244,0.56) 45%, rgba(247,247,244,0.66) 100%)";
 
 export function FigmaHeroSection() {
   return (
@@ -27,7 +29,12 @@ export function FigmaHeroSection() {
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 z-[1]"
+        className="pointer-events-none absolute inset-0 z-[1] md:hidden"
+        style={{ background: HERO_OVERLAY_MOBILE }}
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-[1] hidden md:block"
         style={{ background: HERO_OVERLAY }}
       />
       <motion.div
