@@ -19,6 +19,14 @@ export type ServicePageData = {
   eyebrow: string;
   headline: string;
   heroCopy: string[];
+  heroCtaLabel?: string;
+  proofTitle?: string;
+  proofCaption?: string;
+  buyerTriggers?: ServiceNamedItem[];
+  representativeEngagement?: {
+    title: string;
+    summary: string;
+  };
   proofItems?: string[];
   serviceType: string;
   schemaDescription: string;
@@ -100,10 +108,10 @@ export const servicesIndex = {
       copy: "Performance, automation, reliability and continuous engineering.",
     },
   ],
-  ctaTitle: "Bring us the system. Or bring us the problem.",
+  ctaTitle: "Not sure where the problem starts?",
   ctaDescription:
-    "New product, inherited application, unreliable infrastructure or an AI workflow that needs to reach production—we will identify the engineering path forward.",
-  ctaLabel: "Discuss your requirements",
+    "Describe what is slowing the business down. We will help identify the right technical starting point.",
+  ctaLabel: "Talk to our engineering team",
 } as const;
 
 export { canonicalServicePaths } from "@/lib/canonical-services";
@@ -120,8 +128,39 @@ export const servicePages: ServicePageData[] = [
     headline: "Support that escalates all the way to engineering.",
     heroCopy: [
       "Production problems do not care which team owns which layer.",
-      "Comlabs provides L1–L4 application support across users, applications, APIs, databases and infrastructure—with a clear escalation path from first report to engineering resolution.",
+      "Comlabs provides L1–L4 application support across users, applications, APIs, databases and infrastructure—with a clear path from first report to engineering resolution.",
     ],
+    heroCtaLabel: "Discuss application support",
+    proofTitle: "Live Incident Command Centre",
+    proofCaption:
+      "INC-2481 on the Payments API moves from a customer report through L2 diagnosis and an L3 connection-pool fix, with L4 on standby. The strip is a demonstration of ownership—not a promised SLA.",
+    buyerTriggers: [
+      {
+        title: "The product team is the support team",
+        description:
+          "Roadmap work pauses whenever a production ticket arrives, because nobody else can read the logs or the code.",
+      },
+      {
+        title: "First-line support stops at the symptom",
+        description:
+          "Tickets are classified, but investigation cannot continue into APIs, databases or the deployment.",
+      },
+      {
+        title: "Ownership is fragmented across vendors",
+        description:
+          "Incidents bounce because each party owns a layer, and none owns the resolution.",
+      },
+      {
+        title: "The original builders have moved on",
+        description:
+          "The application is live, but nobody remaining can take a defect from report to a safe change.",
+      },
+    ],
+    representativeEngagement: {
+      title: "Representative engagement",
+      summary:
+        "A typical takeover starts with an assessment of the codebase, environments, dependencies and known issues, then a defined L1–L4 path. Coverage hours and response expectations are agreed after that assessment—not advertised in advance.",
+    },
     proofItems: ["Issue → Diagnose → Escalate → Resolve"],
     serviceType: "Application support",
     schemaDescription:
@@ -180,13 +219,13 @@ export const servicePages: ServicePageData[] = [
       },
     ],
     processEyebrow: "Engagement",
-    processHeading: "How we take over support.",
+    processHeading: "How the engagement works",
     process: [
       {
         step: "01",
-        title: "Assess",
+        title: "Understand",
         description:
-          "We understand the application, environments, dependencies, known issues and current escalation model.",
+          "We map the application, environments, dependencies, known issues and the current escalation model.",
       },
       {
         step: "02",
@@ -204,7 +243,7 @@ export const servicePages: ServicePageData[] = [
         step: "04",
         title: "Improve",
         description:
-          "Recurring failures become engineering work: automation, fixes, documentation and stronger operational controls.",
+          "Recurring failures become engineering work: fixes, automation, documentation and stronger controls.",
       },
     ],
     capabilities: [],
@@ -256,12 +295,42 @@ export const servicePages: ServicePageData[] = [
     metaDescription:
       "Build production AI agents with RAG, tool calling, agent workflows, model orchestration, evaluations, guardrails and human approval systems.",
     eyebrow: "AI engineering",
-    headline: "AI agents built to work inside real systems.",
+    headline: "AI systems built to operate, not just respond.",
     heroCopy: [
-      "A useful agent needs more than a model.",
-      "It needs context, tools, permissions, evaluations, observability and clear boundaries around what it can do.",
+      "A useful agent needs more than a model. It needs context, tools, permissions, evaluations and a clear boundary around what it can do.",
       "Comlabs engineers the infrastructure that turns AI from an interface into an operational system.",
     ],
+    heroCtaLabel: "Discuss AI engineering",
+    proofTitle: "Human-approved agent workflow",
+    proofCaption:
+      "The agent gathers customer context, calls tools, prepares a packet and waits for explicit approval before anything is sent. Chat is not the product—the workflow is.",
+    buyerTriggers: [
+      {
+        title: "The prototype cannot survive real data",
+        description:
+          "Demos work with perfect prompts, then fail on messy company records, permissions and tools.",
+      },
+      {
+        title: "The model cannot act inside the business",
+        description:
+          "It answers questions, but it cannot safely read, write or call the systems where work actually happens.",
+      },
+      {
+        title: "Nobody can see what the agent did",
+        description:
+          "There is no trace of retrieval, tool calls or decisions, so high-impact actions feel unauditable.",
+      },
+      {
+        title: "Context lives in six places",
+        description:
+          "Documents, CRMs, tickets and APIs never meet at execution time, so the model improvises.",
+      },
+    ],
+    representativeEngagement: {
+      title: "Representative engagement",
+      summary:
+        "Work usually starts by mapping one operational job—not a chatbot. We connect the minimum context and tools, put approval on irreversible actions, then evaluate against real examples before anything reaches production.",
+    },
     serviceType: "AI agent development",
     schemaDescription:
       "Production AI agent development including RAG, tool orchestration, agent workflows, model routing, evaluations, guardrails, observability and human approval systems.",
@@ -333,30 +402,30 @@ export const servicePages: ServicePageData[] = [
         description: "Define what an agent can access, call, change and expose.",
       },
     ],
-    processEyebrow: "Delivery",
-    processHeading: "How we build production AI.",
+    processEyebrow: "Engagement",
+    processHeading: "How the engagement works",
     process: [
       {
         step: "01",
-        title: "Define the job",
+        title: "Map workflow",
         description:
-          "We identify where AI creates leverage and where deterministic software should remain in control.",
+          "We identify the job, the systems it touches, and where deterministic software should stay in control.",
       },
       {
         step: "02",
-        title: "Build context and tools",
+        title: "Connect context and tools",
         description:
           "Data, APIs, permissions and integrations become a controlled execution layer.",
       },
       {
         step: "03",
-        title: "Evaluate",
+        title: "Evaluate safely",
         description:
-          "We test retrieval, outputs, tool use and failure modes against representative workflows.",
+          "Retrieval, outputs, tool use and failure modes are tested against representative work.",
       },
       {
         step: "04",
-        title: "Deploy & improve",
+        title: "Operate and improve",
         description:
           "The system enters production with tracing, monitoring and an explicit path for iteration.",
       },
@@ -405,8 +474,39 @@ export const servicePages: ServicePageData[] = [
     headline: "AWS infrastructure built for production.",
     heroCopy: [
       "Reliable software needs predictable infrastructure.",
-      "Comlabs designs and improves AWS environments, deployment systems and operational tooling so engineering teams can ship with visibility, repeatability and control.",
+      "Comlabs designs and improves AWS environments, deployment systems and operational tooling so teams can ship with visibility, repeatability and control.",
     ],
+    heroCtaLabel: "Discuss AWS & DevOps",
+    proofTitle: "Production infrastructure under control",
+    proofCaption:
+      "Traffic moves CloudFront → load balancer → ECS → RDS. A deploy completes with health checks while tasks scale and operational metrics stay in view. This is a control-plane demonstration, not a capacity claim.",
+    buyerTriggers: [
+      {
+        title: "Releases still require a hero",
+        description:
+          "Deployments depend on manual steps and knowledge that lives in one person’s head.",
+      },
+      {
+        title: "You find out from customers",
+        description:
+          "Nothing is visibly failing until a user reports it. Logs, metrics and alerts are not a system yet.",
+      },
+      {
+        title: "AWS grew without an owner",
+        description:
+          "Accounts, environments and services accumulated. Cost and risk are hard to explain.",
+      },
+      {
+        title: "Backups exist, recovery does not",
+        description:
+          "Snapshots are taken, but restore has never been rehearsed as an operational procedure.",
+      },
+    ],
+    representativeEngagement: {
+      title: "Representative engagement",
+      summary:
+        "Most work starts with an audit of architecture, deployments and observability, then a sequenced set of changes—pipelines, environments, monitoring—rather than a greenfield rebuild. Outcomes are agreed against the current estate.",
+    },
     serviceType: "AWS cloud and DevOps",
     schemaDescription:
       "AWS cloud and DevOps engineering including architecture, CI/CD, Terraform, Docker, ECS, RDS, observability, backup and recovery, reliability and cost optimisation.",
@@ -428,11 +528,11 @@ export const servicePages: ServicePageData[] = [
     ],
     deliverables: [],
     processEyebrow: "Engagement",
-    processHeading: "How we work",
+    processHeading: "How the engagement works",
     process: [
       {
         step: "01",
-        title: "Assess",
+        title: "Audit",
         description:
           "Architecture, deployments, reliability risks and operational bottlenecks are mapped.",
       },
@@ -449,7 +549,7 @@ export const servicePages: ServicePageData[] = [
       },
       {
         step: "04",
-        title: "Operate & Improve",
+        title: "Observe",
         description:
           "Monitoring, cost, reliability and release patterns improve as the system evolves.",
       },
@@ -526,10 +626,36 @@ export const servicePages: ServicePageData[] = [
     metaDescription:
       "Custom software development for SaaS, internal platforms, ERP workflows, web applications and business systems built around real operations.",
     eyebrow: "Custom software engineering",
-    headline: "Software that fits the business. Not the other way around.",
+    headline: "Software built around the way your business actually works.",
     heroCopy: [
-      "When off-the-shelf software starts defining how your team has to work, build the system around the operation instead.",
+      "When off-the-shelf software starts defining how the team has to work, build the system around the operation instead.",
       "Comlabs engineers SaaS products, internal platforms, workflow systems and integrations around the processes that actually make the business run.",
+    ],
+    heroCtaLabel: "Discuss custom software",
+    proofTitle: "From business request to completed operation",
+    proofCaption:
+      "Helio Growth onboarding in Atlas Ops: request received, approved, workspace provisioned, CRM record created, admin access assigned, invite sent. A demonstration of an internal operations product—not a generic dashboard.",
+    buyerTriggers: [
+      {
+        title: "Critical work still lives in spreadsheets",
+        description:
+          "Handoffs, approvals and records depend on people copying data between tools.",
+      },
+      {
+        title: "The bought platform is now the bottleneck",
+        description:
+          "Teams reshape the business to fit the software, instead of the other way around.",
+      },
+      {
+        title: "Systems do not talk to each other",
+        description:
+          "CRM, finance, operations and support each hold a partial truth, and nobody trusts the whole.",
+      },
+      {
+        title: "An internal tool became the product",
+        description:
+          "What started as a patch is now too important to remain undocumented and unowned.",
+      },
     ],
     serviceType: "Custom software development",
     schemaDescription:
@@ -586,34 +712,32 @@ export const servicePages: ServicePageData[] = [
         description: "Documentation, monitoring and ongoing engineering where required.",
       },
     ],
-    processEyebrow: "Process",
-    processHeading: "Map → Architect → Build → Operate",
-    processIntro:
-      "We understand how work happens before deciding what software should exist. Then we build in focused releases rather than betting everything on one massive launch.",
+    processEyebrow: "Engagement",
+    processHeading: "How the engagement works",
     process: [
       {
         step: "01",
-        title: "Map",
+        title: "Map workflow",
         description:
           "We document how work happens today before deciding what software should exist.",
       },
       {
         step: "02",
-        title: "Architect",
+        title: "Design system",
         description:
           "Data models, permissions, services and interfaces are shaped around the operation.",
       },
       {
         step: "03",
-        title: "Build",
+        title: "Build and integrate",
         description:
-          "We ship in focused releases rather than betting everything on one massive launch.",
+          "We ship in focused releases and connect the systems the operation already uses.",
       },
       {
         step: "04",
-        title: "Operate",
+        title: "Roll out",
         description:
-          "Documentation, monitoring and ongoing engineering where the system requires it.",
+          "Documentation, access, monitoring and handover so the system can be operated.",
       },
     ],
     capabilities: [],
@@ -629,7 +753,28 @@ export const servicePages: ServicePageData[] = [
       { label: "Agentic Infrastructure & AI Agents", href: "/services/ai-agent-development" },
       { label: "Mobile Engineering", href: "/services/mobile-app-development" },
     ]),
-    faqs: [],
+    faqs: [
+      {
+        question: "Do you replace our existing systems?",
+        answer:
+          "Not by default. Most engagements start by mapping the current workflow and integrating with what already works, then replacing only the parts that force the operation into the wrong shape.",
+      },
+      {
+        question: "Can you take over a system another vendor started?",
+        answer:
+          "Yes. We begin with the codebase, data model and operational dependencies before proposing what to keep, rewrite or wrap.",
+      },
+      {
+        question: "How do you ship without a big-bang launch?",
+        answer:
+          "Work is sequenced into focused releases around real jobs in the operation, so each increment can be used and reviewed.",
+      },
+      {
+        question: "Will you stay after launch?",
+        answer:
+          "When the system needs it. Documentation, monitoring and ongoing engineering can follow the build—this is not a handoff-only model.",
+      },
+    ],
     ctaTitle: "Stop forcing the operation into software that does not fit.",
     ctaDescription: "Build the system around the work.",
     ctaLabel: "Discuss Custom Software",
@@ -642,10 +787,36 @@ export const servicePages: ServicePageData[] = [
     metaDescription:
       "High-performance website design and frontend engineering for technology, enterprise and growing companies. UX, Next.js, performance, SEO and AEO.",
     eyebrow: "Web & digital experience",
-    headline: "Digital experiences built to carry the weight of the business.",
+    headline: "Your digital presence should carry the same weight as your business.",
     heroCopy: [
       "Your website is often the first system a customer uses to judge the company.",
-      "We combine positioning, interface design and frontend engineering to create digital experiences that are fast, clear and difficult to dismiss.",
+      "We combine positioning, interface design and frontend engineering so the experience is fast, clear and difficult to dismiss.",
+    ],
+    heroCtaLabel: "Discuss web & digital",
+    proofTitle: "From positioning to production",
+    proofCaption:
+      "A publishing and performance workflow: structure the page, implement the interface, then watch production behaviour—not a generic design canvas as the whole story.",
+    buyerTriggers: [
+      {
+        title: "The company outgrew the site",
+        description:
+          "The business has moved on. The website still explains an earlier, smaller version of it.",
+      },
+      {
+        title: "The design file is not the product",
+        description:
+          "It looks considered in Figma and feels slow, unclear or fragile in production.",
+      },
+      {
+        title: "Important information is buried",
+        description:
+          "Generic copy and weak information architecture hide the actual offer.",
+      },
+      {
+        title: "Search was left for launch week",
+        description:
+          "Performance, metadata and content structure were treated as polish, not as the system that gets found.",
+      },
     ],
     serviceType: "Website design and frontend development",
     schemaDescription:
@@ -679,29 +850,29 @@ export const servicePages: ServicePageData[] = [
       "Technical SEO",
       "AEO",
     ],
-    processEyebrow: "Process",
-    processHeading: "How we work",
+    processEyebrow: "Engagement",
+    processHeading: "How the engagement works",
     process: [
       {
         step: "01",
         title: "Position",
-        description: "Define what visitors must understand and believe.",
+        description: "Define what visitors must understand and believe before a layout exists.",
       },
       {
         step: "02",
-        title: "Structure",
-        description: "Build the information hierarchy and conversion paths.",
+        title: "Interface",
+        description: "Build the information hierarchy, conversion paths and the design system around them.",
       },
       {
         step: "03",
-        title: "Design & Engineer",
-        description: "Interface and implementation evolve as one system.",
+        title: "Performance",
+        description: "Frontend engineering holds the experience to production standards, including Core Web Vitals.",
       },
       {
         step: "04",
-        title: "Launch & Improve",
+        title: "Production",
         description:
-          "Validate production behaviour, performance, analytics and search fundamentals.",
+          "Launch with analytics, search fundamentals and a path to improve what the site actually does.",
       },
     ],
     capabilitiesEyebrow: "Together",
@@ -729,7 +900,28 @@ export const servicePages: ServicePageData[] = [
       { label: "SEO, AEO & Search Engineering", href: "/services/seo-aeo-copywriting" },
       { label: "Mobile Engineering", href: "/services/mobile-app-development" },
     ]),
-    faqs: [],
+    faqs: [
+      {
+        question: "Do you only design, or do you also ship?",
+        answer:
+          "Both. Positioning, interface and frontend engineering are one engagement so the site that launches is the one that was designed.",
+      },
+      {
+        question: "Can you rebuild an existing marketing site without losing search equity?",
+        answer:
+          "Yes, when URLs, redirects, canonicals and metadata are planned before launch. That work sits with Web & Digital and SEO/AEO together.",
+      },
+      {
+        question: "Do you work on product UI as well as marketing sites?",
+        answer:
+          "Yes. Product interfaces and marketing sites share the same engineering standard: clear hierarchy, production performance and an implementation the team can maintain.",
+      },
+      {
+        question: "Is SEO included?",
+        answer:
+          "Technical SEO and AEO fundamentals are part of a serious site. Deeper search programmes can continue under SEO, AEO & Search Engineering.",
+      },
+    ],
     ctaTitle: "A serious company should look serious before the first meeting.",
     ctaDescription: "Build the digital experience around the business, not a template.",
     ctaLabel: "Build the digital experience",
@@ -742,12 +934,42 @@ export const servicePages: ServicePageData[] = [
     metaDescription:
       "Mobile app engineering for iOS, Android and cross-platform products with backend APIs, authentication, payments and production infrastructure.",
     eyebrow: "Mobile engineering",
-    headline: "Mobile products built beyond the screen.",
+    headline: "Mobile products engineered beyond the screen.",
     heroCopy: [
       "A production mobile application is not a collection of polished screens.",
-      "It is authentication, APIs, state, notifications, payments, infrastructure and product decisions working together in the hands of a real user.",
-      "Comlabs engineers the full system.",
+      "It is authentication, APIs, state, payments, infrastructure and product decisions working together in someone’s hand. Comlabs engineers the full system.",
     ],
+    heroCtaLabel: "Discuss mobile engineering",
+    proofTitle: "An operational task, completed",
+    proofCaption:
+      "A production deploy on device: authenticated session, live status, and completion—not a floating phone as decoration.",
+    buyerTriggers: [
+      {
+        title: "Desktop works. The phone does not.",
+        description:
+          "Critical workflows collapse on mobile because the product was designed as a website first.",
+      },
+      {
+        title: "The screens are ahead of the APIs",
+        description:
+          "The interface looks finished, but authentication, sync and payments cannot support real use.",
+      },
+      {
+        title: "The app has become hard to change",
+        description:
+          "Performance, release process and maintainability have accumulated as the product grew.",
+      },
+      {
+        title: "You have backend capacity, not mobile capacity",
+        description:
+          "The systems exist. The product in someone’s pocket does not have an owner.",
+      },
+    ],
+    representativeEngagement: {
+      title: "Representative engagement",
+      summary:
+        "We start from the jobs the mobile product must perform, then the APIs, auth and release path required to support them. Store listing timelines and platform constraints are agreed against that scope—not promised as a catalogue.",
+    },
     serviceType: "Mobile app engineering",
     schemaDescription:
       "Mobile app engineering for iOS, Android and cross-platform products, including backend APIs, authentication, payments, notifications and production infrastructure.",
@@ -775,10 +997,8 @@ export const servicePages: ServicePageData[] = [
       "Internal mobile tools",
       "Mobile-first workflows",
     ],
-    processEyebrow: "Process",
-    processHeading: "Define → Engineer → Integrate → Release",
-    processIntro:
-      "We scope the jobs the mobile product must perform, build the interface and application architecture around them, connect the backend systems, then validate the production release.",
+    processEyebrow: "Engagement",
+    processHeading: "How the engagement works",
     process: [
       {
         step: "01",
@@ -823,7 +1043,28 @@ export const servicePages: ServicePageData[] = [
       { label: "AWS Cloud & DevOps", href: "/services/cloud-infrastructure-scaling" },
       { label: "L1–L4 Application Support", href: "/services/application-support" },
     ]),
-    faqs: [],
+    faqs: [
+      {
+        question: "Do you only build the screens?",
+        answer:
+          "No. Authentication, APIs, payments, notifications and the release path are part of the same engagement.",
+      },
+      {
+        question: "iOS, Android, or both?",
+        answer:
+          "We choose the approach against the product jobs—cross-platform where it holds up, native-shaped engineering where the platform demands it. That decision is made after the workflow is mapped.",
+      },
+      {
+        question: "Can you take over an existing app?",
+        answer:
+          "Yes. We start with the current codebase, store status and backend contracts before proposing what to repair, replace or wrap.",
+      },
+      {
+        question: "What happens after the first release?",
+        answer:
+          "Production monitoring and a defined path for the next increment. A mobile product that cannot be changed safely is not finished.",
+      },
+    ],
     ctaTitle: "Build the application people actually carry with them.",
     ctaDescription: "Engineer the product and the systems behind it.",
     ctaLabel: "Discuss Mobile Engineering",
@@ -839,7 +1080,34 @@ export const servicePages: ServicePageData[] = [
     headline: "Be discoverable wherever people ask questions.",
     heroCopy: [
       "Technical SEO, content architecture and AI-search optimisation built into the systems that publish your content—not added after launch.",
+      "This is a supporting capability of Web & Digital Experience, used when a site needs to be found, cited and understood, not only launched.",
     ],
+    heroCtaLabel: "Discuss SEO & AEO",
+    proofTitle: "Search as an engineering surface",
+    proofCaption:
+      "Structured content being indexed, then appearing as a result and as a cited source. The work is the technical surface search systems actually read.",
+    buyerTriggers: [
+      {
+        title: "The offer is strong. The pages are not found.",
+        description:
+          "Crawl, markup and internal links are stalling ranking regardless of the product.",
+      },
+      {
+        title: "AI search cites someone else",
+        description:
+          "Content exists, but it is not structured so answer engines can lift a clear explanation.",
+      },
+      {
+        title: "A redesign is about to spend search equity",
+        description:
+          "URLs, redirects and canonicals have not been planned, so launch could reset visibility by accident.",
+      },
+    ],
+    representativeEngagement: {
+      title: "Representative engagement",
+      summary:
+        "Work starts with a technical audit of markup, structure, performance and indexation, then a sequenced fix list. Rankings are not promised; the engagement is the surface search systems can actually use.",
+    },
     serviceType: "SEO and AEO",
     schemaDescription:
       "Technical SEO, AEO and search architecture including metadata, schema, internal linking, Core Web Vitals, content structure and AI search discovery.",
@@ -868,8 +1136,8 @@ export const servicePages: ServicePageData[] = [
       "Core Web Vitals and indexation checks",
       "Redirect and canonical planning for launches or migrations",
     ],
-    processEyebrow: "Process",
-    processHeading: "How we work",
+    processEyebrow: "Engagement",
+    processHeading: "How the engagement works",
     process: [
       {
         step: "01",

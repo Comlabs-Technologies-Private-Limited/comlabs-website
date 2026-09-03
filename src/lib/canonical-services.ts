@@ -22,6 +22,8 @@ export type CanonicalService = {
   cardTitleHighlight: string;
   cardDescription: string;
   cardBody: string;
+  /** One-line qualifier shown before capabilities on /services. */
+  bestWhen: string;
   capabilities: readonly string[];
   linkLabel: string;
   eyebrow: string;
@@ -40,6 +42,8 @@ export const canonicalServices: readonly CanonicalService[] = [
       "Support that reaches engineering when the problem demands it.",
     cardBody:
       "Structured application support from first-line issue handling through technical diagnosis, code-level remediation and specialist escalation.",
+    bestWhen:
+      "Production tickets keep returning to the product team, or first-line support cannot reach the code.",
     capabilities: [
       "L1 Service Support",
       "L2 Technical Support",
@@ -59,6 +63,7 @@ export const canonicalServices: readonly CanonicalService[] = [
     cardDescription: "AI built to operate inside real systems.",
     cardBody:
       "We engineer AI agents with the context, tools, integrations, evaluations and controls required to perform useful work across business workflows.",
+    bestWhen: "The model can answer, but it cannot safely use your business systems.",
     capabilities: [
       "AI Agents",
       "Agentic Workflows",
@@ -79,6 +84,7 @@ export const canonicalServices: readonly CanonicalService[] = [
     cardDescription: "Infrastructure built for production.",
     cardBody:
       "AWS architecture, deployment systems, observability and operational engineering designed to make releases safer and infrastructure easier to understand.",
+    bestWhen: "Releases still depend on heroics, and production is invisible until users complain.",
     capabilities: [
       "AWS",
       "CI/CD",
@@ -100,6 +106,7 @@ export const canonicalServices: readonly CanonicalService[] = [
     cardDescription: "Build the system your operation actually needs.",
     cardBody:
       "Custom web applications, SaaS platforms, internal systems, ERP workflows and integrations engineered around real business processes.",
+    bestWhen: "The operation has outgrown the software you bought, and work still lives in handoffs.",
     capabilities: [
       "Web Applications",
       "SaaS",
@@ -121,6 +128,7 @@ export const canonicalServices: readonly CanonicalService[] = [
       "Your digital presence should carry the same weight as your business.",
     cardBody:
       "High-performance websites and product interfaces combining positioning, design, frontend engineering, performance and search fundamentals.",
+    bestWhen: "The company has grown, but the site still describes an earlier version of the business.",
     capabilities: [
       "Website Engineering",
       "Product UI",
@@ -141,6 +149,7 @@ export const canonicalServices: readonly CanonicalService[] = [
     cardDescription: "Mobile products engineered beyond the screen.",
     cardBody:
       "Production mobile applications connected to the APIs, authentication, payments, infrastructure and operational systems behind them.",
+    bestWhen: "The work has to happen on a phone, with the same systems behind it.",
     capabilities: [
       "Cross-platform",
       "Backend Integration",
@@ -162,6 +171,7 @@ export const canonicalServices: readonly CanonicalService[] = [
       "Technical SEO, AEO and search architecture for Google and AI search discovery.",
     cardBody:
       "Technical SEO, content architecture and AI-search optimisation built into the systems that publish your content.",
+    bestWhen: "Pages exist, but search and answer engines cannot read them clearly.",
     capabilities: [
       "Technical SEO",
       "Metadata & schema",
