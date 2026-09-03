@@ -1,8 +1,17 @@
-"use client";
-
-import { motion } from "motion/react";
-
+import { ChromaticImageBentoFeatures } from "@/components/home/figma/chromatic-image-bento-features";
 import { PROCESS_STEPS } from "@/components/home/figma/home-data";
+
+const leftFeatures = PROCESS_STEPS.slice(0, 2).map((step) => ({
+  number: step.step,
+  title: step.title,
+  description: step.description,
+}));
+
+const rightFeatures = PROCESS_STEPS.slice(2).map((step) => ({
+  number: step.step,
+  title: step.title,
+  description: step.description,
+}));
 
 export function FigmaProcessSection() {
   return (
@@ -21,29 +30,12 @@ export function FigmaProcessSection() {
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 gap-8 border-t border-white/10 pt-10 md:grid-cols-2 lg:grid-cols-4 md:gap-6">
-          {PROCESS_STEPS.map((step, i) => (
-            <motion.div
-              key={step.step}
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.07 }}
-              className="relative"
-            >
-              <div
-                className="mb-4 text-xs font-medium tabular-nums"
-                style={{ fontFamily: "var(--font-mono)", color: "var(--warm-orange)" }}
-              >
-                {step.step}
-              </div>
-              <h3 className="mb-2 text-sm font-medium tracking-tight text-neutral-100">
-                {step.title}
-              </h3>
-              <p className="text-sm leading-relaxed text-neutral-100/70">{step.description}</p>
-            </motion.div>
-          ))}
-        </div>
+        <ChromaticImageBentoFeatures
+          leftFeatures={leftFeatures}
+          rightFeatures={rightFeatures}
+          imageSrc="/process/green-dither.webp"
+          imageAlt="Dithered green mountain valley with a river and village"
+        />
       </div>
     </section>
   );
