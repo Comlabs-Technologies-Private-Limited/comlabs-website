@@ -5,6 +5,7 @@ import { MarketingFadeIn } from "@/components/marketing/marketing-motion";
 import { MarketingOrangeHighlight } from "@/components/marketing/marketing-section-header";
 import { PageBreadcrumbs } from "@/components/seo/page-breadcrumbs";
 import type { CaseStudyHeadline } from "@/lib/case-studies";
+import { referringAnchorProps } from "@/lib/seo/prepare-html-links";
 import { CASE_STUDIES_PATH, canonicalPath, caseStudyPath } from "@/lib/site";
 
 type CaseStudyHeroProps = {
@@ -57,9 +58,7 @@ export function CaseStudyHero({
           {liveSite ? (
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
               <a
-                href={liveSite.href}
-                target="_blank"
-                rel="noopener noreferrer"
+                {...referringAnchorProps(liveSite.href)}
                 className="inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-sm font-medium transition-opacity hover:opacity-90"
                 style={{ background: "var(--foreground)", color: "var(--background)" }}
               >

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 
+import { referringAnchorProps } from "@/lib/seo/prepare-html-links";
 import { canonicalPath } from "@/lib/site";
 
 type CaseStudyCtaProps = {
@@ -60,9 +61,7 @@ export function CaseStudyCta({
           </Link>
           {secondary.external ? (
             <a
-              href={secondary.href}
-              target="_blank"
-              rel="noopener noreferrer"
+              {...referringAnchorProps(secondary.href)}
               className={secondaryClassName}
               style={secondaryStyle}
             >

@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 
+import { referringAnchorProps } from "@/lib/seo/prepare-html-links";
+
 type SocialLink = {
   href: string;
   label: string;
@@ -47,9 +49,7 @@ export function FigmaFooterSocialLinks({ tone = "light" }: { tone?: "light" | "d
       {SOCIAL_LINKS.map((link) => (
         <a
           key={link.label}
-          href={link.href}
-          target="_blank"
-          rel="noopener noreferrer"
+          {...referringAnchorProps(link.href)}
           aria-label={link.label}
           className={
             dark
