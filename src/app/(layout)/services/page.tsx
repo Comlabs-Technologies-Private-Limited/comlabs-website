@@ -11,6 +11,7 @@ import {
   MarketingSectionHeader,
 } from "@/components/marketing/marketing-section-header";
 import { ServicesIndexGrid } from "@/components/services/service-card";
+import { ServicesOperatingModel } from "@/components/services/services-operating-model";
 import { PageBreadcrumbs } from "@/components/seo/page-breadcrumbs";
 import { JsonLdScript } from "@/components/seo/json-ld-script";
 import { primaryServices } from "@/lib/canonical-services";
@@ -99,33 +100,11 @@ export default function ServicesIndexPage() {
               eyebrow="Operating model"
               title={servicesIndex.pillarsHeading}
             />
-            <div className="relative grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-4 lg:gap-8">
-              <div
-                className="pointer-events-none absolute top-[0.65rem] right-0 left-0 hidden border-t border-neutral-200 lg:block"
-                aria-hidden
-              />
-              {servicesIndex.pillars.map((pillar, index) => (
-                <article key={pillar.title} className="relative lg:pt-8">
-                  <p
-                    className="mb-3 inline-block bg-background pr-2 text-[11px] font-medium tabular-nums text-neutral-400 lg:mb-4"
-                    style={{ fontFamily: "var(--font-mono)" }}
-                  >
-                    {String(index + 1).padStart(2, "0")}
-                  </p>
-                  <h3 className="mb-2 text-sm font-medium tracking-tight text-neutral-900">
-                    {pillar.title}
-                  </h3>
-                  <p className="text-sm font-normal leading-relaxed text-neutral-600">
-                    {pillar.copy}
-                  </p>
-                </article>
-              ))}
-            </div>
+            <ServicesOperatingModel />
           </div>
         </section>
 
         <MarketingCtaSection
-          eyebrow=""
           title={servicesIndex.ctaTitle}
           description={servicesIndex.ctaDescription}
           ctaLabel={servicesIndex.ctaLabel}
