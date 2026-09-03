@@ -9,6 +9,7 @@ import {
   listPublishedCaseStudySummaries,
 } from "@/lib/admin/case-studies";
 import { buildPageMetadata } from "@/lib/metadata";
+import { caseStudyPath } from "@/lib/site";
 
 export const revalidate = 60;
 export const dynamicParams = true;
@@ -34,7 +35,7 @@ export async function generateMetadata({
   return buildPageMetadata({
     title: page.metaTitle,
     description: page.metaDescription,
-    path: `/work/${slug}`,
+    path: caseStudyPath(slug),
     image: page.ogImage,
     absoluteTitle: page.absoluteTitle,
   });

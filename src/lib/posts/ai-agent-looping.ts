@@ -90,7 +90,7 @@ export const aiAgentLoopingPost: Post = {
   author: "Comlabs Technologies Pvt Ltd",
   publishedAt: PUBLISHED_AT,
   readingTime,
-  metaTitle: "When AI Agents Get Stuck in Loops | Comlabs",
+  metaTitle: "When AI Agents Get Stuck in Loops | Comlabs Technologies",
   metaDescription: EXCERPT,
   ogImage: COVER,
   canonicalUrl: "",

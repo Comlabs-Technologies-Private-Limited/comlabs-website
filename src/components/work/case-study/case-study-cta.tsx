@@ -10,7 +10,7 @@ type CaseStudyCtaProps = {
   secondary?: { label: string; href: string; external?: boolean };
 };
 
-const DEFAULT_SECONDARY = { label: "See more work", href: "/work" } as const;
+const DEFAULT_SECONDARY = { label: "View all case studies", href: "/case-studies" } as const;
 
 export function CaseStudyCta({
   heading = "Start a project.",

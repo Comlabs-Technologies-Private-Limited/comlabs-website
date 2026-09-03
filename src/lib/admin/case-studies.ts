@@ -123,7 +123,7 @@ export async function getPublishedCaseStudyPage(slug: string): Promise<CaseStudy
       ...staticContent,
       metaTitle: seo.metaTitle,
       metaDescription: seo.metaDescription,
-      absoluteTitle: Boolean(staticContent.metaTitle),
+      absoluteTitle: true,
     };
   }
 
@@ -146,6 +146,7 @@ export async function getPublishedCaseStudyPage(slug: string): Promise<CaseStudy
         metaTitle: seo.metaTitle,
         metaDescription: seo.metaDescription,
         updatedAt: serialized.updatedAt,
+        absoluteTitle: true,
       };
     }
   } catch {
@@ -202,7 +203,7 @@ function toSummary(record: {
     description: record.standfirst,
     category: categoryFromMeta(record.meta),
     image: record.leadImage.src,
-    href: `/work/${record.slug}`,
+    href: `/case-studies/${record.slug}`,
     year: record.year,
   };
 }

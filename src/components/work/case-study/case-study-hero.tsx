@@ -5,7 +5,7 @@ import { MarketingFadeIn } from "@/components/marketing/marketing-motion";
 import { MarketingOrangeHighlight } from "@/components/marketing/marketing-section-header";
 import { PageBreadcrumbs } from "@/components/seo/page-breadcrumbs";
 import type { CaseStudyHeadline } from "@/lib/case-studies";
-import { canonicalPath } from "@/lib/site";
+import { CASE_STUDIES_PATH, canonicalPath, caseStudyPath } from "@/lib/site";
 
 type CaseStudyHeroProps = {
   slug: string;
@@ -33,8 +33,8 @@ export function CaseStudyHero({
       <div className="mx-auto max-w-6xl">
         <PageBreadcrumbs
           className="mb-10"
-          currentPath={`/work/${slug}`}
-          items={[{ label: "Case Studies", href: "/work" }, { label: client }]}
+          currentPath={caseStudyPath(slug)}
+          items={[{ label: "Case Studies", href: CASE_STUDIES_PATH }, { label: client }]}
         />
 
         <MarketingFadeIn>

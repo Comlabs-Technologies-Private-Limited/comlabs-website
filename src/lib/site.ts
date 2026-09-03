@@ -17,11 +17,24 @@ export const siteLocation = "Pune, Maharashtra, India" as const;
 
 /** Default meta description — keep at or below ~155 characters for SERP display. */
 export const siteDefaultDescription =
-  "Comlabs provides L1–L4 application support, agentic AI engineering, AWS cloud and DevOps services, custom software development and production engineering." as const;
+  "Comlabs provides L1–L4 application support, agentic AI engineering, AWS cloud and DevOps, custom software, mobile engineering and digital experience services." as const;
 
 export const organizationId = `${siteUrl}/#organization` as const;
 export const websiteId = `${siteUrl}/#website` as const;
 export const logoUrl = absoluteMediaUrl("/logo.svg", siteUrl);
+
+export const CASE_STUDIES_PATH = "/case-studies" as const;
+
+export function caseStudyPath(slug: string): string {
+  return `${CASE_STUDIES_PATH}/${slug}`;
+}
+
+/** Public social profile URLs already linked in the footer. */
+export const siteSocialProfileUrls = [
+  "https://www.instagram.com/comlabs_technologies",
+  "https://www.linkedin.com/company/comlabs-technologies/",
+  "https://x.com/comlabstech",
+] as const;
 
 export function isSiteHostname(hostname: string): boolean {
   const host = hostname.replace(/\.$/, "").toLowerCase();
@@ -102,7 +115,7 @@ export const indexableStaticPaths = [
   "/digital-marketing",
   "/about",
   "/careers",
-  "/work",
+  CASE_STUDIES_PATH,
   "/contact",
 ] as const;
 

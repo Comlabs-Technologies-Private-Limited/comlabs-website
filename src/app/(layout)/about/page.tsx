@@ -12,16 +12,23 @@ import {
   MarketingSectionHeader,
 } from "@/components/marketing/marketing-section-header";
 import { MarketingProjectCards } from "@/components/marketing/marketing-work-grid";
+import { JsonLdScript } from "@/components/seo/json-ld-script";
 import { PageBreadcrumbs } from "@/components/seo/page-breadcrumbs";
 import { listPublishedCaseStudySummaries } from "@/lib/admin/case-studies";
 import { buildPageMetadata } from "@/lib/metadata";
 import { editorialImages } from "@/lib/editorial-images";
-import { canonicalPath, siteLocation, siteName } from "@/lib/site";
+import { getAboutPageSchema } from "@/lib/schema";
+import { CASE_STUDIES_PATH, canonicalPath, siteLocation, siteName } from "@/lib/site";
+
+const ABOUT_TITLE = "About Comlabs Technologies | Engineering & Operations";
+const ABOUT_DESCRIPTION =
+  "Learn how Comlabs combines software engineering, cloud infrastructure, AI systems and application support to take responsibility beyond deployment.";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "About Comlabs Technologies Pvt Ltd",
-  description:
-    "Learn about Comlabs Technologies Pvt Ltd — a Pune-based design and engineering studio building websites, custom software, mobile products, and scalable digital infrastructure.",
+  title: ABOUT_TITLE,
+  description: ABOUT_DESCRIPTION,
   path: "/about",
   absoluteTitle: true,
 });
@@ -45,13 +52,20 @@ export default async function AboutPage() {
       className="min-h-screen bg-background text-foreground antialiased"
       style={{ fontFamily: "var(--font-sans)" }}
     >
+      <JsonLdScript
+        data={getAboutPageSchema({
+          url: "/about",
+          name: ABOUT_TITLE,
+          description: ABOUT_DESCRIPTION,
+        })}
+      />
       <FigmaNavLoader />
 
       <main>
         <MarketingPageHero
           eyebrow="About"
           title={siteName}
-          description={`A design and engineering studio in ${siteLocation}. We help companies ship high-performance websites, custom software, mobile products, and scalable digital infrastructure.`}
+          description={`An engineering and technology operations company in ${siteLocation}. We support production applications, AI systems, cloud infrastructure and digital products from build through operation.`}
           backgroundImage={editorialImages.aboutDesert}
         >
           <PageBreadcrumbs currentPath="/about" tone="dark" items={[{ label: "About" }]} />
@@ -65,15 +79,15 @@ export default async function AboutPage() {
                 eyebrow="What we do"
                 title={
                   <>
-                    Design and engineering,{" "}
-                    <MarketingOrangeHighlight>together</MarketingOrangeHighlight>.
+                    Engineering that stays responsible{" "}
+                    <MarketingOrangeHighlight>after launch</MarketingOrangeHighlight>.
                   </>
                 }
               />
               <p className="mt-5 text-base leading-[1.7] text-muted-foreground">
-                Comlabs combines UX structure, interface design, and production engineering. Projects
-                range from marketing websites and redesigns to custom software, mobile apps, and
-                cloud infrastructure for growing product teams.
+                Comlabs builds, operates and supports the systems businesses depend on — L1–L4
+                application support, agentic infrastructure, AWS cloud and DevOps, custom software,
+                mobile products and digital experiences. The work does not stop at deployment.
               </p>
             </MarketingFadeIn>
             <MarketingFadeIn delay={0.08}>
@@ -88,9 +102,9 @@ export default async function AboutPage() {
                 }
               />
               <p className="mt-5 text-base leading-[1.7] text-muted-foreground">
-                Engagements are direct and scope-aware. You work with the team building the work —
-                short feedback loops, clear milestones, and production-ready delivery rather than
-                slide decks that never ship.
+                Engagements are direct and scope-aware. You work with the team building and operating
+                the system — short feedback loops, clear milestones, and production-ready delivery
+                rather than slide decks that never ship.
               </p>
             </MarketingFadeIn>
           </div>
@@ -102,14 +116,14 @@ export default async function AboutPage() {
               eyebrow="Case Studies"
               title={
                 <>
-                  Recent <MarketingOrangeHighlight>projects</MarketingOrangeHighlight>.
+                  Recent <MarketingOrangeHighlight>engagements</MarketingOrangeHighlight>.
                 </>
               }
-              description="Explore case studies across website projects, product onboarding, and brand-led marketing sites."
+              description="Explore case studies across software, infrastructure, AI systems, mobile products and digital experiences."
             />
             <MarketingProjectCards projects={projects} />
             <Link
-              href={canonicalPath("/work")}
+              href={canonicalPath(CASE_STUDIES_PATH)}
               className="mt-8 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--warm-orange)] transition-opacity hover:opacity-80"
             >
               View all case studies <ArrowRight size={14} />
@@ -119,8 +133,8 @@ export default async function AboutPage() {
 
         <MarketingCtaSection
           title="Start a conversation."
-          description={`Based in ${siteLocation}. Available for local and remote projects.`}
-          ctaLabel="Contact us"
+          description={`Based in ${siteLocation}. Available for local and remote engagements.`}
+          ctaLabel="Contact Comlabs"
         />
       </main>
 

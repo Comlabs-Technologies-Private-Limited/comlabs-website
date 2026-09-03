@@ -60,9 +60,9 @@ export function CareersPage({ caseStudies }: CareersPageProps) {
               Apply to Comlabs.
             </h1>
             <p className="mt-3 text-base leading-relaxed text-muted-foreground">
-              We&apos;re a design and engineering studio in Pune. We hire people who can design,
-              write, and ship work that holds up in production. Send a note — we read every
-              application.
+              We&apos;re an engineering and technology operations company in Pune. We hire people who
+              can design, write, and ship systems that hold up in production. Send a note — we read
+              every application.
             </p>
 
             <div className="mt-10">

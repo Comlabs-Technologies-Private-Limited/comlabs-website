@@ -12,25 +12,28 @@ import {
   MarketingSectionLabel,
 } from "@/components/marketing/marketing-section-header";
 import { MarketingWorkGrid } from "@/components/marketing/marketing-work-grid";
+import { JsonLdScript } from "@/components/seo/json-ld-script";
 import { PageBreadcrumbs } from "@/components/seo/page-breadcrumbs";
 import { listPublishedCaseStudySummaries } from "@/lib/admin/case-studies";
+import { primaryServices } from "@/lib/canonical-services";
 import { buildPageMetadata } from "@/lib/metadata";
-import { canonicalPath } from "@/lib/site";
+import { getCollectionPageSchema } from "@/lib/schema";
+import { CASE_STUDIES_PATH, canonicalPath } from "@/lib/site";
+
+const CASE_STUDIES_TITLE = "Engineering Case Studies | Comlabs Technologies";
+const CASE_STUDIES_DESCRIPTION =
+  "Explore how Comlabs approaches application support, AI systems, cloud infrastructure, custom software, mobile products and digital experiences.";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Website & Product Development Case Studies",
-  description:
-    "Case studies from Comlabs Technologies Pvt Ltd — website projects, custom software, and product onboarding for companies that needed clearer positioning and better delivery.",
-  path: "/work",
+  title: CASE_STUDIES_TITLE,
+  description: CASE_STUDIES_DESCRIPTION,
+  path: CASE_STUDIES_PATH,
+  absoluteTitle: true,
 });
 
-const RELATED_SERVICES = [
-  { label: "Web & Digital Experience", href: "/services/website-design-development" },
-  { label: "Custom Software Engineering", href: "/services/custom-software-development" },
-  { label: "SEO, AEO & Search Engineering", href: "/services/seo-aeo-copywriting" },
-] as const;
-
-export default async function WorkIndexPage() {
+export default async function CaseStudiesIndexPage() {
   const summaries = await listPublishedCaseStudySummaries();
   const projects = summaries.map((study) => ({
     title: study.title,
@@ -49,20 +52,32 @@ export default async function WorkIndexPage() {
       className="min-h-screen bg-background text-foreground antialiased"
       style={{ fontFamily: "var(--font-sans)" }}
     >
+      <JsonLdScript
+        data={getCollectionPageSchema({
+          url: CASE_STUDIES_PATH,
+          name: CASE_STUDIES_TITLE,
+          description: CASE_STUDIES_DESCRIPTION,
+          items: summaries.map((study) => ({
+            name: study.title,
+            url: study.href,
+          })),
+        })}
+      />
+
       <FigmaNavLoader />
 
       <main>
         <MarketingPageHero
-          eyebrow="Case studies"
+          eyebrow="Case Studies"
           title={
             <>
-              Website and product development in{" "}
-              <MarketingOrangeHighlight>practice</MarketingOrangeHighlight>.
+              Case studies across engineering and{" "}
+              <MarketingOrangeHighlight>operations</MarketingOrangeHighlight>.
             </>
           }
-          description="Recent projects from Comlabs Technologies Pvt Ltd — from conversion-focused websites to custom software and product onboarding flows."
+          description="Published work across application support, automation, AI systems, AWS and infrastructure, custom software, mobile products and digital experiences."
         >
-          <PageBreadcrumbs currentPath="/work" items={[{ label: "Case Studies" }]} />
+          <PageBreadcrumbs currentPath={CASE_STUDIES_PATH} items={[{ label: "Case Studies" }]} />
         </MarketingPageHero>
 
         <section className="border-y border-border bg-card px-6 py-24 md:py-32">
@@ -72,10 +87,10 @@ export default async function WorkIndexPage() {
               eyebrow="Case Studies"
               title={
                 <>
-                  Recent <MarketingOrangeHighlight>projects</MarketingOrangeHighlight>.
+                  Recent <MarketingOrangeHighlight>engagements</MarketingOrangeHighlight>.
                 </>
               }
-              description="Explore published case studies across digital products, conversion-focused websites, product onboarding and brand-led digital experiences."
+              description="Each study is a real engagement — kept aligned with the client, scope and outcomes we can actually show."
             />
             <MarketingWorkGrid projects={projects} />
           </div>
@@ -87,23 +102,23 @@ export default async function WorkIndexPage() {
               <div className="rounded-3xl border border-border bg-card p-8 md:p-10">
                 <MarketingSectionLabel>Related services</MarketingSectionLabel>
                 <h2
-                  className="text-xl font-bold tracking-tight md:text-2xl"
+                  className="text-xl font-medium tracking-tight md:text-2xl"
                   style={{ letterSpacing: "-0.03em" }}
                 >
-                  Explore how we deliver similar work.
+                  How these engagements map to the stack.
                 </h2>
                 <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-                  Each case study maps to services we offer — explore the pages below for scope,
-                  process, and deliverables.
+                  Case studies sit across the same services we operate in production — from support
+                  and infrastructure through software, mobile and digital experience.
                 </p>
                 <div className="mt-6 flex flex-wrap gap-3">
-                  {RELATED_SERVICES.map((service) => (
+                  {primaryServices.map((service) => (
                     <Link
-                      key={service.href}
-                      href={canonicalPath(service.href)}
+                      key={service.path}
+                      href={canonicalPath(service.path)}
                       className="rounded-full border border-border bg-background px-4 py-2 text-sm text-muted-foreground transition-all hover:border-foreground/20 hover:text-foreground"
                     >
-                      {service.label}
+                      {service.title}
                     </Link>
                   ))}
                 </div>
@@ -113,9 +128,9 @@ export default async function WorkIndexPage() {
         </section>
 
         <MarketingCtaSection
-          title="Have a project in mind?"
-          description="Tell us what you're building. We'll share how we'd approach scope, timeline, and delivery."
-          ctaLabel="Start a conversation"
+          title="Have a system that needs the same care?"
+          description="Tell us what you are supporting, building or operating. We will share how we would approach it."
+          ctaLabel="Contact Comlabs"
         />
       </main>
 

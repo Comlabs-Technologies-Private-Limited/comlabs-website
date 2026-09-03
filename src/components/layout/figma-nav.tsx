@@ -13,7 +13,6 @@ import { canonicalPath, isBlogPublic } from "@/lib/site";
 
 const SIMPLE_LINKS = [
   { label: "About", href: "/about" },
-  { label: "Careers", href: "/careers" },
 ] as const;
 
 export type NavCaseStudyItem = {
@@ -26,17 +25,17 @@ const FALLBACK_CASE_STUDIES: NavCaseStudyItem[] = [
   {
     title: "Formial Labs",
     description: "Custom Software Engineering",
-    href: "/work/formial-labs",
+    href: "/case-studies/formial-labs",
   },
   {
     title: "Global Services",
     description: "Web & Digital Experience",
-    href: "/work/global-services",
+    href: "/case-studies/global-services",
   },
   {
     title: "Vithub",
     description: "Web & Digital Experience",
-    href: "/work/vithub",
+    href: "/case-studies/vithub",
   },
 ];
 
@@ -198,7 +197,7 @@ export function FigmaNav({
 
             <DesktopDropdown
               label="Case Studies"
-              href="/work"
+              href="/case-studies"
               open={desktopMenu === "work"}
               reduce={Boolean(reduce)}
               dark={dark}
@@ -218,10 +217,10 @@ export function FigmaNav({
                   />
                 ))}
               </div>
-              <DropdownFooter href="/work" label="View all case studies" dark={dark} />
+              <DropdownFooter href="/case-studies" label="View all case studies" dark={dark} />
             </DesktopDropdown>
 
-            {[...SIMPLE_LINKS, ...blogLinks].map((link) => (
+            {[...SIMPLE_LINKS, ...blogLinks, { label: "Contact", href: "/contact" }].map((link) => (
               <Link
                 key={link.label}
                 href={canonicalPath(link.href)}
@@ -353,7 +352,7 @@ export function FigmaNav({
               <MobileAccordion
                 id="mobile-work"
                 label="Case Studies"
-                href="/work"
+                href="/case-studies"
                 open={mobileAccordion === "work"}
                 onToggle={() =>
                   setMobileAccordion((current) =>
@@ -376,7 +375,7 @@ export function FigmaNav({
                   </Link>
                 ))}
                 <Link
-                  href={canonicalPath("/work")}
+                  href={canonicalPath("/case-studies")}
                   className="block px-3 py-3 text-sm text-muted-foreground"
                   onClick={closeMobile}
                 >
@@ -384,7 +383,7 @@ export function FigmaNav({
                 </Link>
               </MobileAccordion>
 
-              {[...SIMPLE_LINKS, ...blogLinks].map((link) => (
+              {[...SIMPLE_LINKS, ...blogLinks, { label: "Contact", href: "/contact" }].map((link) => (
                 <Link
                   key={link.label}
                   href={canonicalPath(link.href)}

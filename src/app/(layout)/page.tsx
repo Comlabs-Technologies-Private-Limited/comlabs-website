@@ -6,7 +6,7 @@ import { listPublishedCaseStudySummaries } from "@/lib/admin/case-studies";
 import { buildPageMetadata } from "@/lib/metadata";
 import { siteDefaultDescription } from "@/lib/site";
 
-const HOME_TITLE = "Comlabs Technologies | Application Support, AI, Cloud & Engineering";
+const HOME_TITLE = "Comlabs Technologies | Application Support, AI, AWS & Software";
 const HOME_CASE_STUDY_COUNT = 3;
 
 export const revalidate = 60;

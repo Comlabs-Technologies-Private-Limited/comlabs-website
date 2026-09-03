@@ -29,13 +29,27 @@ export function FigmaCtaSection() {
         >
           Talk to our team <ArrowRight size={14} />
         </a>
-        <p className="mt-5">
+        <p className="mt-5 flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
           <a
-            href={canonicalPath("/work")}
+            href={canonicalPath("/case-studies")}
             className="text-sm transition-opacity hover:opacity-80"
             style={{ color: "rgba(247,247,244,0.55)" }}
           >
-            Explore case studies
+            Explore Case Studies
+          </a>
+          <a
+            href={canonicalPath("/about")}
+            className="text-sm transition-opacity hover:opacity-80"
+            style={{ color: "rgba(247,247,244,0.55)" }}
+          >
+            About Comlabs
+          </a>
+          <a
+            href={canonicalPath("/blog")}
+            className="text-sm transition-opacity hover:opacity-80"
+            style={{ color: "rgba(247,247,244,0.55)" }}
+          >
+            Engineering insights
           </a>
         </p>
       </div>

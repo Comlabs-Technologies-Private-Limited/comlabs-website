@@ -61,9 +61,7 @@ export function buildCaseStudySeo(input: {
   metaDescription?: string;
 }): { metaTitle: string; metaDescription: string } {
   const headlineText = headlineToText(input.headline);
-  const defaultTitle = headlineText
-    ? `${input.client} — ${headlineText}`
-    : `${input.client} — Case Study`;
+  const defaultTitle = `${input.client} Engineering Case Study | Comlabs`;
 
   const metaTitle =
     input.metaTitle?.trim() || truncateForSeo(defaultTitle, META_TITLE_MAX);

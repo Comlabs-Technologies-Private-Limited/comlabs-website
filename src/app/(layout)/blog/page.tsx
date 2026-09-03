@@ -11,19 +11,25 @@ import {
   MarketingOrangeHighlight,
   MarketingSectionHeader,
 } from "@/components/marketing/marketing-section-header";
+import { JsonLdScript } from "@/components/seo/json-ld-script";
 import { PageBreadcrumbs } from "@/components/seo/page-breadcrumbs";
 import { listPosts } from "@/lib/admin/posts";
 import { buildPageMetadata } from "@/lib/metadata";
+import { getBlogSchema } from "@/lib/schema";
 import { isBlogEnabled } from "@/lib/site";
 import type { PostSummary } from "@/types/post";
+
+const BLOG_TITLE = "Engineering Insights | Comlabs Technologies";
+const BLOG_DESCRIPTION =
+  "Practical writing from Comlabs on application reliability, AI agents, cloud infrastructure, software engineering and production operations.";
 
 export const revalidate = 60;
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Blog",
-  description:
-    "Notes from Comlabs Technologies on product engineering, agentic software, websites, and shipping work that holds up in production.",
+  title: BLOG_TITLE,
+  description: BLOG_DESCRIPTION,
   path: "/blog",
+  absoluteTitle: true,
 });
 
 const PAGE_SIZE = 8;
@@ -67,18 +73,25 @@ export default async function BlogIndexPage({
       className="min-h-screen bg-background text-foreground antialiased"
       style={{ fontFamily: "var(--font-sans)" }}
     >
+      <JsonLdScript
+        data={getBlogSchema({
+          url: "/blog",
+          name: BLOG_TITLE,
+          description: BLOG_DESCRIPTION,
+        })}
+      />
       <FigmaNavLoader />
 
       <main>
         <MarketingPageHero
-          eyebrow="Studio notes"
+          eyebrow="Engineering insights"
           title={
             <>
-              Practical writing on building things that{" "}
+              Practical writing on systems that have to{" "}
               <MarketingOrangeHighlight>hold</MarketingOrangeHighlight>.
             </>
           }
-          description="Product engineering, agentic software, and the decisions that show up once a system leaves the demo."
+          description="Notes on application reliability, AI agents, cloud infrastructure, software engineering and production operations."
         >
           <PageBreadcrumbs currentPath="/blog" items={[{ label: "Blog" }]} />
         </MarketingPageHero>
@@ -88,8 +101,8 @@ export default async function BlogIndexPage({
             <MarketingSectionHeader
               className="mb-10 md:mb-12"
               eyebrow="Latest"
-              title="From the studio."
-              description="Short notes from client work and internal builds — written for people who have to ship."
+              title="From the engineering floor."
+              description="Short notes from production work and internal builds — written for people who have to operate the system after it ships."
             />
 
             {posts.length === 0 ? (

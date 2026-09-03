@@ -45,7 +45,7 @@ export function ServiceRelatedWork({
             }
           />
           <Link
-            href={canonicalPath("/work")}
+            href={canonicalPath("/case-studies")}
             className="hidden shrink-0 pb-1 text-sm text-muted-foreground transition-colors hover:text-foreground md:inline-flex"
           >
             All case studies →

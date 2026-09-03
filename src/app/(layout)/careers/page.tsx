@@ -5,9 +5,9 @@ import { listPublishedCaseStudySummaries } from "@/lib/admin/case-studies";
 import { buildPageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Careers",
-  description:
-    "Apply to Comlabs Technologies Pvt Ltd in Pune. We hire designers and engineers who ship websites, software, and digital products.",
+    title: "Careers",
+    description:
+      "Apply to Comlabs Technologies in Pune. We hire engineers and operators who take production systems from build through support.",
   path: "/careers",
 });
 

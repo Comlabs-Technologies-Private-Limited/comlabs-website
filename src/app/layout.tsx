@@ -42,8 +42,8 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   applicationName: siteName,
   title: {
-    default: "Comlabs Technologies | Application Support, AI, Cloud & Engineering",
-    template: "%s | Comlabs Technologies Pvt Ltd",
+    default: "Comlabs Technologies | Application Support, AI, AWS & Software",
+    template: "%s | Comlabs Technologies",
   },
   description: siteDefaultDescription,
   icons: {

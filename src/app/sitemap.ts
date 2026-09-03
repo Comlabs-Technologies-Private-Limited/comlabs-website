@@ -6,26 +6,7 @@ import { listPosts } from "@/lib/admin/posts";
 import { CASE_STUDY_ORDER } from "@/lib/case-studies";
 import { listStaticPosts } from "@/lib/posts";
 import { isDatabaseConfigured } from "@/lib/prisma";
-import { canonicalUrl, indexableStaticPaths, isBlogEnabled } from "@/lib/site";
-
-function priorityForPath(path: string): number {
-  if (path === "/") return 1;
-  if (path === "/services" || path === "/digital-marketing") return 0.9;
-  if (path.startsWith("/services/")) return 0.85;
-  if (path === "/work") return 0.85;
-  if (path.startsWith("/work/")) return 0.8;
-  return 0.7;
-}
-
-function changeFrequencyForPath(
-  path: string,
-): MetadataRoute.Sitemap[0]["changeFrequency"] {
-  if (path === "/") return "weekly";
-  if (path.startsWith("/blog")) return "weekly";
-  if (path.startsWith("/services") || path === "/digital-marketing") return "monthly";
-  if (path.startsWith("/work")) return "monthly";
-  return "monthly";
-}
+import { CASE_STUDIES_PATH, canonicalUrl, caseStudyPath, indexableStaticPaths, isBlogEnabled } from "@/lib/site";
 
 function entry(
   path: string,
@@ -34,8 +15,6 @@ function entry(
   return {
     url: canonicalUrl(path),
     lastModified,
-    changeFrequency: changeFrequencyForPath(path),
-    priority: priorityForPath(path),
   };
 }
 
@@ -48,7 +27,10 @@ function dedupe(entries: MetadataRoute.Sitemap): MetadataRoute.Sitemap {
   });
 }
 
-async function getCaseStudyEntries(): Promise<MetadataRoute.Sitemap> {
+async function getCaseStudyEntries(): Promise<{
+  entries: MetadataRoute.Sitemap;
+  latestUpdatedAt?: Date;
+}> {
   const bySlug = new Map<string, Date | undefined>();
 
   for (const slug of CASE_STUDY_ORDER) {
@@ -62,40 +44,64 @@ async function getCaseStudyEntries(): Promise<MetadataRoute.Sitemap> {
         bySlug.set(study.slug, new Date(study.updatedAt));
       }
     } catch {
-      // Keep statically authored work URLs if the database is unavailable.
+      // Keep statically authored case-study URLs if the database is unavailable.
     }
   }
 
-  return [...bySlug.entries()].map(([slug, lastModified]) =>
-    entry(`/work/${slug}`, lastModified),
+  const entries = [...bySlug.entries()].map(([slug, lastModified]) =>
+    entry(caseStudyPath(slug), lastModified),
   );
+  const latestUpdatedAt = [...bySlug.values()].reduce<Date | undefined>((current, next) => {
+    if (!next) return current;
+    return !current || next > current ? next : current;
+  }, undefined);
+
+  return { entries, latestUpdatedAt };
 }
 
-async function getBlogPostEntries(): Promise<MetadataRoute.Sitemap> {
-  if (!isBlogEnabled()) return [];
+async function getBlogPostEntries(): Promise<{
+  posts: MetadataRoute.Sitemap;
+  latestUpdatedAt?: Date;
+}> {
+  if (!isBlogEnabled()) return { posts: [] };
 
   try {
     const posts = await listPosts({ status: "published" });
-    return posts.map((post) =>
+    const mapped = posts.map((post) =>
       entry(`/blog/${post.slug}`, post.updatedAt ? new Date(post.updatedAt) : undefined),
     );
+    const latest = posts.reduce<Date | undefined>((current, post) => {
+      if (!post.updatedAt) return current;
+      const next = new Date(post.updatedAt);
+      return !current || next > current ? next : current;
+    }, undefined);
+    return { posts: mapped, latestUpdatedAt: latest };
   } catch {
-    return listStaticPosts({ status: "published" }).map((post) =>
+    const posts = listStaticPosts({ status: "published" });
+    const mapped = posts.map((post) =>
       entry(`/blog/${post.slug}`, post.updatedAt ? new Date(post.updatedAt) : undefined),
     );
+    const latest = posts.reduce<Date | undefined>((current, post) => {
+      if (!post.updatedAt) return current;
+      const next = new Date(post.updatedAt);
+      return !current || next > current ? next : current;
+    }, undefined);
+    return { posts: mapped, latestUpdatedAt: latest };
   }
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   await connection();
 
-  const staticEntries = indexableStaticPaths.map((path) => entry(path));
-
+  const { posts: blogPostEntries, latestUpdatedAt } = await getBlogPostEntries();
+  const { entries: caseStudyEntries, latestUpdatedAt: latestCaseStudyAt } =
+    await getCaseStudyEntries();
+  const staticEntries = indexableStaticPaths.map((path) =>
+    path === CASE_STUDIES_PATH ? entry(path, latestCaseStudyAt) : entry(path),
+  );
   const blogEntries: MetadataRoute.Sitemap = isBlogEnabled()
-    ? [entry("/blog"), ...(await getBlogPostEntries())]
+    ? [entry("/blog", latestUpdatedAt), ...blogPostEntries]
     : [];
-
-  const caseStudyEntries = await getCaseStudyEntries();
 
   return dedupe([...staticEntries, ...blogEntries, ...caseStudyEntries]);
 }

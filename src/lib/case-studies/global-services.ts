@@ -12,9 +12,12 @@ export const globalServicesCaseStudy: CaseStudyContent = {
   standfirst:
     "We rebuilt Global Services' website to close the gap between their capability in the field and how they appeared online — with clearer positioning, stronger structure and conversion paths built for enterprise buyers.",
   ogImage: "/work/global-services/global-services-case-study-hero.webp",
+  metaTitle: "Global Services Engineering Case Study | Comlabs",
+  metaDescription:
+    "How Comlabs rebuilt the Global Services website to match the company’s enterprise capability and give buyers a clearer path to enquiry.",
   meta: [
     { label: "Client", value: "Global Services" },
-    { label: "Service", value: "Website Design & Development" },
+    { label: "Service", value: "Web & Digital Experience" },
     { label: "Scope", value: "Positioning · Information Architecture · Website Design & Build" },
     { label: "Year", value: "2025" },
     {
