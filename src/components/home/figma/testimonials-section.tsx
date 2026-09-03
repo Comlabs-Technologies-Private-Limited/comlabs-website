@@ -6,6 +6,7 @@ import Link from "next/link";
 import { TESTIMONIALS } from "@/components/home/figma/home-data";
 import { MarketingFadeIn } from "@/components/marketing/marketing-motion";
 import { MarketingOrangeHighlight } from "@/components/marketing/marketing-section-header";
+import { referringAnchorProps } from "@/lib/seo/prepare-html-links";
 
 function FounderAvatar({
   name,
@@ -80,9 +81,7 @@ export function FigmaTestimonialsSection() {
                   <cite className="not-italic">
                     {testimonial.linkedinUrl ? (
                       <Link
-                        href={testimonial.linkedinUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                        {...referringAnchorProps(testimonial.linkedinUrl)}
                         className="block truncate text-sm font-medium text-foreground transition-opacity hover:opacity-80"
                       >
                         {testimonial.name}

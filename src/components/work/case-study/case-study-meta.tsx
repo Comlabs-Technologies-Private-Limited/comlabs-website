@@ -1,6 +1,7 @@
 import { ArrowUpRight } from "lucide-react";
 
 import type { CaseStudyMetaItem } from "@/lib/case-studies";
+import { referringAnchorProps } from "@/lib/seo/prepare-html-links";
 
 type CaseStudyMetaProps = {
   items: CaseStudyMetaItem[];
@@ -16,9 +17,7 @@ export function CaseStudyMeta({ items }: CaseStudyMetaProps) {
             <dd className="mt-1.5 text-sm font-medium text-foreground">
               {item.href ? (
                 <a
-                  href={item.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  {...referringAnchorProps(item.href)}
                   className="inline-flex items-center gap-1 transition-colors hover:text-[var(--warm-orange)]"
                 >
                   {item.value}

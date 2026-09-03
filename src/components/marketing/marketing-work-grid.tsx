@@ -6,6 +6,7 @@ import { ArrowRight, ExternalLink } from "lucide-react";
 import type { WorkProject } from "@/components/home/figma/work-section";
 import { MarketingFadeIn } from "@/components/marketing/marketing-motion";
 import { mediaUrl } from "@/lib/cloudinary";
+import { referringAnchorProps } from "@/lib/seo/prepare-html-links";
 import { canonicalPath } from "@/lib/site";
 
 type MarketingWorkGridProps = {
@@ -48,9 +49,7 @@ export function MarketingWorkGrid({
             {showLiveSite && project.liveSiteUrl ? (
               <div className="mt-auto border-t border-border px-6 py-3">
                 <a
-                  href={project.liveSiteUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  {...referringAnchorProps(project.liveSiteUrl)}
                   className="text-xs text-muted-foreground transition-colors hover:text-[var(--warm-orange)]"
                 >
                   Visit {new URL(project.liveSiteUrl).hostname}
