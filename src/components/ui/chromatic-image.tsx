@@ -245,12 +245,17 @@ export function ChromaticImage({
     const pointerRoot =
       trackParent && container.parentElement ? container.parentElement : container;
 
-    const updatePointer = (event: PointerEvent) => {
+    const applyPointer = (clientX: number, clientY: number) => {
       const bounds = pointerRoot.getBoundingClientRect();
-      pointerTarget.x = (event.clientX - bounds.left) / bounds.width;
-      pointerTarget.y = 1 - (event.clientY - bounds.top) / bounds.height;
+      if (!bounds.width || !bounds.height) return;
+      pointerTarget.x = (clientX - bounds.left) / bounds.width;
+      pointerTarget.y = 1 - (clientY - bounds.top) / bounds.height;
       progressTarget = 1;
       requestRender();
+    };
+
+    const updatePointer = (event: PointerEvent) => {
+      applyPointer(event.clientX, event.clientY);
     };
 
     const resetPointer = () => {
@@ -258,6 +263,31 @@ export function ChromaticImage({
       pointerTarget.y = 0.5;
       progressTarget = 0;
       requestRender();
+    };
+
+    const onPointerDown = (event: PointerEvent) => {
+      if (event.pointerType === "mouse") return;
+      applyPointer(event.clientX, event.clientY);
+    };
+
+    const onPointerUp = (event: PointerEvent) => {
+      if (event.pointerType === "mouse") return;
+      resetPointer();
+    };
+
+    const updateTouch = (event: TouchEvent) => {
+      const touch = event.touches[0];
+      if (!touch) return;
+      applyPointer(touch.clientX, touch.clientY);
+    };
+
+    const onTouchEnd = (event: TouchEvent) => {
+      const touch = event.touches[0];
+      if (touch) {
+        applyPointer(touch.clientX, touch.clientY);
+        return;
+      }
+      resetPointer();
     };
 
     const image = new Image();
@@ -279,8 +309,15 @@ export function ChromaticImage({
       requestRender();
     });
     resizeObserver.observe(container);
+    pointerRoot.addEventListener("pointerdown", onPointerDown, { passive: true });
     pointerRoot.addEventListener("pointermove", updatePointer, { passive: true });
+    pointerRoot.addEventListener("pointerup", onPointerUp, { passive: true });
+    pointerRoot.addEventListener("pointercancel", onPointerUp, { passive: true });
     pointerRoot.addEventListener("pointerleave", resetPointer, { passive: true });
+    pointerRoot.addEventListener("touchstart", updateTouch, { passive: true });
+    pointerRoot.addEventListener("touchmove", updateTouch, { passive: true });
+    pointerRoot.addEventListener("touchend", onTouchEnd, { passive: true });
+    pointerRoot.addEventListener("touchcancel", resetPointer, { passive: true });
     resize();
     requestRender();
 
@@ -288,8 +325,15 @@ export function ChromaticImage({
       disposed = true;
       cancelAnimationFrame(frame);
       resizeObserver.disconnect();
+      pointerRoot.removeEventListener("pointerdown", onPointerDown);
       pointerRoot.removeEventListener("pointermove", updatePointer);
+      pointerRoot.removeEventListener("pointerup", onPointerUp);
+      pointerRoot.removeEventListener("pointercancel", onPointerUp);
       pointerRoot.removeEventListener("pointerleave", resetPointer);
+      pointerRoot.removeEventListener("touchstart", updateTouch);
+      pointerRoot.removeEventListener("touchmove", updateTouch);
+      pointerRoot.removeEventListener("touchend", onTouchEnd);
+      pointerRoot.removeEventListener("touchcancel", resetPointer);
       canvas.style.transform = "";
       gl.deleteTexture(texture);
       gl.deleteBuffer(buffer);
