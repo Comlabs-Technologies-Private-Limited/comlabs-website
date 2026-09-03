@@ -91,11 +91,11 @@ export function CustomSoftwareIllustration() {
   const layoutTransition = reduce ? { duration: 0 } : illustrationSpring.panel;
 
   return (
-    <IllustrationStage className="overflow-hidden p-2 lg:p-3">
+    <IllustrationStage className="overflow-hidden p-0">
       <Panel
-        className="flex h-full min-h-0 overflow-hidden"
-        elevation="raised"
-        radius={16}
+        className="flex h-full min-h-0 overflow-hidden border-0"
+        elevation="flat"
+        radius={0}
         style={{ background: surface }}
       >
         {/* Left rail — desktop */}

@@ -196,7 +196,7 @@ export function ServiceIllustrationFrame({
   );
 }
 
-/** Consistent inner padding for every illustration composition. */
+/** Stage for illustration composition. Default is edge-to-edge; opt in to padding per illustration. */
 export function IllustrationStage({
   children,
   className,
@@ -207,7 +207,7 @@ export function IllustrationStage({
   const { stageClassName } = useIllustrationState();
 
   return (
-    <div className={cn("absolute inset-0 overflow-hidden p-4 lg:p-7", stageClassName, className)}>
+    <div className={cn("absolute inset-0 overflow-hidden p-0", stageClassName, className)}>
       {children}
     </div>
   );
