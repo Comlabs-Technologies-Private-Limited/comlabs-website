@@ -108,12 +108,9 @@ export function CloudScalingIllustration() {
             >
               Production · ap-south-1
             </p>
-            <Chip tone="health" size="compact">
-              All systems operational
-            </Chip>
           </div>
           <Chip tone="quiet" size="compact">
-            v2.8.4 released
+            v2.8.4
           </Chip>
         </div>
 
@@ -383,7 +380,7 @@ export function CloudScalingIllustration() {
         >
           <div
             className="border-r px-3 py-2.5 lg:px-4"
-            style={{ borderColor: border, background: surfaceMuted }}
+            style={{ borderColor: border, background: "#FFFFFF" }}
           >
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-1.5">

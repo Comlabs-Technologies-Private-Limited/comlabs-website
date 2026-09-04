@@ -154,10 +154,9 @@ export function FigmaNav({
   return (
     <>
       <header
-        className="sticky top-0 z-[80] border-b"
+        className="sticky top-0 z-[80]"
         style={{
           background: dark ? "rgba(20,20,20,0.88)" : "rgba(247,247,244,0.88)",
-          borderColor: dark ? "rgba(244,242,237,0.12)" : "var(--border)",
           backdropFilter: "blur(12px)",
         }}
       >

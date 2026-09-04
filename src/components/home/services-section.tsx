@@ -82,7 +82,12 @@ export function HomeServiceCard({
         >
           {service.title}
         </h3>
-        <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{service.description}</p>
+        <p className="mt-3 text-[15px] leading-relaxed text-muted-foreground md:hidden">
+          {service.mobileDescription}
+        </p>
+        <p className="mt-3 hidden text-sm leading-relaxed text-muted-foreground md:block">
+          {service.description}
+        </p>
         <Link
           href={canonicalPath(service.href)}
           className="group mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--warm-orange)] transition-opacity hover:opacity-80"

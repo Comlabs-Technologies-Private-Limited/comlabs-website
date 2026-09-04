@@ -28,7 +28,7 @@ export function ContactPage({
 
       <main>
         <div className="grid min-h-screen lg:grid-cols-2">
-          <div className="relative flex md:min-h-screen flex-col justify-end px-8 py-12 lg:min-h-0 lg:px-12 lg:py-28">
+          <div className="relative flex min-h-[50vh] flex-col justify-end px-8 py-12 md:min-h-screen lg:sticky lg:top-0 lg:h-screen lg:min-h-0 lg:px-12 lg:py-28">
             <img
               src={mediaUrl(BACKGROUND_IMAGE)}
               alt=""

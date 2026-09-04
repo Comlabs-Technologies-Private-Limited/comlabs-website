@@ -1122,7 +1122,7 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
             </div>
 
             <div
-              style={{
+                    style={{
                 gridColumn: "5",
                 gridRow: "2",
                 display: "flex",
@@ -1136,7 +1136,7 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
                 iconOnly
               >
                 <Port id="doneIn" register={register} side="left" lit={false} />
-                <span
+                    <span
                   className="flex size-3.5 items-center justify-center"
                   style={{
                     color: nodeState("done") === "done" || settled ? health : ink,
@@ -1226,7 +1226,7 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
               register={register}
             />
           ) : null}
-        </div>
+          </div>
         )}
 
         {!compact ? (
@@ -1261,9 +1261,9 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
                   </div>
                 </div>
               </WorkflowNode>
-            </div>
+          </div>
             <div
-              style={{
+                    style={{
                 gridColumn: "4",
                 gridRow: "3",
                 display: "flex",
@@ -1298,7 +1298,7 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
             </div>
           </>
         ) : null}
-      </div>
+          </div>
 
       <div className="pointer-events-none absolute bottom-2.5 left-4 z-10 flex items-center gap-2">
         <span className="font-medium tracking-tight" style={{ fontSize: 10, color: inkFaint }}>
@@ -1310,11 +1310,11 @@ function WorkflowCanvas({ step, reduce }: { step: number; reduce: boolean }) {
         <span style={{ fontSize: 10, color: inkFaint }}>1.8s</span>
         <span aria-hidden style={{ fontSize: 10, color: inkFaint }}>
           ·
-        </span>
+              </span>
         <span style={{ fontSize: 10, color: inkFaint }}>
           {stepsDone} / 6 complete
-        </span>
-      </div>
-    </div>
+            </span>
+          </div>
+        </div>
   );
 }

@@ -401,57 +401,6 @@ function Sidebar() {
           );
         })}
       </ul>
-      <div
-        className="mt-auto shrink-0 border-t px-2 py-2"
-        style={{ borderColor: border, background: surfaceMuted }}
-      >
-        <div className="flex items-center gap-1.5">
-          <span
-            className="block size-5 shrink-0 overflow-hidden rounded-full"
-            style={{
-              background: "linear-gradient(145deg, rgba(28,25,23,0.14) 0%, rgba(28,25,23,0.28) 100%)",
-              border: `1px solid ${borderStrong}`,
-            }}
-          >
-            <span
-              className="block size-full rounded-full"
-              style={{
-                background:
-                  "radial-gradient(circle at 35% 32%, rgba(255,255,255,0.55) 0%, transparent 48%), linear-gradient(160deg, #D6D3D1 0%, #A8A29E 100%)",
-              }}
-            />
-          </span>
-          <div className="min-w-0 flex-1">
-            <span
-              className="block truncate text-[7.5px] leading-none font-medium tracking-tight lg:text-[8.5px]"
-              style={{ color: ink }}
-            >
-              John Sharma
-            </span>
-            <span
-              className="mt-0.5 block truncate text-[6.5px] leading-none tracking-tight lg:text-[7px]"
-              style={{ color: inkFaint }}
-            >
-              john@comlabs.com
-            </span>
-          </div>
-        </div>
-        <button
-          type="button"
-          tabIndex={-1}
-          aria-hidden
-          className="mt-1.5 flex w-full items-center gap-1 rounded-[6px] px-1 py-1"
-          style={{ color: inkMuted }}
-        >
-          <svg width="9" height="9" viewBox="0 0 9 9" fill="none" aria-hidden>
-            <path
-              d="M3.2 1.2h4.6v1.4H3.2V1.2ZM1.2 4.5 3.2 2.5v4H1.2V4.5ZM3.2 6.4h4.6V7.8H3.2V6.4Z"
-              fill="currentColor"
-            />
-          </svg>
-          <span className="text-[7px] leading-none tracking-tight lg:text-[8px]">Log out</span>
-        </button>
-      </div>
     </div>
   );
 }

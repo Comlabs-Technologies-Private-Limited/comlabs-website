@@ -10,6 +10,8 @@ export type HomeService = {
   id: HomeServiceId;
   title: string;
   description: string;
+  /** ~15-word card blurb used on mobile viewports. */
+  mobileDescription: string;
   capabilities: readonly string[];
   linkLabel: string;
   href: string;
@@ -28,6 +30,8 @@ export const HOME_SERVICES: readonly HomeService[] = [
     title: "Agentic Infrastructure & AI Agents",
     description:
       "AI systems built to operate, not just respond. We engineer agents, tool integrations and context infrastructure that connect AI to real workflows, data and business systems.",
+    mobileDescription:
+      "Agents, tools and context systems that connect AI to real business workflows.",
     capabilities: [
       "AI Agents",
       "Agentic Workflows",
@@ -45,6 +49,8 @@ export const HOME_SERVICES: readonly HomeService[] = [
     title: "AWS Cloud & DevOps",
     description:
       "Infrastructure built for production. We design and operate AWS environments, deployment pipelines and reliability systems that keep applications available, observable and ready to scale.",
+    mobileDescription:
+      "AWS environments, pipelines and reliability systems that keep production ready to scale.",
     capabilities: [
       "AWS Infrastructure",
       "CI/CD",
@@ -62,6 +68,8 @@ export const HOME_SERVICES: readonly HomeService[] = [
     title: "Web & Digital Experience",
     description:
       "High-performance digital experiences with engineering behind them. From corporate websites to product interfaces, we build fast, clear and technically robust digital experiences designed to perform in production.",
+    mobileDescription:
+      "Fast, clear websites and product interfaces engineered to perform in production.",
     capabilities: [
       "Websites",
       "Product UI",
@@ -78,6 +86,8 @@ export const HOME_SERVICES: readonly HomeService[] = [
     title: "Custom Software Engineering",
     description:
       "Software built around the way your business actually works. We engineer web applications, SaaS products, internal platforms and integrations for businesses that need more than off-the-shelf software.",
+    mobileDescription:
+      "Web apps, SaaS and internal platforms engineered around how your business works.",
     capabilities: [
       "Web Applications",
       "SaaS Platforms",
@@ -95,6 +105,8 @@ export const HOME_SERVICES: readonly HomeService[] = [
     title: "Mobile Engineering",
     description:
       "Production-ready mobile products without disconnected backend thinking. We build mobile applications alongside the APIs, infrastructure and operational systems required to support them reliably.",
+    mobileDescription:
+      "Mobile apps built with the APIs and infrastructure needed to run reliably.",
     capabilities: [
       "Cross-platform Apps",
       "Backend Integrations",
@@ -111,6 +123,8 @@ export const HOME_SERVICES: readonly HomeService[] = [
     title: "L1–L4 Application Support",
     description:
       "Support that escalates all the way to engineering. We manage application issues from first-line support to complex production defects, code-level fixes and specialist escalation.",
+    mobileDescription:
+      "From first-line triage to engineering fixes and specialist production escalation.",
     capabilities: [
       "L1 Service Support",
       "L2 Technical Support",

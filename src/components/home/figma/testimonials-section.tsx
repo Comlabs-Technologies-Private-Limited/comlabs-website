@@ -66,7 +66,7 @@ export function FigmaTestimonialsSection() {
               key={testimonial.name}
               className="flex min-h-[280px] flex-col rounded-3xl border border-border bg-background p-6 md:min-h-[300px] md:p-8"
             >
-              <p className="flex-1 text-base leading-[1.7] text-foreground">
+              <p className="flex-1 font-sans text-base leading-[1.7] text-foreground">
                 &ldquo;{testimonial.quote}&rdquo;
               </p>
 
