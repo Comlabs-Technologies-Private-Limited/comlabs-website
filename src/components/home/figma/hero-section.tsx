@@ -90,12 +90,12 @@ export function FigmaHeroSection() {
           className="mb-7 text-3xl leading-[1.08] font-bold tracking-tight md:text-6xl"
           style={{ letterSpacing: "-0.03em" }}
         >
-          We Run the Technology
-          <br />
-          Your Business{" "}
+          We Run the{" "}
           <span className="font-bold" style={{ color: "var(--warm-orange)" }}>
-            Depends On
+            Technology
           </span>
+          <br />
+          Your Business Depends On
         </motion.h1>
 
         <motion.p
