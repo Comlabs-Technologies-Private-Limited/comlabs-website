@@ -35,8 +35,8 @@ export function FigmaHomePage({
       <main>
         <FigmaHeroSection />
         <FigmaPositioningBridgeSection />
-        <FigmaServicesSection />
         <FigmaWorkSection projects={projects} />
+        <FigmaServicesSection />
         <FigmaProcessSection />
         <FigmaTestimonialsSection />
         <FigmaIndustriesSection />

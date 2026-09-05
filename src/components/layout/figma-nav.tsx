@@ -3,11 +3,10 @@
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ChevronDown, Menu, X } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
-import type { FocusEvent, ReactNode } from "react";
+import { useEffect, useId, useRef, useState } from "react";
+import type { ReactNode } from "react";
 
 import { ComlabsLogo } from "@/components/brand/comlabs-logo";
-import { SERVICE_NAV_ITEMS } from "@/lib/canonical-services";
 import { cn } from "@/lib/utils";
 import { canonicalPath, isBlogPublic } from "@/lib/site";
 
@@ -20,6 +19,42 @@ export type NavCaseStudyItem = {
   description: string;
   href: string;
 };
+
+type MegaLink = {
+  title: string;
+  href: string;
+};
+
+type MegaColumn = {
+  label: string;
+  links: readonly MegaLink[];
+};
+
+const SERVICE_MEGA_COLUMNS: readonly MegaColumn[] = [
+  {
+    label: "Operate",
+    links: [
+      { title: "Application Support", href: "/services/application-support" },
+      { title: "AWS Cloud & DevOps", href: "/services/cloud-infrastructure-scaling" },
+    ],
+  },
+  {
+    label: "Build",
+    links: [
+      { title: "AI Agents", href: "/services/ai-agent-development" },
+      { title: "Custom Software", href: "/services/custom-software-development" },
+      { title: "Mobile Engineering", href: "/services/mobile-app-development" },
+    ],
+  },
+  {
+    label: "Experience",
+    links: [
+      { title: "Web & Digital Experience", href: "/services/website-design-development" },
+    ],
+  },
+] as const;
+
+const SERVICE_FLAT_LINKS = SERVICE_MEGA_COLUMNS.flatMap((column) => column.links);
 
 const FALLBACK_CASE_STUDIES: NavCaseStudyItem[] = [
   {
@@ -42,12 +77,12 @@ const FALLBACK_CASE_STUDIES: NavCaseStudyItem[] = [
 type DesktopMenu = "services" | "work" | null;
 type MobileAccordion = "services" | "work" | null;
 
-const CLOSE_DELAY_MS = 100;
+const CLOSE_DELAY_MS = 120;
 const DROPDOWN_EASE = [0.22, 1, 0.36, 1] as const;
 
 function navLinkClass(dark: boolean) {
   return cn(
-    "rounded-full px-3 py-[7px] text-sm",
+    "inline-flex items-center gap-1 rounded-full px-3 py-[7px] text-sm",
     "transition-[background-color,color] duration-[180ms] ease-[cubic-bezier(0.22,1,0.36,1)]",
     "focus-visible:outline-none",
     dark
@@ -72,7 +107,10 @@ export function FigmaNav({
   const [desktopMenu, setDesktopMenu] = useState<DesktopMenu>(null);
   const [mobileAccordion, setMobileAccordion] = useState<MobileAccordion>(null);
   const closeTimer = useRef<number | null>(null);
+  const headerRef = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
+  const servicesPanelId = useId();
+  const workPanelId = useId();
   const workItems =
     caseStudies && caseStudies.length > 0 ? caseStudies : FALLBACK_CASE_STUDIES;
 
@@ -146,6 +184,18 @@ export function FigmaNav({
     return () => media.removeEventListener("change", onChange);
   }, []);
 
+  useEffect(() => {
+    if (!desktopMenu) return;
+
+    function onPointerDown(event: PointerEvent) {
+      if (headerRef.current?.contains(event.target as Node)) return;
+      closeDesktop();
+    }
+
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => document.removeEventListener("pointerdown", onPointerDown);
+  }, [desktopMenu]);
+
   function closeMobile() {
     setMenuOpen(false);
     setMobileAccordion(null);
@@ -154,13 +204,15 @@ export function FigmaNav({
   return (
     <>
       <header
+        ref={headerRef}
         className="sticky top-0 z-[80]"
         style={{
           background: dark ? "rgba(20,20,20,0.88)" : "rgba(247,247,244,0.88)",
           backdropFilter: "blur(12px)",
         }}
+        onMouseLeave={scheduleClose}
       >
-        <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-6">
+        <div className="relative mx-auto flex h-14 max-w-6xl items-center justify-between px-6">
           <Link href="/" aria-label="Comlabs home">
             <ComlabsLogo
               decorative
@@ -169,61 +221,32 @@ export function FigmaNav({
           </Link>
 
           <nav className="hidden items-center gap-1 md:flex" aria-label="Primary">
-            <DesktopDropdown
+            <MegaMenuTrigger
               label="Services"
               href="/services"
               open={desktopMenu === "services"}
-              reduce={Boolean(reduce)}
               dark={dark}
-              panelWidth="min(580px, calc(100vw - 48px))"
+              panelId={servicesPanelId}
               onOpen={() => openDesktop("services")}
-              onClose={closeDesktop}
               onScheduleClose={scheduleClose}
-            >
-              <div className="grid grid-cols-2 gap-1">
-                {SERVICE_NAV_ITEMS.map((item) => (
-                  <DropdownItem
-                    key={item.title}
-                    href={item.href}
-                    title={item.title}
-                    description={item.description}
-                    dark={dark}
-                  />
-                ))}
-              </div>
-              <DropdownFooter href="/services" label="View all services" dark={dark} />
-            </DesktopDropdown>
+            />
 
-            <DesktopDropdown
+            <MegaMenuTrigger
               label="Case Studies"
               href="/case-studies"
               open={desktopMenu === "work"}
-              reduce={Boolean(reduce)}
               dark={dark}
-              panelWidth="min(400px, calc(100vw - 48px))"
+              panelId={workPanelId}
               onOpen={() => openDesktop("work")}
-              onClose={closeDesktop}
               onScheduleClose={scheduleClose}
-            >
-              <div className="flex flex-col gap-1">
-                {workItems.map((item) => (
-                  <DropdownItem
-                    key={item.href}
-                    href={item.href}
-                    title={item.title}
-                    description={item.description}
-                    dark={dark}
-                  />
-                ))}
-              </div>
-              <DropdownFooter href="/case-studies" label="View all case studies" dark={dark} />
-            </DesktopDropdown>
+            />
 
             {[...SIMPLE_LINKS, ...blogLinks, { label: "Contact", href: "/contact" }].map((link) => (
               <Link
                 key={link.label}
                 href={canonicalPath(link.href)}
                 className={navLinkClass(dark)}
+                onMouseEnter={scheduleClose}
               >
                 {link.label}
               </Link>
@@ -245,6 +268,7 @@ export function FigmaNav({
                     }
                   : { background: "var(--foreground)" }
               }
+              onMouseEnter={scheduleClose}
             >
               Get Started
             </Link>
@@ -264,6 +288,92 @@ export function FigmaNav({
             <Menu size={20} />
           </button>
         </div>
+
+        <AnimatePresence>
+          {desktopMenu ? (
+            <motion.div
+              key={desktopMenu}
+              id={desktopMenu === "services" ? servicesPanelId : workPanelId}
+              role="navigation"
+              aria-label={desktopMenu === "services" ? "Services" : "Case Studies"}
+              className="absolute inset-x-0 top-full hidden origin-top md:block"
+              initial={reduce ? false : { opacity: 0, y: -6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={
+                reduce
+                  ? { opacity: 0 }
+                  : {
+                      opacity: 0,
+                      y: -4,
+                      transition: { duration: 0.14, ease: DROPDOWN_EASE },
+                    }
+              }
+              transition={{
+                duration: reduce ? 0 : 0.2,
+                ease: DROPDOWN_EASE,
+              }}
+              onMouseEnter={cancelClose}
+              style={{
+                background: dark ? "#141414" : "#F7F7F4",
+                borderBottom: dark
+                  ? "1px solid rgba(244,242,237,0.10)"
+                  : "1px solid rgba(0,0,0,0.06)",
+                boxShadow: dark
+                  ? "0 18px 40px rgba(0,0,0,0.35)"
+                  : "0 18px 40px rgba(0,0,0,0.06)",
+              }}
+            >
+              <div className="mx-auto max-w-6xl px-6 py-8">
+                {desktopMenu === "services" ? (
+                  <>
+                    <div className="grid grid-cols-3 gap-x-16 gap-y-2">
+                      {SERVICE_MEGA_COLUMNS.map((column) => (
+                        <MegaMenuColumn key={column.label} label={column.label} dark={dark}>
+                          {column.links.map((link) => (
+                            <MegaMenuLink
+                              key={link.href}
+                              href={link.href}
+                              title={link.title}
+                              dark={dark}
+                            />
+                          ))}
+                        </MegaMenuColumn>
+                      ))}
+                    </div>
+                    <DropdownFooter href="/services" label="View all services" dark={dark} />
+                  </>
+                ) : (
+                  <>
+                    <div className="grid grid-cols-2 gap-x-16 gap-y-2 md:grid-cols-3">
+                      <MegaMenuColumn label="Recent" dark={dark}>
+                        {workItems.map((item) => (
+                          <MegaMenuLink
+                            key={item.href}
+                            href={item.href}
+                            title={item.title}
+                            dark={dark}
+                          />
+                        ))}
+                      </MegaMenuColumn>
+                      <MegaMenuColumn label="Explore" dark={dark}>
+                        <MegaMenuLink
+                          href="/case-studies"
+                          title="All case studies"
+                          dark={dark}
+                        />
+                      </MegaMenuColumn>
+                    </div>
+                    <DropdownFooter
+                      href="/case-studies"
+                      label="View all case studies"
+                      dark={dark}
+                    />
+                  </>
+                )}
+              </div>
+            </motion.div>
+          ) : null}
+        </AnimatePresence>
       </header>
 
       {menuOpen ? (
@@ -280,18 +390,18 @@ export function FigmaNav({
             onClick={closeMobile}
           />
 
-            <div
-              className="relative flex flex-col"
-              style={{
-                background: dark ? "#141414" : "var(--background)",
-                paddingTop: "env(safe-area-inset-top)",
-                color: dark ? "#F4F2ED" : undefined,
-              }}
-            >
-              <div className="flex h-14 items-center justify-between px-6">
-                <Link href="/" aria-label="Comlabs home" onClick={closeMobile}>
-                  <ComlabsLogo decorative className={cn("h-5 w-auto", dark && "brightness-0 invert")} />
-                </Link>
+          <div
+            className="relative flex flex-col"
+            style={{
+              background: dark ? "#141414" : "var(--background)",
+              paddingTop: "env(safe-area-inset-top)",
+              color: dark ? "#F4F2ED" : undefined,
+            }}
+          >
+            <div className="flex h-14 items-center justify-between px-6">
+              <Link href="/" aria-label="Comlabs home" onClick={closeMobile}>
+                <ComlabsLogo decorative className={cn("h-5 w-auto", dark && "brightness-0 invert")} />
+              </Link>
               <button
                 type="button"
                 className={cn(
@@ -326,17 +436,14 @@ export function FigmaNav({
                 }
                 onNavigate={closeMobile}
               >
-                {SERVICE_NAV_ITEMS.map((item) => (
+                {SERVICE_FLAT_LINKS.map((item) => (
                   <Link
-                    key={item.title}
+                    key={item.href}
                     href={canonicalPath(item.href)}
-                    className="block rounded-[10px] px-3 py-3"
+                    className="block rounded-[10px] px-3 py-3 text-sm text-foreground"
                     onClick={closeMobile}
                   >
-                    <span className="block text-sm text-foreground">{item.title}</span>
-                    <span className="mt-1 block text-[12px] text-muted-foreground">
-                      {item.description}
-                    </span>
+                    {item.title}
                   </Link>
                 ))}
                 <Link
@@ -364,13 +471,10 @@ export function FigmaNav({
                   <Link
                     key={item.href}
                     href={canonicalPath(item.href)}
-                    className="block rounded-[10px] px-3 py-3"
+                    className="block rounded-[10px] px-3 py-3 text-sm text-foreground"
                     onClick={closeMobile}
                   >
-                    <span className="block text-sm text-foreground">{item.title}</span>
-                    <span className="mt-1 block text-[12px] text-muted-foreground">
-                      {item.description}
-                    </span>
+                    {item.title}
                   </Link>
                 ))}
                 <Link
@@ -411,179 +515,99 @@ export function FigmaNav({
   );
 }
 
-function DesktopDropdown({
+function MegaMenuTrigger({
   label,
   href,
   open,
-  reduce,
   dark,
-  panelWidth,
+  panelId,
   onOpen,
-  onClose,
   onScheduleClose,
-  children,
 }: {
   label: string;
   href: string;
   open: boolean;
-  reduce: boolean;
   dark: boolean;
-  panelWidth: string;
+  panelId: string;
   onOpen: () => void;
-  onClose: () => void;
   onScheduleClose: () => void;
-  children: ReactNode;
-}) {
-  const panelId = useId();
-  const wrapRef = useRef<HTMLDivElement>(null);
-  const panelRef = useRef<HTMLDivElement>(null);
-  const [shiftX, setShiftX] = useState(0);
-
-  useLayoutEffect(() => {
-    if (!open || !panelRef.current) {
-      setShiftX(0);
-      return;
-    }
-
-    const rect = panelRef.current.getBoundingClientRect();
-    const pad = 16;
-    let next = 0;
-    if (rect.right > window.innerWidth - pad) {
-      next = window.innerWidth - pad - rect.right;
-    }
-    if (rect.left + next < pad) {
-      next += pad - (rect.left + next);
-    }
-    setShiftX(next);
-  }, [open, panelWidth]);
-
-  useEffect(() => {
-    if (!open) return;
-
-    function onPointerDown(event: PointerEvent) {
-      if (wrapRef.current?.contains(event.target as Node)) return;
-      onClose();
-    }
-
-    document.addEventListener("pointerdown", onPointerDown);
-    return () => document.removeEventListener("pointerdown", onPointerDown);
-  }, [open, onClose]);
-
-  function onBlur(event: FocusEvent<HTMLDivElement>) {
-    const next = event.relatedTarget;
-    if (next instanceof Node && wrapRef.current?.contains(next)) return;
-    onScheduleClose();
-  }
-
-  return (
-    <div
-      ref={wrapRef}
-      className="relative"
-      onMouseEnter={onOpen}
-      onMouseLeave={onScheduleClose}
-      onFocus={onOpen}
-      onBlur={onBlur}
-    >
-      <Link
-        href={canonicalPath(href)}
-        className={cn(
-          navLinkClass(dark),
-          open && (dark ? "bg-white/[0.08] text-[#F4F2ED]" : "bg-black/[0.045] text-foreground"),
-        )}
-        aria-expanded={open}
-        aria-haspopup="true"
-        aria-controls={panelId}
-      >
-        {label}
-      </Link>
-
-      <AnimatePresence>
-        {open ? (
-          <motion.div
-            key={label}
-            className="absolute left-0 top-full z-[90] origin-top"
-            initial={reduce ? false : { opacity: 0, y: -4, scale: 0.985, x: shiftX }}
-            animate={{ opacity: 1, y: 0, scale: 1, x: shiftX }}
-            exit={
-              reduce
-                ? { opacity: 0 }
-                : {
-                    opacity: 0,
-                    y: -2,
-                    scale: 0.99,
-                    transition: { duration: 0.14, ease: DROPDOWN_EASE },
-                  }
-            }
-            transition={{
-              duration: reduce ? 0 : 0.2,
-              ease: DROPDOWN_EASE,
-            }}
-          >
-            <div className="h-3.5 w-full" aria-hidden />
-            <div
-              ref={panelRef}
-              id={panelId}
-              role="navigation"
-              aria-label={label}
-              className="rounded-2xl p-6"
-              style={{
-                width: panelWidth,
-                background: dark ? "#1A1A1A" : "#FFFFFF",
-                border: dark ? "1px solid rgba(244,242,237,0.12)" : "1px solid rgba(0,0,0,0.06)",
-                boxShadow: dark
-                  ? "0 18px 50px rgba(0,0,0,0.35)"
-                  : "0 18px 50px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.04)",
-              }}
-            >
-              {children}
-            </div>
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
-    </div>
-  );
-}
-
-function DropdownItem({
-  href,
-  title,
-  description,
-  dark,
-}: {
-  href: string;
-  title: string;
-  description: string;
-  dark?: boolean;
 }) {
   return (
     <Link
       href={canonicalPath(href)}
       className={cn(
-        "group/item block rounded-[10px] px-3 py-3",
-        "transition-[background-color,transform] duration-[180ms] ease-[cubic-bezier(0.22,1,0.36,1)]",
-        "hover:translate-x-px focus-visible:outline-none",
-        dark
-          ? "hover:bg-white/[0.06] focus-visible:bg-white/[0.06]"
-          : "hover:bg-black/[0.04] focus-visible:bg-black/[0.04]",
+        navLinkClass(dark),
+        open && (dark ? "bg-white/[0.08] text-[#F4F2ED]" : "bg-black/[0.045] text-foreground"),
       )}
+      aria-expanded={open}
+      aria-haspopup="true"
+      aria-controls={panelId}
+      onMouseEnter={onOpen}
+      onFocus={onOpen}
+      onBlur={onScheduleClose}
     >
-      <span
+      {label}
+      <ChevronDown
+        size={14}
+        aria-hidden
         className={cn(
-          "block text-[13px] font-medium tracking-tight",
-          dark ? "text-[#F4F2ED]" : "text-foreground",
+          "transition-transform duration-[180ms] ease-[cubic-bezier(0.22,1,0.36,1)]",
+          open && "rotate-180",
+        )}
+      />
+    </Link>
+  );
+}
+
+function MegaMenuColumn({
+  label,
+  dark,
+  children,
+}: {
+  label: string;
+  dark?: boolean;
+  children: ReactNode;
+}) {
+  return (
+    <div className="min-w-0">
+      <p
+        className={cn(
+          "mb-4 text-[12px] font-medium tracking-tight",
+          dark ? "text-[#F4F2ED]/45" : "text-muted-foreground",
+        )}
+      >
+        {label}
+      </p>
+      <ul className="flex flex-col gap-3">{children}</ul>
+    </div>
+  );
+}
+
+function MegaMenuLink({
+  href,
+  title,
+  dark,
+}: {
+  href: string;
+  title: string;
+  dark?: boolean;
+}) {
+  return (
+    <li>
+      <Link
+        href={canonicalPath(href)}
+        className={cn(
+          "block rounded-md px-1 py-0.5 text-[15px] font-medium tracking-tight",
+          "transition-colors duration-[180ms] ease-[cubic-bezier(0.22,1,0.36,1)]",
+          "focus-visible:outline-none",
+          dark
+            ? "text-[#F4F2ED] hover:text-[#F4F2ED]/80 focus-visible:text-[#F4F2ED]/80"
+            : "text-foreground hover:text-foreground/70 focus-visible:text-foreground/70",
         )}
       >
         {title}
-      </span>
-      <span
-        className={cn(
-          "mt-1 block text-[12px] leading-snug",
-          dark ? "text-[#F4F2ED]/60" : "text-muted-foreground",
-        )}
-      >
-        {description}
-      </span>
-    </Link>
+      </Link>
+    </li>
   );
 }
 
@@ -598,15 +622,15 @@ function DropdownFooter({
 }) {
   return (
     <div
-      className="mt-4 pt-4"
-      style={{ borderTop: dark ? "1px solid rgba(244,242,237,0.12)" : "1px solid rgba(0,0,0,0.06)" }}
+      className="mt-6 pt-5"
+      style={{ borderTop: dark ? "1px solid rgba(244,242,237,0.10)" : "1px solid rgba(0,0,0,0.05)" }}
     >
       <Link
         href={canonicalPath(href)}
         className={cn(
           "inline-flex text-[13px] transition-colors duration-[180ms] focus-visible:outline-none",
           dark
-            ? "text-[#F4F2ED]/60 hover:text-[#F4F2ED] focus-visible:text-[#F4F2ED]"
+            ? "text-[#F4F2ED]/55 hover:text-[#F4F2ED] focus-visible:text-[#F4F2ED]"
             : "text-muted-foreground hover:text-foreground focus-visible:text-foreground",
         )}
       >
