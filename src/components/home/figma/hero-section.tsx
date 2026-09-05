@@ -4,6 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { motion } from "motion/react";
 
 import { EnterpriseClientsTrust } from "@/components/home/enterprise-clients-section";
+import { useOptionalTheme } from "@/components/theme/theme-provider";
 import { ChromaticImage } from "@/components/ui/chromatic-image";
 import { HERO_BACKGROUND_PATH, mediaUrl } from "@/lib/cloudinary";
 import { canonicalPath } from "@/lib/site";
@@ -14,29 +15,36 @@ const HERO_OVERLAY_MOBILE =
   "linear-gradient(180deg, rgba(247,247,244,0.64) 0%, rgba(247,247,244,0.56) 45%, rgba(247,247,244,0.66) 100%)";
 
 export function FigmaHeroSection() {
+  const theme = useOptionalTheme();
+  const isDark = theme?.resolvedTheme === "dark";
+
   return (
     <section className="relative overflow-hidden bg-background px-6 pt-16 pb-16 md:pt-24 md:pb-20">
-      <ChromaticImage
-        src={mediaUrl(HERO_BACKGROUND_PATH)}
-        alt=""
-        trackParent
-        backgroundColor="#f7f7f4"
-        zoom={0.14}
-        displacement={0.035}
-        chromaticShift={0.009}
-        tilt={0}
-        className="pointer-events-none absolute inset-0 z-0 size-full bg-background"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 z-[1] md:hidden"
-        style={{ background: HERO_OVERLAY_MOBILE }}
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 z-[1] hidden md:block"
-        style={{ background: HERO_OVERLAY }}
-      />
+      {!isDark ? (
+        <>
+          <ChromaticImage
+            src={mediaUrl(HERO_BACKGROUND_PATH)}
+            alt=""
+            trackParent
+            backgroundColor="#f7f7f4"
+            zoom={0.14}
+            displacement={0.035}
+            chromaticShift={0.009}
+            tilt={0}
+            className="pointer-events-none absolute inset-0 z-0 size-full bg-background"
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 z-[1] md:hidden"
+            style={{ background: HERO_OVERLAY_MOBILE }}
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 z-[1] hidden md:block"
+            style={{ background: HERO_OVERLAY }}
+          />
+        </>
+      ) : null}
       <motion.div
         aria-hidden
         className="pointer-events-none absolute -top-24 right-[-18%] z-[2] h-[24rem] w-[24rem] rounded-full"

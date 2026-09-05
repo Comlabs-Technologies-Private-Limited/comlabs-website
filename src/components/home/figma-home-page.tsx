@@ -13,12 +13,37 @@ import {
 } from "@/components/home/figma/work-section";
 import { FigmaFooter } from "@/components/layout/figma-footer";
 import { FigmaNav, type NavCaseStudyItem } from "@/components/layout/figma-nav";
+// import { ThemeProvider, useTheme } from "@/components/theme/theme-provider";
 
 type FigmaHomePageProps = {
   caseStudies: NavCaseStudyItem[];
   projects: WorkProject[];
   footerCaseStudies: Array<{ label: string; href: string }>;
 };
+
+/*
+ * Dark mode (ThemeProvider + nav toggle) — re-enable when needed:
+ *
+ * function HomePageShell(props: FigmaHomePageProps) {
+ *   const { resolvedTheme } = useTheme();
+ *   const tone = resolvedTheme === "dark" ? "dark" : "light";
+ *   return (
+ *     <>
+ *       <FigmaNav caseStudies={props.caseStudies} tone={tone} />
+ *       <main>...</main>
+ *       <FigmaFooter caseStudies={props.footerCaseStudies} tone={tone} />
+ *     </>
+ *   );
+ * }
+ *
+ * export function FigmaHomePage(props: FigmaHomePageProps) {
+ *   return (
+ *     <ThemeProvider defaultTheme="dark">
+ *       <HomePageShell {...props} />
+ *     </ThemeProvider>
+ *   );
+ * }
+ */
 
 export function FigmaHomePage({
   caseStudies,

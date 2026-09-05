@@ -7,6 +7,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import type { ReactNode } from "react";
 
 import { ComlabsLogo } from "@/components/brand/comlabs-logo";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { cn } from "@/lib/utils";
 import { canonicalPath, isBlogPublic } from "@/lib/site";
 
@@ -254,6 +255,7 @@ export function FigmaNav({
           </nav>
 
           <div className="hidden items-center gap-3 md:flex">
+            <ThemeToggle dark={dark} onMouseEnter={scheduleClose} />
             <Link
               href={canonicalPath("/contact")}
               className={cn(
@@ -274,19 +276,22 @@ export function FigmaNav({
             </Link>
           </div>
 
-          <button
-            type="button"
-            className={cn(
-              "-mr-2 flex h-11 w-11 items-center justify-center md:hidden",
-              dark ? "text-[#F4F2ED]" : "text-foreground",
-            )}
-            onClick={() => setMenuOpen(true)}
-            aria-label="Open menu"
-            aria-expanded={menuOpen}
-            aria-controls="mobile-navigation"
-          >
-            <Menu size={20} />
-          </button>
+          <div className="flex items-center gap-1 md:hidden">
+            <ThemeToggle dark={dark} />
+            <button
+              type="button"
+              className={cn(
+                "-mr-2 flex h-11 w-11 items-center justify-center",
+                dark ? "text-[#F4F2ED]" : "text-foreground",
+              )}
+              onClick={() => setMenuOpen(true)}
+              aria-label="Open menu"
+              aria-expanded={menuOpen}
+              aria-controls="mobile-navigation"
+            >
+              <Menu size={20} />
+            </button>
+          </div>
         </div>
 
         <AnimatePresence>
@@ -402,17 +407,20 @@ export function FigmaNav({
               <Link href="/" aria-label="Comlabs home" onClick={closeMobile}>
                 <ComlabsLogo decorative className={cn("h-5 w-auto", dark && "brightness-0 invert")} />
               </Link>
-              <button
-                type="button"
-                className={cn(
-                  "-mr-2 flex h-11 w-11 items-center justify-center",
-                  dark ? "text-[#F4F2ED]" : "text-foreground",
-                )}
-                onClick={closeMobile}
-                aria-label="Close menu"
-              >
-                <X size={20} />
-              </button>
+              <div className="flex items-center gap-1">
+                <ThemeToggle dark={dark} />
+                <button
+                  type="button"
+                  className={cn(
+                    "-mr-2 flex h-11 w-11 items-center justify-center",
+                    dark ? "text-[#F4F2ED]" : "text-foreground",
+                  )}
+                  onClick={closeMobile}
+                  aria-label="Close menu"
+                >
+                  <X size={20} />
+                </button>
+              </div>
             </div>
 
             <nav

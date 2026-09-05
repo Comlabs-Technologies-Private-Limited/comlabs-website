@@ -17,7 +17,7 @@ export function FigmaCtaSection() {
           Let&apos;s talk
         </p>
         <h2
-          className="mb-10 text-2xl font-bold tracking-tight md:text-5xl"
+          className="mb-10 text-2xl font-bold tracking-tight md:text-4xl"
           style={{ color: "var(--background)", letterSpacing: "-0.03em" }}
         >
           Your technology should not become your operational bottleneck.

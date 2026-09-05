@@ -11,7 +11,7 @@ export function FigmaServicesSection() {
             Services
           </p>
           <h2
-            className="max-w-3xl text-2xl font-bold tracking-tight md:text-5xl"
+            className="max-w-3xl text-2xl font-bold tracking-tight md:text-4xl"
             style={{ letterSpacing: "-0.03em" }}
           >
             Engineering that stays{" "}

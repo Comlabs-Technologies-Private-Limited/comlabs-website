@@ -73,8 +73,8 @@ export function HomeServiceCard({
         <ServiceCardVisual service={service} index={index} featured={featured} />
       </div>
       <div
-        className="flex flex-1 flex-col justify-center p-6 text-left md:p-8 "
-        style={{ background: "#F7F7F4" }}
+        className="flex flex-1 flex-col justify-center p-6 text-left md:p-8"
+        style={{ background: "var(--background)" }}
       >
         <h3
           className="text-lg leading-[1.2] font-bold tracking-tight md:text-xl"
