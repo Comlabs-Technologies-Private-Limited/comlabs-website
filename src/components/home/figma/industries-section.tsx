@@ -4,6 +4,11 @@ import { Brain, Building2, Cog, Cpu, ShoppingBag } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 import { BlurReveal, BLUR_REVEAL_NORMAL_SPEED } from "@/components/blur-reveal";
+import {
+  RevealStagger,
+  RevealStaggerItem,
+  useAfterTitleReveal,
+} from "@/components/home/figma/after-title-reveal";
 
 type IndustryItem = {
   title: string;
@@ -41,6 +46,7 @@ const INDUSTRIES: IndustryItem[] = [
 
 /** Quiet industries strip — lighter weight than Services or Work. */
 export function FigmaIndustriesSection() {
+  const { revealed, onTitleComplete } = useAfterTitleReveal();
   return (
     <section id="industries" className="border-y border-border px-6 py-14 md:py-16">
       <div className="mx-auto max-w-6xl">
@@ -52,6 +58,7 @@ export function FigmaIndustriesSection() {
             as="h2"
             inView
             speedReveal={BLUR_REVEAL_NORMAL_SPEED}
+            onAnimationComplete={onTitleComplete}
             className="text-2xl font-bold tracking-tight md:text-4xl"
             style={{ letterSpacing: "-0.03em" }}
             segments={[
@@ -62,11 +69,16 @@ export function FigmaIndustriesSection() {
           />
         </div>
 
-        <ul className="grid grid-cols-1 gap-x-8 gap-y-5 sm:grid-cols-2 lg:grid-cols-5">
+        <RevealStagger
+          revealed={revealed}
+          delay={0.08}
+          className="grid grid-cols-1 gap-x-8 gap-y-5 sm:grid-cols-2 lg:grid-cols-5"
+        >
           {INDUSTRIES.map((industry) => {
             const Icon = industry.icon;
             return (
-              <li key={industry.title} className="min-w-0 border-t border-border pt-4">
+              <RevealStaggerItem key={industry.title}>
+                <div className="min-w-0 border-t border-border pt-4">
                 <div className="mb-2 flex items-center gap-2">
                   <Icon
                     size={14}
@@ -78,10 +90,11 @@ export function FigmaIndustriesSection() {
                   <h3 className="truncate text-sm font-medium tracking-tight">{industry.title}</h3>
                 </div>
                 <p className="text-xs leading-relaxed text-muted-foreground">{industry.description}</p>
-              </li>
+                </div>
+              </RevealStaggerItem>
             );
           })}
-        </ul>
+        </RevealStagger>
       </div>
     </section>
   );

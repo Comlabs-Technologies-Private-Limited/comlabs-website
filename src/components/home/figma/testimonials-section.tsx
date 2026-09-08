@@ -4,6 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { BlurReveal, BLUR_REVEAL_NORMAL_SPEED } from "@/components/blur-reveal";
+import {
+  AFTER_TITLE_BODY_DELAY,
+  RevealCopy,
+  RevealStagger,
+  RevealStaggerItem,
+  useAfterTitleReveal,
+} from "@/components/home/figma/after-title-reveal";
 import { TESTIMONIALS } from "@/components/home/figma/home-data";
 import { referringAnchorProps } from "@/lib/seo/prepare-html-links";
 
@@ -39,6 +46,7 @@ function FounderAvatar({
 }
 
 export function FigmaTestimonialsSection() {
+  const { revealed, onTitleComplete } = useAfterTitleReveal();
   return (
     <section id="testimonials" className="border-y border-border bg-card px-6 py-24 md:py-28">
       <div className="mx-auto max-w-6xl">
@@ -50,6 +58,7 @@ export function FigmaTestimonialsSection() {
             as="h2"
             inView
             speedReveal={BLUR_REVEAL_NORMAL_SPEED}
+            onAnimationComplete={onTitleComplete}
             className="text-2xl font-bold tracking-tight md:text-4xl"
             style={{ letterSpacing: "-0.03em" }}
             segments={[
@@ -58,18 +67,25 @@ export function FigmaTestimonialsSection() {
               { text: "." },
             ]}
           />
-          <p className="mt-4 text-sm leading-relaxed text-muted-foreground md:text-base">
+          <RevealCopy
+            revealed={revealed}
+            className="mt-4 text-sm leading-relaxed text-muted-foreground md:text-base"
+          >
             Direct feedback from teams we have helped build, improve and operate critical digital
             systems.
-          </p>
+          </RevealCopy>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+        <RevealStagger
+          revealed={revealed}
+          delay={AFTER_TITLE_BODY_DELAY}
+          className="grid grid-cols-1 gap-6 md:grid-cols-3"
+        >
           {TESTIMONIALS.map((testimonial) => (
-            <blockquote
-              key={testimonial.name}
-              className="flex min-h-[280px] flex-col rounded-3xl border border-border bg-background p-6 md:min-h-[300px] md:p-8"
-            >
+            <RevealStaggerItem key={testimonial.name}>
+              <blockquote
+                className="flex min-h-[280px] flex-col rounded-3xl border border-border bg-background p-6 md:min-h-[300px] md:p-8"
+              >
               <p className="flex-1 font-sans text-base leading-[1.7] text-foreground">
                 &ldquo;{testimonial.quote}&rdquo;
               </p>
@@ -101,9 +117,10 @@ export function FigmaTestimonialsSection() {
                   </p>
                 </div>
               </footer>
-            </blockquote>
+              </blockquote>
+            </RevealStaggerItem>
           ))}
-        </div>
+        </RevealStagger>
       </div>
     </section>
   );

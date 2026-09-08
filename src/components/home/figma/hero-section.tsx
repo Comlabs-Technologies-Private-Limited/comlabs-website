@@ -5,6 +5,7 @@ import { motion } from "motion/react";
 
 import { BlurReveal, BLUR_REVEAL_NORMAL_SPEED } from "@/components/blur-reveal";
 import { EnterpriseClientsTrust } from "@/components/home/enterprise-clients-section";
+import { RevealCopy, useAfterTitleReveal } from "@/components/home/figma/after-title-reveal";
 import { useOptionalTheme } from "@/components/theme/theme-provider";
 import { ChromaticImage } from "@/components/ui/chromatic-image";
 import { HERO_BACKGROUND_PATH, mediaUrl } from "@/lib/cloudinary";
@@ -18,6 +19,7 @@ const HERO_OVERLAY_MOBILE =
 export function FigmaHeroSection() {
   const theme = useOptionalTheme();
   const isDark = theme?.resolvedTheme === "dark";
+  const { revealed, onTitleComplete } = useAfterTitleReveal();
 
   return (
     <section className="relative overflow-hidden bg-background px-6 pt-16 pb-16 md:pt-24 md:pb-20">
@@ -73,7 +75,7 @@ export function FigmaHeroSection() {
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45, delay: 1.35 }}
+          transition={{ duration: 0.45, delay: 0.08 }}
           className="mb-9 inline-flex items-center gap-2 rounded-full border border-border px-3.5 py-1.5 text-xs font-medium"
           style={{ color: "var(--warm-orange)", background: "var(--warm-orange-light)" }}
         >
@@ -88,6 +90,7 @@ export function FigmaHeroSection() {
           as="h1"
           inView
           speedReveal={BLUR_REVEAL_NORMAL_SPEED}
+          onAnimationComplete={onTitleComplete}
           className="mb-7 text-3xl leading-[1.08] font-bold tracking-tight md:text-6xl"
           style={{ letterSpacing: "-0.03em" }}
           segments={[
@@ -102,21 +105,19 @@ export function FigmaHeroSection() {
           ]}
         />
 
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.82, ease: "easeOut" }}
+        <RevealCopy
+          revealed={revealed}
           className="mb-10 max-w-2xl text-md leading-relaxed text-muted-foreground md:mx-auto md:text-lg"
         >
           Comlabs is an engineering and technology operations company supporting production
           applications, AI systems, cloud infrastructure and digital products from build through
           operation.
-        </motion.p>
+        </RevealCopy>
 
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.52, delay: 1.18, ease: "easeOut" }}
+        <RevealCopy
+          revealed={revealed}
+          delay={0.28}
+          as="div"
           className="flex flex-wrap items-center justify-start gap-3 md:justify-center"
         >
           <a
@@ -132,18 +133,19 @@ export function FigmaHeroSection() {
           >
             Explore our capabilities
           </a>
-        </motion.div>
+        </RevealCopy>
       </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 28 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.65, delay: 1.48, ease: "easeOut" }}
+      <RevealCopy
+        revealed={revealed}
+        delay={0.5}
+        as="div"
         className="relative z-10 mx-auto mt-16 max-w-5xl"
-        aria-label="Trusted clients"
       >
-        <EnterpriseClientsTrust />
-      </motion.div>
+        <div aria-label="Trusted clients">
+          <EnterpriseClientsTrust />
+        </div>
+      </RevealCopy>
     </section>
   );
 }

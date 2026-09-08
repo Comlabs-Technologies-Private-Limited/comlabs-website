@@ -2,6 +2,7 @@
 
 import { BlurReveal, BLUR_REVEAL_NORMAL_SPEED } from "@/components/blur-reveal";
 import { ForceField } from "@/components/canvasui/ForceField";
+import { RevealCopy, useAfterTitleReveal } from "@/components/home/figma/after-title-reveal";
 
 /** Warm orange lattice on charcoal — brand-aligned Force Field. */
 const FIELD_COLOR: [number, number, number] = [0.788, 0.392, 0.259];
@@ -12,6 +13,7 @@ const FIELD_EDGE: [number, number, number] = [0.95, 0.72, 0.55];
  * Charcoal + Force Field background; left-aligned ownership positioning.
  */
 export function FigmaPositioningBridgeSection() {
+  const { revealed, onTitleComplete } = useAfterTitleReveal();
   return (
     <section id="positioning" className="relative overflow-hidden" aria-labelledby="positioning-heading">
       <ForceField
@@ -58,6 +60,7 @@ export function FigmaPositioningBridgeSection() {
               id="positioning-heading"
               inView
               speedReveal={BLUR_REVEAL_NORMAL_SPEED}
+              onAnimationComplete={onTitleComplete}
               className="text-2xl font-bold tracking-tight text-neutral-100 md:text-4xl"
               style={{ letterSpacing: "-0.03em" }}
               segments={[
@@ -66,11 +69,14 @@ export function FigmaPositioningBridgeSection() {
                 { text: "when it works in production." },
               ]}
             />
-            <p className="mt-5 text-sm leading-relaxed text-neutral-100/70 md:text-base">
+            <RevealCopy
+              revealed={revealed}
+              className="mt-5 text-sm leading-relaxed text-neutral-100/70 md:text-base"
+            >
               Comlabs supports the applications, infrastructure and operational systems behind
               growing businesses—from the first customer request to the production issue that cannot
               wait until Monday.
-            </p>
+            </RevealCopy>
           </div>
         </div>
       </ForceField>
