@@ -112,7 +112,7 @@ export function FigmaServicesSection() {
   const services = orderedServices();
 
   return (
-    <section id="services" className="relative py-24 md:py-32">
+    <section id="services" className="relative py-14 md:py-16">
       <span aria-hidden className="gutter-hatch" />
       <div className="section-layout">
         <div className="mb-12 px-3 md:px-4 md:mb-16">

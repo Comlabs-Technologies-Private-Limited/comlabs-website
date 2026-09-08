@@ -16,7 +16,7 @@ export function FigmaCtaSection() {
         className="section-layout overflow-hidden"
         style={{ background: "var(--foreground)" }}
       >
-        <div className="mx-auto max-w-2xl px-10 py-24 text-center">
+        <div className="mx-auto max-w-2xl px-10 py-14 text-center md:py-16">
           <p
             className="mb-6 text-xs font-semibold tracking-widest uppercase"
             style={{ color: "rgba(247,247,244,0.45)" }}

@@ -33,7 +33,7 @@ export function FigmaWorkSection({ projects }: FigmaWorkSectionProps) {
   const { revealed, onTitleComplete } = useAfterTitleReveal();
 
   return (
-    <section id="work" className="relative border-y border-border bg-card py-24">
+    <section id="work" className="relative border-y border-border bg-card py-14 md:py-16">
       <span aria-hidden className="gutter-hatch" />
       <div className="section-layout">
         <div className="mb-12 flex items-end justify-between gap-6 px-3 md:px-4">

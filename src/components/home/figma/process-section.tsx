@@ -20,7 +20,7 @@ const rightFeatures = PROCESS_STEPS.slice(2).map((step) => ({
 export function FigmaProcessSection() {
   const { revealed, onTitleComplete } = useAfterTitleReveal();
   return (
-    <section id="process" className="relative bg-[#141414] py-20 md:py-24">
+    <section id="process" className="relative bg-[#141414] py-14 md:py-16">
       <span aria-hidden className="gutter-hatch gutter-hatch-on-dark" />
       <div className="section-layout">
         <div className="mb-10 max-w-2xl px-3 md:px-4 md:mb-12">

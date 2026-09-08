@@ -22,7 +22,7 @@ export function FigmaHeroSection() {
   const { revealed, onTitleComplete } = useAfterTitleReveal();
 
   return (
-    <section className="relative overflow-hidden bg-background px-6 pt-16 pb-16 md:pt-24 md:pb-20">
+    <section className="relative overflow-hidden bg-background px-6 py-14 md:py-16">
       {!isDark ? (
         <>
           <ChromaticImage
