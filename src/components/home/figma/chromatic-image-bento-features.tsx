@@ -47,7 +47,7 @@ export function ChromaticImageBentoFeatures({
   rightFeatures,
   imageSrc,
   imageAlt,
-  backgroundColor = "#9cae65",
+  backgroundColor = "#6d7a52",
 }: ChromaticImageBentoFeaturesProps) {
   return (
     <div className="overflow-hidden bg-[#141414] text-neutral-100">
@@ -55,16 +55,22 @@ export function ChromaticImageBentoFeatures({
         <div className="order-2 border-white/10 lg:order-1 lg:border-r">
           <FeatureColumn features={leftFeatures} />
         </div>
-        <ChromaticImage
-          src={imageSrc}
-          alt={imageAlt}
-          backgroundColor={backgroundColor}
-          zoom={0.14}
-          displacement={0.035}
-          chromaticShift={0.009}
-          tilt={0.14}
-          className="order-1 aspect-[4/5] min-h-96 bg-[#141414] lg:order-2 lg:aspect-auto lg:min-h-[42rem]"
-        />
+        <div className="relative order-1 aspect-[4/5] min-h-96 lg:order-2 lg:aspect-auto lg:min-h-[42rem]">
+          <ChromaticImage
+            src={imageSrc}
+            alt={imageAlt}
+            backgroundColor={backgroundColor}
+            zoom={0.14}
+            displacement={0.035}
+            chromaticShift={0.009}
+            tilt={0.14}
+            className="size-full min-h-96 bg-[#141414] saturate-[0.58] brightness-[0.9] lg:min-h-[42rem]"
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 bg-[#141414]/20"
+          />
+        </div>
         <div className="order-3 border-t border-white/10 lg:border-t-0 lg:border-l">
           <FeatureColumn features={rightFeatures} />
         </div>

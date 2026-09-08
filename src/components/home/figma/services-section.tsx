@@ -15,6 +15,7 @@ import {
   ServiceIllustrationFrame,
   serviceIllustrations,
 } from "@/components/services/illustrations";
+import { IllustrationWindowPresentation } from "@/components/services/illustrations/illustration-primitives";
 import { HOME_SERVICES, type HomeService, type HomeServiceId } from "@/lib/home-services";
 import { canonicalPath } from "@/lib/site";
 import { cn } from "@/lib/utils";
@@ -41,21 +42,55 @@ function orderedServices(): HomeService[] {
   );
 }
 
-/** Existing illustration, without card chrome, so it sits flush inside the grid cell. */
+/** Short window title for the homepage presentation shell. */
+const SERVICE_WINDOW_TITLES: Partial<Record<HomeServiceId, string>> = {
+  "agentic-infrastructure": "Workflow",
+  "application-support": "Support thread",
+  "cloud-infrastructure": "Control plane",
+  "custom-software": "Onboarding",
+  "website-design": "Design",
+};
+
+const FLAT_PRESENTATION_SERVICES = new Set<HomeServiceId>(["mobile-app"]);
+
+/** Taller viewport on small screens — L1–L4 ledger needs vertical room. */
+const WINDOW_VIEWPORT_CLASS: Partial<Record<HomeServiceId, string>> = {
+  "application-support":
+    "aspect-auto h-[23rem] md:h-auto md:aspect-[4/3] md:min-h-0",
+};
+
+/** Illustration in a floating window on a muted canvas — presentation only. */
 function ServiceVisual({ service }: { service: HomeService }) {
   const illustration = serviceIllustrations[service.id];
   if (!illustration) return null;
   const { Component, label } = illustration;
 
-  return (
+  const frame = (
     <ServiceIllustrationFrame
       label={label}
       chrome={false}
-      className="aspect-[4/3] w-full rounded-none border-0 md:aspect-[4/3] md:rounded-none"
+      className={
+        FLAT_PRESENTATION_SERVICES.has(service.id)
+          ? "aspect-[4/3] w-full rounded-none border-0 md:aspect-[4/3] md:rounded-none"
+          : "absolute inset-0 aspect-auto h-full w-full rounded-none border-0"
+      }
       stageClassName="p-0"
     >
       <Component />
     </ServiceIllustrationFrame>
+  );
+
+  if (FLAT_PRESENTATION_SERVICES.has(service.id)) {
+    return frame;
+  }
+
+  return (
+    <IllustrationWindowPresentation
+      title={SERVICE_WINDOW_TITLES[service.id]}
+      viewportClassName={WINDOW_VIEWPORT_CLASS[service.id]}
+    >
+      {frame}
+    </IllustrationWindowPresentation>
   );
 }
 
@@ -77,7 +112,7 @@ function ServiceCell({ service, index }: { service: HomeService; index: number }
         !startsRow && "lg:border-l lg:border-border",
       )}
     >
-      <div className="flex flex-1 flex-col p-6 lg:p-8">
+      <div className="relative z-[1] bg-background flex flex-1 flex-col p-6 lg:p-8">
         <h3
           className="text-sm leading-[1.2] font-bold tracking-tight md:text-xl"
           style={{ letterSpacing: "-0.03em" }}
@@ -102,7 +137,9 @@ function ServiceCell({ service, index }: { service: HomeService; index: number }
           />
         </Link>
       </div>
-      <ServiceVisual service={service} />
+      <div className="relative z-[1] min-w-0 w-full max-w-full overflow-hidden p-3 md:p-4">
+        <ServiceVisual service={service} />
+      </div>
     </RevealStaggerItem>
   );
 }
@@ -145,12 +182,15 @@ export function FigmaServicesSection() {
 
       <RevealStagger revealed={revealed} delay={AFTER_TITLE_BODY_DELAY} className="w-full">
         {/* Top/bottom rules span hatch-to-hatch; card grid sits inset inside. */}
-        <div className="hatch-aligned-frame border-y border-border px-1 py-1 md:px-0 md:py-0">
+        <div className="hatch-aligned-frame overflow-hidden border-y border-border px-1 py-1 md:px-0 md:py-0">
           <div className="section-layout md:p-3">
-            <div className="flat-frame grid grid-cols-1 lg:grid-cols-2">
-              {services.map((service, index) => (
-                <ServiceCell key={service.id} service={service} index={index} />
-              ))}
+            <div className="flat-frame hatch-canvas-fill relative min-w-0 overflow-hidden">
+              <span aria-hidden className="hatch-canvas-layer" />
+              <div className="grid min-w-0 grid-cols-1 lg:grid-cols-2">
+                {services.map((service, index) => (
+                  <ServiceCell key={service.id} service={service} index={index} />
+                ))}
+              </div>
             </div>
           </div>
         </div>

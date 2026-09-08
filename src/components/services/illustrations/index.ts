@@ -21,7 +21,7 @@ export const serviceIllustrations: Record<string, ServiceIllustration> = {
   "application-support": {
     Component: ApplicationSupportIllustration,
     label:
-      "Application support illustration: the INC-2481 Payments API incident ledger writing itself L1 through L4, from customer report to specialist sign-off, with 5xx rate recovering and the deployment verified.",
+      "Application support illustration: a Slack thread reporting checkout failures on the Payments API, with a Comlabs support agent solving the incident live through L1 triage, L2 diagnosis, L3 engineering, and L4 specialist sign-off, then posting resolution back to the channel.",
   },
   "agentic-infrastructure": {
     Component: AgenticWorkflowIllustration,

@@ -20,6 +20,8 @@
   --destructive-foreground: #ffffff;
   --border: rgba(28, 25, 23, 0.1);
   --hairline-hatch: rgba(28, 25, 23, 0.09);
+  /* Illustration presentation shells only — nudge opacity to lighten/darken lines. */
+  --canvas-hatch-color: rgba(28, 25, 23, 0.06);
   --page-hatch-width: calc((100% - min(100% - 64px, 1440px)) / 4);
   --input: transparent;
   --input-background: #eeeee9;
@@ -476,6 +478,37 @@
     transparent 1px,
     transparent 6px
   );
+}
+
+/*
+ * Full-area hatch fill — matches gutter-hatch 45° lines for inset canvases.
+ * Use .hatch-canvas-layer as an absolute sibling behind grid content so the
+ * pattern shares one viewport origin across columns (background-attachment: fixed).
+ */
+.hatch-canvas-fill {
+  position: relative;
+  background-color: var(--background);
+}
+
+.hatch-canvas-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-color: var(--background);
+  background-image: repeating-linear-gradient(
+    45deg,
+    var(--canvas-hatch-color, var(--hairline-hatch)) 0,
+    var(--canvas-hatch-color, var(--hairline-hatch)) 1px,
+    transparent 1px,
+    transparent 6px
+  );
+  background-attachment: fixed;
+}
+
+.hatch-canvas-fill > .hatch-canvas-layer + * {
+  position: relative;
+  z-index: 1;
 }
 
 .gutter-hatch-rule::before {

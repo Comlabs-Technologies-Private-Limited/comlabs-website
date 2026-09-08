@@ -2,11 +2,14 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 
-import { AwsMark, CloudWatchMark, StripeMark } from "./brand-marks";
+import { ComlabsMark } from "@/components/brand/comlabs-mark";
+import { SlackMark } from "./brand-marks";
+import { WindowDots } from "./illustration-primitives";
 import { IllustrationStage, useIllustrationState } from "./service-illustration-frame";
 import {
   illustrationColors,
   illustrationEase,
+  illustrationShadow,
   illustrationSwap,
   illustrationTextSwapExit,
   illustrationTextSwapHidden,
@@ -22,267 +25,421 @@ const border = illustrationColors.border;
 const borderStrong = illustrationColors.borderStrong;
 const surface = illustrationColors.surface;
 const surfaceMuted = illustrationColors.surfaceMuted;
+const surfaceSunk = illustrationColors.surfaceSunk;
 const accent = illustrationColors.accent;
-const accentLine = illustrationColors.accentLine;
 const health = illustrationColors.health;
 
-/**
- * One incident travelling L1 → L4. Each entry is written into the ledger as
- * the rail reaches it, so the eye is led down the escalation in reading order.
- */
-const ENTRIES = [
+/** L1–L4 tasks shown live inside the support agent as the incident resolves. */
+const TASKS = [
   {
     level: "L1",
-    title: "Customer report",
-    detail: "Checkout failures confirmed and triaged",
-    at: "08:14",
-    appearsAt: 0,
-    doneAt: 1,
+    label: "Triage",
+    detail: "Customer report confirmed",
+    appearsAt: 2,
+    doneAt: 3,
   },
   {
     level: "L2",
-    title: "Pattern isolated",
-    detail: "5xx spike traced to the payments service",
-    at: "08:19",
-    appearsAt: 1,
-    doneAt: 2,
-  },
-  {
-    level: "L3",
-    title: "Engineering fix",
-    detail: "Connection pool exhausted — patch deployed",
-    at: "08:41",
-    appearsAt: 2,
+    label: "Diagnose",
+    detail: "5xx spike traced to payments",
+    appearsAt: 3,
     doneAt: 4,
   },
   {
-    level: "L4",
-    title: "Specialist review",
-    detail: "Capacity headroom signed off",
-    at: "08:52",
+    level: "L3",
+    label: "Engineering",
+    detail: "Connection pool patch deploying",
     appearsAt: 4,
     doneAt: 5,
   },
+  {
+    level: "L4",
+    label: "Specialist",
+    detail: "Capacity headroom signed off",
+    appearsAt: 5,
+    doneAt: 6,
+  },
 ] as const;
 
-const RESOLVED_STEP = 5;
+const RESOLVED_STEP = 6;
 
-/** Square status tag — hairline and unfilled, matching the site's card system. */
-function Tag({
-  children,
-  tone,
-}: {
-  children: React.ReactNode;
-  tone: "accent" | "health" | "quiet";
-}) {
-  const color = tone === "accent" ? accent : tone === "health" ? health : inkFaint;
-  const borderColor =
-    tone === "accent" ? accentLine : tone === "health" ? "rgba(63,122,90,0.28)" : borderStrong;
+function errorRate(step: number): string {
+  if (step >= RESOLVED_STEP) return "0.3%";
+  if (step >= 5) return "1.4%";
+  if (step >= 4) return "3.8%";
+  if (step >= 3) return "6.1%";
+  return "8.2%";
+}
 
+function Avatar({ label, tone }: { label: string; tone?: "neutral" | "accent" }) {
   return (
     <span
-      className="inline-flex shrink-0 items-center border px-1.5 py-[3px] text-[9px] leading-none font-medium tracking-[0.04em] whitespace-nowrap"
-      style={{ borderRadius: 0, borderColor, color }}
+      className="flex size-4 shrink-0 items-center justify-center rounded-[4px] text-[7px] font-medium tracking-tight sm:size-5 sm:text-[8px]"
+      style={{
+        background: tone === "accent" ? accent : surfaceSunk,
+        color: tone === "accent" ? surface : inkMuted,
+        border: `1px solid ${tone === "accent" ? "transparent" : borderStrong}`,
+      }}
     >
-      {children}
+      {label}
     </span>
   );
 }
 
-function errorRate(step: number): string {
-  if (step >= RESOLVED_STEP) return "0.3%";
-  if (step >= 4) return "1.4%";
-  if (step >= 3) return "3.8%";
-  if (step >= 2) return "6.1%";
-  return "8.2%";
+function SlackMessage({
+  author,
+  avatar,
+  time,
+  app,
+  children,
+  visible = true,
+  reduce,
+}: {
+  author: string;
+  avatar: React.ReactNode;
+  time: string;
+  app?: boolean;
+  children: React.ReactNode;
+  visible?: boolean;
+  reduce: boolean;
+}) {
+  if (!visible) return null;
+
+  return (
+    <motion.div
+      className="flex gap-1.5 sm:gap-2"
+      initial={reduce ? false : { opacity: 0, y: 4 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: reduce ? 0 : 0.38, ease: EASE }}
+    >
+      {avatar}
+      <div className="min-w-0 flex-1">
+        <div className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
+          <span className="text-[8px] font-medium tracking-tight sm:text-[9px]" style={{ color: ink }}>
+            {author}
+          </span>
+          {app ? (
+            <span
+              className="rounded px-1 py-px text-[6px] font-medium tracking-[0.04em] uppercase sm:text-[7px]"
+              style={{ background: surfaceSunk, color: inkFaint, border: `1px solid ${border}` }}
+            >
+              App
+            </span>
+          ) : null}
+          <span className="text-[7px] tracking-tight tabular-nums sm:text-[8px]" style={{ color: inkFaint }}>
+            {time}
+          </span>
+        </div>
+        <div
+          className="mt-0.5 text-[8px] leading-relaxed tracking-tight sm:text-[9px]"
+          style={{ color: inkMuted }}
+        >
+          {children}
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+function TaskGlyph({ state, reduce }: { state: "pending" | "active" | "done"; reduce: boolean }) {
+  if (state === "done") {
+    return (
+      <span
+        className="mt-0.5 block size-2 shrink-0 sm:size-2.5"
+        style={{
+          background: health,
+          clipPath: "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)",
+        }}
+        aria-hidden
+      />
+    );
+  }
+
+  return (
+    <motion.span
+      className="mt-1 block size-1.5 shrink-0 rounded-full sm:size-2"
+      aria-hidden
+      style={{ background: state === "active" ? accent : borderStrong }}
+      animate={state === "active" && !reduce ? { opacity: [1, 0.35, 1] } : { opacity: 1 }}
+      transition={
+        state === "active" ? { duration: 1.6, ease: "easeInOut", repeat: Infinity } : { duration: 0 }
+      }
+    />
+  );
+}
+
+function AgentTaskRow({
+  level,
+  label,
+  detail,
+  state,
+  visible,
+  reduce,
+}: {
+  level: string;
+  label: string;
+  detail: string;
+  state: "pending" | "active" | "done";
+  visible: boolean;
+  reduce: boolean;
+}) {
+  if (!visible) return null;
+
+  return (
+    <motion.li
+      className="flex items-start gap-1.5 sm:gap-2"
+      initial={reduce ? false : { opacity: 0, y: 4 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: reduce ? 0 : 0.32, ease: EASE }}
+    >
+      <TaskGlyph state={state} reduce={reduce} />
+      <div className="min-w-0 flex-1">
+        <p className="text-[8px] leading-none font-medium tracking-tight sm:text-[9px]" style={{ color: ink }}>
+          {level} · {label}
+        </p>
+        <p className="mt-0.5 text-[7px] leading-relaxed tracking-tight sm:text-[8px]" style={{ color: inkMuted }}>
+          {detail}
+        </p>
+      </div>
+    </motion.li>
+  );
 }
 
 export function ApplicationSupportIllustration() {
-  const { active, reduce } = useIllustrationState();
+  const { active, reduce: reduceMotion } = useIllustrationState();
   const step = useIllustrationSequence({
     steps: RESOLVED_STEP + 1,
     active,
-    reduce,
-    stepMs: [900, 1000, 1050, 950, 1000],
-    startDelayMs: 420,
+    reduce: reduceMotion,
+    stepMs: [800, 900, 950, 1000, 950, 1100],
+    startDelayMs: 480,
     loop: true,
-    loopDelayMs: 2400,
+    loopDelayMs: 2600,
   });
 
   const resolved = step >= RESOLVED_STEP;
+  const agentVisible = step >= 1;
   const rate = errorRate(step);
 
   return (
     <IllustrationStage className="p-0">
-      <div className="flex h-full min-h-0 flex-col" style={{ background: surface }}>
-        {/* Incident header */}
+      <div
+        className="relative h-full min-h-0 w-full min-w-0 overflow-hidden"
+        style={{
+          background: `linear-gradient(165deg, ${surfaceMuted} 0%, ${surfaceSunk} 100%)`,
+        }}
+      >
+        {/* Slack channel — customer asks in the thread they already use. */}
         <div
-          className="flex shrink-0 items-center justify-between gap-3 border-b px-4 py-3 lg:px-5"
-          style={{ borderColor: border }}
+          className="absolute inset-x-1.5 top-1.5 bottom-[34%] sm:inset-x-2 sm:top-2 sm:bottom-[36%]"
+          style={{ filter: agentVisible ? "blur(0.4px)" : undefined }}
         >
-          <div className="flex min-w-0 items-center gap-2.5">
-            <motion.span
-              className="size-[7px] shrink-0"
-              aria-hidden
-              style={{ background: resolved ? health : accent }}
-              animate={reduce || resolved ? { opacity: 1 } : { opacity: [1, 0.35, 1] }}
-              transition={
-                reduce || resolved
-                  ? { duration: 0 }
-                  : { duration: 2.2, ease: "easeInOut", repeat: Infinity }
-              }
-            />
-            <StripeMark className="h-3.5 w-3.5 shrink-0" />
-            <p
-              className="truncate text-[12px] font-medium tracking-tight"
-              style={{ color: ink }}
-            >
-              INC-2481 · Payments API
-            </p>
-            <Tag tone={resolved ? "health" : "accent"}>
-              {resolved ? "P1 · Resolved" : "P1 · Investigating"}
-            </Tag>
-          </div>
-          <span
-            className="shrink-0 text-[10px] tracking-tight tabular-nums"
-            style={{ color: inkFaint }}
+          <div
+            className="flex h-full min-h-0 flex-col overflow-hidden rounded-lg border sm:rounded-xl"
+            style={{
+              borderColor: borderStrong,
+              background: surface,
+              boxShadow: illustrationShadow.panel,
+            }}
           >
-            08:14 UTC
-          </span>
-        </div>
-
-        {/* Escalation ledger */}
-        <div className="flex min-h-0 flex-1 flex-col justify-center px-4 py-4 lg:px-5">
-          {ENTRIES.map((entry, index) => {
-            const visible = reduce || step >= entry.appearsAt;
-            const isDone = reduce || step >= entry.doneAt;
-            const isActive = visible && !isDone;
-            const isLast = index === ENTRIES.length - 1;
-
-            return (
-              <motion.div
-                key={entry.level}
-                className="relative flex gap-3 pl-3"
-                initial={false}
-                animate={
-                  visible
-                    ? { opacity: 1, y: 0, filter: "blur(0px)" }
-                    : { opacity: 0, y: 6, filter: "blur(2px)" }
-                }
-                transition={{ duration: reduce ? 0 : 0.42, ease: EASE }}
-              >
-                {/* Active marker — the same 2px accent edge the service tabs use. */}
-                <motion.span
-                  className="absolute top-0 bottom-0 left-0 w-[2px]"
-                  aria-hidden
-                  style={{ background: accent }}
-                  initial={false}
-                  animate={{ opacity: isActive ? 1 : 0 }}
-                  transition={{ duration: reduce ? 0 : 0.28, ease: EASE }}
-                />
-
-                {/* Rail: square node, then the connector that fills on completion. */}
-                <div className="relative flex w-3 shrink-0 justify-center">
-                  {!isLast ? (
-                    <>
-                      <span
-                        className="absolute top-[15px] bottom-0 w-px"
-                        aria-hidden
-                        style={{ background: border }}
-                      />
-                      <motion.span
-                        className="absolute top-[15px] bottom-0 w-px origin-top"
-                        aria-hidden
-                        style={{ background: health }}
-                        initial={false}
-                        animate={{ scaleY: isDone ? 1 : 0 }}
-                        transition={{ duration: reduce ? 0 : 0.55, ease: EASE }}
-                      />
-                    </>
-                  ) : null}
-                  <motion.span
-                    className="absolute top-[6px] size-[7px] border"
-                    aria-hidden
-                    initial={false}
-                    animate={{
-                      background: isDone ? health : isActive ? accent : surface,
-                      borderColor: isDone ? health : isActive ? accent : borderStrong,
-                    }}
-                    transition={{ duration: reduce ? 0 : 0.28, ease: EASE }}
-                  />
-                </div>
-
-                <div className={`min-w-0 flex-1 ${isLast ? "" : "pb-5"}`}>
-                  <div className="flex items-baseline gap-2.5">
-                    <Tag tone={isDone ? "health" : isActive ? "accent" : "quiet"}>
-                      {entry.level}
-                    </Tag>
-                    <p
-                      className="truncate text-[12px] font-medium tracking-tight"
-                      style={{ color: isActive || isDone ? ink : inkFaint }}
-                    >
-                      {entry.title}
-                    </p>
-                    <span
-                      className="ml-auto shrink-0 text-[10px] tracking-tight tabular-nums"
-                      style={{ color: inkFaint }}
-                    >
-                      {entry.at}
-                    </span>
-                  </div>
-                  <p
-                    className="mt-1 text-[11px] leading-relaxed tracking-tight"
-                    style={{ color: inkMuted }}
-                  >
-                    {entry.detail}
-                  </p>
-                </div>
-              </motion.div>
-            );
-          })}
-        </div>
-
-        {/* Outcome strip */}
-        <div
-          className="grid shrink-0 grid-cols-2 border-t"
-          style={{ borderColor: border, background: surfaceMuted }}
-        >
-          <div className="px-4 py-3 lg:px-5">
-            <div className="flex items-center gap-1.5">
-              <CloudWatchMark className="h-3 w-3" />
-              <p className="text-[10px] tracking-tight" style={{ color: inkFaint }}>
-                5xx rate
-              </p>
-            </div>
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.p
-                key={rate}
-                initial={reduce ? false : illustrationTextSwapHidden}
-                animate={illustrationTextSwapShown}
-                exit={reduce ? undefined : illustrationTextSwapExit}
-                transition={illustrationSwap}
-                className="mt-1 text-[12px] font-medium tracking-tight tabular-nums"
-                style={{ color: resolved ? health : accent }}
-              >
-                {resolved ? `8.2% → ${rate}` : rate}
-              </motion.p>
-            </AnimatePresence>
-          </div>
-          <div className="border-l px-4 py-3 lg:px-5" style={{ borderColor: border }}>
-            <div className="flex items-center gap-1.5">
-              <AwsMark className="h-3 w-3" />
-              <p className="text-[10px] tracking-tight" style={{ color: inkFaint }}>
-                Deployment
-              </p>
-            </div>
-            <p
-              className="mt-1 text-[12px] font-medium tracking-tight"
-              style={{ color: step >= 4 ? health : inkMuted }}
+            <div
+              className="flex shrink-0 items-center gap-1.5 border-b px-2 py-1.5 sm:px-2.5 sm:py-2"
+              style={{ borderColor: border }}
             >
-              {resolved ? "Verified" : step >= 3 ? "Rolling out" : "Pending"}
-            </p>
+              <SlackMark className="h-3 w-3 shrink-0 sm:h-3.5 sm:w-3.5" />
+              <span
+                className="min-w-0 truncate text-[8px] font-medium tracking-tight sm:text-[9px]"
+                style={{ color: ink }}
+              >
+                #inc-payments-api
+              </span>
+              <span className="ml-auto shrink-0 text-[7px] tracking-tight sm:text-[8px]" style={{ color: inkFaint }}>
+                12
+              </span>
+            </div>
+            <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-hidden p-2 sm:gap-2.5 sm:p-2.5">
+              <SlackMessage
+                author="sarah"
+                avatar={<Avatar label="S" />}
+                time="08:14"
+                reduce={reduceMotion}
+              >
+                Checkout is failing for EU customers — 500s on{" "}
+                <span style={{ color: ink }}>/v1/charges</span>
+              </SlackMessage>
+              <SlackMessage
+                author="alex"
+                avatar={<Avatar label="A" />}
+                time="08:15"
+                visible={step >= 1}
+                reduce={reduceMotion}
+              >
+                Looping in Comlabs on this
+              </SlackMessage>
+              <AnimatePresence initial={false}>
+                {resolved ? (
+                  <motion.div
+                    key="resolved"
+                    initial={reduceMotion ? false : { opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={reduceMotion ? undefined : { opacity: 0, y: -4 }}
+                    transition={{ duration: reduceMotion ? 0 : 0.38, ease: EASE }}
+                  >
+                    <SlackMessage
+                      author="Comlabs"
+                      avatar={
+                        <span
+                          className="flex size-4 shrink-0 items-center justify-center rounded-[4px] sm:size-5"
+                          style={{ background: surfaceSunk, border: `1px solid ${border}` }}
+                        >
+                          <ComlabsMark className="h-2.5 w-auto sm:h-3" />
+                        </span>
+                      }
+                      time="08:52"
+                      app
+                      reduce={reduceMotion}
+                    >
+                      <span style={{ color: ink }}>
+                        Patch deployed. 5xx back to {rate}. Runbook updated.
+                      </span>
+                      <span
+                        className="mt-1.5 inline-flex items-center rounded-[4px] px-1.5 py-0.5 text-[7px] font-medium tracking-tight sm:text-[8px]"
+                        style={{ background: health, color: surface }}
+                      >
+                        View runbook
+                      </span>
+                    </SlackMessage>
+                  </motion.div>
+                ) : null}
+              </AnimatePresence>
+            </div>
           </div>
         </div>
+
+        {/* Support agent — solves L1–L4 in real time over the thread. */}
+        <AnimatePresence initial={false}>
+          {agentVisible ? (
+            <motion.div
+              key="agent"
+              className="absolute inset-x-1 bottom-1 z-10 sm:inset-x-1.5 sm:bottom-1.5"
+              initial={reduceMotion ? false : { opacity: 0, y: 10, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={reduceMotion ? undefined : { opacity: 0, y: 8, scale: 0.98 }}
+              transition={{ duration: reduceMotion ? 0 : 0.42, ease: EASE }}
+            >
+              <div
+                className="flex max-h-full min-h-0 flex-col overflow-hidden rounded-lg border sm:rounded-xl"
+                style={{
+                  borderColor: borderStrong,
+                  background: surface,
+                  boxShadow: illustrationShadow.raised,
+                }}
+              >
+                <div
+                  className="flex shrink-0 items-center gap-1.5 border-b px-2 py-1.5 sm:px-2.5 sm:py-2"
+                  style={{ borderColor: border, background: surfaceMuted }}
+                >
+                  <WindowDots />
+                  <ComlabsMark className="h-2.5 w-auto sm:h-3" />
+                  <span className="text-[8px] font-medium tracking-tight sm:text-[9px]" style={{ color: ink }}>
+                    comlabs-agent
+                  </span>
+                </div>
+
+                <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto overscroll-contain p-2 sm:gap-2.5 sm:p-2.5">
+                  <div
+                    className="shrink-0 rounded-[6px] border px-2 py-1.5 sm:px-2.5 sm:py-2"
+                    style={{ borderColor: border, background: surfaceMuted }}
+                  >
+                    <p className="text-[7px] font-medium tracking-tight sm:text-[8px]" style={{ color: inkFaint }}>
+                      Scope
+                    </p>
+                    <p className="mt-1 text-[8px] leading-relaxed tracking-tight sm:text-[9px]" style={{ color: inkMuted }}>
+                      What should we verify first?
+                    </p>
+                    <div className="mt-1.5 space-y-0.5">
+                      <p className="text-[7px] tracking-tight sm:text-[8px]" style={{ color: ink }}>
+                        [x] CloudWatch 5xx rate
+                      </p>
+                      <p className="text-[7px] tracking-tight sm:text-[8px]" style={{ color: inkFaint }}>
+                        [ ] Recent deployments
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="min-w-0 space-y-1">
+                    {step >= 1 ? (
+                      <p className="text-[7px] tracking-tight sm:text-[8px]" style={{ color: inkMuted }}>
+                        • Analyzed scope · 2s
+                      </p>
+                    ) : null}
+                    {step >= 2 ? (
+                      <p className="text-[7px] tracking-tight sm:text-[8px]" style={{ color: inkMuted }}>
+                        • Started L1–L4 path
+                      </p>
+                    ) : null}
+                  </div>
+
+                  <ul className="min-w-0 space-y-1.5 sm:space-y-2">
+                    {TASKS.map((task) => {
+                      const visible = reduceMotion || step >= task.appearsAt;
+                      const isDone = reduceMotion || step >= task.doneAt;
+                      const isActive = visible && !isDone;
+                      const state = isDone ? "done" : isActive ? "active" : "pending";
+
+                      return (
+                        <AgentTaskRow
+                          key={task.level}
+                          level={task.level}
+                          label={task.label}
+                          detail={task.detail}
+                          state={state}
+                          visible={visible}
+                          reduce={reduceMotion}
+                        />
+                      );
+                    })}
+                  </ul>
+
+                  <div
+                    className="mt-auto shrink-0 rounded-[6px] border px-2 py-1.5 sm:px-2.5"
+                    style={{ borderColor: border, background: surface }}
+                  >
+                    <p className="text-[7px] tracking-tight sm:text-[8px]" style={{ color: inkFaint }}>
+                      → Add a follow-up
+                      <span className="float-right tabular-nums">esc to stop</span>
+                    </p>
+                  </div>
+                </div>
+
+                <div
+                  className="flex shrink-0 flex-wrap items-center gap-x-2 gap-y-0.5 border-t px-2 py-1.5 sm:px-2.5 sm:py-2"
+                  style={{ borderColor: border, background: surfaceMuted }}
+                >
+                  <span className="text-[7px] font-medium tracking-tight sm:text-[8px]" style={{ color: health }}>
+                    ◉ Plan
+                  </span>
+                  <AnimatePresence mode="wait" initial={false}>
+                    <motion.span
+                      key={rate}
+                      initial={reduceMotion ? false : illustrationTextSwapHidden}
+                      animate={illustrationTextSwapShown}
+                      exit={reduceMotion ? undefined : illustrationTextSwapExit}
+                      transition={illustrationSwap}
+                      className="text-[7px] tracking-tight tabular-nums sm:text-[8px]"
+                      style={{ color: resolved ? health : accent }}
+                    >
+                      5xx {resolved ? `8.2% → ${rate}` : rate}
+                    </motion.span>
+                  </AnimatePresence>
+                  <span className="text-[7px] tracking-tight sm:text-[8px]" style={{ color: inkFaint }}>
+                    · {resolved ? "Deployment verified" : step >= 4 ? "Rolling out" : "2 agents"}
+                  </span>
+                </div>
+              </div>
+            </motion.div>
+          ) : null}
+        </AnimatePresence>
       </div>
     </IllustrationStage>
   );

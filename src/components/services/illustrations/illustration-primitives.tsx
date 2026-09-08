@@ -47,7 +47,7 @@ export function Panel({
 export function MicroLabel({
   children,
   className,
-  tone = "faint",
+  tone = "muted",
 }: {
   children: ReactNode;
   className?: string;
@@ -56,14 +56,14 @@ export function MicroLabel({
   const color =
     tone === "accent"
       ? illustrationColors.accent
-      : tone === "muted"
-        ? illustrationColors.inkMuted
-        : illustrationColors.inkFaint;
+      : tone === "faint"
+        ? illustrationColors.inkFaint
+        : illustrationColors.inkMuted;
 
   return (
     <span
       className={cn(
-        "block text-[7px] leading-[1.3] font-medium tracking-[0.04em] lg:text-[8px]",
+        "block text-[8px] leading-[1.3] font-medium tracking-[0.04em] lg:text-[9px]",
         className,
       )}
       style={{ color }}
@@ -117,8 +117,8 @@ export function Chip({
       className={cn(
         "inline-flex items-center self-center border font-medium whitespace-nowrap",
         size === "compact"
-          ? "gap-0.5 px-1.5 py-[3px] text-[6.5px] leading-none tracking-[0.02em] lg:text-[7.5px]"
-          : "gap-1 px-2 py-[4px] text-[7.5px] leading-none lg:text-[8.5px]",
+          ? "gap-0.5 px-1.5 py-[3px] text-[7.5px] leading-none tracking-[0.02em] lg:text-[8.5px]"
+          : "gap-1 px-2 py-[4px] text-[8.5px] leading-none lg:text-[9.5px]",
         className,
       )}
       style={{ borderRadius: illustrationRadius.chip, ...palette, ...style }}
@@ -339,5 +339,82 @@ export function ConnectorBeam({
         transition={{ duration: reduce ? 0 : 0.42, ease: illustrationEase }}
       />
     </svg>
+  );
+}
+
+const PRESENTATION_DOT_COLORS = ["#FF5F57", "#FEBC2E", "#28C840"] as const;
+
+function PresentationWindowDots() {
+  return (
+    <span className="flex w-[52px] shrink-0 items-center gap-1.5" aria-hidden>
+      {PRESENTATION_DOT_COLORS.map((color) => (
+        <span
+          key={color}
+          className="block size-2 rounded-full"
+          style={{ background: color, opacity: 0.88 }}
+        />
+      ))}
+    </span>
+  );
+}
+
+/**
+ * Homepage presentation shell — muted canvas, floating window, title bar.
+ * Wraps service illustrations without changing their internal UI.
+ */
+export function IllustrationWindowPresentation({
+  children,
+  title,
+  className,
+  viewportClassName,
+}: {
+  children: ReactNode;
+  title?: string;
+  className?: string;
+  /** Override the default 4:3 viewport — e.g. taller on mobile for dense UIs. */
+  viewportClassName?: string;
+}) {
+  return (
+    <div
+      className={cn("relative min-w-0 w-full max-w-full overflow-hidden", className)}
+    >
+      <div
+        className="min-w-0 overflow-hidden rounded-xl border bg-white"
+        style={{
+          borderColor: illustrationColors.borderStrong,
+          boxShadow:
+            "0 28px 56px -20px rgba(28,25,23,0.14), 0 12px 24px -12px rgba(28,25,23,0.08)",
+        }}
+      >
+        <div
+          className="grid grid-cols-[40px_1fr_40px] items-center border-b px-2 py-2 sm:grid-cols-[52px_1fr_52px] sm:px-3"
+          style={{
+            borderColor: illustrationColors.border,
+            background: illustrationColors.surfaceMuted,
+          }}
+        >
+          <PresentationWindowDots />
+          {title ? (
+            <span
+              className="truncate text-center text-[10px] font-medium tracking-tight md:text-[11px]"
+              style={{ color: illustrationColors.inkMuted }}
+            >
+              {title}
+            </span>
+          ) : (
+            <span aria-hidden />
+          )}
+          <span aria-hidden className="w-[40px] sm:w-[52px]" />
+        </div>
+        <div
+          className={cn(
+            "relative aspect-[4/3] w-full min-w-0 overflow-hidden bg-[#FAFAF8]",
+            viewportClassName,
+          )}
+        >
+          {children}
+        </div>
+      </div>
+    </div>
   );
 }

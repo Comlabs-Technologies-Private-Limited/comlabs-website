@@ -80,14 +80,14 @@ export function FigmaWorkSection({ projects }: FigmaWorkSectionProps) {
       <RevealStagger revealed={revealed} delay={AFTER_TITLE_BODY_DELAY} className="w-full">
         <div className="hatch-aligned-frame border-y border-border px-1 py-1 md:px-0 md:py-0">
           <div className="section-layout md:p-3">
-            <div className="flat-frame grid grid-cols-1 lg:grid-cols-3">
+            <div className="flat-frame grid grid-cols-1 lg:grid-cols-3 lg:items-stretch">
               {projects.map((project, index) => (
               <motion.a
                 key={project.href}
                 href={canonicalPath(project.href)}
                 variants={afterTitleItemVariants}
                 className={cn(
-                  "flex min-w-0 flex-col",
+                  "flex h-full min-w-0 flex-col",
                   index > 0 && "border-t border-border",
                   "lg:border-t-0",
                   index >= 3 && "lg:border-t lg:border-border",
@@ -110,15 +110,17 @@ export function FigmaWorkSection({ projects }: FigmaWorkSectionProps) {
                     {project.category}
                     {project.featured ? <span className="ml-3">Featured</span> : null}
                   </p>
-                  <p className="text-sm leading-relaxed text-muted-foreground">{project.desc}</p>
-                  <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--warm-orange)]">
-                    Read case study <ArrowRight size={14} />
-                  </span>
-                  {project.liveSiteUrl ? (
-                    <span className="mt-4 block text-xs text-[var(--warm-orange)]">
-                      {new URL(project.liveSiteUrl).hostname}
+                  <p className="flex-1 text-sm leading-relaxed text-muted-foreground">{project.desc}</p>
+                  <div className="mt-4 shrink-0">
+                    <span className="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--warm-orange)]">
+                      Read case study <ArrowRight size={14} />
                     </span>
-                  ) : null}
+                    {project.liveSiteUrl ? (
+                      <span className="mt-2 block text-xs text-[var(--warm-orange)]">
+                        {new URL(project.liveSiteUrl).hostname}
+                      </span>
+                    ) : null}
+                  </div>
                 </div>
               </motion.a>
             ))}
