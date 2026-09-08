@@ -20,6 +20,7 @@
   --destructive-foreground: #ffffff;
   --border: rgba(28, 25, 23, 0.1);
   --hairline-hatch: rgba(28, 25, 23, 0.09);
+  --page-gutter: calc((100% - min(100% - 64px, 1440px)) / 2);
   --input: transparent;
   --input-background: #eeeee9;
   --switch-background: #c8c8c0;
@@ -390,6 +391,10 @@
   .section-layout {
     width: calc(100% - 40px);
   }
+
+  :root {
+    --page-gutter: 20px;
+  }
 }
 
 .flat-frame {
@@ -399,16 +404,35 @@
 }
 
 /*
- * Perimeter band between the outer and inner hairline frames. The fine
- * diagonal hatch shows only in the padding — the inner frame paints its own
- * opaque surface over the rest.
+ * Hatched page gutters. Each post-hero section paints an overlay whose two
+ * background layers sit in the outer margins either side of .section-layout,
+ * so the texture runs unbroken from the hero down to the footer.
  */
-.hairline-perimeter {
-  background-image: repeating-linear-gradient(
-    45deg,
-    var(--hairline-hatch) 0,
-    var(--hairline-hatch) 1px,
-    transparent 1px,
-    transparent 6px
-  );
+.gutter-hatch {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      var(--gutter-hatch-color, var(--hairline-hatch)) 0,
+      var(--gutter-hatch-color, var(--hairline-hatch)) 1px,
+      transparent 1px,
+      transparent 6px
+    ),
+    repeating-linear-gradient(
+      45deg,
+      var(--gutter-hatch-color, var(--hairline-hatch)) 0,
+      var(--gutter-hatch-color, var(--hairline-hatch)) 1px,
+      transparent 1px,
+      transparent 6px
+    );
+  background-position: left top, right top;
+  background-repeat: no-repeat, no-repeat;
+  background-size: var(--page-gutter) 100%, var(--page-gutter) 100%;
+}
+
+/* Light-on-dark hatch for the dark bands. */
+.gutter-hatch-on-dark {
+  --gutter-hatch-color: rgba(244, 242, 237, 0.1);
 }

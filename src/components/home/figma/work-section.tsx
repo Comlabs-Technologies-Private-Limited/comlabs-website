@@ -33,7 +33,8 @@ export function FigmaWorkSection({ projects }: FigmaWorkSectionProps) {
   const { revealed, onTitleComplete } = useAfterTitleReveal();
 
   return (
-    <section id="work" className="border-y border-border bg-card py-24">
+    <section id="work" className="relative border-y border-border bg-card py-24">
+      <span aria-hidden className="gutter-hatch" />
       <div className="section-layout">
         <div className="mb-12 flex items-end justify-between gap-6">
           <div className="max-w-2xl">
@@ -82,8 +83,8 @@ export function FigmaWorkSection({ projects }: FigmaWorkSectionProps) {
         className="section-layout"
       >
         {/* Outer hairline, perimeter padding, then the inner frame around the cards. */}
-        <div className="flat-frame hairline-perimeter p-2 md:p-3">
-          <div className="flat-frame grid grid-cols-1 bg-card lg:grid-cols-3">
+        <div className="flat-frame p-2 md:p-3">
+          <div className="flat-frame grid grid-cols-1 lg:grid-cols-3">
             {projects.map((project, index) => (
               <motion.a
                 key={project.href}

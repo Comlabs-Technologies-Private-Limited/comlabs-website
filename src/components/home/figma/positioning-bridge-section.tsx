@@ -80,6 +80,7 @@ export function FigmaPositioningBridgeSection() {
           </div>
         </div>
       </ForceField>
+      <span aria-hidden className="gutter-hatch gutter-hatch-on-dark" />
     </section>
   );
 }
