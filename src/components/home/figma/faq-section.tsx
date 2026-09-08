@@ -39,7 +39,7 @@ export function FigmaFaqSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="relative border-b border-border py-24 md:py-28">
+    <section id="faq" className="relative border-b border-border py-14 md:py-16">
       <span aria-hidden className="gutter-hatch" />
       <div className="section-layout">
         <div className="mb-12 max-w-2xl px-3 md:px-4 md:mb-16">
