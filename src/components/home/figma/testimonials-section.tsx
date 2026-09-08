@@ -13,6 +13,7 @@ import {
 } from "@/components/home/figma/after-title-reveal";
 import { TESTIMONIALS } from "@/components/home/figma/home-data";
 import { referringAnchorProps } from "@/lib/seo/prepare-html-links";
+import { cn } from "@/lib/utils";
 
 function FounderAvatar({
   name,
@@ -76,50 +77,58 @@ export function FigmaTestimonialsSection() {
           </RevealCopy>
         </div>
 
-        <RevealStagger
-          revealed={revealed}
-          delay={AFTER_TITLE_BODY_DELAY}
-          className="grid grid-cols-1 gap-6 md:grid-cols-3"
-        >
-          {TESTIMONIALS.map((testimonial) => (
-            <RevealStaggerItem key={testimonial.name}>
-              <blockquote
-                className="flex min-h-[280px] flex-col rounded-3xl border border-border bg-background p-6 md:min-h-[300px] md:p-8"
-              >
-              <p className="flex-1 font-sans text-base leading-[1.7] text-foreground">
-                &ldquo;{testimonial.quote}&rdquo;
-              </p>
+        <RevealStagger revealed={revealed} delay={AFTER_TITLE_BODY_DELAY}>
+          {/* Outer hairline, perimeter padding, then the inner frame around the quotes. */}
+          <div className="border-y border-border p-2 md:p-3">
+            <div className="flat-frame grid grid-cols-1 lg:grid-cols-3">
+              {TESTIMONIALS.map((testimonial, index) => (
+                <RevealStaggerItem
+                  key={testimonial.name}
+                  className={cn(
+                    "flex min-w-0 flex-col",
+                    index > 0 && "border-t border-border",
+                    "lg:border-t-0",
+                    index >= 3 && "lg:border-t lg:border-border",
+                    index % 3 !== 0 && "lg:border-l lg:border-border",
+                  )}
+                >
+                  <blockquote className="flex h-full flex-col p-6 lg:p-8">
+                    <p className="flex-1 font-sans text-base leading-[1.7] text-foreground">
+                      &ldquo;{testimonial.quote}&rdquo;
+                    </p>
 
-              <footer className="mt-8 flex items-center gap-3">
-                <FounderAvatar
-                  name={testimonial.name}
-                  initials={testimonial.initials}
-                  avatarSrc={testimonial.avatarSrc}
-                />
+                    <footer className="mt-8 flex items-center gap-3">
+                      <FounderAvatar
+                        name={testimonial.name}
+                        initials={testimonial.initials}
+                        avatarSrc={testimonial.avatarSrc}
+                      />
 
-                <div className="min-w-0">
-                  <cite className="not-italic">
-                    {testimonial.linkedinUrl ? (
-                      <Link
-                        {...referringAnchorProps(testimonial.linkedinUrl)}
-                        className="block truncate text-sm font-medium text-foreground transition-opacity hover:opacity-80"
-                      >
-                        {testimonial.name}
-                      </Link>
-                    ) : (
-                      <span className="block truncate text-sm font-medium text-foreground">
-                        {testimonial.name}
-                      </span>
-                    )}
-                  </cite>
-                  <p className="mt-0.5 truncate text-sm text-muted-foreground">
-                    {testimonial.title}, {testimonial.company}
-                  </p>
-                </div>
-              </footer>
-              </blockquote>
-            </RevealStaggerItem>
-          ))}
+                      <div className="min-w-0">
+                        <cite className="not-italic">
+                          {testimonial.linkedinUrl ? (
+                            <Link
+                              {...referringAnchorProps(testimonial.linkedinUrl)}
+                              className="block truncate text-sm font-medium text-foreground transition-opacity hover:opacity-80"
+                            >
+                              {testimonial.name}
+                            </Link>
+                          ) : (
+                            <span className="block truncate text-sm font-medium text-foreground">
+                              {testimonial.name}
+                            </span>
+                          )}
+                        </cite>
+                        <p className="mt-0.5 truncate text-sm text-muted-foreground">
+                          {testimonial.title}, {testimonial.company}
+                        </p>
+                      </div>
+                    </footer>
+                  </blockquote>
+                </RevealStaggerItem>
+              ))}
+            </div>
+          </div>
         </RevealStagger>
       </div>
     </section>
