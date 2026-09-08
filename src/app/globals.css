@@ -460,6 +460,56 @@
   right: var(--page-hatch-width);
 }
 
+/*
+ * Horizontal hatch band between the vertical gutter rules — spans hatch-to-hatch.
+ */
+.gutter-hatch-rule {
+  position: relative;
+  display: block;
+  pointer-events: none;
+  margin-inline: var(--page-hatch-width);
+  height: calc(var(--page-hatch-width) + 1px);
+  background-image: repeating-linear-gradient(
+    45deg,
+    var(--gutter-hatch-color, var(--hairline-hatch)) 0,
+    var(--gutter-hatch-color, var(--hairline-hatch)) 1px,
+    transparent 1px,
+    transparent 6px
+  );
+}
+
+.gutter-hatch-rule::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--gutter-line-color, var(--border));
+}
+
+/* Pin to section edges — top hairline on ::before, bottom on ::after. */
+.gutter-hatch-rule-edge {
+  position: absolute;
+  left: var(--page-hatch-width);
+  right: var(--page-hatch-width);
+  z-index: 2;
+  margin-inline: 0;
+  height: calc(var(--page-hatch-width) + 1px);
+}
+
+.gutter-hatch-rule-edge-top {
+  top: 0;
+}
+
+.gutter-hatch-rule-edge-bottom {
+  bottom: 0;
+}
+
+.gutter-hatch-rule-edge-bottom::before {
+  top: auto;
+  bottom: 0;
+}
 /* Light-on-dark hatch and rule for the dark bands. */
 .gutter-hatch-on-dark {
   --gutter-hatch-color: rgba(244, 242, 237, 0.1);
