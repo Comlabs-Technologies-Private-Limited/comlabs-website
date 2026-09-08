@@ -38,6 +38,7 @@ type WordToken = {
   className?: string;
   style?: CSSProperties;
   breakAfter: boolean;
+  glueBefore: boolean;
 };
 
 function segmentsFromChildren(children: string): BlurRevealSegment[] {
@@ -46,6 +47,10 @@ function segmentsFromChildren(children: string): BlurRevealSegment[] {
     text,
     breakAfter: index < lines.length - 1,
   }));
+}
+
+function isPunctuationToken(word: string): boolean {
+  return /^[.,!?;:]+$/.test(word);
 }
 
 function tokenize(segments: BlurRevealSegment[]): WordToken[] {
@@ -58,6 +63,7 @@ function tokenize(segments: BlurRevealSegment[]): WordToken[] {
         className: segment.className,
         style: segment.style,
         breakAfter: Boolean(segment.breakAfter) && index === words.length - 1,
+        glueBefore: isPunctuationToken(word),
       });
     });
   }
@@ -65,10 +71,13 @@ function tokenize(segments: BlurRevealSegment[]): WordToken[] {
 }
 
 function plainTextFromSegments(segments: BlurRevealSegment[]): string {
-  return segments
-    .map((segment) => segment.text.trim())
-    .filter(Boolean)
-    .join(" ");
+  return segments.reduce((acc, segment) => {
+    const text = segment.text.trim();
+    if (!text) return acc;
+    if (!acc) return text;
+    if (isPunctuationToken(text)) return `${acc}${text}`;
+    return `${acc} ${text}`;
+  }, "");
 }
 
 /**
@@ -140,7 +149,12 @@ export function BlurReveal({
           <span className={segment.className} style={segment.style}>
             {segment.text}
           </span>
-          {segment.breakAfter ? <br /> : index < resolvedSegments.length - 1 ? " " : null}
+          {segment.breakAfter ? (
+            <br />
+          ) : index < resolvedSegments.length - 1 &&
+            !isPunctuationToken(resolvedSegments[index + 1]?.text.trim() ?? "") ? (
+            " "
+          ) : null}
         </span>
       )),
     );
@@ -180,7 +194,9 @@ export function BlurReveal({
                     {char}
                   </motion.span>
                 ))}
-                {wordIndex < tokens.length - 1 && !token.breakAfter ? (
+                {wordIndex < tokens.length - 1 &&
+                !token.breakAfter &&
+                !tokens[wordIndex + 1]?.glueBefore ? (
                   <motion.span
                     key={`space-${wordIndex}`}
                     variants={itemVariants}
