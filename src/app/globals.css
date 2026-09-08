@@ -19,6 +19,8 @@
   --destructive: #d4183d;
   --destructive-foreground: #ffffff;
   --border: rgba(28, 25, 23, 0.1);
+  --hairline-hatch: rgba(28, 25, 23, 0.09);
+  --page-hatch-width: calc((100% - min(100% - 64px, 1440px)) / 2);
   --input: transparent;
   --input-background: #eeeee9;
   --switch-background: #c8c8c0;
@@ -77,6 +79,7 @@
   --destructive: oklch(0.396 0.141 25.723);
   --destructive-foreground: oklch(0.637 0.237 25.331);
   --border: rgba(244, 242, 237, 0.12);
+  --hairline-hatch: rgba(244, 242, 237, 0.10);
   --input: rgba(244, 242, 237, 0.12);
   --input-background: #1f1f1f;
   --ring: rgba(244, 242, 237, 0.4);
@@ -388,11 +391,76 @@
   .section-layout {
     width: calc(100% - 40px);
   }
+
+  /* Half-width band on mobile. */
+  :root {
+    --page-hatch-width: 10px;
+  }
 }
 
 .flat-frame {
   border: 1px solid var(--border);
   border-radius: 0;
   background: transparent;
-  overflow: hidden;
+}
+
+/*
+ * Hatched page gutters. Each post-hero section paints an overlay whose two
+ * background layers sit in the outer margins either side of .section-layout,
+ * so the texture runs unbroken from the hero down to the footer. The band
+ * tracks the gutter on desktop and halves on mobile.
+ */
+.gutter-hatch {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      var(--gutter-hatch-color, var(--hairline-hatch)) 0,
+      var(--gutter-hatch-color, var(--hairline-hatch)) 1px,
+      transparent 1px,
+      transparent 6px
+    ),
+    repeating-linear-gradient(
+      45deg,
+      var(--gutter-hatch-color, var(--hairline-hatch)) 0,
+      var(--gutter-hatch-color, var(--hairline-hatch)) 1px,
+      transparent 1px,
+      transparent 6px
+    );
+  background-position: left top, right top;
+  background-repeat: no-repeat;
+  /* 1px of overshoot sits under the rules below, so no sliver can appear. */
+  background-size:
+    calc(var(--page-hatch-width) + 1px) 100%,
+    calc(var(--page-hatch-width) + 1px) 100%;
+}
+
+/*
+ * The rule closing each hatch band. Positioned rather than painted, so it
+ * lands on the exact gutter edge at every viewport width.
+ */
+.gutter-hatch::before,
+.gutter-hatch::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--gutter-line-color, var(--border));
+}
+
+.gutter-hatch::before {
+  left: var(--page-hatch-width);
+}
+
+.gutter-hatch::after {
+  right: var(--page-hatch-width);
+}
+
+/* Light-on-dark hatch and rule for the dark bands. */
+.gutter-hatch-on-dark {
+  --gutter-hatch-color: rgba(244, 242, 237, 0.1);
+  --gutter-line-color: rgba(244, 242, 237, 0.12);
 }
