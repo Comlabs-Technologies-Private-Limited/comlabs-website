@@ -48,8 +48,8 @@ const INDUSTRIES: IndustryItem[] = [
 export function FigmaIndustriesSection() {
   const { revealed, onTitleComplete } = useAfterTitleReveal();
   return (
-    <section id="industries" className="border-y border-border px-6 py-14 md:py-16">
-      <div className="mx-auto max-w-6xl">
+    <section id="industries" className="border-y border-border py-14 md:py-16">
+      <div className="section-layout">
         <div className="mb-8 max-w-2xl md:mb-10">
           <p className="mb-4 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
             Industries

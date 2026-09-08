@@ -11,7 +11,7 @@ export function FigmaCtaSection() {
   return (
     <section
       id="contact"
-      className="mx-6 mb-16 overflow-hidden rounded-3xl"
+      className="section-layout mb-16 overflow-hidden rounded-3xl"
       style={{ background: "var(--foreground)" }}
     >
       <div className="mx-auto max-w-2xl px-10 py-24 text-center">

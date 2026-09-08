@@ -48,8 +48,8 @@ function FounderAvatar({
 export function FigmaTestimonialsSection() {
   const { revealed, onTitleComplete } = useAfterTitleReveal();
   return (
-    <section id="testimonials" className="border-y border-border bg-card px-6 py-24 md:py-28">
-      <div className="mx-auto max-w-6xl">
+    <section id="testimonials" className="border-y border-border bg-card py-24 md:py-28">
+      <div className="section-layout">
         <div className="mb-12 max-w-2xl md:mb-16">
           <p className="mb-4 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
             Testimonials

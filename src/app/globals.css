@@ -377,3 +377,22 @@
   float: left;
   height: 0;
 }
+
+/* Homepage Services / Proof flat frame — wide inset layout with hairline grid. */
+.section-layout {
+  width: min(calc(100% - 64px), 1440px);
+  margin-inline: auto;
+}
+
+@media (max-width: 767px) {
+  .section-layout {
+    width: calc(100% - 40px);
+  }
+}
+
+.flat-frame {
+  border: 1px solid var(--border);
+  border-radius: 0;
+  background: transparent;
+  overflow: hidden;
+}
