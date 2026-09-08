@@ -115,7 +115,7 @@ export function FigmaServicesSection() {
     <section id="services" className="relative py-24 md:py-32">
       <span aria-hidden className="gutter-hatch" />
       <div className="section-layout">
-        <div className="mb-12 md:mb-16">
+        <div className="mb-12 px-0.5 md:mb-16">
           <p className="mb-4 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
             Services
           </p>
@@ -149,7 +149,7 @@ export function FigmaServicesSection() {
         className="section-layout"
       >
         {/* Outer hairline, perimeter padding, then the inner frame around the cards. */}
-        <div className="flat-frame p-2 md:p-3">
+        <div className="border-y border-border p-2 md:p-3">
           <div className="flat-frame grid grid-cols-1 lg:grid-cols-2">
             {services.map((service, index) => (
               <ServiceCell key={service.id} service={service} index={index} />

@@ -428,11 +428,37 @@
       transparent 6px
     );
   background-position: left top, right top;
-  background-repeat: no-repeat, no-repeat;
-  background-size: var(--page-gutter) 100%, var(--page-gutter) 100%;
+  background-repeat: no-repeat;
+  /* 1px of overshoot sits under the rules below, so no sliver can appear. */
+  background-size:
+    calc(var(--page-gutter) + 1px) 100%,
+    calc(var(--page-gutter) + 1px) 100%;
 }
 
-/* Light-on-dark hatch for the dark bands. */
+/*
+ * The rule closing each hatch band. Positioned rather than painted, so it
+ * lands on the exact gutter edge at every viewport width.
+ */
+.gutter-hatch::before,
+.gutter-hatch::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--gutter-line-color, var(--border));
+}
+
+.gutter-hatch::before {
+  left: var(--page-gutter);
+}
+
+.gutter-hatch::after {
+  right: var(--page-gutter);
+}
+
+/* Light-on-dark hatch and rule for the dark bands. */
 .gutter-hatch-on-dark {
   --gutter-hatch-color: rgba(244, 242, 237, 0.1);
+  --gutter-line-color: rgba(244, 242, 237, 0.12);
 }

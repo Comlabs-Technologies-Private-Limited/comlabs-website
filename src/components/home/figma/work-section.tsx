@@ -36,7 +36,7 @@ export function FigmaWorkSection({ projects }: FigmaWorkSectionProps) {
     <section id="work" className="relative border-y border-border bg-card py-24">
       <span aria-hidden className="gutter-hatch" />
       <div className="section-layout">
-        <div className="mb-12 flex items-end justify-between gap-6">
+        <div className="mb-12 flex items-end justify-between gap-6 px-0.5">
           <div className="max-w-2xl">
             <p className="mb-4 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
               Case Studies
@@ -83,7 +83,7 @@ export function FigmaWorkSection({ projects }: FigmaWorkSectionProps) {
         className="section-layout"
       >
         {/* Outer hairline, perimeter padding, then the inner frame around the cards. */}
-        <div className="flat-frame p-2 md:p-3">
+        <div className="border-y border-border p-2 md:p-3">
           <div className="flat-frame grid grid-cols-1 lg:grid-cols-3">
             {projects.map((project, index) => (
               <motion.a

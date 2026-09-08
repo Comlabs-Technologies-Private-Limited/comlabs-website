@@ -51,7 +51,7 @@ export function FigmaIndustriesSection() {
     <section id="industries" className="relative border-y border-border py-14 md:py-16">
       <span aria-hidden className="gutter-hatch" />
       <div className="section-layout">
-        <div className="mb-8 max-w-2xl md:mb-10">
+        <div className="mb-8 max-w-2xl px-0.5 md:mb-10">
           <p className="mb-4 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
             Industries
           </p>
@@ -73,13 +73,13 @@ export function FigmaIndustriesSection() {
         <RevealStagger
           revealed={revealed}
           delay={0.08}
-          className="grid grid-cols-1 gap-x-8 gap-y-5 sm:grid-cols-2 lg:grid-cols-5"
+          className="grid grid-cols-1 gap-x-8 gap-y-5 px-0.5 sm:grid-cols-2 lg:grid-cols-5"
         >
           {INDUSTRIES.map((industry) => {
             const Icon = industry.icon;
             return (
               <RevealStaggerItem key={industry.title}>
-                <div className="min-w-0 border-t border-border pt-4">
+                <div className="min-w-0 border-t border-border px-2 pt-4 pb-3">
                 <div className="mb-2 flex items-center gap-2">
                   <Icon
                     size={14}

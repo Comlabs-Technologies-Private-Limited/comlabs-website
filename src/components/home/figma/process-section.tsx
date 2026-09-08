@@ -23,7 +23,7 @@ export function FigmaProcessSection() {
     <section id="process" className="relative bg-[#141414] py-20 md:py-24">
       <span aria-hidden className="gutter-hatch gutter-hatch-on-dark" />
       <div className="section-layout">
-        <div className="mb-10 max-w-2xl md:mb-12">
+        <div className="mb-10 max-w-2xl px-0.5 md:mb-12">
           <p className="mb-4 text-xs font-semibold tracking-widest text-neutral-100/55 uppercase">
             How we work
           </p>
