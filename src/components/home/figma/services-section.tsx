@@ -115,7 +115,7 @@ export function FigmaServicesSection() {
     <section id="services" className="relative py-24 md:py-32">
       <span aria-hidden className="gutter-hatch" />
       <div className="section-layout">
-        <div className="mb-12 px-3 md:mb-16">
+        <div className="mb-12 px-4 md:mb-16">
           <p className="mb-4 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
             Services
           </p>

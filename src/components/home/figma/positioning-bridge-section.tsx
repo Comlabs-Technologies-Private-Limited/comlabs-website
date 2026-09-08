@@ -51,7 +51,7 @@ export function FigmaPositioningBridgeSection() {
         edgeColor={FIELD_EDGE}
       >
         <div className="section-layout relative z-10 flex min-h-[280px] items-center py-16 md:min-h-[320px] md:py-20">
-          <div className="max-w-2xl px-3 text-left">
+          <div className="max-w-2xl px-4 text-left">
             <p className="mb-4 text-xs font-semibold tracking-widest text-neutral-100/55 uppercase">
               Beyond the build
             </p>
