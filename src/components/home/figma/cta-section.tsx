@@ -9,14 +9,14 @@ import { canonicalPath } from "@/lib/site";
 export function FigmaCtaSection() {
   const { revealed, onTitleComplete } = useAfterTitleReveal();
   return (
-    <div className="relative pb-0">
-      <span aria-hidden className="gutter-hatch" />
-      <section
-        id="contact"
-        className="section-layout overflow-hidden"
-        style={{ background: "var(--foreground)" }}
-      >
-        <div className="mx-auto max-w-2xl px-10 py-24 text-center">
+    <section
+      id="contact"
+      className="relative overflow-hidden rounded-none"
+      style={{ background: "var(--foreground)" }}
+    >
+      <span aria-hidden className="gutter-hatch gutter-hatch-on-dark" />
+      <div className="section-layout">
+        <div className="mx-auto max-w-2xl px-3 py-24 text-center md:px-4">
           <p
             className="mb-6 text-xs font-semibold tracking-widest uppercase"
             style={{ color: "rgba(247,247,244,0.45)" }}
@@ -70,7 +70,7 @@ export function FigmaCtaSection() {
             </a>
           </RevealCopy>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
   );
 }
