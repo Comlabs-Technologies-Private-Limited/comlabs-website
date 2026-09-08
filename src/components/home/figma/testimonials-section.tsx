@@ -51,7 +51,7 @@ export function FigmaTestimonialsSection() {
     <section id="testimonials" className="relative border-y border-border bg-card py-24 md:py-28">
       <span aria-hidden className="gutter-hatch" />
       <div className="section-layout">
-        <div className="mb-12 max-w-2xl px-4 md:mb-16">
+        <div className="mb-12 max-w-2xl px-3 md:px-4 md:mb-16">
           <p className="mb-4 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
             Testimonials
           </p>

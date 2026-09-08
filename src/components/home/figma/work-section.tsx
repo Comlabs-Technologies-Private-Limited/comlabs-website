@@ -36,7 +36,7 @@ export function FigmaWorkSection({ projects }: FigmaWorkSectionProps) {
     <section id="work" className="relative border-y border-border bg-card py-24">
       <span aria-hidden className="gutter-hatch" />
       <div className="section-layout">
-        <div className="mb-12 flex items-end justify-between gap-6 px-4">
+        <div className="mb-12 flex items-end justify-between gap-6 px-3 md:px-4">
           <div className="max-w-2xl">
             <p className="mb-4 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
               Case Studies
