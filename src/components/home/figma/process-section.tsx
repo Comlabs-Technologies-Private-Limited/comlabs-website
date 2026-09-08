@@ -1,4 +1,7 @@
+"use client";
+
 import { BlurReveal, BLUR_REVEAL_NORMAL_SPEED } from "@/components/blur-reveal";
+import { RevealCopy, useAfterTitleReveal } from "@/components/home/figma/after-title-reveal";
 import { ChromaticImageBentoFeatures } from "@/components/home/figma/chromatic-image-bento-features";
 import { PROCESS_STEPS } from "@/components/home/figma/home-data";
 
@@ -15,6 +18,7 @@ const rightFeatures = PROCESS_STEPS.slice(2).map((step) => ({
 }));
 
 export function FigmaProcessSection() {
+  const { revealed, onTitleComplete } = useAfterTitleReveal();
   return (
     <section id="process" className="bg-[#141414] px-6 py-20 md:py-24">
       <div className="mx-auto max-w-6xl">
@@ -26,6 +30,7 @@ export function FigmaProcessSection() {
             as="h2"
             inView
             speedReveal={BLUR_REVEAL_NORMAL_SPEED}
+            onAnimationComplete={onTitleComplete}
             className="text-2xl font-bold tracking-tight text-neutral-100 md:text-4xl"
             style={{ letterSpacing: "-0.03em" }}
             segments={[
@@ -36,12 +41,14 @@ export function FigmaProcessSection() {
           />
         </div>
 
-        <ChromaticImageBentoFeatures
-          leftFeatures={leftFeatures}
-          rightFeatures={rightFeatures}
-          imageSrc="/process/green-dither.webp"
-          imageAlt="Dithered green mountain valley with a river and village"
-        />
+        <RevealCopy revealed={revealed} delay={0.08} as="div">
+          <ChromaticImageBentoFeatures
+            leftFeatures={leftFeatures}
+            rightFeatures={rightFeatures}
+            imageSrc="/process/green-dither.webp"
+            imageAlt="Dithered green mountain valley with a river and village"
+          />
+        </RevealCopy>
       </div>
     </section>
   );

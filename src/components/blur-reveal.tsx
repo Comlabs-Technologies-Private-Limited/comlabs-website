@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { createElement, type CSSProperties, type JSX } from "react";
+import { createElement, useRef, type CSSProperties, type JSX } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -70,6 +70,86 @@ function tokenize(segments: BlurRevealSegment[]): WordToken[] {
   return tokens;
 }
 
+function countMotionItems(tokens: WordToken[]): number {
+  return tokens.reduce((count, token, wordIndex) => {
+    const space =
+      wordIndex < tokens.length - 1 && !token.breakAfter && !tokens[wordIndex + 1]?.glueBefore
+        ? 1
+        : 0;
+    return count + token.word.length + space;
+  }, 0);
+}
+
+function renderAnimatedWords({
+  tokens,
+  itemVariants,
+  letterSpacing,
+  motionCount,
+  onLastComplete,
+}: {
+  tokens: WordToken[];
+  itemVariants: {
+    hidden: { opacity: number; filter: string; y: number };
+    visible: {
+      opacity: number;
+      filter: string;
+      y: number;
+      transition: { duration: number };
+    };
+    exit: { opacity: number; filter: string; y: number };
+  };
+  letterSpacing?: string | number;
+  motionCount: number;
+  onLastComplete: (definition?: unknown) => void;
+}) {
+  let motionIndex = 0;
+
+  return tokens.map((token, wordIndex) => (
+    <span key={`word-${wordIndex}`}>
+      <span
+        className={cn("inline-block whitespace-nowrap", token.className)}
+        style={token.style}
+        aria-hidden="true"
+      >
+        {token.word.split("").map((char, charIndex) => {
+          const index = motionIndex;
+          motionIndex += 1;
+          return (
+            <motion.span
+              key={`char-${wordIndex}-${charIndex}`}
+              variants={itemVariants}
+              className="inline-block"
+              style={letterSpacing ? { marginRight: letterSpacing } : undefined}
+              onAnimationComplete={index === motionCount - 1 ? onLastComplete : undefined}
+            >
+              {char}
+            </motion.span>
+          );
+        })}
+        {wordIndex < tokens.length - 1 &&
+        !token.breakAfter &&
+        !tokens[wordIndex + 1]?.glueBefore
+          ? (() => {
+              const index = motionIndex;
+              motionIndex += 1;
+              return (
+                <motion.span
+                  key={`space-${wordIndex}`}
+                  variants={itemVariants}
+                  className="inline-block"
+                  onAnimationComplete={index === motionCount - 1 ? onLastComplete : undefined}
+                >
+                  &nbsp;
+                </motion.span>
+              );
+            })()
+          : null}
+      </span>
+      {token.breakAfter ? <br aria-hidden="true" /> : null}
+    </span>
+  ));
+}
+
 function plainTextFromSegments(segments: BlurRevealSegment[]): string {
   return segments.reduce((acc, segment) => {
     const text = segment.text.trim();
@@ -106,9 +186,30 @@ export function BlurReveal({
   const tokens = tokenize(resolvedSegments);
   const accessibleText = plainTextFromSegments(resolvedSegments);
   const MotionTag = motion[as as keyof typeof motion] as typeof motion.div;
+  const finishedRef = useRef(false);
 
   const stagger = 0.03 / speedReveal;
   const baseDuration = 0.3 / speedSegment;
+  const motionCount = countMotionItems(tokens);
+
+  const finish = () => {
+    if (finishedRef.current) return;
+    finishedRef.current = true;
+    onAnimationComplete?.();
+  };
+
+  const handleLastItemComplete = (definition?: unknown) => {
+    if (definition === "hidden" || definition === "exit") return;
+    finish();
+  };
+
+  const handleAnimationStart = (definition?: unknown) => {
+    onAnimationStart?.();
+    if (definition === "hidden" || definition === "exit") return;
+    const durationMs =
+      (delay + Math.max(0, motionCount - 1) * stagger + baseDuration + 0.08) * 1000;
+    window.setTimeout(finish, durationMs);
+  };
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -172,43 +273,17 @@ export function BlurReveal({
           variants={containerVariants}
           viewport={{ once }}
           className={className}
-          onAnimationComplete={onAnimationComplete}
-          onAnimationStart={onAnimationStart}
+          onAnimationStart={handleAnimationStart}
           style={style}
         >
           <span className="sr-only">{accessibleText}</span>
-          {tokens.map((token, wordIndex) => (
-            <span key={`word-${wordIndex}`}>
-              <span
-                className={cn("inline-block whitespace-nowrap", token.className)}
-                style={token.style}
-                aria-hidden="true"
-              >
-                {token.word.split("").map((char, charIndex) => (
-                  <motion.span
-                    key={`char-${wordIndex}-${charIndex}`}
-                    variants={itemVariants}
-                    className="inline-block"
-                    style={letterSpacing ? { marginRight: letterSpacing } : undefined}
-                  >
-                    {char}
-                  </motion.span>
-                ))}
-                {wordIndex < tokens.length - 1 &&
-                !token.breakAfter &&
-                !tokens[wordIndex + 1]?.glueBefore ? (
-                  <motion.span
-                    key={`space-${wordIndex}`}
-                    variants={itemVariants}
-                    className="inline-block"
-                  >
-                    &nbsp;
-                  </motion.span>
-                ) : null}
-              </span>
-              {token.breakAfter ? <br aria-hidden="true" /> : null}
-            </span>
-          ))}
+          {renderAnimatedWords({
+            tokens,
+            itemVariants,
+            letterSpacing,
+            motionCount,
+            onLastComplete: handleLastItemComplete,
+          })}
         </MotionTag>
       ) : null}
     </AnimatePresence>

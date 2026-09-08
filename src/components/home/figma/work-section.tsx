@@ -4,6 +4,13 @@ import { ArrowRight, ExternalLink } from "lucide-react";
 import { motion } from "motion/react";
 
 import { BlurReveal, BLUR_REVEAL_NORMAL_SPEED } from "@/components/blur-reveal";
+import {
+  AFTER_TITLE_BODY_DELAY,
+  RevealCopy,
+  RevealStagger,
+  afterTitleItemVariants,
+  useAfterTitleReveal,
+} from "@/components/home/figma/after-title-reveal";
 import { canonicalPath } from "@/lib/site";
 import { cn } from "@/lib/utils";
 import { mediaUrl } from "@/lib/cloudinary";
@@ -23,6 +30,7 @@ type FigmaWorkSectionProps = {
 };
 
 export function FigmaWorkSection({ projects }: FigmaWorkSectionProps) {
+  const { revealed, onTitleComplete } = useAfterTitleReveal();
   return (
     <section id="work" className="border-y border-border bg-card px-6 py-24">
       <div className="mx-auto max-w-6xl">
@@ -35,6 +43,7 @@ export function FigmaWorkSection({ projects }: FigmaWorkSectionProps) {
               as="h2"
               inView
               speedReveal={BLUR_REVEAL_NORMAL_SPEED}
+              onAnimationComplete={onTitleComplete}
               className="text-2xl font-bold tracking-tight md:text-4xl"
               style={{ letterSpacing: "-0.03em" }}
               segments={[
@@ -43,31 +52,41 @@ export function FigmaWorkSection({ projects }: FigmaWorkSectionProps) {
                 { text: "." },
               ]}
             />
-            <p className="mt-4 text-sm leading-relaxed text-muted-foreground md:text-base">
+            <RevealCopy
+              revealed={revealed}
+              className="mt-4 text-sm leading-relaxed text-muted-foreground md:text-base"
+            >
               A selection of engagements across application support, AI systems, infrastructure,
               custom software, mobile products and digital experiences.
-            </p>
+            </RevealCopy>
           </div>
-          <a
-            href={canonicalPath("/case-studies")}
-            className="hidden shrink-0 items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground md:inline-flex"
+          <RevealCopy
+            revealed={revealed}
+            as="div"
+            className="hidden shrink-0 md:block"
           >
-            View all case studies <ArrowRight size={13} />
-          </a>
+            <a
+              href={canonicalPath("/case-studies")}
+              className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+            >
+              View all case studies <ArrowRight size={13} />
+            </a>
+          </RevealCopy>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          {projects.map((project, i) => {
+        <RevealStagger
+          revealed={revealed}
+          delay={AFTER_TITLE_BODY_DELAY}
+          className="grid grid-cols-1 gap-6 md:grid-cols-2"
+        >
+          {projects.map((project) => {
             const featured = Boolean(project.featured);
 
             return (
               <motion.a
                 key={project.href}
                 href={canonicalPath(project.href)}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.06 }}
+                variants={afterTitleItemVariants}
                 className={cn(
                   "group block overflow-hidden rounded-3xl border border-border bg-background transition-colors hover:border-foreground/20",
                   featured && "md:col-span-2 md:grid md:grid-cols-2 md:items-stretch",
@@ -132,7 +151,7 @@ export function FigmaWorkSection({ projects }: FigmaWorkSectionProps) {
               </motion.a>
             );
           })}
-        </div>
+        </RevealStagger>
       </div>
     </section>
   );

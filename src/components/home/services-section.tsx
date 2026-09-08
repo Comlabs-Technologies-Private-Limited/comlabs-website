@@ -1,6 +1,5 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
@@ -11,8 +10,6 @@ import {
 import { HOME_SERVICES, type HomeService } from "@/lib/home-services";
 import { canonicalPath } from "@/lib/site";
 import { cn } from "@/lib/utils";
-
-const ease = [0.25, 0.1, 0, 1] as const;
 
 function ServiceCardVisual({
   service,
@@ -51,19 +48,10 @@ export function HomeServiceCard({
   service: HomeService;
   index: number;
 }) {
-  const reduceMotion = useReducedMotion();
   const featured = Boolean(service.featured);
 
   return (
-    <motion.article
-      initial={reduceMotion ? false : { opacity: 0, y: 16 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{
-        duration: reduceMotion ? 0 : 0.28,
-        delay: reduceMotion ? 0 : (index % 2) * 0.06,
-        ease,
-      }}
+    <article
       className={cn(
         "flex h-full min-w-0 flex-col overflow-hidden shadow-md rounded-3xl border border-border bg-background transition-[border-color,box-shadow] duration-300 hover:border-foreground/20 hover:shadow-[0_8px_32px_rgba(28,25,23,0.06)]",
         featured && "md:col-span-2 md:flex-row",
@@ -100,7 +88,7 @@ export function HomeServiceCard({
           />
         </Link>
       </div>
-    </motion.article>
+    </article>
   );
 }
 
