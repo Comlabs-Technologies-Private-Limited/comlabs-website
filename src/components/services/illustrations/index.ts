@@ -21,7 +21,7 @@ export const serviceIllustrations: Record<string, ServiceIllustration> = {
   "application-support": {
     Component: ApplicationSupportIllustration,
     label:
-      "Application support illustration: Live incident command centre for INC-2481 Payments API, escalating L1 through L4 with a diagnostic strip showing 5xx recovery and deployment verification.",
+      "Application support illustration: the INC-2481 Payments API incident ledger writing itself L1 through L4, from customer report to specialist sign-off, with 5xx rate recovering and the deployment verified.",
   },
   "agentic-infrastructure": {
     Component: AgenticWorkflowIllustration,

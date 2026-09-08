@@ -1,6 +1,7 @@
 "use client";
 
 import { FigmaCtaSection } from "@/components/home/figma/cta-section";
+import { FigmaFaqSection } from "@/components/home/figma/faq-section";
 import { FigmaIndustriesSection } from "@/components/home/figma/industries-section";
 import { FigmaHeroSection } from "@/components/home/figma/hero-section";
 import { FigmaPositioningBridgeSection } from "@/components/home/figma/positioning-bridge-section";
@@ -65,6 +66,7 @@ export function FigmaHomePage({
         <FigmaProcessSection />
         <FigmaTestimonialsSection />
         <FigmaIndustriesSection />
+        <FigmaFaqSection />
         <FigmaCtaSection />
       </main>
 

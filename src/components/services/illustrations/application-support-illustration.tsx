@@ -2,20 +2,11 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 
-import {
-  AwsMark,
-  CloudWatchMark,
-  CopilotMark,
-  RdsMark,
-  SlackMark,
-  StripeMark,
-} from "./brand-marks";
-import { Chip, DrawnCheck, Panel } from "./illustration-primitives";
+import { AwsMark, CloudWatchMark, StripeMark } from "./brand-marks";
 import { IllustrationStage, useIllustrationState } from "./service-illustration-frame";
 import {
   illustrationColors,
   illustrationEase,
-  illustrationShadow,
   illustrationSwap,
   illustrationTextSwapExit,
   illustrationTextSwapHidden,
@@ -32,56 +23,74 @@ const borderStrong = illustrationColors.borderStrong;
 const surface = illustrationColors.surface;
 const surfaceMuted = illustrationColors.surfaceMuted;
 const accent = illustrationColors.accent;
-const accentSoft = illustrationColors.accentSoft;
 const accentLine = illustrationColors.accentLine;
 const health = illustrationColors.health;
-const healthSoft = illustrationColors.healthSoft;
 
-type StageState = "done" | "active" | "idle";
-
-const STAGES = [
+/**
+ * One incident travelling L1 → L4. Each entry is written into the ledger as
+ * the rail reaches it, so the eye is led down the escalation in reading order.
+ */
+const ENTRIES = [
   {
-    id: "L1",
+    level: "L1",
     title: "Customer report",
-    detail: "Confirmed",
+    detail: "Checkout failures confirmed and triaged",
+    at: "08:14",
+    appearsAt: 0,
+    doneAt: 1,
+  },
+  {
+    level: "L2",
+    title: "Pattern isolated",
+    detail: "5xx spike traced to the payments service",
+    at: "08:19",
+    appearsAt: 1,
     doneAt: 2,
-    activeAt: 1,
-    Mark: SlackMark,
   },
   {
-    id: "L2",
-    title: "API pattern",
-    detail: "Isolated",
-    doneAt: 3,
-    activeAt: 2,
-    Mark: CloudWatchMark,
+    level: "L3",
+    title: "Engineering fix",
+    detail: "Connection pool exhausted — patch deployed",
+    at: "08:41",
+    appearsAt: 2,
+    doneAt: 4,
   },
   {
-    id: "L3",
-    title: "Pool fix",
-    detail: "Deployed",
+    level: "L4",
+    title: "Specialist review",
+    detail: "Capacity headroom signed off",
+    at: "08:52",
+    appearsAt: 4,
     doneAt: 5,
-    activeAt: 3,
-    Mark: AwsMark,
-  },
-  {
-    id: "L4",
-    title: "Specialist",
-    detail: "Standby",
-    doneAt: 6,
-    activeAt: 5,
-    Mark: CopilotMark,
   },
 ] as const;
 
-function stageState(step: number, activeAt: number, doneAt: number): StageState {
-  if (step >= doneAt) return "done";
-  if (step >= activeAt) return "active";
-  return "idle";
+const RESOLVED_STEP = 5;
+
+/** Square status tag — hairline and unfilled, matching the site's card system. */
+function Tag({
+  children,
+  tone,
+}: {
+  children: React.ReactNode;
+  tone: "accent" | "health" | "quiet";
+}) {
+  const color = tone === "accent" ? accent : tone === "health" ? health : inkFaint;
+  const borderColor =
+    tone === "accent" ? accentLine : tone === "health" ? "rgba(63,122,90,0.28)" : borderStrong;
+
+  return (
+    <span
+      className="inline-flex shrink-0 items-center border px-1.5 py-[3px] text-[9px] leading-none font-medium tracking-[0.04em] whitespace-nowrap"
+      style={{ borderRadius: 0, borderColor, color }}
+    >
+      {children}
+    </span>
+  );
 }
 
-function errorRate(step: number, reduce: boolean): string {
-  if (reduce || step >= 5) return "0.3%";
+function errorRate(step: number): string {
+  if (step >= RESOLVED_STEP) return "0.3%";
   if (step >= 4) return "1.4%";
   if (step >= 3) return "3.8%";
   if (step >= 2) return "6.1%";
@@ -91,188 +100,157 @@ function errorRate(step: number, reduce: boolean): string {
 export function ApplicationSupportIllustration() {
   const { active, reduce } = useIllustrationState();
   const step = useIllustrationSequence({
-    steps: 7,
+    steps: RESOLVED_STEP + 1,
     active,
     reduce,
-    stepMs: [700, 780, 820, 900, 860, 720],
+    stepMs: [900, 1000, 1050, 950, 1000],
     startDelayMs: 420,
     loop: true,
-    loopDelayMs: 2000,
+    loopDelayMs: 2400,
   });
 
-  const investigating = step < 5;
-  const rate = errorRate(step, Boolean(reduce));
-  const rateImproved = step >= 5 || reduce;
+  const resolved = step >= RESOLVED_STEP;
+  const rate = errorRate(step);
 
   return (
     <IllustrationStage className="p-0">
-      <Panel
-        className="flex h-full min-h-0 flex-col overflow-hidden border-0"
-        elevation="flat"
-        radius={0}
-        style={{ background: surface }}
-      >
+      <div className="flex h-full min-h-0 flex-col" style={{ background: surface }}>
         {/* Incident header */}
         <div
-          className="flex shrink-0 items-center justify-between gap-2 border-b px-3 py-2.5 lg:px-4"
+          className="flex shrink-0 items-center justify-between gap-3 border-b px-4 py-3 lg:px-5"
           style={{ borderColor: border }}
         >
-          <div className="flex min-w-0 items-center gap-2">
+          <div className="flex min-w-0 items-center gap-2.5">
             <motion.span
-              className="relative flex size-2.5 shrink-0"
+              className="size-[7px] shrink-0"
               aria-hidden
-              animate={
-                reduce || !investigating
-                  ? { opacity: 1 }
-                  : { opacity: [1, 0.45, 1], scale: [1, 1.15, 1] }
-              }
+              style={{ background: resolved ? health : accent }}
+              animate={reduce || resolved ? { opacity: 1 } : { opacity: [1, 0.35, 1] }}
               transition={
-                reduce || !investigating
+                reduce || resolved
                   ? { duration: 0 }
-                  : { duration: 1.8, ease: "easeInOut", repeat: Infinity }
+                  : { duration: 2.2, ease: "easeInOut", repeat: Infinity }
               }
+            />
+            <StripeMark className="h-3.5 w-3.5 shrink-0" />
+            <p
+              className="truncate text-[12px] font-medium tracking-tight"
+              style={{ color: ink }}
             >
-              <span
-                className="absolute inset-0 rounded-full"
-                style={{ background: investigating ? accent : health }}
-              />
-            </motion.span>
-            <StripeMark className="h-3 w-3 shrink-0 lg:h-3.5 lg:w-3.5" />
-            <div className="min-w-0">
-              <p
-                className="truncate text-[10px] font-medium tracking-tight lg:text-[11px]"
-                style={{ color: ink }}
-              >
-                INC-2481 · Payments API
-              </p>
-            </div>
-            <Chip tone={investigating ? "accent" : "health"} size="compact">
-              {investigating ? "P1 · Investigating" : "P1 · Resolved"}
-            </Chip>
+              INC-2481 · Payments API
+            </p>
+            <Tag tone={resolved ? "health" : "accent"}>
+              {resolved ? "P1 · Resolved" : "P1 · Investigating"}
+            </Tag>
           </div>
           <span
-            className="shrink-0 text-[9px] tracking-tight tabular-nums lg:text-[10px]"
+            className="shrink-0 text-[10px] tracking-tight tabular-nums"
             style={{ color: inkFaint }}
           >
             08:14 UTC
           </span>
         </div>
 
-        {/* Horizontal escalation timeline */}
-        <div className="flex min-h-0 flex-1 flex-col justify-center px-3 py-3 lg:px-4">
-          <div className="relative flex items-start justify-between gap-1">
-            {/* Progress rail */}
-            <div
-              className="pointer-events-none absolute top-[11px] right-4 left-4 h-px lg:top-[12px]"
-              style={{ background: borderStrong }}
-              aria-hidden
-            />
-            <motion.div
-              className="pointer-events-none absolute top-[11px] left-4 h-px origin-left lg:top-[12px]"
-              style={{ background: health, maxWidth: "calc(100% - 2rem)" }}
-              initial={false}
-              animate={{
-                width: reduce
-                  ? "100%"
-                  : step >= 5
-                    ? "100%"
-                    : step >= 3
-                      ? "66%"
-                      : step >= 2
-                        ? "33%"
-                        : step >= 1
-                          ? "12%"
-                          : "0%",
-              }}
-              transition={{ duration: reduce ? 0 : 0.7, ease: EASE }}
-              aria-hidden
-            />
+        {/* Escalation ledger */}
+        <div className="flex min-h-0 flex-1 flex-col justify-center px-4 py-4 lg:px-5">
+          {ENTRIES.map((entry, index) => {
+            const visible = reduce || step >= entry.appearsAt;
+            const isDone = reduce || step >= entry.doneAt;
+            const isActive = visible && !isDone;
+            const isLast = index === ENTRIES.length - 1;
 
-            {STAGES.map((stage) => {
-              const state = reduce
-                ? stage.id === "L4"
-                  ? "idle"
-                  : "done"
-                : stageState(step, stage.activeAt, stage.doneAt);
-              const isActive = state === "active";
-              const isDone = state === "done";
+            return (
+              <motion.div
+                key={entry.level}
+                className="relative flex gap-3 pl-3"
+                initial={false}
+                animate={
+                  visible
+                    ? { opacity: 1, y: 0, filter: "blur(0px)" }
+                    : { opacity: 0, y: 6, filter: "blur(2px)" }
+                }
+                transition={{ duration: reduce ? 0 : 0.42, ease: EASE }}
+              >
+                {/* Active marker — the same 2px accent edge the service tabs use. */}
+                <motion.span
+                  className="absolute top-0 bottom-0 left-0 w-[2px]"
+                  aria-hidden
+                  style={{ background: accent }}
+                  initial={false}
+                  animate={{ opacity: isActive ? 1 : 0 }}
+                  transition={{ duration: reduce ? 0 : 0.28, ease: EASE }}
+                />
 
-              return (
-                <div
-                  key={stage.id}
-                  className="relative z-[1] flex w-[22%] flex-col items-center text-center"
-                >
-                  <motion.div
-                    className="flex size-5 items-center justify-center rounded-full border lg:size-6"
-                    style={{
-                      background: isDone
-                        ? healthSoft
-                        : isActive
-                          ? accentSoft
-                          : surface,
-                      borderColor: isDone
-                        ? "rgba(63,122,90,0.28)"
-                        : isActive
-                          ? accentLine
-                          : borderStrong,
-                      boxShadow: isActive
-                        ? `0 0 0 3px ${accentSoft}, ${illustrationShadow.panel}`
-                        : "none",
+                {/* Rail: square node, then the connector that fills on completion. */}
+                <div className="relative flex w-3 shrink-0 justify-center">
+                  {!isLast ? (
+                    <>
+                      <span
+                        className="absolute top-[15px] bottom-0 w-px"
+                        aria-hidden
+                        style={{ background: border }}
+                      />
+                      <motion.span
+                        className="absolute top-[15px] bottom-0 w-px origin-top"
+                        aria-hidden
+                        style={{ background: health }}
+                        initial={false}
+                        animate={{ scaleY: isDone ? 1 : 0 }}
+                        transition={{ duration: reduce ? 0 : 0.55, ease: EASE }}
+                      />
+                    </>
+                  ) : null}
+                  <motion.span
+                    className="absolute top-[6px] size-[7px] border"
+                    aria-hidden
+                    initial={false}
+                    animate={{
+                      background: isDone ? health : isActive ? accent : surface,
+                      borderColor: isDone ? health : isActive ? accent : borderStrong,
                     }}
-                    animate={
-                      isActive && !reduce
-                        ? { scale: [1, 1.06, 1] }
-                        : { scale: 1 }
-                    }
-                    transition={
-                      isActive && !reduce
-                        ? { duration: 2.2, ease: "easeInOut", repeat: Infinity }
-                        : { duration: 0.28, ease: EASE }
-                    }
-                  >
-                    {isDone ? (
-                      <DrawnCheck show size={10} reduce={Boolean(reduce)} />
-                    ) : (
-                      <stage.Mark className="h-2.5 w-2.5 lg:h-3 lg:w-3" />
-                    )}
-                  </motion.div>
+                    transition={{ duration: reduce ? 0 : 0.28, ease: EASE }}
+                  />
+                </div>
+
+                <div className={`min-w-0 flex-1 ${isLast ? "" : "pb-5"}`}>
+                  <div className="flex items-baseline gap-2.5">
+                    <Tag tone={isDone ? "health" : isActive ? "accent" : "quiet"}>
+                      {entry.level}
+                    </Tag>
+                    <p
+                      className="truncate text-[12px] font-medium tracking-tight"
+                      style={{ color: isActive || isDone ? ink : inkFaint }}
+                    >
+                      {entry.title}
+                    </p>
+                    <span
+                      className="ml-auto shrink-0 text-[10px] tracking-tight tabular-nums"
+                      style={{ color: inkFaint }}
+                    >
+                      {entry.at}
+                    </span>
+                  </div>
                   <p
-                    className="mt-1.5 text-[7px] font-medium tracking-tight lg:text-[8px]"
-                    style={{ color: isActive ? accent : inkFaint }}
+                    className="mt-1 text-[11px] leading-relaxed tracking-tight"
+                    style={{ color: inkMuted }}
                   >
-                    {stage.id}
-                  </p>
-                  <p
-                    className="mt-0.5 text-[8px] font-medium tracking-tight lg:text-[9px]"
-                    style={{
-                      color: isActive ? ink : isDone ? inkMuted : inkFaint,
-                    }}
-                  >
-                    {stage.title}
-                  </p>
-                  <p
-                    className="mt-0.5 text-[7px] tracking-tight lg:text-[8px]"
-                    style={{
-                      color: isDone ? health : isActive ? accent : inkFaint,
-                    }}
-                  >
-                    {isDone ? stage.detail : isActive ? "In progress" : stage.detail}
+                    {entry.detail}
                   </p>
                 </div>
-              );
-            })}
-          </div>
+              </motion.div>
+            );
+          })}
         </div>
 
-        {/* Diagnostic strip */}
+        {/* Outcome strip */}
         <div
-          className="grid shrink-0 grid-cols-3 gap-2 border-t px-3 py-2.5 lg:px-4"
+          className="grid shrink-0 grid-cols-2 border-t"
           style={{ borderColor: border, background: surfaceMuted }}
         >
-          <div>
-            <div className="flex items-center gap-1">
-              <CloudWatchMark className="h-2.5 w-2.5" />
-              <p className="text-[7px] tracking-tight lg:text-[7.5px]" style={{ color: inkFaint }}>
+          <div className="px-4 py-3 lg:px-5">
+            <div className="flex items-center gap-1.5">
+              <CloudWatchMark className="h-3 w-3" />
+              <p className="text-[10px] tracking-tight" style={{ color: inkFaint }}>
                 5xx rate
               </p>
             </div>
@@ -283,43 +261,29 @@ export function ApplicationSupportIllustration() {
                 animate={illustrationTextSwapShown}
                 exit={reduce ? undefined : illustrationTextSwapExit}
                 transition={illustrationSwap}
-                className="mt-0.5 text-[10px] font-medium tracking-tight tabular-nums lg:text-[11px]"
-                style={{ color: rateImproved ? health : accent }}
+                className="mt-1 text-[12px] font-medium tracking-tight tabular-nums"
+                style={{ color: resolved ? health : accent }}
               >
-                {rateImproved ? `8.2% → ${rate}` : rate}
+                {resolved ? `8.2% → ${rate}` : rate}
               </motion.p>
             </AnimatePresence>
           </div>
-          <div className="col-span-1 border-x px-2" style={{ borderColor: border }}>
-            <div className="flex items-center gap-1">
-              <RdsMark className="h-2.5 w-2.5" />
-              <p className="text-[7px] tracking-tight lg:text-[7.5px]" style={{ color: inkFaint }}>
-                Root cause
-              </p>
-            </div>
-            <p
-              className="mt-0.5 text-[8px] leading-snug font-medium tracking-tight lg:text-[9px]"
-              style={{ color: ink }}
-            >
-              DB connection pool exhausted
-            </p>
-          </div>
-          <div>
-            <div className="flex items-center gap-1">
-              <AwsMark className="h-2.5 w-2.5" />
-              <p className="text-[7px] tracking-tight lg:text-[7.5px]" style={{ color: inkFaint }}>
+          <div className="border-l px-4 py-3 lg:px-5" style={{ borderColor: border }}>
+            <div className="flex items-center gap-1.5">
+              <AwsMark className="h-3 w-3" />
+              <p className="text-[10px] tracking-tight" style={{ color: inkFaint }}>
                 Deployment
               </p>
             </div>
             <p
-              className="mt-0.5 text-[8px] font-medium tracking-tight lg:text-[9px]"
-              style={{ color: step >= 4 || reduce ? health : inkMuted }}
+              className="mt-1 text-[12px] font-medium tracking-tight"
+              style={{ color: step >= 4 ? health : inkMuted }}
             >
-              {step >= 5 || reduce ? "Verified" : step >= 4 ? "Rolling out" : "Pending"}
+              {resolved ? "Verified" : step >= 3 ? "Rolling out" : "Pending"}
             </p>
           </div>
         </div>
-      </Panel>
+      </div>
     </IllustrationStage>
   );
 }
