@@ -1,3 +1,4 @@
+import { BlurReveal, BLUR_REVEAL_NORMAL_SPEED } from "@/components/blur-reveal";
 import { ChromaticImageBentoFeatures } from "@/components/home/figma/chromatic-image-bento-features";
 import { PROCESS_STEPS } from "@/components/home/figma/home-data";
 
@@ -21,13 +22,18 @@ export function FigmaProcessSection() {
           <p className="mb-4 text-xs font-semibold tracking-widest text-neutral-100/55 uppercase">
             How we work
           </p>
-          <h2
+          <BlurReveal
+            as="h2"
+            inView
+            speedReveal={BLUR_REVEAL_NORMAL_SPEED}
             className="text-2xl font-bold tracking-tight text-neutral-100 md:text-4xl"
             style={{ letterSpacing: "-0.03em" }}
-          >
-            From problem to{" "}
-            <span style={{ color: "var(--warm-orange)" }}>dependable</span> operation.
-          </h2>
+            segments={[
+              { text: "From problem to" },
+              { text: "dependable", style: { color: "var(--warm-orange)" } },
+              { text: "operation." },
+            ]}
+          />
         </div>
 
         <ChromaticImageBentoFeatures

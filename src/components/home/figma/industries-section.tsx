@@ -3,7 +3,7 @@
 import { Brain, Building2, Cog, Cpu, ShoppingBag } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
-import { MarketingFadeIn } from "@/components/marketing/marketing-motion";
+import { BlurReveal, BLUR_REVEAL_NORMAL_SPEED } from "@/components/blur-reveal";
 
 type IndustryItem = {
   title: string;
@@ -44,19 +44,23 @@ export function FigmaIndustriesSection() {
   return (
     <section id="industries" className="border-y border-border px-6 py-14 md:py-16">
       <div className="mx-auto max-w-6xl">
-        <MarketingFadeIn className="mb-8 max-w-2xl md:mb-10">
+        <div className="mb-8 max-w-2xl md:mb-10">
           <p className="mb-4 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
             Industries
           </p>
-          <h2
+          <BlurReveal
+            as="h2"
+            inView
+            speedReveal={BLUR_REVEAL_NORMAL_SPEED}
             className="text-2xl font-bold tracking-tight md:text-4xl"
             style={{ letterSpacing: "-0.03em" }}
-          >
-            Built for companies where{" "}
-            <span style={{ color: "var(--warm-orange)" }}>software</span> is part of the
-            operation.
-          </h2>
-        </MarketingFadeIn>
+            segments={[
+              { text: "Built for companies where" },
+              { text: "software", style: { color: "var(--warm-orange)" } },
+              { text: "is part of the operation." },
+            ]}
+          />
+        </div>
 
         <ul className="grid grid-cols-1 gap-x-8 gap-y-5 sm:grid-cols-2 lg:grid-cols-5">
           {INDUSTRIES.map((industry) => {

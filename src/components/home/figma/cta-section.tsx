@@ -1,5 +1,6 @@
 import { ArrowRight } from "lucide-react";
 
+import { BlurReveal, BLUR_REVEAL_NORMAL_SPEED } from "@/components/blur-reveal";
 import { canonicalPath } from "@/lib/site";
 
 export function FigmaCtaSection() {
@@ -16,12 +17,15 @@ export function FigmaCtaSection() {
         >
           Let&apos;s talk
         </p>
-        <h2
+        <BlurReveal
+          as="h2"
+          inView
+          speedReveal={BLUR_REVEAL_NORMAL_SPEED}
           className="mb-10 text-2xl font-bold tracking-tight md:text-4xl"
           style={{ color: "var(--background)", letterSpacing: "-0.03em" }}
         >
           Your technology should not become your operational bottleneck.
-        </h2>
+        </BlurReveal>
         <a
           href={canonicalPath("/contact")}
           className="inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-sm font-semibold transition-opacity hover:opacity-90"

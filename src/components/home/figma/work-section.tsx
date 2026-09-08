@@ -3,6 +3,7 @@
 import { ArrowRight, ExternalLink } from "lucide-react";
 import { motion } from "motion/react";
 
+import { BlurReveal, BLUR_REVEAL_NORMAL_SPEED } from "@/components/blur-reveal";
 import { canonicalPath } from "@/lib/site";
 import { cn } from "@/lib/utils";
 import { mediaUrl } from "@/lib/cloudinary";
@@ -30,12 +31,18 @@ export function FigmaWorkSection({ projects }: FigmaWorkSectionProps) {
             <p className="mb-4 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
               Case Studies
             </p>
-            <h2
+            <BlurReveal
+              as="h2"
+              inView
+              speedReveal={BLUR_REVEAL_NORMAL_SPEED}
               className="text-2xl font-bold tracking-tight md:text-4xl"
               style={{ letterSpacing: "-0.03em" }}
-            >
-              Proof in <span style={{ color: "var(--warm-orange)" }}>production</span>.
-            </h2>
+              segments={[
+                { text: "Proof in" },
+                { text: "production", style: { color: "var(--warm-orange)" } },
+                { text: "." },
+              ]}
+            />
             <p className="mt-4 text-sm leading-relaxed text-muted-foreground md:text-base">
               A selection of engagements across application support, AI systems, infrastructure,
               custom software, mobile products and digital experiences.

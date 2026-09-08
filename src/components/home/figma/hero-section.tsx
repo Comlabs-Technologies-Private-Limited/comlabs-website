@@ -3,6 +3,7 @@
 import { ArrowRight } from "lucide-react";
 import { motion } from "motion/react";
 
+import { BlurReveal, BLUR_REVEAL_NORMAL_SPEED } from "@/components/blur-reveal";
 import { EnterpriseClientsTrust } from "@/components/home/enterprise-clients-section";
 import { useOptionalTheme } from "@/components/theme/theme-provider";
 import { ChromaticImage } from "@/components/ui/chromatic-image";
@@ -83,20 +84,23 @@ export function FigmaHeroSection() {
           Currently taking new projects
         </motion.div>
 
-        <motion.h1
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.08, ease: "easeOut" }}
+        <BlurReveal
+          as="h1"
+          inView
+          speedReveal={BLUR_REVEAL_NORMAL_SPEED}
           className="mb-7 text-3xl leading-[1.08] font-bold tracking-tight md:text-6xl"
           style={{ letterSpacing: "-0.03em" }}
-        >
-          We Run the{" "}
-          <span className="font-bold" style={{ color: "var(--warm-orange)" }}>
-            Technology
-          </span>
-          <br />
-          Your Business Depends On
-        </motion.h1>
+          segments={[
+            { text: "We Run the" },
+            {
+              text: "Technology",
+              className: "font-bold",
+              style: { color: "var(--warm-orange)" },
+              breakAfter: true,
+            },
+            { text: "Your Business Depends On" },
+          ]}
+        />
 
         <motion.p
           initial={{ opacity: 0, y: 10 }}

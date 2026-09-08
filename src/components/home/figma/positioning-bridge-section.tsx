@@ -1,7 +1,7 @@
 "use client";
 
+import { BlurReveal, BLUR_REVEAL_NORMAL_SPEED } from "@/components/blur-reveal";
 import { ForceField } from "@/components/canvasui/ForceField";
-import { MarketingFadeIn } from "@/components/marketing/marketing-motion";
 
 /** Warm orange lattice on charcoal — brand-aligned Force Field. */
 const FIELD_COLOR: [number, number, number] = [0.788, 0.392, 0.259];
@@ -49,25 +49,29 @@ export function FigmaPositioningBridgeSection() {
         edgeColor={FIELD_EDGE}
       >
         <div className="relative z-10 mx-auto flex min-h-[280px] max-w-6xl items-center px-6 py-16 md:min-h-[320px] md:py-20">
-          <MarketingFadeIn className="max-w-2xl text-left">
+          <div className="max-w-2xl text-left">
             <p className="mb-4 text-xs font-semibold tracking-widest text-neutral-100/55 uppercase">
               Beyond the build
             </p>
-            <h2
+            <BlurReveal
+              as="h2"
               id="positioning-heading"
+              inView
+              speedReveal={BLUR_REVEAL_NORMAL_SPEED}
               className="text-2xl font-bold tracking-tight text-neutral-100 md:text-4xl"
               style={{ letterSpacing: "-0.03em" }}
-            >
-              Technology is only{" "}
-              <span style={{ color: "var(--warm-orange)" }}>valuable</span> when it works in
-              production.
-            </h2>
+              segments={[
+                { text: "Technology is only" },
+                { text: "valuable", style: { color: "var(--warm-orange)" } },
+                { text: "when it works in production." },
+              ]}
+            />
             <p className="mt-5 text-sm leading-relaxed text-neutral-100/70 md:text-base">
               Comlabs supports the applications, infrastructure and operational systems behind
               growing businesses—from the first customer request to the production issue that cannot
               wait until Monday.
             </p>
-          </MarketingFadeIn>
+          </div>
         </div>
       </ForceField>
     </section>
