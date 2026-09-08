@@ -19,15 +19,22 @@ import { HOME_SERVICES, type HomeService, type HomeServiceId } from "@/lib/home-
 import { canonicalPath } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
-/** Equal columns in the flat services frame. Agentic AI sits in its own frame below. */
+/** Equal columns in the top services frame. Agentic AI sits in its own frame below. */
 const COLUMN_SERVICE_IDS: readonly HomeServiceId[] = [
   "application-support",
   "cloud-infrastructure",
   "custom-software",
 ];
 
+/** Second frame under Agentic AI — two equal columns. */
+const PAIRED_SERVICE_IDS: readonly HomeServiceId[] = ["mobile-app", "website-design"];
+
 function serviceById(id: HomeServiceId): HomeService | undefined {
   return HOME_SERVICES.find((service) => service.id === id);
+}
+
+function servicesFor(ids: readonly HomeServiceId[]): HomeService[] {
+  return ids.map(serviceById).filter((service): service is HomeService => Boolean(service));
 }
 
 /** Existing illustration, stripped of card chrome so it sits flush inside the grid cell. */
@@ -64,17 +71,67 @@ function ServiceLink({ service }: { service: HomeService }) {
   );
 }
 
+function ServiceCopy({ service }: { service: HomeService }) {
+  return (
+    <div className="flex flex-1 flex-col p-6 lg:p-8">
+      <h3
+        className="text-lg leading-[1.2] font-bold tracking-tight md:text-xl"
+        style={{ letterSpacing: "-0.03em" }}
+      >
+        {service.title}
+      </h3>
+      <p className="mt-3 text-[15px] leading-relaxed text-muted-foreground md:hidden">
+        {service.mobileDescription}
+      </p>
+      <p className="mt-3 hidden text-sm leading-relaxed text-muted-foreground md:block">
+        {service.description}
+      </p>
+      <ServiceLink service={service} />
+    </div>
+  );
+}
+
+/**
+ * One grid cell: text above, existing visual flush below. Dividers are drawn on
+ * the cell itself so two neighbouring cells never stack a double border.
+ */
+function ServiceColumn({
+  service,
+  index,
+  columns,
+}: {
+  service: HomeService;
+  index: number;
+  columns: 2 | 3;
+}) {
+  const startsRow = index % columns === 0;
+
+  return (
+    <div
+      className={cn(
+        "flex min-w-0 flex-col",
+        index > 0 && "border-t border-border",
+        "lg:border-t-0",
+        index >= columns && "lg:border-t lg:border-border",
+        !startsRow && "lg:border-l lg:border-border",
+      )}
+    >
+      <ServiceCopy service={service} />
+      <ServiceVisual service={service} className="aspect-[4/3] md:aspect-[4/3]" />
+    </div>
+  );
+}
+
 export function FigmaServicesSection() {
   const { revealed, onTitleComplete } = useAfterTitleReveal();
 
-  const columns = COLUMN_SERVICE_IDS.map(serviceById).filter(
-    (service): service is HomeService => Boolean(service),
-  );
+  const columns = servicesFor(COLUMN_SERVICE_IDS);
+  const paired = servicesFor(PAIRED_SERVICE_IDS);
   const agentic = serviceById("agentic-infrastructure");
 
   return (
     <section id="services" className="py-24 md:py-32">
-      <div className="mx-auto max-w-6xl px-6">
+      <div className="section-layout">
         <div className="mb-12 md:mb-16">
           <p className="mb-4 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
             Services
@@ -111,32 +168,7 @@ export function FigmaServicesSection() {
         <RevealStaggerItem>
           <div className="flat-frame grid grid-cols-1 lg:grid-cols-3">
             {columns.map((service, index) => (
-              <div
-                key={service.id}
-                className={cn(
-                  "flex min-w-0 flex-col",
-                  index > 0 && "border-t border-border",
-                  "lg:border-t-0",
-                  index % 3 !== 0 && "lg:border-l lg:border-border",
-                )}
-              >
-                <div className="flex flex-1 flex-col p-6 lg:p-8">
-                  <h3
-                    className="text-lg leading-[1.2] font-bold tracking-tight md:text-xl"
-                    style={{ letterSpacing: "-0.03em" }}
-                  >
-                    {service.title}
-                  </h3>
-                  <p className="mt-3 text-[15px] leading-relaxed text-muted-foreground md:hidden">
-                    {service.mobileDescription}
-                  </p>
-                  <p className="mt-3 hidden text-sm leading-relaxed text-muted-foreground md:block">
-                    {service.description}
-                  </p>
-                  <ServiceLink service={service} />
-                </div>
-                <ServiceVisual service={service} className="aspect-[4/3] md:aspect-[4/3]" />
-              </div>
+              <ServiceColumn key={service.id} service={service} index={index} columns={3} />
             ))}
           </div>
         </RevealStaggerItem>
@@ -163,6 +195,16 @@ export function FigmaServicesSection() {
                 </p>
                 <ServiceLink service={agentic} />
               </div>
+            </div>
+          </RevealStaggerItem>
+        ) : null}
+
+        {paired.length > 0 ? (
+          <RevealStaggerItem className="mt-6">
+            <div className="flat-frame grid grid-cols-1 lg:grid-cols-2">
+              {paired.map((service, index) => (
+                <ServiceColumn key={service.id} service={service} index={index} columns={2} />
+              ))}
             </div>
           </RevealStaggerItem>
         ) : null}

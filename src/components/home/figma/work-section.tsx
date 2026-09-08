@@ -34,7 +34,7 @@ export function FigmaWorkSection({ projects }: FigmaWorkSectionProps) {
 
   return (
     <section id="work" className="border-y border-border bg-card py-24">
-      <div className="mx-auto max-w-6xl px-6">
+      <div className="section-layout">
         <div className="mb-12 flex items-end justify-between gap-6">
           <div className="max-w-2xl">
             <p className="mb-4 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
