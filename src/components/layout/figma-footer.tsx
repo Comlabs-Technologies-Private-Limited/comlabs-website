@@ -78,7 +78,7 @@ export function FigmaFooter({
         aria-hidden
         className={tone === "dark" ? "gutter-hatch gutter-hatch-on-dark" : "gutter-hatch"}
       />
-      <div className="section-layout px-3 md:px-4">
+      <div className="section-layout px-1 md:px-4">
         <div className="mb-12 flex flex-col justify-between gap-10 md:flex-row">
           <div>
             <Link href="/" className="mb-3 block" aria-label="Comlabs home">

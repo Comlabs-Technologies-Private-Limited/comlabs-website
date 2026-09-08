@@ -79,12 +79,12 @@ function ServiceCell({ service, index }: { service: HomeService; index: number }
     >
       <div className="flex flex-1 flex-col p-6 lg:p-8">
         <h3
-          className="text-lg leading-[1.2] font-bold tracking-tight md:text-xl"
+          className="text-sm leading-[1.2] font-bold tracking-tight md:text-xl"
           style={{ letterSpacing: "-0.03em" }}
         >
           {service.title}
         </h3>
-        <p className="mt-3 text-[15px] leading-relaxed text-muted-foreground md:hidden">
+        <p className="mt-3 text-sm leading-relaxed text-muted-foreground md:hidden">
           {service.mobileDescription}
         </p>
         <p className="mt-3 hidden text-sm leading-relaxed text-muted-foreground md:block">
@@ -115,7 +115,7 @@ export function FigmaServicesSection() {
     <section id="services" className="relative py-14 md:py-16">
       <span aria-hidden className="gutter-hatch" />
       <div className="section-layout">
-        <div className="mb-12 px-3 md:px-4 md:mb-16">
+        <div className="mb-12 px-1 md:px-4 md:mb-16">
           <p className="mb-4 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
             Services
           </p>
@@ -143,17 +143,15 @@ export function FigmaServicesSection() {
         </div>
       </div>
 
-      <RevealStagger
-        revealed={revealed}
-        delay={AFTER_TITLE_BODY_DELAY}
-        className="section-layout"
-      >
-        {/* Outer hairline, perimeter padding, then the inner frame around the cards. */}
-        <div className="border-y border-border p-2 md:p-3">
-          <div className="flat-frame grid grid-cols-1 lg:grid-cols-2">
-            {services.map((service, index) => (
-              <ServiceCell key={service.id} service={service} index={index} />
-            ))}
+      <RevealStagger revealed={revealed} delay={AFTER_TITLE_BODY_DELAY} className="w-full">
+        {/* Top/bottom rules span hatch-to-hatch; card grid sits inset inside. */}
+        <div className="hatch-aligned-frame border-y border-border px-1 md:px-4 py-1">
+          <div className="section-layout">
+            <div className="flat-frame grid grid-cols-1 lg:grid-cols-2">
+              {services.map((service, index) => (
+                <ServiceCell key={service.id} service={service} index={index} />
+              ))}
+            </div>
           </div>
         </div>
       </RevealStagger>

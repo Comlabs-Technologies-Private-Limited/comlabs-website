@@ -11,11 +11,12 @@ export function FigmaCtaSection() {
   return (
     <div className="relative pb-0">
       <span aria-hidden className="gutter-hatch" />
-      <section
-        id="contact"
-        className="section-layout overflow-hidden"
-        style={{ background: "var(--foreground)" }}
-      >
+      <div className="hatch-aligned-frame border-y border-border px-1 md:px-4 py-1">
+        <section
+          id="contact"
+          className="section-layout overflow-hidden"
+          style={{ background: "var(--foreground)" }}
+        >
         <div className="mx-auto max-w-2xl px-10 py-14 text-center md:py-16">
           <p
             className="mb-6 text-xs font-semibold tracking-widest uppercase"
@@ -70,7 +71,8 @@ export function FigmaCtaSection() {
             </a>
           </RevealCopy>
         </div>
-      </section>
+        </section>
+      </div>
     </div>
   );
 }

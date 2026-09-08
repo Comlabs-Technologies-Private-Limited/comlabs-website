@@ -51,7 +51,7 @@ export function FigmaIndustriesSection() {
     <section id="industries" className="relative border-y border-border py-14 md:py-16">
       <span aria-hidden className="gutter-hatch" />
       <div className="section-layout">
-        <div className="mb-8 max-w-2xl px-3 md:px-4 md:mb-10">
+        <div className="mb-8 max-w-2xl px-1 md:px-4 md:mb-10">
           <p className="mb-4 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
             Industries
           </p>
@@ -69,34 +69,43 @@ export function FigmaIndustriesSection() {
             ]}
           />
         </div>
-
-        <RevealStagger
-          revealed={revealed}
-          delay={0.08}
-          className="grid grid-cols-1 gap-x-8 gap-y-5 px-3 md:px-4 sm:grid-cols-2 lg:grid-cols-5"
-        >
-          {INDUSTRIES.map((industry) => {
-            const Icon = industry.icon;
-            return (
-              <RevealStaggerItem key={industry.title}>
-                <div className="min-w-0 border-t border-border px-2 pt-4 pb-3">
-                <div className="mb-2 flex items-center gap-2">
-                  <Icon
-                    size={14}
-                    className="shrink-0"
-                    style={{ color: "var(--warm-orange)" }}
-                    strokeWidth={1.75}
-                    aria-hidden
-                  />
-                  <h3 className="truncate text-sm font-medium tracking-tight">{industry.title}</h3>
-                </div>
-                <p className="text-xs leading-relaxed text-muted-foreground">{industry.description}</p>
-                </div>
-              </RevealStaggerItem>
-            );
-          })}
-        </RevealStagger>
       </div>
+
+      <RevealStagger revealed={revealed} delay={0.08} className="w-full">
+        <div className="hatch-aligned-frame border-y border-border px-1 md:px-4 py-1">
+          <div className="section-layout">
+            <div className="flex flex-col divide-y divide-border sm:flex-row sm:flex-wrap sm:gap-x-8 sm:divide-y-0 lg:flex-nowrap lg:items-stretch lg:divide-x lg:divide-y-0 lg:gap-x-0">
+              {INDUSTRIES.map((industry) => {
+                const Icon = industry.icon;
+                return (
+                  <RevealStaggerItem
+                    key={industry.title}
+                    className="min-w-0 sm:w-[calc(50%-16px)] lg:flex-1"
+                  >
+                    <div className="px-4 py-4">
+                      <div className="mb-2 flex items-center gap-2">
+                        <Icon
+                          size={14}
+                          className="shrink-0"
+                          style={{ color: "var(--warm-orange)" }}
+                          strokeWidth={1.75}
+                          aria-hidden
+                        />
+                        <h3 className="truncate text-sm font-medium tracking-tight">
+                          {industry.title}
+                        </h3>
+                      </div>
+                      <p className="text-xs leading-relaxed text-muted-foreground">
+                        {industry.description}
+                      </p>
+                    </div>
+                  </RevealStaggerItem>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </RevealStagger>
     </section>
   );
 }

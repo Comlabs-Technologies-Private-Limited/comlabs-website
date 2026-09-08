@@ -23,7 +23,7 @@ export function FigmaProcessSection() {
     <section id="process" className="relative bg-[#141414] py-14 md:py-16">
       <span aria-hidden className="gutter-hatch gutter-hatch-on-dark" />
       <div className="section-layout">
-        <div className="mb-10 max-w-2xl px-3 md:px-4 md:mb-12">
+        <div className="mb-10 max-w-2xl px-1 md:px-4 md:mb-12">
           <p className="mb-4 text-xs font-semibold tracking-widest text-neutral-100/55 uppercase">
             How we work
           </p>
@@ -41,16 +41,20 @@ export function FigmaProcessSection() {
             ]}
           />
         </div>
-
-        <RevealCopy revealed={revealed} delay={0.08} as="div">
-          <ChromaticImageBentoFeatures
-            leftFeatures={leftFeatures}
-            rightFeatures={rightFeatures}
-            imageSrc="/process/green-dither.webp"
-            imageAlt="Dithered green mountain valley with a river and village"
-          />
-        </RevealCopy>
       </div>
+
+      <RevealCopy revealed={revealed} delay={0.08} as="div" className="w-full">
+        <div className="hatch-aligned-frame border-y border-white/10 px-1 md:px-4 py-1">
+          <div className="section-layout">
+            <ChromaticImageBentoFeatures
+              leftFeatures={leftFeatures}
+              rightFeatures={rightFeatures}
+              imageSrc="/process/green-dither.webp"
+              imageAlt="Dithered green mountain valley with a river and village"
+            />
+          </div>
+        </div>
+      </RevealCopy>
     </section>
   );
 }

@@ -52,7 +52,7 @@ export function FigmaTestimonialsSection() {
     <section id="testimonials" className="relative border-y border-border bg-card py-14 md:py-16">
       <span aria-hidden className="gutter-hatch" />
       <div className="section-layout">
-        <div className="mb-12 max-w-2xl px-3 md:px-4 md:mb-16">
+        <div className="mb-12 max-w-2xl px-1 md:px-4 md:mb-16">
           <p className="mb-4 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
             Testimonials
           </p>
@@ -76,10 +76,11 @@ export function FigmaTestimonialsSection() {
             systems.
           </RevealCopy>
         </div>
+      </div>
 
-        <RevealStagger revealed={revealed} delay={AFTER_TITLE_BODY_DELAY}>
-          {/* Outer hairline, perimeter padding, then the inner frame around the quotes. */}
-          <div className="border-y border-border p-2 md:p-3">
+      <RevealStagger revealed={revealed} delay={AFTER_TITLE_BODY_DELAY} className="w-full">
+        <div className="hatch-aligned-frame border-y border-border px-1 md:px-4 py-1">
+          <div className="section-layout">
             <div className="flat-frame grid grid-cols-1 lg:grid-cols-3">
               {TESTIMONIALS.map((testimonial, index) => (
                 <RevealStaggerItem
@@ -129,8 +130,8 @@ export function FigmaTestimonialsSection() {
               ))}
             </div>
           </div>
-        </RevealStagger>
-      </div>
+        </div>
+      </RevealStagger>
     </section>
   );
 }

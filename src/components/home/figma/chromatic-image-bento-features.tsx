@@ -50,7 +50,7 @@ export function ChromaticImageBentoFeatures({
   backgroundColor = "#9cae65",
 }: ChromaticImageBentoFeaturesProps) {
   return (
-    <div className="overflow-hidden rounded-2xl bg-[#141414] text-neutral-100 outline-1 -outline-offset-1 outline-white/10">
+    <div className="overflow-hidden bg-[#141414] text-neutral-100">
       <div className="grid lg:grid-cols-[3fr_4fr_3fr]">
         <div className="order-2 border-white/10 lg:order-1 lg:border-r">
           <FeatureColumn features={leftFeatures} />

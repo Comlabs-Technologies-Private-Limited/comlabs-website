@@ -36,7 +36,7 @@ export function FigmaWorkSection({ projects }: FigmaWorkSectionProps) {
     <section id="work" className="relative border-y border-border bg-card py-14 md:py-16">
       <span aria-hidden className="gutter-hatch" />
       <div className="section-layout">
-        <div className="mb-12 flex items-end justify-between gap-6 px-3 md:px-4">
+        <div className="mb-12 flex items-end justify-between gap-6 px-1 md:px-4">
           <div className="max-w-2xl">
             <p className="mb-4 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
               Case Studies
@@ -77,15 +77,11 @@ export function FigmaWorkSection({ projects }: FigmaWorkSectionProps) {
         </div>
       </div>
 
-      <RevealStagger
-        revealed={revealed}
-        delay={AFTER_TITLE_BODY_DELAY}
-        className="section-layout"
-      >
-        {/* Outer hairline, perimeter padding, then the inner frame around the cards. */}
-        <div className="border-y border-border p-2 md:p-3">
-          <div className="flat-frame grid grid-cols-1 lg:grid-cols-3">
-            {projects.map((project, index) => (
+      <RevealStagger revealed={revealed} delay={AFTER_TITLE_BODY_DELAY} className="w-full">
+        <div className="hatch-aligned-frame border-y border-border px-1 md:px-4 py-1">
+          <div className="section-layout">
+            <div className="flat-frame grid grid-cols-1 lg:grid-cols-3">
+              {projects.map((project, index) => (
               <motion.a
                 key={project.href}
                 href={canonicalPath(project.href)}
@@ -126,6 +122,7 @@ export function FigmaWorkSection({ projects }: FigmaWorkSectionProps) {
                 </div>
               </motion.a>
             ))}
+            </div>
           </div>
         </div>
       </RevealStagger>
