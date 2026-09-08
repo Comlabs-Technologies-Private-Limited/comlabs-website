@@ -64,8 +64,7 @@ export function FigmaTestimonialsSection() {
             style={{ letterSpacing: "-0.03em" }}
             segments={[
               { text: "What it feels like to work with" },
-              { text: "Comlabs", style: { color: "var(--warm-orange)" } },
-              { text: "." },
+              { text: "Comlabs", style: { color: "var(--warm-orange)" } }
             ]}
           />
           <RevealCopy
