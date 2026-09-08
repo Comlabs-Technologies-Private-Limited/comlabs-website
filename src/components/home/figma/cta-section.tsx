@@ -11,7 +11,7 @@ export function FigmaCtaSection() {
   return (
     <div className="relative pb-0">
       <span aria-hidden className="gutter-hatch" />
-      <div className="hatch-aligned-frame border-y border-border px-1 md:px-4 py-1">
+      <div className="hatch-aligned-frame border-y border-border px-1 py-1 md:px-0 md:py-0">
         <section
           id="contact"
           className="section-layout overflow-hidden"

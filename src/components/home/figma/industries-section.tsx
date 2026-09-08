@@ -72,7 +72,7 @@ export function FigmaIndustriesSection() {
       </div>
 
       <RevealStagger revealed={revealed} delay={0.08} className="w-full">
-        <div className="hatch-aligned-frame border-y border-border px-1 md:px-4 py-1">
+        <div className="hatch-aligned-frame border-y border-border px-1 py-1 md:px-4 md:py-0">
           <div className="section-layout">
             <div className="flex flex-col divide-y divide-border sm:flex-row sm:flex-wrap sm:gap-x-8 sm:divide-y-0 lg:flex-nowrap lg:items-stretch lg:divide-x lg:divide-y-0 lg:gap-x-0">
               {INDUSTRIES.map((industry) => {

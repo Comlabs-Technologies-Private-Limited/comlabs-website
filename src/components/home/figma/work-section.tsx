@@ -78,8 +78,8 @@ export function FigmaWorkSection({ projects }: FigmaWorkSectionProps) {
       </div>
 
       <RevealStagger revealed={revealed} delay={AFTER_TITLE_BODY_DELAY} className="w-full">
-        <div className="hatch-aligned-frame border-y border-border px-1 md:px-4 py-1">
-          <div className="section-layout">
+        <div className="hatch-aligned-frame border-y border-border px-1 py-1 md:px-0 md:py-0">
+          <div className="section-layout md:p-3">
             <div className="flat-frame grid grid-cols-1 lg:grid-cols-3">
               {projects.map((project, index) => (
               <motion.a

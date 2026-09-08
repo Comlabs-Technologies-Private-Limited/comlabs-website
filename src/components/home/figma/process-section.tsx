@@ -44,8 +44,8 @@ export function FigmaProcessSection() {
       </div>
 
       <RevealCopy revealed={revealed} delay={0.08} as="div" className="w-full">
-        <div className="hatch-aligned-frame border-y border-white/10 px-1 md:px-4 py-1">
-          <div className="section-layout">
+        <div className="hatch-aligned-frame border-y border-white/10 px-1 py-1 md:px-0 md:py-0">
+          <div className="section-layout md:p-3">
             <ChromaticImageBentoFeatures
               leftFeatures={leftFeatures}
               rightFeatures={rightFeatures}

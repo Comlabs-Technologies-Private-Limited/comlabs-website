@@ -145,8 +145,8 @@ export function FigmaServicesSection() {
 
       <RevealStagger revealed={revealed} delay={AFTER_TITLE_BODY_DELAY} className="w-full">
         {/* Top/bottom rules span hatch-to-hatch; card grid sits inset inside. */}
-        <div className="hatch-aligned-frame border-y border-border px-1 md:px-4 py-1">
-          <div className="section-layout">
+        <div className="hatch-aligned-frame border-y border-border px-1 py-1 md:px-0 md:py-0">
+          <div className="section-layout md:p-3">
             <div className="flat-frame grid grid-cols-1 lg:grid-cols-2">
               {services.map((service, index) => (
                 <ServiceCell key={service.id} service={service} index={index} />
