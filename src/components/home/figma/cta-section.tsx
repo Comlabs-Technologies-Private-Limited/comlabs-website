@@ -9,11 +9,11 @@ import { canonicalPath } from "@/lib/site";
 export function FigmaCtaSection() {
   const { revealed, onTitleComplete } = useAfterTitleReveal();
   return (
-    <div className="relative pb-16">
+    <div className="relative pb-0">
       <span aria-hidden className="gutter-hatch" />
       <section
         id="contact"
-        className="section-layout overflow-hidden rounded-3xl"
+        className="section-layout overflow-hidden"
         style={{ background: "var(--foreground)" }}
       >
         <div className="mx-auto max-w-2xl px-10 py-24 text-center">
