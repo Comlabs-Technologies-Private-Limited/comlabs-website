@@ -148,8 +148,8 @@ export function FigmaServicesSection() {
         className="section-layout"
       >
         {/* Outer hairline, perimeter padding, then the inner frame around the cards. */}
-        <div className="flat-frame p-2 md:p-3">
-          <div className="flat-frame grid grid-cols-1 lg:grid-cols-2">
+        <div className="flat-frame hairline-perimeter p-2 md:p-3">
+          <div className="flat-frame grid grid-cols-1 bg-background lg:grid-cols-2">
             {services.map((service, index) => (
               <ServiceCell key={service.id} service={service} index={index} />
             ))}

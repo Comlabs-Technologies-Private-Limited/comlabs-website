@@ -19,6 +19,7 @@
   --destructive: #d4183d;
   --destructive-foreground: #ffffff;
   --border: rgba(28, 25, 23, 0.1);
+  --hairline-hatch: rgba(28, 25, 23, 0.09);
   --input: transparent;
   --input-background: #eeeee9;
   --switch-background: #c8c8c0;
@@ -77,6 +78,7 @@
   --destructive: oklch(0.396 0.141 25.723);
   --destructive-foreground: oklch(0.637 0.237 25.331);
   --border: rgba(244, 242, 237, 0.12);
+  --hairline-hatch: rgba(244, 242, 237, 0.10);
   --input: rgba(244, 242, 237, 0.12);
   --input-background: #1f1f1f;
   --ring: rgba(244, 242, 237, 0.4);
@@ -394,4 +396,19 @@
   border: 1px solid var(--border);
   border-radius: 0;
   background: transparent;
+}
+
+/*
+ * Perimeter band between the outer and inner hairline frames. The fine
+ * diagonal hatch shows only in the padding — the inner frame paints its own
+ * opaque surface over the rest.
+ */
+.hairline-perimeter {
+  background-image: repeating-linear-gradient(
+    45deg,
+    var(--hairline-hatch) 0,
+    var(--hairline-hatch) 1px,
+    transparent 1px,
+    transparent 6px
+  );
 }

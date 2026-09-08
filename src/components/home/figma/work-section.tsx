@@ -82,8 +82,8 @@ export function FigmaWorkSection({ projects }: FigmaWorkSectionProps) {
         className="section-layout"
       >
         {/* Outer hairline, perimeter padding, then the inner frame around the cards. */}
-        <div className="flat-frame p-2 md:p-3">
-          <div className="flat-frame grid grid-cols-1 lg:grid-cols-3">
+        <div className="flat-frame hairline-perimeter p-2 md:p-3">
+          <div className="flat-frame grid grid-cols-1 bg-card lg:grid-cols-3">
             {projects.map((project, index) => (
               <motion.a
                 key={project.href}
