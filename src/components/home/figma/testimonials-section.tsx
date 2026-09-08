@@ -3,9 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import { BlurReveal, BLUR_REVEAL_NORMAL_SPEED } from "@/components/blur-reveal";
 import { TESTIMONIALS } from "@/components/home/figma/home-data";
-import { MarketingFadeIn } from "@/components/marketing/marketing-motion";
-import { MarketingOrangeHighlight } from "@/components/marketing/marketing-section-header";
 import { referringAnchorProps } from "@/lib/seo/prepare-html-links";
 
 function FounderAvatar({
@@ -43,22 +42,27 @@ export function FigmaTestimonialsSection() {
   return (
     <section id="testimonials" className="border-y border-border bg-card px-6 py-24 md:py-28">
       <div className="mx-auto max-w-6xl">
-        <MarketingFadeIn className="mb-12 max-w-2xl md:mb-16">
+        <div className="mb-12 max-w-2xl md:mb-16">
           <p className="mb-4 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
             Testimonials
           </p>
-          <h2
+          <BlurReveal
+            as="h2"
+            inView
+            speedReveal={BLUR_REVEAL_NORMAL_SPEED}
             className="text-2xl font-bold tracking-tight md:text-4xl"
             style={{ letterSpacing: "-0.03em" }}
-          >
-            What it feels like to work with{" "}
-            <MarketingOrangeHighlight>Comlabs</MarketingOrangeHighlight>.
-          </h2>
+            segments={[
+              { text: "What it feels like to work with" },
+              { text: "Comlabs", style: { color: "var(--warm-orange)" } },
+              { text: "." },
+            ]}
+          />
           <p className="mt-4 text-sm leading-relaxed text-muted-foreground md:text-base">
             Direct feedback from teams we have helped build, improve and operate critical digital
             systems.
           </p>
-        </MarketingFadeIn>
+        </div>
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {TESTIMONIALS.map((testimonial) => (
