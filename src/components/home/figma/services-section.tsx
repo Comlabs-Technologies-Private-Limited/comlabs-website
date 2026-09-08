@@ -1,5 +1,8 @@
 "use client";
 
+import { ArrowRight } from "lucide-react";
+import Link from "next/link";
+
 import { BlurReveal, BLUR_REVEAL_NORMAL_SPEED } from "@/components/blur-reveal";
 import {
   AFTER_TITLE_BODY_DELAY,
@@ -8,11 +11,66 @@ import {
   RevealStaggerItem,
   useAfterTitleReveal,
 } from "@/components/home/figma/after-title-reveal";
-import { AgenticFeature, ServicesSuite } from "@/components/home/figma/services-suite";
-import { EDITORIAL_SHELL_CLASS } from "@/lib/home-editorial-images";
+import {
+  ServiceIllustrationFrame,
+  serviceIllustrations,
+} from "@/components/services/illustrations";
+import { HOME_SERVICES, type HomeService, type HomeServiceId } from "@/lib/home-services";
+import { canonicalPath } from "@/lib/site";
+import { cn } from "@/lib/utils";
+
+/** Equal columns in the flat services frame. Agentic AI sits in its own frame below. */
+const COLUMN_SERVICE_IDS: readonly HomeServiceId[] = [
+  "application-support",
+  "cloud-infrastructure",
+  "custom-software",
+];
+
+function serviceById(id: HomeServiceId): HomeService | undefined {
+  return HOME_SERVICES.find((service) => service.id === id);
+}
+
+/** Existing illustration, stripped of card chrome so it sits flush inside the grid cell. */
+function ServiceVisual({ service, className }: { service: HomeService; className?: string }) {
+  const illustration = serviceIllustrations[service.id];
+  if (!illustration) return null;
+  const { Component, label } = illustration;
+
+  return (
+    <ServiceIllustrationFrame
+      label={label}
+      chrome={false}
+      className={cn("w-full rounded-none border-0 md:rounded-none", className)}
+      stageClassName="p-0"
+    >
+      <Component />
+    </ServiceIllustrationFrame>
+  );
+}
+
+function ServiceLink({ service }: { service: HomeService }) {
+  return (
+    <Link
+      href={canonicalPath(service.href)}
+      className="group mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--warm-orange)] transition-opacity hover:opacity-80"
+    >
+      {service.linkLabel}
+      <ArrowRight
+        size={15}
+        className="transition-transform duration-200 group-hover:translate-x-0.5"
+        aria-hidden
+      />
+    </Link>
+  );
+}
 
 export function FigmaServicesSection() {
   const { revealed, onTitleComplete } = useAfterTitleReveal();
+
+  const columns = COLUMN_SERVICE_IDS.map(serviceById).filter(
+    (service): service is HomeService => Boolean(service),
+  );
+  const agentic = serviceById("agentic-infrastructure");
 
   return (
     <section id="services" className="py-24 md:py-32">
@@ -48,14 +106,66 @@ export function FigmaServicesSection() {
       <RevealStagger
         revealed={revealed}
         delay={AFTER_TITLE_BODY_DELAY}
-        className={`${EDITORIAL_SHELL_CLASS} flex flex-col gap-6`}
+        className="section-layout"
       >
         <RevealStaggerItem>
-          <ServicesSuite />
+          <div className="flat-frame grid grid-cols-1 lg:grid-cols-3">
+            {columns.map((service, index) => (
+              <div
+                key={service.id}
+                className={cn(
+                  "flex min-w-0 flex-col",
+                  index > 0 && "border-t border-border",
+                  "lg:border-t-0",
+                  index % 3 !== 0 && "lg:border-l lg:border-border",
+                )}
+              >
+                <div className="flex flex-1 flex-col p-6 lg:p-8">
+                  <h3
+                    className="text-lg leading-[1.2] font-bold tracking-tight md:text-xl"
+                    style={{ letterSpacing: "-0.03em" }}
+                  >
+                    {service.title}
+                  </h3>
+                  <p className="mt-3 text-[15px] leading-relaxed text-muted-foreground md:hidden">
+                    {service.mobileDescription}
+                  </p>
+                  <p className="mt-3 hidden text-sm leading-relaxed text-muted-foreground md:block">
+                    {service.description}
+                  </p>
+                  <ServiceLink service={service} />
+                </div>
+                <ServiceVisual service={service} className="aspect-[4/3] md:aspect-[4/3]" />
+              </div>
+            ))}
+          </div>
         </RevealStaggerItem>
-        <RevealStaggerItem>
-          <AgenticFeature />
-        </RevealStaggerItem>
+
+        {agentic ? (
+          <RevealStaggerItem className="mt-6">
+            <div className="flat-frame grid grid-cols-1 lg:grid-cols-2">
+              <ServiceVisual
+                service={agentic}
+                className="aspect-[4/3] md:aspect-[4/3] lg:h-full lg:aspect-auto lg:min-h-[440px]"
+              />
+              <div className="flex flex-col justify-center border-t border-border p-6 lg:border-t-0 lg:border-l lg:border-border lg:p-8">
+                <h3
+                  className="text-lg leading-[1.2] font-bold tracking-tight md:text-xl"
+                  style={{ letterSpacing: "-0.03em" }}
+                >
+                  {agentic.title}
+                </h3>
+                <p className="mt-3 text-[15px] leading-relaxed text-muted-foreground md:hidden">
+                  {agentic.mobileDescription}
+                </p>
+                <p className="mt-3 hidden max-w-[52ch] text-sm leading-relaxed text-muted-foreground md:block">
+                  {agentic.description}
+                </p>
+                <ServiceLink service={agentic} />
+              </div>
+            </div>
+          </RevealStaggerItem>
+        ) : null}
       </RevealStagger>
     </section>
   );
