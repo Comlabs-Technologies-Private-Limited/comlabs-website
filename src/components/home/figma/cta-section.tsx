@@ -9,7 +9,7 @@ import { canonicalPath } from "@/lib/site";
 export function FigmaCtaSection() {
   const { revealed, onTitleComplete } = useAfterTitleReveal();
   return (
-    <div className="relative pb-16">
+    <div className="relative pb-0">
       <span aria-hidden className="gutter-hatch" />
       <section
         id="contact"
