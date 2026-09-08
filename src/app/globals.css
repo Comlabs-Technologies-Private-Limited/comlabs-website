@@ -20,7 +20,7 @@
   --destructive-foreground: #ffffff;
   --border: rgba(28, 25, 23, 0.1);
   --hairline-hatch: rgba(28, 25, 23, 0.09);
-  --page-gutter: calc((100% - min(100% - 64px, 1440px)) / 2);
+  --page-hatch-width: calc((100% - min(100% - 64px, 1440px)) / 2);
   --input: transparent;
   --input-background: #eeeee9;
   --switch-background: #c8c8c0;
@@ -392,8 +392,9 @@
     width: calc(100% - 40px);
   }
 
+  /* Half-width band on mobile. */
   :root {
-    --page-gutter: 20px;
+    --page-hatch-width: 10px;
   }
 }
 
@@ -406,7 +407,8 @@
 /*
  * Hatched page gutters. Each post-hero section paints an overlay whose two
  * background layers sit in the outer margins either side of .section-layout,
- * so the texture runs unbroken from the hero down to the footer.
+ * so the texture runs unbroken from the hero down to the footer. The band
+ * tracks the gutter on desktop and halves on mobile.
  */
 .gutter-hatch {
   position: absolute;
@@ -431,8 +433,8 @@
   background-repeat: no-repeat;
   /* 1px of overshoot sits under the rules below, so no sliver can appear. */
   background-size:
-    calc(var(--page-gutter) + 1px) 100%,
-    calc(var(--page-gutter) + 1px) 100%;
+    calc(var(--page-hatch-width) + 1px) 100%,
+    calc(var(--page-hatch-width) + 1px) 100%;
 }
 
 /*
@@ -450,11 +452,11 @@
 }
 
 .gutter-hatch::before {
-  left: var(--page-gutter);
+  left: var(--page-hatch-width);
 }
 
 .gutter-hatch::after {
-  right: var(--page-gutter);
+  right: var(--page-hatch-width);
 }
 
 /* Light-on-dark hatch and rule for the dark bands. */
