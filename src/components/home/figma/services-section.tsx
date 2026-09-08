@@ -8,14 +8,15 @@ import {
   RevealStaggerItem,
   useAfterTitleReveal,
 } from "@/components/home/figma/after-title-reveal";
-import { HomeServiceCard, homeServiceItems } from "@/components/home/services-section";
+import { AgenticFeature, ServicesSuite } from "@/components/home/figma/services-suite";
+import { EDITORIAL_SHELL_CLASS } from "@/lib/home-editorial-images";
 
 export function FigmaServicesSection() {
   const { revealed, onTitleComplete } = useAfterTitleReveal();
 
   return (
-    <section id="services" className="px-6 py-24 md:py-32">
-      <div className="mx-auto max-w-6xl">
+    <section id="services" className="py-24 md:py-32">
+      <div className="mx-auto max-w-6xl px-6">
         <div className="mb-12 md:mb-16">
           <p className="mb-4 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
             Services
@@ -42,22 +43,20 @@ export function FigmaServicesSection() {
             matter.
           </RevealCopy>
         </div>
-
-        <RevealStagger
-          revealed={revealed}
-          delay={AFTER_TITLE_BODY_DELAY}
-          className="grid grid-cols-1 gap-6 md:grid-cols-2"
-        >
-          {homeServiceItems.map((service, index) => (
-            <RevealStaggerItem
-              key={service.id}
-              className={service.featured ? "h-full md:col-span-2" : "h-full"}
-            >
-              <HomeServiceCard service={service} index={index} />
-            </RevealStaggerItem>
-          ))}
-        </RevealStagger>
       </div>
+
+      <RevealStagger
+        revealed={revealed}
+        delay={AFTER_TITLE_BODY_DELAY}
+        className={`${EDITORIAL_SHELL_CLASS} flex flex-col gap-6`}
+      >
+        <RevealStaggerItem>
+          <ServicesSuite />
+        </RevealStaggerItem>
+        <RevealStaggerItem>
+          <AgenticFeature />
+        </RevealStaggerItem>
+      </RevealStagger>
     </section>
   );
 }

@@ -11,6 +11,11 @@ import {
   afterTitleItemVariants,
   useAfterTitleReveal,
 } from "@/components/home/figma/after-title-reveal";
+import {
+  EDITORIAL_SHELL_CLASS,
+  editorialImageSrc,
+  editorialImages,
+} from "@/lib/home-editorial-images";
 import { canonicalPath } from "@/lib/site";
 import { cn } from "@/lib/utils";
 import { mediaUrl } from "@/lib/cloudinary";
@@ -29,11 +34,32 @@ type FigmaWorkSectionProps = {
   projects: WorkProject[];
 };
 
+const HAIRLINE = "var(--border)";
+
+/**
+ * Editorial visuals for studies that ship without a hero image, in order:
+ * `productScenes` first, `motion` second — each used at most once.
+ */
+const EDITORIAL_FALLBACKS = [editorialImages.productScenes, editorialImages.motion] as const;
+
+function resolveVisuals(projects: WorkProject[]): string[] {
+  let fallbackIndex = 0;
+  return projects.map((project) => {
+    if (project.image) return mediaUrl(project.image);
+    const fallback = EDITORIAL_FALLBACKS[fallbackIndex];
+    fallbackIndex += 1;
+    return fallback ? editorialImageSrc(fallback, 1600) : "";
+  });
+}
+
 export function FigmaWorkSection({ projects }: FigmaWorkSectionProps) {
   const { revealed, onTitleComplete } = useAfterTitleReveal();
+  const visuals = resolveVisuals(projects);
+  const lastSpansTablet = projects.length % 2 === 1;
+
   return (
-    <section id="work" className="border-y border-border bg-card px-6 py-24">
-      <div className="mx-auto max-w-6xl">
+    <section id="work" className="border-y border-border bg-card py-24">
+      <div className="mx-auto max-w-6xl px-6">
         <div className="mb-12 flex items-end justify-between gap-6">
           <div className="max-w-2xl">
             <p className="mb-4 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
@@ -73,14 +99,17 @@ export function FigmaWorkSection({ projects }: FigmaWorkSectionProps) {
             </a>
           </RevealCopy>
         </div>
+      </div>
 
-        <RevealStagger
-          revealed={revealed}
-          delay={AFTER_TITLE_BODY_DELAY}
-          className="grid grid-cols-1 gap-6 md:grid-cols-2"
+      <RevealStagger revealed={revealed} delay={AFTER_TITLE_BODY_DELAY} className={EDITORIAL_SHELL_CLASS}>
+        <div
+          className="grid grid-cols-1 gap-px overflow-hidden border md:grid-cols-2 lg:grid-cols-3"
+          style={{ borderColor: HAIRLINE, background: HAIRLINE, borderRadius: 0 }}
         >
-          {projects.map((project) => {
+          {projects.map((project, index) => {
             const featured = Boolean(project.featured);
+            const isLast = index === projects.length - 1;
+            const visual = visuals[index];
 
             return (
               <motion.a
@@ -88,58 +117,49 @@ export function FigmaWorkSection({ projects }: FigmaWorkSectionProps) {
                 href={canonicalPath(project.href)}
                 variants={afterTitleItemVariants}
                 className={cn(
-                  "group block overflow-hidden rounded-3xl border border-border bg-background transition-colors hover:border-foreground/20",
-                  featured && "md:col-span-2 md:grid md:grid-cols-2 md:items-stretch",
+                  "group flex min-w-0 flex-col bg-background",
+                  lastSpansTablet && isLast && "md:col-span-2 lg:col-span-1",
                 )}
+                style={{ borderRadius: 0 }}
               >
-                <div
-                  className={cn(
-                    "relative overflow-hidden bg-secondary",
-                    featured ? "aspect-[16/10] md:aspect-auto md:min-h-[320px]" : "aspect-video",
-                  )}
-                >
-                  <img
-                    src={mediaUrl(project.image)}
-                    alt={`${project.title} case study`}
-                    className="absolute inset-0 h-full w-full max-w-none object-cover object-top transition-transform duration-500 group-hover:scale-[1.02]"
-                  />
-                  {featured ? (
-                    <span
-                      className="absolute top-4 left-4 rounded-full px-2.5 py-1 text-[10px] font-medium tracking-tight"
-                      style={{
-                        background: "var(--warm-orange-light)",
-                        color: "var(--warm-orange)",
-                      }}
-                    >
-                      Featured
-                    </span>
+                <div className="relative w-full overflow-hidden bg-secondary" style={{ aspectRatio: "16 / 10" }}>
+                  {visual ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={visual}
+                      alt={`${project.title} case study`}
+                      loading="lazy"
+                      decoding="async"
+                      className="absolute inset-0 h-full w-full max-w-none object-cover object-top"
+                    />
                   ) : null}
                 </div>
-                <div className={cn("flex flex-col justify-center p-6", featured && "md:p-10")}>
-                  <div className="mb-1.5 flex items-start justify-between gap-3">
+                <div
+                  className="flex flex-1 flex-col p-6 lg:p-7"
+                  style={{ borderTop: `1px solid ${HAIRLINE}` }}
+                >
+                  <p className="mb-2 flex items-center gap-3 text-xs text-muted-foreground">
+                    <span>{project.category}</span>
+                    {featured ? (
+                      <span className="font-medium tracking-tight text-[var(--warm-orange)]">
+                        Featured
+                      </span>
+                    ) : null}
+                  </p>
+                  <div className="mb-2 flex items-start justify-between gap-3">
                     <h3
-                      className={cn(
-                        "font-semibold tracking-tight",
-                        featured ? "text-base md:text-lg" : "text-sm",
-                      )}
+                      className="text-base font-semibold tracking-tight md:text-lg"
+                      style={{ letterSpacing: "-0.02em" }}
                     >
                       {project.title}
                     </h3>
                     <ExternalLink
                       size={13}
-                      className="mt-0.5 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100"
+                      className="mt-1 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100"
                     />
                   </div>
-                  <p className="mb-3 text-xs text-muted-foreground">{project.category}</p>
-                  <p
-                    className={cn(
-                      "leading-relaxed text-muted-foreground",
-                      featured ? "text-sm md:text-base" : "text-sm",
-                    )}
-                  >
-                    {project.desc}
-                  </p>
-                  <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--warm-orange)]">
+                  <p className="text-sm leading-relaxed text-muted-foreground">{project.desc}</p>
+                  <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--warm-orange)]">
                     Read case study <ArrowRight size={14} />
                   </span>
                   {project.liveSiteUrl ? (
@@ -151,8 +171,8 @@ export function FigmaWorkSection({ projects }: FigmaWorkSectionProps) {
               </motion.a>
             );
           })}
-        </RevealStagger>
-      </div>
+        </div>
+      </RevealStagger>
     </section>
   );
 }
