@@ -78,19 +78,21 @@ void main() {
   // Gap between pixels so the grid reads as a readout, not a texture.
   float gap = step(0.12, inner.x) * step(0.12, inner.y);
 
-  float t = uTime * 0.18;
+  float t = uTime * 0.06;
   float n = noise(cell * 0.28 + vec2(t, t * 0.6));
-  float wave = sin(cell.x * 0.35 - uTime * 0.9 + cell.y * 0.12) * 0.12;
+  float wave = sin(cell.x * 0.35 - uTime * 0.28 + cell.y * 0.12) * 0.08;
 
   // Cursor proximity lights nearby cells.
   vec2 toMouse = (cell + 0.5) / vec2(cols, rows) - uMouse;
   toMouse.x *= aspect;
   float glow = smoothstep(0.32, 0.0, length(toMouse)) * uHover;
 
-  float on = step(0.56 + wave - glow * 0.35, n);
-  float bright = step(0.84 - glow * 0.2, n);
+  float on = step(0.64 + wave - glow * 0.3, n);
+  float bright = step(0.88 - glow * 0.2, n);
 
-  vec3 color = mix(uBg, mix(uFg, uAccent, bright), on * gap);
+  // Cells sit at a fraction of full ink so the field stays quiet.
+  vec3 cellColor = mix(uBg, mix(uFg, uAccent, bright), 0.42);
+  vec3 color = mix(uBg, cellColor, on * gap);
   gl_FragColor = vec4(color, 1.0);
 }
 `,
@@ -98,7 +100,7 @@ void main() {
 void main() {
   float aspect = uResolution.x / max(uResolution.y, 1.0);
   vec2 p = vec2(vUv.x * aspect, vUv.y);
-  float t = uTime * 0.05;
+  float t = uTime * 0.018;
 
   float a = noise(p * 1.6 + vec2(t, t * 0.5));
   float b = noise(p * 2.8 - vec2(t * 0.7, t * 0.3));
@@ -110,10 +112,10 @@ void main() {
   float accentMask = smoothstep(0.48, 0.95, a) + lift;
   float inkMask = smoothstep(0.62, 1.0, b) * 0.35;
 
-  vec3 color = mix(uBg, uAccent, clamp(accentMask, 0.0, 1.0) * 0.55);
-  color = mix(color, uFg, inkMask * 0.18);
+  vec3 color = mix(uBg, uAccent, clamp(accentMask, 0.0, 1.0) * 0.3);
+  color = mix(color, uFg, inkMask * 0.1);
 
-  float grain = (hash(gl_FragCoord.xy + floor(uTime * 12.0)) - 0.5) * 0.03;
+  float grain = (hash(gl_FragCoord.xy + floor(uTime * 6.0)) - 0.5) * 0.018;
   gl_FragColor = vec4(color + grain, 1.0);
 }
 `,
@@ -123,19 +125,19 @@ void main() {
   float rows = 26.0;
   float line = step(0.94, fract(vUv.y * rows));
 
-  float scan = smoothstep(0.08, 0.0, abs(fract(uTime * 0.09 + uSeed) - vUv.y));
+  float scan = smoothstep(0.1, 0.0, abs(fract(uTime * 0.03 + uSeed) - vUv.y));
 
   vec2 dots = fract(vec2(vUv.x * rows * aspect, vUv.y * rows));
   float dot = smoothstep(0.16, 0.08, length(dots - 0.5));
-  float dotMask = step(0.55, noise(floor(vec2(vUv.x * rows * aspect, vUv.y * rows)) * 0.6 + uTime * 0.05));
+  float dotMask = step(0.62, noise(floor(vec2(vUv.x * rows * aspect, vUv.y * rows)) * 0.6 + uTime * 0.015));
 
   vec2 toMouse = vUv - uMouse;
   toMouse.x *= aspect;
   float glow = smoothstep(0.35, 0.0, length(toMouse)) * uHover;
 
-  vec3 color = mix(uBg, uFg, line * 0.22);
-  color = mix(color, uFg, dot * dotMask * 0.6);
-  color = mix(color, uAccent, (scan * 0.55 + glow * dot * dotMask));
+  vec3 color = mix(uBg, uFg, line * 0.14);
+  color = mix(color, uFg, dot * dotMask * 0.38);
+  color = mix(color, uAccent, (scan * 0.32 + glow * dot * dotMask * 0.7));
   gl_FragColor = vec4(color, 1.0);
 }
 `,
