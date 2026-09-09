@@ -71,7 +71,7 @@ export function FigmaHeroSection() {
         transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
       />
 
-      <div className="relative z-10 mx-auto max-w-4xl text-left md:text-center">
+      <div className="relative z-10 mx-auto max-w-4xl text-center">
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
@@ -107,7 +107,7 @@ export function FigmaHeroSection() {
 
         <RevealCopy
           revealed={revealed}
-          className="mb-10 max-w-2xl text-md leading-relaxed text-muted-foreground md:mx-auto md:text-lg"
+          className="mx-auto mb-10 max-w-2xl text-md leading-relaxed text-muted-foreground md:text-lg"
         >
           Comlabs is an engineering and technology operations company supporting production
           applications, AI systems, cloud infrastructure and digital products from build through
@@ -118,7 +118,7 @@ export function FigmaHeroSection() {
           revealed={revealed}
           delay={0.28}
           as="div"
-          className="flex flex-wrap items-center justify-start gap-3 md:justify-center"
+          className="flex flex-wrap items-center justify-center gap-3"
         >
           <a
             href={canonicalPath("/contact")}
