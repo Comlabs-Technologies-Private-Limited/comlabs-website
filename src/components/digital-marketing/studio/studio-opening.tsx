@@ -1,4 +1,6 @@
+import { StudioGlassCard } from "@/components/digital-marketing/studio/studio-glass-card";
 import { StudioShaderSlot } from "@/components/digital-marketing/studio/studio-shader-slot";
+import { DIGITAL_MARKETING_CAPABILITIES } from "@/lib/digital-marketing";
 import { DIGITAL_STUDIO_OPENING } from "@/lib/digital-marketing-studio";
 
 /** Opening proof split — the two commitments the rest of the page evidences. */
@@ -24,7 +26,15 @@ export function StudioOpening() {
             variant="flow"
             seed={7}
             className="mt-10 hidden aspect-[4/5] max-w-sm lg:block"
-          />
+          >
+            <StudioGlassCard
+              title="One connected system"
+              rows={DIGITAL_MARKETING_CAPABILITIES.map((capability) => ({
+                label: capability.title,
+                meta: capability.index,
+              }))}
+            />
+          </StudioShaderSlot>
         </div>
 
         <div

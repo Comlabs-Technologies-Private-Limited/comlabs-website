@@ -603,6 +603,149 @@ button:focus-visible .studio-slide > span:last-child {
   }
 }
 
+/* --------------------------------------------------------------------------
+   Glass illustration cards, layered over shader slots.
+   -------------------------------------------------------------------------- */
+.studio-glass {
+  --glass-bg: rgba(250, 250, 247, 0.58);
+  --glass-line: rgba(17, 19, 21, 0.14);
+  --glass-ink: var(--studio-ink);
+  --glass-muted: rgba(17, 19, 21, 0.5);
+  --glass-active: rgba(78, 114, 242, 0.12);
+  color: var(--glass-ink);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-line);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    0 18px 40px -22px rgba(9, 11, 13, 0.45);
+  backdrop-filter: blur(18px) saturate(1.2);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+  transition:
+    transform 560ms var(--studio-ease-precise),
+    border-color 420ms var(--studio-ease),
+    box-shadow 560ms var(--studio-ease);
+}
+
+.studio-glass[data-tone="dark"] {
+  --glass-bg: rgba(17, 19, 21, 0.55);
+  --glass-line: rgba(250, 250, 247, 0.16);
+  --glass-ink: var(--studio-white);
+  --glass-muted: rgba(250, 250, 247, 0.5);
+  --glass-active: rgba(78, 114, 242, 0.22);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 18px 40px -22px rgba(0, 0, 0, 0.7);
+}
+
+/* Light sweep that crosses the card when the slot is hovered. */
+.studio-glass::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.35) 50%,
+    transparent 70%
+  );
+  transform: translateX(-120%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.studio-slot:hover .studio-glass {
+  transform: translate(-4px, -4px);
+  border-color: rgba(78, 114, 242, 0.45);
+}
+
+.studio-slot:hover .studio-glass::after {
+  animation: studio-glass-sweep 900ms var(--studio-ease-precise) forwards;
+}
+
+@keyframes studio-glass-sweep {
+  from {
+    transform: translateX(-120%);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+}
+
+.studio-glass__chrome {
+  border-bottom: 1px solid var(--glass-line);
+}
+
+.studio-glass__dot {
+  display: block;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--glass-muted);
+  opacity: 0.55;
+}
+
+.studio-glass__title {
+  color: var(--glass-ink);
+}
+
+.studio-glass__label {
+  color: var(--glass-ink);
+}
+
+.studio-glass__meta,
+.studio-glass__num {
+  color: var(--glass-muted);
+  border-color: var(--glass-line);
+}
+
+.studio-glass__tick {
+  background: var(--glass-muted);
+  transition: background-color 400ms var(--studio-ease);
+}
+
+/* Rows: stagger in with the slot, then an active highlight walks them. */
+.studio-glass__row {
+  position: relative;
+  border: 1px solid transparent;
+  animation:
+    studio-glass-row-in 700ms var(--studio-ease-precise) both,
+    studio-glass-row-active calc(var(--studio-glass-rows) * 2.4s) linear infinite;
+  animation-delay:
+    calc(var(--studio-glass-i) * 90ms + 200ms),
+    calc(var(--studio-glass-i) * 2.4s + 1.2s);
+}
+
+@keyframes studio-glass-row-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* One row's turn in the loop: fill, lift the tick to blue, then hand off. */
+@keyframes studio-glass-row-active {
+  0%,
+  100% {
+    background: transparent;
+    border-color: transparent;
+  }
+  6%,
+  30% {
+    background: var(--glass-active);
+    border-color: rgba(78, 114, 242, 0.35);
+  }
+  38% {
+    background: transparent;
+    border-color: transparent;
+  }
+}
+
 /* Horizontal lab rail — hides the scrollbar but keeps the scroll container. */
 .studio-rail {
   scrollbar-width: none;
@@ -648,6 +791,16 @@ button:focus-visible .studio-slide > span:last-child {
 
   .studio-field {
     display: none;
+  }
+
+  .studio-glass__row {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .studio-slot:hover .studio-glass::after {
+    animation: none;
   }
 }
 

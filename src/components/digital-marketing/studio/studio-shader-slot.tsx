@@ -18,6 +18,8 @@ type Props = {
   tone?: "light" | "dark";
   seed?: number;
   className?: string;
+  /** Layered above the canvas — a glass illustration now, photography later. */
+  children?: React.ReactNode;
 };
 
 export function StudioShaderSlot({

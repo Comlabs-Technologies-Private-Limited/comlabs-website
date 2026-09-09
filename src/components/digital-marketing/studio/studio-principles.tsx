@@ -1,4 +1,6 @@
+import { StudioGlassCard } from "@/components/digital-marketing/studio/studio-glass-card";
 import { StudioShaderSlot } from "@/components/digital-marketing/studio/studio-shader-slot";
+import { DIGITAL_MARKETING_STAGES } from "@/lib/digital-marketing";
 import { DIGITAL_STUDIO_PRINCIPLES } from "@/lib/digital-marketing-studio";
 
 /** “Why Comlabs” — three principles as full-width editorial rows. */
@@ -56,7 +58,15 @@ export function StudioPrinciples() {
                 variant="pixel"
                 seed={index + 1}
                 className="studio-row__visual aspect-[4/3] w-full md:aspect-square"
-              />
+              >
+                <StudioGlassCard
+                  title={principle.label}
+                  rows={DIGITAL_MARKETING_STAGES.map((stage) => ({
+                    label: stage.title,
+                    meta: stage.index,
+                  }))}
+                />
+              </StudioShaderSlot>
             </article>
           ))}
         </div>
