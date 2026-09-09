@@ -605,12 +605,12 @@ button:focus-visible .studio-slide > span:last-child {
 
 /* Shader panels sit back so whatever is layered over them leads. */
 .studio-slot > canvas {
-  opacity: 0.42;
+  opacity: 0.72;
   transition: opacity 600ms var(--studio-ease);
 }
 
 .studio-slot:hover > canvas {
-  opacity: 0.6;
+  opacity: 0.88;
 }
 
 /* --------------------------------------------------------------------------
