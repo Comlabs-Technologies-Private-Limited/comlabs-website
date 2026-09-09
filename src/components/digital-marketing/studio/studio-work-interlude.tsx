@@ -1,3 +1,4 @@
+import { StudioShaderBackdrop } from "@/components/digital-marketing/studio/studio-shader-backdrop";
 import { DIGITAL_MARKETING_WORK } from "@/lib/digital-marketing";
 
 const TICKS = 84;
@@ -11,8 +12,9 @@ export function StudioWorkInterlude() {
   return (
     <section
       aria-labelledby="studio-work-interlude-heading"
-      className="relative overflow-hidden border-b border-[var(--studio-line)]"
+      className="relative isolate overflow-hidden border-b border-[var(--studio-line)]"
     >
+      <StudioShaderBackdrop variant="flow" seed={31} />
       <div className="studio-shell relative flex flex-col items-center py-24 text-center md:py-32">
         <div
           aria-hidden

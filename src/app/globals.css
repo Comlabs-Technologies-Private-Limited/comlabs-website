@@ -756,6 +756,111 @@ button:focus-visible .studio-slide > span:last-child {
   }
 }
 
+/* Section backdrop shader: low opacity, faded at both edges. */
+.studio-backdrop > canvas {
+  opacity: 0.32;
+}
+
+.studio-backdrop::before,
+.studio-backdrop::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  height: 28%;
+  pointer-events: none;
+}
+
+.studio-backdrop::before {
+  top: 0;
+  background: linear-gradient(180deg, var(--studio-paper), transparent);
+}
+
+.studio-backdrop::after {
+  bottom: 0;
+  background: linear-gradient(0deg, var(--studio-paper), transparent);
+}
+
+/* Opening illustrations. */
+.studio-point:hover .studio-diagram__dot,
+.studio-point:focus-within .studio-diagram__dot {
+  border-color: var(--studio-blue);
+}
+
+.studio-diagram__dot {
+  transition:
+    background-color 400ms var(--studio-ease),
+    border-color 400ms var(--studio-ease),
+    transform 400ms var(--studio-ease);
+  animation: studio-node-light 7.2s linear infinite;
+  animation-delay: calc(var(--studio-node) * 1.2s);
+}
+
+/* Each node takes its turn filling blue as the pulse passes it. */
+@keyframes studio-node-light {
+  0%,
+  100% {
+    background: var(--studio-paper);
+    transform: scale(1);
+  }
+  4%,
+  12% {
+    background: var(--studio-blue);
+    border-color: var(--studio-blue);
+    transform: scale(1.25);
+  }
+  18% {
+    background: var(--studio-paper);
+    transform: scale(1);
+  }
+}
+
+.studio-diagram__pulse {
+  background: linear-gradient(90deg, transparent, var(--studio-blue), transparent);
+  animation: studio-pulse-travel 7.2s linear infinite;
+}
+
+@keyframes studio-pulse-travel {
+  from {
+    left: 0.5rem;
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  92% {
+    opacity: 1;
+  }
+  to {
+    left: calc(100% - 3rem);
+    opacity: 0;
+  }
+}
+
+.studio-pair__item {
+  animation: studio-pair-in 600ms var(--studio-ease-precise) both;
+  animation-delay: calc(var(--studio-pair-i) * 110ms + 300ms);
+}
+
+.studio-pair__mark {
+  transition: background-color 400ms var(--studio-ease);
+}
+
+.studio-point:hover .studio-pair__mark,
+.studio-point:focus-within .studio-pair__mark {
+  background: var(--studio-blue);
+}
+
+@keyframes studio-pair-in {
+  from {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 /* Horizontal lab rail — hides the scrollbar but keeps the scroll container. */
 .studio-rail {
   scrollbar-width: none;
@@ -807,6 +912,18 @@ button:focus-visible .studio-slide > span:last-child {
     animation: none;
     opacity: 1;
     transform: none;
+  }
+
+  .studio-diagram__dot,
+  .studio-diagram__pulse,
+  .studio-pair__item {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .studio-diagram__pulse {
+    display: none;
   }
 
   .studio-slot:hover .studio-glass::after {
