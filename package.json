@@ -34,6 +34,7 @@
     "prisma": "^6.19.3",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "shaders": "^3.2.467",
     "simple-icons": "^16.19.0",
     "tailwind-merge": "^3.5.0",
     "zod": "^4.4.3"
