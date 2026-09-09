@@ -465,11 +465,6 @@ button:focus-visible .studio-slide > span:last-child {
   transition: opacity 560ms var(--studio-ease);
 }
 
-.studio-work:hover .studio-work__image,
-.studio-work:focus-within .studio-work__image {
-  transform: scale(1.025);
-}
-
 .studio-work:hover .studio-work__veil,
 .studio-work:focus-within .studio-work__veil {
   opacity: 1;
@@ -861,6 +856,50 @@ button:focus-visible .studio-slide > span:last-child {
   }
 }
 
+/* --------------------------------------------------------------------------
+   Editorial photography. Graded to the palette by default; colour returns on
+   hover, which is the whole reason a grid of these reads as alive.
+   -------------------------------------------------------------------------- */
+.studio-photo img {
+  filter: grayscale(1) contrast(1.06) brightness(0.94);
+  transform: scale(1.01);
+  transition:
+    filter 700ms var(--studio-ease),
+    transform 900ms var(--studio-ease-precise);
+}
+
+.studio-cell:hover .studio-photo img,
+.studio-cell:focus-within .studio-photo img {
+  filter: grayscale(0.1) contrast(1.02) brightness(1);
+  transform: scale(1.05);
+}
+
+/* A blue wash over the grade keeps warm source material inside the palette. */
+.studio-photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(78, 114, 242, 0.14), rgba(9, 11, 13, 0.3));
+  opacity: 1;
+  transition: opacity 700ms var(--studio-ease);
+  pointer-events: none;
+}
+
+.studio-cell:hover .studio-photo::after,
+.studio-cell:focus-within .studio-photo::after {
+  opacity: 0.3;
+}
+
+/* Work-stack images drift against the scroll; set by the motion controller. */
+.studio-work__image {
+  transform: scale(1.06) translateY(var(--studio-parallax, 0px));
+}
+
+.studio-work:hover .studio-work__image,
+.studio-work:focus-within .studio-work__image {
+  transform: scale(1.09) translateY(var(--studio-parallax, 0px));
+}
+
 /* Horizontal lab rail — hides the scrollbar but keeps the scroll container. */
 .studio-rail {
   scrollbar-width: none;
@@ -924,6 +963,11 @@ button:focus-visible .studio-slide > span:last-child {
 
   .studio-diagram__pulse {
     display: none;
+  }
+
+  .studio-photo img,
+  .studio-work__image {
+    transform: none !important;
   }
 
   .studio-slot:hover .studio-glass::after {

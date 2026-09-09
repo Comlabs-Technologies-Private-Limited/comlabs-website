@@ -7,6 +7,8 @@
  * of truth for the service, not a second copy of it.
  */
 
+import type { DmPhotoId } from "@/lib/digital-marketing-media";
+
 /**
  * Hero photograph — “Woman’s profile illuminated by blue and orange lights”.
  * Vladislav Nahorny, Unsplash: https://unsplash.com/photos/v0VrVqkNhb0
@@ -137,3 +139,28 @@ export const DIGITAL_STUDIO_LAB: readonly StudioLabItem[] = [
     note: "Events, funnels and attribution built to answer questions, not to fill a dashboard.",
   },
 ] as const;
+
+/**
+ * Photography assignments from the self-hosted library in
+ * `public/media/digital-marketing/`. Chosen for subject: research walls for
+ * strategy, a camera rig for creative, a billboard for acquisition, and so on.
+ */
+export const DIGITAL_STUDIO_CAPABILITY_PHOTOS: Record<string, DmPhotoId> = {
+  "brand-strategy": "IMG-05",
+  "content-creative": "IMG-11",
+  performance: "IMG-07",
+  search: "IMG-04",
+  social: "IMG-10",
+  analytics: "IMG-12",
+};
+
+export const DIGITAL_STUDIO_LAB_PHOTOS: Record<string, DmPhotoId> = {
+  positioning: "IMG-14",
+  concept: "IMG-06",
+  search: "IMG-08",
+  aeo: "IMG-03",
+  content: "IMG-09",
+  social: "IMG-10",
+  cro: "IMG-13",
+  analytics: "IMG-01",
+};

@@ -145,6 +145,33 @@ export function StudioMotion() {
         );
       }
 
+      // --- Work-image parallax ---------------------------------------------
+      // The photograph drifts against its frame as the panel passes, which is
+      // what stops a sticky stack from feeling like flat slides.
+      for (const frame of gsap.utils.toArray<HTMLElement>(".studio-work__frame")) {
+        const image = frame.querySelector<HTMLElement>(".studio-work__image");
+        if (!image) continue;
+        gsap.to(
+          {},
+          {
+            scrollTrigger: {
+              trigger: frame,
+              start: "top bottom",
+              end: "bottom top",
+              scrub: true,
+              onUpdate: (self) => {
+                // ±22px total travel — enough to read, never enough to expose
+                // an edge inside the 1.06 overscale.
+                image.style.setProperty(
+                  "--studio-parallax",
+                  `${(self.progress - 0.5) * -44}px`,
+                );
+              },
+            },
+          },
+        );
+      }
+
       // --- Magnetic primary buttons (fine pointers only) --------------------
       if (fine) {
         for (const button of gsap.utils.toArray<HTMLElement>(".studio-cta")) {

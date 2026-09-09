@@ -1,5 +1,9 @@
+import { StudioPhoto } from "@/components/digital-marketing/studio/studio-photo";
 import { DIGITAL_MARKETING_CAPABILITIES } from "@/lib/digital-marketing";
-import { DIGITAL_STUDIO_SECTIONS } from "@/lib/digital-marketing-studio";
+import {
+  DIGITAL_STUDIO_CAPABILITY_PHOTOS,
+  DIGITAL_STUDIO_SECTIONS,
+} from "@/lib/digital-marketing-studio";
 
 /** Dark capabilities environment — the six disciplines the studio runs. */
 export function StudioCapabilities() {
@@ -44,44 +48,53 @@ export function StudioCapabilities() {
             <article
               key={capability.id}
               data-studio-reveal
-              className="studio-cell flex flex-col bg-[var(--studio-black)] p-7 hover:bg-[rgba(78,114,242,0.05)] md:p-9"
+              className="studio-cell group flex flex-col bg-[var(--studio-black)] hover:bg-[rgba(78,114,242,0.05)]"
             >
-              <div className="flex items-baseline justify-between gap-4">
-                <span className="font-mono text-[0.6875rem] tracking-widest text-[var(--studio-cyan)]">
-                  {capability.index}
-                </span>
-                <span className="text-[0.6875rem] font-medium tracking-[0.16em] text-[rgba(250,250,247,0.44)] uppercase">
-                  {capability.category}
-                </span>
-              </div>
+              {DIGITAL_STUDIO_CAPABILITY_PHOTOS[capability.id] ? (
+                <StudioPhoto
+                  id={DIGITAL_STUDIO_CAPABILITY_PHOTOS[capability.id]!}
+                  sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                  className="aspect-[16/10] w-full border-b border-[var(--studio-line-dark)]"
+                />
+              ) : null}
+              <div className="flex flex-1 flex-col p-7 md:p-9">
+                <div className="flex items-baseline justify-between gap-4">
+                  <span className="font-mono text-[0.6875rem] tracking-widest text-[var(--studio-cyan)]">
+                    {capability.index}
+                  </span>
+                  <span className="text-[0.6875rem] font-medium tracking-[0.16em] text-[rgba(250,250,247,0.44)] uppercase">
+                    {capability.category}
+                  </span>
+                </div>
 
-              <h3 className="studio-cell__title studio-display mt-7 flex items-baseline gap-2.5 text-[1.375rem] md:text-[1.5rem]">
-                {capability.title}
-                <span
-                  aria-hidden
-                  className="studio-cell__marker text-[var(--studio-blue)]"
-                >
-                  →
-                </span>
-              </h3>
-              <p className="mt-4 flex-1 text-[0.875rem] leading-[1.75] text-[rgba(250,250,247,0.62)]">
-                {capability.description}
-              </p>
-
-              <ul className="mt-7 flex flex-col gap-2 border-t border-[var(--studio-line-dark)] pt-5">
-                {capability.deliverables.map((deliverable) => (
-                  <li
-                    key={deliverable}
-                    className="flex items-start gap-3 text-[0.8125rem] text-[rgba(250,250,247,0.72)]"
+                <h3 className="studio-cell__title studio-display mt-7 flex items-baseline gap-2.5 text-[1.375rem] md:text-[1.5rem]">
+                  {capability.title}
+                  <span
+                    aria-hidden
+                    className="studio-cell__marker text-[var(--studio-blue)]"
                   >
-                    <span
-                      aria-hidden
-                      className="mt-[0.5em] block size-1 shrink-0 bg-[var(--studio-blue)]"
-                    />
-                    {deliverable}
-                  </li>
-                ))}
-              </ul>
+                    →
+                  </span>
+                </h3>
+                <p className="mt-4 flex-1 text-[0.875rem] leading-[1.75] text-[rgba(250,250,247,0.62)]">
+                  {capability.description}
+                </p>
+
+                <ul className="mt-7 flex flex-col gap-2 border-t border-[var(--studio-line-dark)] pt-5">
+                  {capability.deliverables.map((deliverable) => (
+                    <li
+                      key={deliverable}
+                      className="flex items-start gap-3 text-[0.8125rem] text-[rgba(250,250,247,0.72)]"
+                    >
+                      <span
+                        aria-hidden
+                        className="mt-[0.5em] block size-1 shrink-0 bg-[var(--studio-blue)]"
+                      />
+                      {deliverable}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </article>
           ))}
         </div>
