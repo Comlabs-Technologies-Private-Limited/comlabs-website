@@ -94,7 +94,7 @@ export default async function CaseStudiesIndexPage() {
           <span aria-hidden className="gutter-hatch" />
           <div className="section-layout">
             <MarketingSectionHeader
-              className="mb-10 px-3 md:mb-12 md:px-4"
+              className="mb-10 px-1 md:mb-12 md:px-4"
               eyebrow="Case Studies"
               title={
                 <>

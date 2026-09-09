@@ -80,7 +80,7 @@ export default function ServicesIndexPage() {
           <span aria-hidden className="gutter-hatch" />
           <div className="section-layout">
             <MarketingSectionHeader
-              className="mb-10 px-3 md:mb-12 md:px-4"
+              className="mb-10 px-1 md:mb-12 md:px-4"
               eyebrow={servicesIndex.sectionEyebrow}
               title={servicesIndex.sectionHeading}
               description={
@@ -99,11 +99,11 @@ export default function ServicesIndexPage() {
           <span aria-hidden className="gutter-hatch" />
           <div className="section-layout">
             <MarketingSectionHeader
-              className="px-3 md:px-4"
+              className="px-1 md:px-4"
               eyebrow="Operating model"
               title={servicesIndex.pillarsHeading}
             />
-            <div className="mt-12 px-3 md:px-4">
+            <div className="mt-12 px-1 md:px-4">
               <ServicesOperatingModel />
             </div>
           </div>

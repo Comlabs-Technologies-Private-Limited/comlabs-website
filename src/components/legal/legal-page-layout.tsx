@@ -72,7 +72,7 @@ export async function LegalPageLayout({
         <section className="relative border-b border-border py-14 md:py-16">
           <span aria-hidden className="gutter-hatch" />
           <div className="section-layout">
-            <div className="max-w-2xl px-3 md:px-4">
+            <div className="max-w-2xl px-1 md:px-4">
               <p className="mb-4 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
                 {eyebrow}
               </p>
@@ -156,7 +156,7 @@ export async function LegalPageLayout({
 
         <section className="border-t border-border py-12">
           <div className="section-layout">
-            <div className="max-w-2xl px-3 md:px-4">
+            <div className="max-w-2xl px-1 md:px-4">
               <p className="text-sm leading-relaxed text-muted-foreground">
                 Questions about this policy? Contact us at{" "}
                 <a

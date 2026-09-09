@@ -35,7 +35,7 @@ export function ServiceRelatedWork({
     <section className="relative border-y border-border bg-card py-14 md:py-16">
       <span aria-hidden className="gutter-hatch" />
       <div className="section-layout">
-        <div className="mb-10 flex items-end justify-between gap-6 px-3 md:mb-12 md:px-4">
+        <div className="mb-10 flex items-end justify-between gap-6 px-1 md:mb-12 md:px-4">
           <MarketingSectionHeader
             className="mb-0"
             eyebrow="Related case study"
@@ -110,7 +110,7 @@ export function ServiceRelatedServices({
       <span aria-hidden className="gutter-hatch" />
       <div className="section-layout">
         <MarketingSectionHeader
-          className="mb-12 px-3 md:mb-14 md:px-4"
+          className="mb-12 px-1 md:mb-14 md:px-4"
           eyebrow="Related capabilities"
           title={
             <>
