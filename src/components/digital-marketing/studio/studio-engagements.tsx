@@ -1,3 +1,5 @@
+import { StudioGlassCard } from "@/components/digital-marketing/studio/studio-glass-card";
+import { StudioShaderSlot } from "@/components/digital-marketing/studio/studio-shader-slot";
 import { DIGITAL_MARKETING_ENGAGEMENTS } from "@/lib/digital-marketing";
 import { DIGITAL_STUDIO_SECTIONS } from "@/lib/digital-marketing-studio";
 
@@ -28,6 +30,19 @@ export function StudioEngagements() {
             Every engagement is shaped around the problem in front of us, not a
             fixed roster of deliverables.
           </p>
+          <StudioShaderSlot
+            variant="scan"
+            seed={11}
+            className="mt-10 hidden aspect-[4/5] max-w-sm lg:block"
+          >
+            <StudioGlassCard
+              title="How should we work together?"
+              numbered
+              rows={DIGITAL_MARKETING_ENGAGEMENTS.map((engagement) => ({
+                label: engagement.title,
+              }))}
+            />
+          </StudioShaderSlot>
         </div>
 
         <div data-studio-stagger>

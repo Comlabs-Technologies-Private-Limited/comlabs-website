@@ -1,4 +1,8 @@
-import { DIGITAL_STUDIO_LAB } from "@/lib/digital-marketing-studio";
+import { StudioPhoto } from "@/components/digital-marketing/studio/studio-photo";
+import {
+  DIGITAL_STUDIO_LAB,
+  DIGITAL_STUDIO_LAB_PHOTOS,
+} from "@/lib/digital-marketing-studio";
 
 /**
  * Marketing lab. A horizontally scrollable rail on every breakpoint: it is a
@@ -47,28 +51,37 @@ export function StudioLab() {
         {DIGITAL_STUDIO_LAB.map((item, index) => (
           <li
             key={item.id}
-            className="studio-cell flex w-[17rem] shrink-0 snap-start flex-col bg-[var(--studio-white)] p-7 hover:bg-[rgba(78,114,242,0.04)] sm:w-[19rem] md:w-[21rem]"
+            className="studio-cell group flex w-[17rem] shrink-0 snap-start flex-col bg-[var(--studio-white)] hover:bg-[rgba(78,114,242,0.04)] sm:w-[19rem] md:w-[21rem]"
           >
-            <div className="flex items-baseline justify-between gap-4">
-              <span className="font-mono text-[0.6875rem] tracking-widest text-[var(--studio-grey)]">
-                {String(index + 1).padStart(2, "0")}
-              </span>
-              <span className="text-[0.6875rem] font-medium tracking-[0.16em] text-[var(--studio-blue)] uppercase">
-                {item.label}
-              </span>
+            {DIGITAL_STUDIO_LAB_PHOTOS[item.id] ? (
+              <StudioPhoto
+                id={DIGITAL_STUDIO_LAB_PHOTOS[item.id]!}
+                sizes="(min-width: 768px) 21rem, 17rem"
+                className="aspect-[4/3] w-full border-b border-[var(--studio-line)]"
+              />
+            ) : null}
+            <div className="flex flex-1 flex-col p-7">
+              <div className="flex items-baseline justify-between gap-4">
+                <span className="font-mono text-[0.6875rem] tracking-widest text-[var(--studio-grey)]">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <span className="text-[0.6875rem] font-medium tracking-[0.16em] text-[var(--studio-blue)] uppercase">
+                  {item.label}
+                </span>
+              </div>
+              <h3 className="studio-cell__title studio-display mt-10 flex items-baseline gap-2.5 text-[1.375rem]">
+                {item.title}
+                <span
+                  aria-hidden
+                  className="studio-cell__marker text-[var(--studio-blue)]"
+                >
+                  →
+                </span>
+              </h3>
+              <p className="mt-4 text-[0.875rem] leading-[1.75] text-[#4a4e51]">
+                {item.note}
+              </p>
             </div>
-            <h3 className="studio-cell__title studio-display mt-10 flex items-baseline gap-2.5 text-[1.375rem]">
-              {item.title}
-              <span
-                aria-hidden
-                className="studio-cell__marker text-[var(--studio-blue)]"
-              >
-                →
-              </span>
-            </h3>
-            <p className="mt-4 text-[0.875rem] leading-[1.75] text-[#4a4e51]">
-              {item.note}
-            </p>
           </li>
         ))}
       </ul>

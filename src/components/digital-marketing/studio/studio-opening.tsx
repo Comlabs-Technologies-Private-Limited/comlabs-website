@@ -1,3 +1,10 @@
+import { StudioGlassCard } from "@/components/digital-marketing/studio/studio-glass-card";
+import {
+  JudgmentEvidence,
+  SystemDiagram,
+} from "@/components/digital-marketing/studio/studio-opening-illustrations";
+import { StudioShaderSlot } from "@/components/digital-marketing/studio/studio-shader-slot";
+import { DIGITAL_MARKETING_CAPABILITIES } from "@/lib/digital-marketing";
 import { DIGITAL_STUDIO_OPENING } from "@/lib/digital-marketing-studio";
 
 /** Opening proof split — the two commitments the rest of the page evidences. */
@@ -19,24 +26,38 @@ export function StudioOpening() {
           >
             Strategy, creative and performance under one roof.
           </h2>
+          <StudioShaderSlot
+            variant="flow"
+            seed={7}
+            className="mt-10 hidden aspect-[4/5] max-w-sm lg:block"
+          >
+            <StudioGlassCard
+              title="One connected system"
+              rows={DIGITAL_MARKETING_CAPABILITIES.map((capability) => ({
+                label: capability.title,
+                meta: capability.index,
+              }))}
+            />
+          </StudioShaderSlot>
         </div>
 
         <div
           className="grid gap-px bg-[var(--studio-line)] sm:grid-cols-2"
           data-studio-stagger
         >
-          {DIGITAL_STUDIO_OPENING.map((point) => (
+          {DIGITAL_STUDIO_OPENING.map((point, index) => (
             <div
               key={point.title}
               data-studio-reveal
-              className="bg-[var(--studio-paper)] p-7 md:p-9"
+              className="studio-point flex flex-col bg-[var(--studio-paper)] p-7 md:p-9"
             >
               <h3 className="studio-display text-[clamp(1.5rem,2.4vw,2.125rem)]">
                 {point.title}
               </h3>
-              <p className="mt-5 text-[0.9375rem] leading-[1.75] text-[#4a4e51]">
+              <p className="mt-5 flex-1 text-[0.9375rem] leading-[1.75] text-[#4a4e51]">
                 {point.body}
               </p>
+              {index === 0 ? <SystemDiagram /> : <JudgmentEvidence />}
             </div>
           ))}
         </div>

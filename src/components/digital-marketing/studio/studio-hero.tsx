@@ -138,8 +138,7 @@ export function StudioHero() {
               data-hero-stage
               className="studio-display studio-h1 mt-6 motion-safe:opacity-0"
             >
-              Marketing that turns attention into{" "}
-              <span className="studio-accent">measurable growth</span>.
+              Marketing that turns attention into measurable growth.
             </h1>
             <p
               data-hero-stage

@@ -1,4 +1,9 @@
-import { DIGITAL_MARKETING_PROOF } from "@/lib/digital-marketing";
+import { StudioGlassCard } from "@/components/digital-marketing/studio/studio-glass-card";
+import { StudioShaderSlot } from "@/components/digital-marketing/studio/studio-shader-slot";
+import {
+  DIGITAL_MARKETING_PROOF,
+  DIGITAL_MARKETING_WORK,
+} from "@/lib/digital-marketing";
 
 /**
  * Single oversized editorial quote. Only genuine testimonials already recorded
@@ -6,6 +11,9 @@ import { DIGITAL_MARKETING_PROOF } from "@/lib/digital-marketing";
  */
 export function StudioTestimonial() {
   const proof = DIGITAL_MARKETING_PROOF[0];
+  const project = DIGITAL_MARKETING_WORK.find(
+    (item) => item.client === "Global Services",
+  );
   if (!proof) return null;
 
   return (
@@ -22,34 +30,46 @@ export function StudioTestimonial() {
           Client proof
         </h2>
 
-        <figure className="mt-10 md:mt-14">
-          <blockquote className="studio-display max-w-[22ch] text-[clamp(1.75rem,4.6vw,3.5rem)] md:max-w-[26ch]">
-            {/* Masked wrapper: the quote rises into view as one block of lines
+        <div className="mt-10 grid gap-12 md:mt-14 xl:grid-cols-[minmax(0,1fr)_18rem] xl:items-end xl:gap-16">
+          <figure>
+            <blockquote className="studio-display max-w-[22ch] text-[clamp(1.75rem,4.6vw,3.5rem)] md:max-w-[26ch]">
+              {/* Masked wrapper: the quote rises into view as one block of lines
                 while remaining a single, complete string for screen readers. */}
-            <span data-studio-line>
-              <span>
-                <span aria-hidden className="studio-accent">
-                  “
-                </span>
-                {proof.quote}
-                <span aria-hidden className="studio-accent">
-                  ”
+              <span data-studio-line>
+                <span>
+                  <span aria-hidden>“</span>
+                  {proof.quote}
+                  <span aria-hidden>”</span>
                 </span>
               </span>
-            </span>
-          </blockquote>
+            </blockquote>
 
-          <figcaption
-            data-studio-reveal
-            className="mt-10 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-[var(--studio-line)] pt-6 text-sm"
-          >
-            <span className="font-medium">{proof.name}</span>
-            <span aria-hidden className="h-3 w-px bg-[var(--studio-line)]" />
-            <span className="text-[#4a4e51]">
-              {proof.title}, {proof.company}
-            </span>
-          </figcaption>
-        </figure>
+            <figcaption
+              data-studio-reveal
+              className="mt-10 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-[var(--studio-line)] pt-6 text-sm"
+            >
+              <span className="font-medium">{proof.name}</span>
+              <span aria-hidden className="h-3 w-px bg-[var(--studio-line)]" />
+              <span className="text-[#4a4e51]">
+                {proof.title}, {proof.company}
+              </span>
+            </figcaption>
+          </figure>
+          {project ? (
+            <StudioShaderSlot
+              variant="pixel"
+              seed={23}
+              className="hidden aspect-[4/5] xl:block"
+            >
+              <StudioGlassCard
+                title={project.client}
+                rows={project.discipline
+                  .split(" · ")
+                  .map((label) => ({ label }))}
+              />
+            </StudioShaderSlot>
+          ) : null}
+        </div>
       </div>
     </section>
   );

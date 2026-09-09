@@ -1,4 +1,9 @@
-import { DIGITAL_MARKETING_STAGES } from "@/lib/digital-marketing";
+import { StudioGlassCard } from "@/components/digital-marketing/studio/studio-glass-card";
+import { StudioShaderSlot } from "@/components/digital-marketing/studio/studio-shader-slot";
+import {
+  DIGITAL_MARKETING_CAPABILITIES,
+  DIGITAL_MARKETING_STAGES,
+} from "@/lib/digital-marketing";
 import { DIGITAL_STUDIO_SECTIONS } from "@/lib/digital-marketing-studio";
 
 /** Process — four stages as a numbered horizontal progression. */
@@ -10,16 +15,33 @@ export function StudioProcess() {
       className="scroll-mt-16 border-b border-[var(--studio-line)] py-20 md:scroll-mt-20 md:py-28"
     >
       <div className="studio-shell">
-        <p className="studio-eyebrow" data-studio-reveal>
-          Process
-        </p>
-        <h2
-          id="studio-process-heading"
-          data-studio-reveal
-          className="studio-display mt-5 max-w-[16ch] text-[clamp(2rem,4.4vw,3.75rem)]"
-        >
-          Diagnose. Position. Launch. Compound.
-        </h2>
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-end lg:gap-16">
+          <div>
+            <p className="studio-eyebrow" data-studio-reveal>
+              Process
+            </p>
+            <h2
+              id="studio-process-heading"
+              data-studio-reveal
+              className="studio-display mt-5 max-w-[16ch] text-[clamp(2rem,4.4vw,3.75rem)]"
+            >
+              Diagnose. Position. Launch. Compound.
+            </h2>
+          </div>
+          <StudioShaderSlot
+            variant="scan"
+            seed={17}
+            className="hidden aspect-[5/4] lg:block"
+          >
+            <StudioGlassCard
+              title="What we measure"
+              rows={(
+                DIGITAL_MARKETING_CAPABILITIES.find((c) => c.id === "analytics")
+                  ?.deliverables ?? []
+              ).map((deliverable) => ({ label: deliverable }))}
+            />
+          </StudioShaderSlot>
+        </div>
 
         {/* The rail is filled by `--studio-progress`, set from scroll position
             by the page motion controller. */}

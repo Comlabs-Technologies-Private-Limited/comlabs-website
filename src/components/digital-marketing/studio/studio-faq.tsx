@@ -2,6 +2,8 @@
 
 import { useId, useState } from "react";
 
+import { StudioGlassCard } from "@/components/digital-marketing/studio/studio-glass-card";
+import { StudioShaderSlot } from "@/components/digital-marketing/studio/studio-shader-slot";
 import { DIGITAL_MARKETING_FAQS } from "@/lib/digital-marketing";
 import { DIGITAL_STUDIO_SECTIONS } from "@/lib/digital-marketing-studio";
 import { cn } from "@/lib/utils";
@@ -31,6 +33,19 @@ export function StudioFaq() {
           >
             What people ask before we start.
           </h2>
+          <StudioShaderSlot
+            variant="flow"
+            seed={29}
+            className="mt-10 hidden aspect-[4/5] max-w-sm lg:block"
+          >
+            <StudioGlassCard
+              title="Questions"
+              numbered
+              rows={DIGITAL_MARKETING_FAQS.slice(0, 3).map((faq) => ({
+                label: faq.question,
+              }))}
+            />
+          </StudioShaderSlot>
         </div>
 
         <div>
