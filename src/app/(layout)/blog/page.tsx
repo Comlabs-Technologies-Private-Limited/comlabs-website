@@ -17,6 +17,7 @@ import { listPosts } from "@/lib/admin/posts";
 import { buildPageMetadata } from "@/lib/metadata";
 import { getBlogSchema } from "@/lib/schema";
 import { isBlogEnabled } from "@/lib/site";
+import { cn } from "@/lib/utils";
 import type { PostSummary } from "@/types/post";
 
 const BLOG_TITLE = "Engineering Insights | Comlabs Technologies";
@@ -96,10 +97,11 @@ export default async function BlogIndexPage({
           <PageBreadcrumbs currentPath="/blog" items={[{ label: "Blog" }]} />
         </MarketingPageHero>
 
-        <section className="border-y border-border bg-card px-6 py-24 md:py-32">
-          <div className="mx-auto max-w-6xl">
+        <section className="relative border-y border-border bg-card py-24 md:py-32">
+          <span aria-hidden className="gutter-hatch" />
+          <div className="section-layout">
             <MarketingSectionHeader
-              className="mb-10 md:mb-12"
+              className="mb-10 px-3 md:mb-12 md:px-4"
               eyebrow="Latest"
               title="From the engineering floor."
               description="Short notes from production work and internal builds — written for people who have to operate the system after it ships."
@@ -110,15 +112,30 @@ export default async function BlogIndexPage({
                 No posts yet — check back soon.
               </p>
             ) : (
-              <div className="flex flex-col gap-8">
-                {featured ? <PostCard post={featured} featured /> : null}
-                {remaining.length > 0 ? (
-                  <div className="grid gap-6 md:grid-cols-2">
-                    {remaining.map((post) => (
-                      <PostCard key={post._id} post={post} />
-                    ))}
-                  </div>
-                ) : null}
+              <div className="border-y border-border p-2 md:p-3">
+                <div className="flat-frame">
+                  {featured ? (
+                    <div className={remaining.length > 0 ? "border-b border-border" : undefined}>
+                      <PostCard post={featured} featured />
+                    </div>
+                  ) : null}
+                  {remaining.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2">
+                      {remaining.map((post, index) => (
+                        <PostCard
+                          key={post._id}
+                          post={post}
+                          className={cn(
+                            index > 0 && "border-t border-border",
+                            "md:border-t-0",
+                            index >= 2 && "md:border-t md:border-border",
+                            index % 2 !== 0 && "md:border-l md:border-border",
+                          )}
+                        />
+                      ))}
+                    </div>
+                  ) : null}
+                </div>
               </div>
             )}
 

@@ -76,10 +76,11 @@ export default function ServicesIndexPage() {
           <PageBreadcrumbs currentPath="/services" items={[{ label: "Services" }]} />
         </MarketingPageHero>
 
-        <section className="border-y border-border bg-card px-6 py-24 md:py-32">
-          <div className="mx-auto max-w-6xl">
+        <section className="relative border-y border-border bg-card py-24 md:py-32">
+          <span aria-hidden className="gutter-hatch" />
+          <div className="section-layout">
             <MarketingSectionHeader
-              className="mb-10 md:mb-12"
+              className="mb-10 px-3 md:mb-12 md:px-4"
               eyebrow={servicesIndex.sectionEyebrow}
               title={servicesIndex.sectionHeading}
               description={
@@ -94,13 +95,17 @@ export default function ServicesIndexPage() {
           </div>
         </section>
 
-        <section className="px-6 py-24 md:py-28">
-          <div className="mx-auto max-w-6xl">
+        <section className="relative py-24 md:py-28">
+          <span aria-hidden className="gutter-hatch" />
+          <div className="section-layout">
             <MarketingSectionHeader
+              className="px-3 md:px-4"
               eyebrow="Operating model"
               title={servicesIndex.pillarsHeading}
             />
-            <ServicesOperatingModel />
+            <div className="mt-12 px-3 md:px-4">
+              <ServicesOperatingModel />
+            </div>
           </div>
         </section>
 

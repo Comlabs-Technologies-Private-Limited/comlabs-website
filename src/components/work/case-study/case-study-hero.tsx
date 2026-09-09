@@ -30,8 +30,9 @@ export function CaseStudyHero({
   liveSite,
 }: CaseStudyHeroProps) {
   return (
-    <header className="px-6 pt-12 pb-8 md:pt-16 md:pb-10">
-      <div className="mx-auto max-w-6xl">
+    <header className="relative pt-12 pb-8 md:pt-16 md:pb-10">
+      <span aria-hidden className="gutter-hatch" />
+      <div className="section-layout">
         <PageBreadcrumbs
           className="mb-10"
           currentPath={caseStudyPath(slug)}

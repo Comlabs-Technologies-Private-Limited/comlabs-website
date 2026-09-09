@@ -117,6 +117,9 @@ export const indexableStaticPaths = [
   "/careers",
   CASE_STUDIES_PATH,
   "/contact",
+  "/privacy-policy",
+  "/terms-and-conditions",
+  "/refund-policy",
 ] as const;
 
 /** Blog ships with statically authored posts; hide with NEXT_PUBLIC_BLOG_ENABLED=false. */

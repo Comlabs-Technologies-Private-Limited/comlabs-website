@@ -22,6 +22,12 @@ const FALLBACK_CASE_STUDY_LINKS: FooterLink[] = [
   { label: "Vithub", href: caseStudyPath("vithub") },
 ];
 
+const LEGAL_LINKS: FooterLink[] = [
+  { label: "Privacy Policy", href: "/privacy-policy" },
+  { label: "Terms and Conditions", href: "/terms-and-conditions" },
+  { label: "Refund Policy", href: "/refund-policy" },
+];
+
 export function FigmaFooter({
   showBlogLink = true,
   tone = "light",
@@ -120,10 +126,22 @@ export function FigmaFooter({
           </div>
         </div>
 
-        <div className="border-t border-border pt-8 text-xs text-muted-foreground">
+        <div className="flex flex-col gap-4 border-t border-border pt-8 text-xs text-muted-foreground md:flex-row md:items-center md:justify-between">
           <p>
             © {new Date().getFullYear()} {siteName}. All rights reserved.
           </p>
+          <ul className="flex flex-wrap gap-x-6 gap-y-2">
+            {LEGAL_LINKS.map((link) => (
+              <li key={link.href}>
+                <Link
+                  href={canonicalPath(link.href)}
+                  className="transition-colors hover:text-foreground"
+                >
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </footer>

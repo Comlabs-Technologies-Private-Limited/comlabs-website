@@ -80,10 +80,11 @@ export default async function CaseStudiesIndexPage() {
           <PageBreadcrumbs currentPath={CASE_STUDIES_PATH} items={[{ label: "Case Studies" }]} />
         </MarketingPageHero>
 
-        <section className="border-y border-border bg-card px-6 py-24 md:py-32">
-          <div className="mx-auto max-w-6xl">
+        <section className="relative border-y border-border bg-card py-24 md:py-32">
+          <span aria-hidden className="gutter-hatch" />
+          <div className="section-layout">
             <MarketingSectionHeader
-              className="mb-10 md:mb-12"
+              className="mb-10 px-3 md:mb-12 md:px-4"
               eyebrow="Case Studies"
               title={
                 <>
@@ -96,10 +97,11 @@ export default async function CaseStudiesIndexPage() {
           </div>
         </section>
 
-        <section className="px-6 py-20 md:py-24">
-          <div className="mx-auto max-w-6xl">
+        <section className="relative py-20 md:py-24">
+          <span aria-hidden className="gutter-hatch" />
+          <div className="section-layout">
             <MarketingFadeIn>
-              <div className="rounded-3xl border border-border bg-card p-8 md:p-10">
+              <div className="border border-border p-8 md:p-10" style={{ borderRadius: 0 }}>
                 <MarketingSectionLabel>Related services</MarketingSectionLabel>
                 <h2
                   className="text-xl font-medium tracking-tight md:text-2xl"
@@ -116,7 +118,8 @@ export default async function CaseStudiesIndexPage() {
                     <Link
                       key={service.path}
                       href={canonicalPath(service.path)}
-                      className="rounded-full border border-border bg-background px-4 py-2 text-sm text-muted-foreground transition-all hover:border-foreground/20 hover:text-foreground"
+                      className="border border-border px-4 py-2 text-sm text-muted-foreground transition-colors hover:border-foreground/40 hover:text-foreground"
+                      style={{ borderRadius: 0 }}
                     >
                       {service.title}
                     </Link>

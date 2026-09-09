@@ -13,7 +13,7 @@ export function CaseStudySequence({ steps }: CaseStudySequenceProps) {
     <ol className="mt-8 flex flex-col gap-3 border-t border-border pt-8 md:flex-row md:flex-wrap md:items-center md:gap-2">
       {steps.map((step, index) => (
         <li key={step} className="flex items-center gap-3 md:gap-2">
-          <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3.5 py-1.5 text-sm font-medium text-foreground">
+          <span className="inline-flex items-center gap-2 border border-border bg-card px-3.5 py-1.5 text-sm font-medium text-foreground">
             <span className="text-xs text-muted-foreground tabular-nums">
               {String(index + 1).padStart(2, "0")}
             </span>
