@@ -39,14 +39,14 @@ export function ServiceProofModule({ slug, title, caption }: ServiceProofModuleP
 function resolveProofVisual(slug: string): ReactNode {
   if (slug === "website-design-development") {
     return (
-      <div className="border-y border-border">
+      <div className="border border-border">
         <WebDigitalProof />
       </div>
     );
   }
   if (slug === "mobile-app-development") {
     return (
-      <div className="border-y border-border">
+      <div className="border border-border">
         <MobileOpsProof />
       </div>
     );
