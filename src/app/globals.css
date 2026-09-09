@@ -162,20 +162,488 @@
   }
 }
 
-.dm-page {
-  --background: #141414;
-  --foreground: #f4f2ed;
-  --muted-foreground: rgba(244, 242, 237, 0.58);
-  --border: rgba(244, 242, 237, 0.12);
-  --card: #1a1a1a;
-  --secondary: #1a1a1a;
-  --ring: rgba(244, 242, 237, 0.4);
+/* ==========================================================================
+   Digital Marketing & Design Studio — /digital-marketing
+   Page-scoped tokens and primitives. Nothing here leaks outside `.dm-studio`.
+   ========================================================================== */
+
+.dm-studio {
+  --studio-ink: #111315;
+  --studio-black: #090b0d;
+  --studio-paper: #f2f2ee;
+  --studio-white: #fafaf7;
+  --studio-grey: #9a9d9f;
+  --studio-line: rgba(17, 19, 21, 0.16);
+  /* Translucent paper for the sticky nav once it leaves the hero. */
+  --studio-paper-veil: rgba(242, 242, 238, 0.92);
+  --studio-blue: #4e72f2;
+  --studio-cyan: #75d5d0;
+  --studio-amber: #d99a54;
+
+  /* On-dark equivalent of the hairline above. */
+  --studio-line-dark: rgba(250, 250, 247, 0.16);
+
+  --studio-gutter: 24px;
+  --studio-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  background: var(--studio-paper);
+  color: var(--studio-ink);
   font-family: var(--font-sans), system-ui, sans-serif;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.02em;
 }
 
-.dm-page :focus-visible {
-  outline-color: rgba(244, 242, 237, 0.45);
+@media (min-width: 768px) {
+  .dm-studio {
+    --studio-gutter: 40px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .dm-studio {
+    --studio-gutter: 64px;
+  }
+}
+
+.dm-studio :focus-visible {
+  outline: 2px solid var(--studio-blue);
+  outline-offset: 3px;
+  border-radius: 0;
+}
+
+.dm-studio ::selection {
+  background: var(--studio-blue);
+  color: var(--studio-white);
+}
+
+/* Shared horizontal rhythm. */
+.studio-shell {
+  width: 100%;
+  max-width: 1560px;
+  margin-inline: auto;
+  padding-inline: var(--studio-gutter);
+}
+
+/* Uppercase micro-label used above every section heading. */
+.studio-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.studio-eyebrow::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  background: var(--studio-blue);
+}
+
+/* Display type: tight, optically corrected, never below 0.9 line-height. */
+.studio-display {
+  font-weight: 500;
+  line-height: 0.94;
+  letter-spacing: -0.045em;
+}
+
+
+/* --------------------------------------------------------------------------
+   Two-layer text slide, used by nav links and inline links.
+   The visible layer slides up and out; the duplicate slides in behind it.
+   The duplicate is aria-hidden, so screen readers still read one label.
+   -------------------------------------------------------------------------- */
+.studio-slide {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+}
+
+.studio-slide > span {
+  display: block;
+  transition: transform 400ms var(--studio-ease);
+}
+
+.studio-slide > span:last-child {
+  position: absolute;
+  inset: 0;
+  transform: translateY(100%);
+}
+
+.studio-slide:hover > span:first-child,
+.studio-slide:focus-visible > span:first-child,
+a:hover .studio-slide > span:first-child,
+a:focus-visible .studio-slide > span:first-child,
+button:hover .studio-slide > span:first-child,
+button:focus-visible .studio-slide > span:first-child {
+  transform: translateY(-100%);
+}
+
+.studio-slide:hover > span:last-child,
+.studio-slide:focus-visible > span:last-child,
+a:hover .studio-slide > span:last-child,
+a:focus-visible .studio-slide > span:last-child,
+button:hover .studio-slide > span:last-child,
+button:focus-visible .studio-slide > span:last-child {
+  transform: translateY(0);
+}
+
+/* --------------------------------------------------------------------------
+   Scroll reveal. Elements start displaced and are released by GSAP
+   (`data-studio-reveal`), or immediately when motion is reduced / JS is off.
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  .dm-studio [data-studio-reveal] {
+    opacity: 0;
+    transform: translateY(22px);
+    will-change: opacity, transform;
+  }
+
+  .dm-studio [data-studio-reveal][data-studio-revealed="true"] {
+    will-change: auto;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Interaction language. One movement vocabulary, two easings. Everything
+   below animates only transform, opacity, colour or clip-path.
+   -------------------------------------------------------------------------- */
+.dm-studio {
+  --studio-ease-precise: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Hero H1: emphasis carried by the sans display face, not by italics. */
+.studio-h1 {
+  font-size: clamp(3.15rem, 6.35vw, 6.5rem);
+  line-height: 0.92;
+  letter-spacing: -0.055em;
+  max-width: 12ch;
+  /* Keeps the closing phrase from breaking to a single orphaned word. */
+  text-wrap: balance;
+}
+
+.studio-accent {
+  color: var(--studio-blue);
+}
+
+/* Primary button — fill, lift, and a marker that travels diagonally. */
+.studio-cta {
+  position: relative;
+  transition:
+    background-color 380ms var(--studio-ease),
+    color 380ms var(--studio-ease),
+    transform 380ms var(--studio-ease);
+}
+
+.studio-cta:hover,
+.studio-cta:focus-visible {
+  transform: translateY(-2px) scale(1.015);
+}
+
+.studio-cta:active {
+  transform: scale(0.985);
+  transition-duration: 90ms;
+}
+
+.studio-cta__marker {
+  display: inline-block;
+  transition: transform 380ms var(--studio-ease);
+}
+
+.studio-cta:hover .studio-cta__marker,
+.studio-cta:focus-visible .studio-cta__marker {
+  transform: translate(3px, -3px);
+}
+
+/* Secondary button — hairline darkens, fill wipes in from the left. */
+.studio-ghost {
+  position: relative;
+  overflow: hidden;
+  transition:
+    border-color 380ms var(--studio-ease),
+    color 380ms var(--studio-ease);
+}
+
+.studio-ghost::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: currentColor;
+  opacity: 0.09;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 420ms var(--studio-ease-precise);
+}
+
+.studio-ghost:hover::before,
+.studio-ghost:focus-visible::before {
+  transform: scaleX(1);
+}
+
+.studio-ghost > * {
+  position: relative;
+  transition: transform 380ms var(--studio-ease);
+}
+
+.studio-ghost:hover > *,
+.studio-ghost:focus-visible > * {
+  transform: translateX(2px);
+}
+
+/* Editorial rows: studio principles and engagement models. */
+.studio-row {
+  transition: border-color 420ms var(--studio-ease);
+}
+
+.studio-row__index {
+  transition: color 420ms var(--studio-ease);
+}
+
+.studio-row__title {
+  transition: transform 420ms var(--studio-ease-precise);
+}
+
+.studio-row:hover .studio-row__index,
+.studio-row:focus-within .studio-row__index {
+  color: var(--studio-blue);
+}
+
+.studio-row:hover .studio-row__title,
+.studio-row:focus-within .studio-row__title {
+  transform: translateX(4px);
+}
+
+/* Capability and marketing-lab cells. */
+.studio-cell {
+  transition:
+    background-color 440ms var(--studio-ease),
+    border-color 440ms var(--studio-ease);
+}
+
+.studio-cell__title,
+.studio-cell__marker {
+  transition:
+    transform 440ms var(--studio-ease-precise),
+    opacity 440ms var(--studio-ease);
+}
+
+.studio-cell__marker {
+  opacity: 0;
+  transform: translateX(-4px);
+}
+
+.studio-cell:hover .studio-cell__title,
+.studio-cell:focus-within .studio-cell__title {
+  transform: translateX(3px);
+}
+
+.studio-cell:hover .studio-cell__marker,
+.studio-cell:focus-within .studio-cell__marker {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Selected-work panels. */
+.studio-work__frame {
+  overflow: hidden;
+}
+
+.studio-work__image {
+  transition: transform 700ms var(--studio-ease-precise);
+}
+
+.studio-work__veil {
+  background: linear-gradient(180deg, rgba(78, 114, 242, 0.16), rgba(9, 11, 13, 0.34));
+  opacity: 0;
+  transition: opacity 560ms var(--studio-ease);
+}
+
+.studio-work:hover .studio-work__image,
+.studio-work:focus-within .studio-work__image {
+  transform: scale(1.025);
+}
+
+.studio-work:hover .studio-work__veil,
+.studio-work:focus-within .studio-work__veil {
+  opacity: 1;
+}
+
+.studio-work__title {
+  transition: transform 440ms var(--studio-ease-precise);
+}
+
+.studio-work:hover .studio-work__title,
+.studio-work:focus-within .studio-work__title {
+  transform: translateY(-3px);
+}
+
+/* Process timeline: the rail fills as the section is read. */
+.studio-track {
+  position: relative;
+  overflow: hidden;
+}
+
+.studio-track::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 100%;
+  background: var(--studio-blue);
+  transform: scaleX(var(--studio-progress, 0));
+  transform-origin: left center;
+  transition: transform 220ms linear;
+}
+
+.studio-step__dot {
+  transition:
+    background-color 420ms var(--studio-ease),
+    transform 420ms var(--studio-ease);
+}
+
+.studio-step[data-active="true"] .studio-step__dot {
+  background: var(--studio-blue);
+  transform: scale(1.35);
+}
+
+.studio-step__body {
+  transition:
+    opacity 480ms var(--studio-ease),
+    transform 480ms var(--studio-ease-precise);
+}
+
+.studio-step[data-active="true"] .studio-step__body {
+  transform: translateY(-6px);
+}
+
+/* FAQ: measured-height open and close, plus a plus-to-minus toggle. */
+.studio-faq__panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 460ms var(--studio-ease-precise);
+}
+
+.studio-faq__panel > div {
+  overflow: hidden;
+  /* Removed from the accessibility tree and tab order while collapsed, but
+     still in the DOM so the answers stay crawlable. */
+  visibility: hidden;
+  transition: visibility 0s linear 460ms;
+}
+
+.studio-faq[data-open="true"] .studio-faq__panel {
+  grid-template-rows: 1fr;
+}
+
+.studio-faq[data-open="true"] .studio-faq__panel > div {
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+.studio-faq__question {
+  transition:
+    background-color 380ms var(--studio-ease),
+    transform 380ms var(--studio-ease-precise);
+}
+
+.studio-faq:hover .studio-faq__question {
+  transform: translateX(3px);
+}
+
+.studio-faq[data-open="true"] {
+  background: rgba(17, 19, 21, 0.025);
+}
+
+/* Closing CTA: a cursor-tracked atmospheric field, CSS gradients only. */
+.studio-field {
+  background:
+    radial-gradient(
+      36rem 30rem at var(--studio-field-x, 50%) var(--studio-field-y, 40%),
+      rgba(78, 114, 242, 0.22) 0%,
+      transparent 68%
+    ),
+    radial-gradient(
+      26rem 22rem at calc(var(--studio-field-x, 50%) + 14%) calc(var(--studio-field-y, 40%) + 16%),
+      rgba(117, 213, 208, 0.1) 0%,
+      transparent 70%
+    );
+  transition: opacity 600ms var(--studio-ease);
+}
+
+/* --------------------------------------------------------------------------
+   Reveal patterns. Three only: masked heading lines, supporting copy, media.
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  .dm-studio [data-studio-line] {
+    display: block;
+    overflow: hidden;
+  }
+
+  .dm-studio [data-studio-line] > span {
+    display: block;
+    transform: translateY(110%);
+    opacity: 0;
+    will-change: transform, opacity;
+  }
+
+  .dm-studio [data-studio-media] {
+    clip-path: inset(0 0 100% 0);
+    will-change: clip-path;
+  }
+
+  .dm-studio [data-studio-media] img {
+    transform: scale(1.06);
+    will-change: transform;
+  }
+}
+
+/* Horizontal lab rail — hides the scrollbar but keeps the scroll container. */
+.studio-rail {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.studio-rail::-webkit-scrollbar {
+  display: none;
+}
+
+/* The radial tick ring in the “Selected work” interlude. */
+.studio-ring {
+  animation: studio-ring-spin 48s linear infinite;
+}
+
+@keyframes studio-ring-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dm-studio *,
+  .dm-studio *::before,
+  .dm-studio *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .studio-slide > span:last-child {
+    display: none;
+  }
+
+  .dm-studio [data-studio-line] > span,
+  .dm-studio [data-studio-media],
+  .dm-studio [data-studio-media] img {
+    transform: none !important;
+    opacity: 1 !important;
+    clip-path: none !important;
+  }
+
+  .studio-field {
+    display: none;
+  }
 }
 
 /* `translate3d` + unique name: reliable compositing; avoid mask on same node as animated transform (WebKit). */
