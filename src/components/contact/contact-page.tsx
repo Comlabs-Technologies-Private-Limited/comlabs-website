@@ -45,7 +45,7 @@ export function ContactPage({
 
             <div className="relative z-10 max-w-lg">
               <p
-                className="mb-4 text-xs font-medium tracking-[0.14em] uppercase"
+                className="mb-4 text-xs font-semibold tracking-widest uppercase"
                 style={{ color: "rgba(247,247,244,0.5)" }}
               >
                 Contact
@@ -67,12 +67,12 @@ export function ContactPage({
             <div className="mx-auto w-full max-w-md">
               <PageBreadcrumbs currentPath="/contact" items={[{ label: "Contact" }]} />
               <h1
-                className="text-3xl font-medium tracking-tight md:text-4xl"
+                className="text-2xl font-bold tracking-tight md:text-4xl"
                 style={{ letterSpacing: "-0.03em" }}
               >
                 Contact Comlabs
               </h1>
-              <p className="mt-3 text-base leading-relaxed text-muted-foreground">
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground md:text-base">
                 Talk to us about application support, AI engineering, AWS infrastructure, custom
                 software, mobile products or digital experience requirements.
               </p>
@@ -83,7 +83,7 @@ export function ContactPage({
 
               {services.length > 0 ? (
                 <nav aria-label="Services" className="mt-12 border-t border-border pt-8">
-                  <p className="mb-3 text-xs font-medium tracking-widest text-muted-foreground uppercase">
+                  <p className="mb-3 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
                     Related services
                   </p>
                   <ul className="flex flex-col gap-2">
