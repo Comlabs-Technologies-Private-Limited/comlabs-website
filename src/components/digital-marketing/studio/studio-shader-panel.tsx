@@ -181,153 +181,168 @@ export default function StudioShaderPanel({
     const reduce = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
-    const gl = canvas.getContext("webgl", {
-      alpha: false,
-      antialias: false,
-      depth: false,
-      stencil: false,
-      powerPreference: "low-power",
-    });
-    if (!gl) return;
+    let teardown: (() => void) | null = null;
 
-    const vertex = compile(gl, gl.VERTEX_SHADER, VERTEX);
-    const fragment = compile(gl, gl.FRAGMENT_SHADER, FRAGMENTS[variant]);
-    const program = gl.createProgram();
-    if (!vertex || !fragment || !program) return;
-    gl.attachShader(program, vertex);
-    gl.attachShader(program, fragment);
-    gl.linkProgram(program);
-    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return;
-    gl.useProgram(program);
+    /**
+     * Builds the context, program and loop for this panel. Returns a disposer.
+     * Called on viewport entry and torn down on exit, so the page never holds
+     * more live WebGL contexts than there are panels on screen.
+     */
+    function mount(): (() => void) | null {
+      const gl = canvas!.getContext("webgl", {
+        alpha: false,
+        antialias: false,
+        depth: false,
+        stencil: false,
+        powerPreference: "low-power",
+      });
+      if (!gl) return null;
 
-    const buffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-    gl.bufferData(
-      gl.ARRAY_BUFFER,
-      new Float32Array([-1, -1, 3, -1, -1, 3]),
-      gl.STATIC_DRAW,
-    );
-    const position = gl.getAttribLocation(program, "aPosition");
-    gl.enableVertexAttribArray(position);
-    gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
+      const vertex = compile(gl, gl.VERTEX_SHADER, VERTEX);
+      const fragment = compile(gl, gl.FRAGMENT_SHADER, FRAGMENTS[variant]);
+      const program = gl.createProgram();
+      if (!vertex || !fragment || !program) return null;
+      gl.attachShader(program, vertex);
+      gl.attachShader(program, fragment);
+      gl.linkProgram(program);
+      if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return null;
+      gl.useProgram(program);
 
-    const u = {
-      time: gl.getUniformLocation(program, "uTime"),
-      resolution: gl.getUniformLocation(program, "uResolution"),
-      mouse: gl.getUniformLocation(program, "uMouse"),
-      hover: gl.getUniformLocation(program, "uHover"),
-    };
-    const palette = PALETTES[tone];
-    gl.uniform1f(gl.getUniformLocation(program, "uSeed"), seed);
-    gl.uniform3fv(gl.getUniformLocation(program, "uBg"), palette.bg);
-    gl.uniform3fv(gl.getUniformLocation(program, "uFg"), palette.fg);
-    gl.uniform3fv(gl.getUniformLocation(program, "uAccent"), palette.accent);
+      const buffer = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+      gl.bufferData(
+        gl.ARRAY_BUFFER,
+        new Float32Array([-1, -1, 3, -1, -1, 3]),
+        gl.STATIC_DRAW,
+      );
+      const position = gl.getAttribLocation(program, "aPosition");
+      gl.enableVertexAttribArray(position);
+      gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
 
-    let frame = 0;
-    let disposed = false;
-    let lost = false;
-    let tabVisible = document.visibilityState === "visible";
-    let onScreen = false;
-    const mouse = { x: 0.5, y: 0.5 };
-    const target = { x: 0.5, y: 0.5 };
-    let hover = 0;
-    let hoverTarget = 0;
-    const startedAt = performance.now();
+      const u = {
+        time: gl.getUniformLocation(program, "uTime"),
+        resolution: gl.getUniformLocation(program, "uResolution"),
+        mouse: gl.getUniformLocation(program, "uMouse"),
+        hover: gl.getUniformLocation(program, "uHover"),
+      };
+      const palette = PALETTES[tone];
+      gl.uniform1f(gl.getUniformLocation(program, "uSeed"), seed);
+      gl.uniform3fv(gl.getUniformLocation(program, "uBg"), palette.bg);
+      gl.uniform3fv(gl.getUniformLocation(program, "uFg"), palette.fg);
+      gl.uniform3fv(gl.getUniformLocation(program, "uAccent"), palette.accent);
 
-    function resize() {
-      // 1× is plenty for a soft field; these panels are small.
-      const width = Math.max(1, canvas!.clientWidth);
-      const height = Math.max(1, canvas!.clientHeight);
-      if (canvas!.width === width && canvas!.height === height) return;
-      canvas!.width = width;
-      canvas!.height = height;
-      gl!.viewport(0, 0, width, height);
-    }
+      let frame = 0;
+      let disposed = false;
+      let lost = false;
+      let tabVisible = document.visibilityState === "visible";
+      const mouse = { x: 0.5, y: 0.5 };
+      const target = { x: 0.5, y: 0.5 };
+      let hover = 0;
+      let hoverTarget = 0;
+      const startedAt = performance.now();
 
-    function draw(now: number) {
-      resize();
-      mouse.x += (target.x - mouse.x) * 0.08;
-      mouse.y += (target.y - mouse.y) * 0.08;
-      hover += (hoverTarget - hover) * 0.08;
-      gl!.uniform1f(u.time, (now - startedAt) / 1000);
-      gl!.uniform2f(u.resolution, canvas!.width, canvas!.height);
-      gl!.uniform2f(u.mouse, mouse.x, mouse.y);
-      gl!.uniform1f(u.hover, hover);
-      gl!.drawArrays(gl!.TRIANGLES, 0, 3);
-    }
+      function resize() {
+        // 1× is plenty for a soft field; these panels are small.
+        const width = Math.max(1, canvas!.clientWidth);
+        const height = Math.max(1, canvas!.clientHeight);
+        if (canvas!.width === width && canvas!.height === height) return;
+        canvas!.width = width;
+        canvas!.height = height;
+        gl!.viewport(0, 0, width, height);
+      }
 
-    function render(now: number) {
-      frame = 0;
-      if (disposed || lost) return;
-      draw(now);
-      schedule();
-    }
+      function draw(now: number) {
+        resize();
+        mouse.x += (target.x - mouse.x) * 0.08;
+        mouse.y += (target.y - mouse.y) * 0.08;
+        hover += (hoverTarget - hover) * 0.08;
+        gl!.uniform1f(u.time, (now - startedAt) / 1000);
+        gl!.uniform2f(u.resolution, canvas!.width, canvas!.height);
+        gl!.uniform2f(u.mouse, mouse.x, mouse.y);
+        gl!.uniform1f(u.hover, hover);
+        gl!.drawArrays(gl!.TRIANGLES, 0, 3);
+      }
 
-    function schedule() {
-      if (frame || disposed || lost || reduce || !tabVisible || !onScreen)
-        return;
-      frame = requestAnimationFrame(render);
-    }
+      function render(now: number) {
+        frame = 0;
+        if (disposed || lost) return;
+        draw(now);
+        schedule();
+      }
 
-    function stop() {
-      if (!frame) return;
-      cancelAnimationFrame(frame);
-      frame = 0;
-    }
+      function schedule() {
+        if (frame || disposed || lost || reduce || !tabVisible) return;
+        frame = requestAnimationFrame(render);
+      }
 
-    function onPointerMove(event: PointerEvent) {
-      const rect = canvas!.getBoundingClientRect();
-      target.x = (event.clientX - rect.left) / rect.width;
-      target.y = 1 - (event.clientY - rect.top) / rect.height;
-      hoverTarget = 1;
-    }
-    function onPointerLeave() {
-      hoverTarget = 0;
-    }
-    function onContextLost(event: Event) {
-      event.preventDefault();
-      lost = true;
-      stop();
-    }
-    function onVisibility() {
-      tabVisible = document.visibilityState === "visible";
-      if (tabVisible) schedule();
-      else stop();
+      function stop() {
+        if (!frame) return;
+        cancelAnimationFrame(frame);
+        frame = 0;
+      }
+
+      function onPointerMove(event: PointerEvent) {
+        const rect = canvas!.getBoundingClientRect();
+        target.x = (event.clientX - rect.left) / rect.width;
+        target.y = 1 - (event.clientY - rect.top) / rect.height;
+        hoverTarget = 1;
+      }
+      function onPointerLeave() {
+        hoverTarget = 0;
+      }
+      function onContextLost(event: Event) {
+        event.preventDefault();
+        lost = true;
+        stop();
+      }
+      function onVisibility() {
+        tabVisible = document.visibilityState === "visible";
+        if (tabVisible) schedule();
+        else stop();
+      }
+
+      canvas!.addEventListener("pointermove", onPointerMove, { passive: true });
+      canvas!.addEventListener("pointerleave", onPointerLeave);
+      canvas!.addEventListener("webglcontextlost", onContextLost);
+      document.addEventListener("visibilitychange", onVisibility);
+
+      // Reduced motion: one static frame, then nothing.
+      if (reduce) draw(performance.now());
+      else schedule();
+
+      return () => {
+        disposed = true;
+        stop();
+        canvas!.removeEventListener("pointermove", onPointerMove);
+        canvas!.removeEventListener("pointerleave", onPointerLeave);
+        canvas!.removeEventListener("webglcontextlost", onContextLost);
+        document.removeEventListener("visibilitychange", onVisibility);
+        gl.deleteProgram(program);
+        gl.deleteShader(vertex);
+        gl.deleteShader(fragment);
+        gl.deleteBuffer(buffer);
+        gl.getExtension("WEBGL_lose_context")?.loseContext();
+      };
     }
 
     const observer = new IntersectionObserver(
       (entries) => {
-        onScreen = entries[0]?.isIntersecting ?? false;
-        if (onScreen) {
-          // Reduced motion: one static frame, then nothing.
-          if (reduce) draw(performance.now());
-          else schedule();
-        } else {
-          stop();
+        const visible = entries[0]?.isIntersecting ?? false;
+        if (visible && !teardown) {
+          teardown = mount();
+        } else if (!visible && teardown) {
+          teardown();
+          teardown = null;
         }
       },
-      { rootMargin: "60px" },
+      { rootMargin: "160px" },
     );
-
-    canvas.addEventListener("pointermove", onPointerMove, { passive: true });
-    canvas.addEventListener("pointerleave", onPointerLeave);
-    canvas.addEventListener("webglcontextlost", onContextLost);
-    document.addEventListener("visibilitychange", onVisibility);
     observer.observe(canvas);
 
     return () => {
-      disposed = true;
-      stop();
       observer.disconnect();
-      canvas.removeEventListener("pointermove", onPointerMove);
-      canvas.removeEventListener("pointerleave", onPointerLeave);
-      canvas.removeEventListener("webglcontextlost", onContextLost);
-      document.removeEventListener("visibilitychange", onVisibility);
-      gl.deleteProgram(program);
-      gl.deleteShader(vertex);
-      gl.deleteShader(fragment);
-      gl.deleteBuffer(buffer);
-      gl.getExtension("WEBGL_lose_context")?.loseContext();
+      teardown?.();
+      teardown = null;
     };
   }, [variant, tone, seed]);
 

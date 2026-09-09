@@ -35,6 +35,7 @@ export function StudioShaderSlot({
   return (
     <div
       aria-hidden
+      data-studio-media
       className={`studio-slot relative overflow-hidden border ${border} ${className}`}
     >
       <StudioShaderPanel variant={variant} tone={tone} seed={seed} />
