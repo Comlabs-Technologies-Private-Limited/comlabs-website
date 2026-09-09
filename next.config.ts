@@ -25,6 +25,12 @@ const nextConfig: NextConfig = {
         hostname: "*.public.blob.vercel-storage.com",
         pathname: "/**",
       },
+      // Digital marketing studio hero photograph (Vladislav Nahorny, Unsplash).
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+        pathname: "/**",
+      },
     ],
   },
   async redirects() {
