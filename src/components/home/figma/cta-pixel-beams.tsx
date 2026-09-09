@@ -58,7 +58,7 @@ export function CtaPixelBeams() {
             insideColor={BEAM_CORE}
             outsideColor={BEAM_EDGE}
             blendMode="screen"
-            opacity={0.36}
+            opacity={0.46}
           />
           <Beam
             startPosition={{ x: -0.08, y: 0.42 }}
@@ -70,7 +70,7 @@ export function CtaPixelBeams() {
             insideColor={BEAM_EDGE}
             outsideColor={CTA_BLACK}
             blendMode="screen"
-            opacity={0.26}
+            opacity={0.34}
           />
           <Beam
             startPosition={{ x: 0.05, y: -0.12 }}
@@ -82,7 +82,7 @@ export function CtaPixelBeams() {
             insideColor={BEAM_CORE}
             outsideColor={BEAM_EDGE}
             blendMode="screen"
-            opacity={0.2}
+            opacity={0.28}
           />
           <Beam
             startPosition={{ x: 0.55, y: -0.18 }}
@@ -94,7 +94,7 @@ export function CtaPixelBeams() {
             insideColor={BEAM_EDGE}
             outsideColor={CTA_BLACK}
             blendMode="screen"
-            opacity={0.22}
+            opacity={0.3}
           />
         </Group>
       </Pixelate>
