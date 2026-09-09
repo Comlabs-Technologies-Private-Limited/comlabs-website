@@ -120,7 +120,7 @@ export function ServiceRelatedServices({
           }
         />
 
-        <div className="border-y border-border p-2 md:p-3">
+        <div className="border-y border-border px-0 py-2 md:p-3">
           <div className={`flat-frame grid grid-cols-1 ${columnClass}`}>
             {services.map((item, index) => {
               const canonical = canonicalServices.find(
