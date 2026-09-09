@@ -14,18 +14,29 @@ export function StudioTestimonial() {
       className="border-b border-[var(--studio-line)] py-20 md:py-28"
     >
       <div className="studio-shell">
-        <h2 id="studio-testimonial-heading" className="studio-eyebrow" data-studio-reveal>
+        <h2
+          id="studio-testimonial-heading"
+          className="studio-eyebrow"
+          data-studio-reveal
+        >
           Client proof
         </h2>
 
         <figure className="mt-10 md:mt-14">
-          <blockquote
-            data-studio-reveal
-            className="studio-display max-w-[22ch] text-[clamp(1.75rem,4.6vw,3.5rem)] md:max-w-[26ch]"
-          >
-            <span aria-hidden>“</span>
-            {proof.quote}
-            <span aria-hidden>”</span>
+          <blockquote className="studio-display max-w-[22ch] text-[clamp(1.75rem,4.6vw,3.5rem)] md:max-w-[26ch]">
+            {/* Masked wrapper: the quote rises into view as one block of lines
+                while remaining a single, complete string for screen readers. */}
+            <span data-studio-line>
+              <span>
+                <span aria-hidden className="studio-accent">
+                  “
+                </span>
+                {proof.quote}
+                <span aria-hidden className="studio-accent">
+                  ”
+                </span>
+              </span>
+            </span>
           </blockquote>
 
           <figcaption

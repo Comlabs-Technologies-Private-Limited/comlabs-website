@@ -8,8 +8,13 @@ export function StudioCta() {
     <section
       id={DIGITAL_STUDIO_SECTIONS.contact}
       aria-labelledby="studio-cta-heading"
-      className="scroll-mt-16 bg-[var(--studio-black)] text-[var(--studio-white)] md:scroll-mt-20"
+      data-studio-field
+      className="relative isolate scroll-mt-16 overflow-hidden bg-[var(--studio-black)] text-[var(--studio-white)] md:scroll-mt-20"
     >
+      <span
+        aria-hidden
+        className="studio-field pointer-events-none absolute inset-0 -z-10"
+      />
       <div className="studio-shell py-24 md:py-32">
         <p className="studio-eyebrow" data-studio-reveal>
           Start here
@@ -19,14 +24,15 @@ export function StudioCta() {
           data-studio-reveal
           className="studio-display mt-6 max-w-[14ch] text-[clamp(2.5rem,7vw,6rem)]"
         >
-          Let&rsquo;s find the <em className="studio-serif">signal</em>.
+          Let&rsquo;s find the <span className="studio-accent">signal</span>.
         </h2>
         <p
           data-studio-reveal
           className="mt-8 max-w-xl text-[0.9375rem] leading-[1.75] text-[rgba(250,250,247,0.68)] md:text-base"
         >
-          Tell us what you are trying to grow and what has not worked yet. We will come back with how
-          we would approach it — positioning first, channels after.
+          Tell us what you are trying to grow and what has not worked yet. We
+          will come back with how we would approach it — positioning first,
+          channels after.
         </p>
 
         <div
@@ -35,11 +41,19 @@ export function StudioCta() {
         >
           <a
             href={`mailto:${DIGITAL_MARKETING_CONTACT_EMAIL}`}
-            className="studio-display text-[clamp(1.25rem,3.4vw,2.25rem)] break-all transition-colors duration-300 hover:text-[var(--studio-blue)]"
+            className="studio-cta studio-display inline-flex items-center gap-3 text-[clamp(1.25rem,3.4vw,2.25rem)] break-all hover:text-[var(--studio-blue)]"
           >
             {DIGITAL_MARKETING_CONTACT_EMAIL}
+            <span
+              aria-hidden
+              className="studio-cta__marker text-[var(--studio-blue)]"
+            >
+              ↗
+            </span>
           </a>
-          <p className="text-sm text-[rgba(250,250,247,0.56)]">{siteLocation}</p>
+          <p className="text-sm text-[rgba(250,250,247,0.56)]">
+            {siteLocation}
+          </p>
         </div>
       </div>
     </section>

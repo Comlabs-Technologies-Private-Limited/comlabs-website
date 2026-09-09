@@ -31,8 +31,8 @@ export function StudioCapabilities() {
             data-studio-reveal
             className="max-w-sm text-[0.9375rem] leading-[1.75] text-[rgba(250,250,247,0.62)]"
           >
-            You can start anywhere on this list. What you cannot do is run one of them in isolation
-            and expect the rest of the funnel to hold.
+            You can start anywhere on this list. What you cannot do is run one
+            of them in isolation and expect the rest of the funnel to hold.
           </p>
         </div>
 
@@ -44,7 +44,7 @@ export function StudioCapabilities() {
             <article
               key={capability.id}
               data-studio-reveal
-              className="group flex flex-col bg-[var(--studio-black)] p-7 transition-colors duration-500 hover:bg-[#0e1113] md:p-9"
+              className="studio-cell flex flex-col bg-[var(--studio-black)] p-7 hover:bg-[rgba(78,114,242,0.05)] md:p-9"
             >
               <div className="flex items-baseline justify-between gap-4">
                 <span className="font-mono text-[0.6875rem] tracking-widest text-[var(--studio-cyan)]">
@@ -55,8 +55,14 @@ export function StudioCapabilities() {
                 </span>
               </div>
 
-              <h3 className="studio-display mt-7 text-[1.375rem] md:text-[1.5rem]">
+              <h3 className="studio-cell__title studio-display mt-7 flex items-baseline gap-2.5 text-[1.375rem] md:text-[1.5rem]">
                 {capability.title}
+                <span
+                  aria-hidden
+                  className="studio-cell__marker text-[var(--studio-blue)]"
+                >
+                  →
+                </span>
               </h3>
               <p className="mt-4 flex-1 text-[0.875rem] leading-[1.75] text-[rgba(250,250,247,0.62)]">
                 {capability.description}

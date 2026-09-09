@@ -40,7 +40,11 @@ export function StudioFaq() {
             const buttonId = `${baseId}-button-${index}`;
 
             return (
-              <div key={faq.question} className="border-t border-[var(--studio-line)] last:border-b">
+              <div
+                key={faq.question}
+                data-open={open}
+                className="studio-faq border-t border-[var(--studio-line)] last:border-b"
+              >
                 <h3>
                   <button
                     type="button"
@@ -48,7 +52,7 @@ export function StudioFaq() {
                     aria-expanded={open}
                     aria-controls={panelId}
                     onClick={() => setOpenIndex(open ? null : index)}
-                    className="flex w-full items-start justify-between gap-6 py-6 text-left"
+                    className="studio-faq__question flex w-full items-start justify-between gap-6 px-1 py-6 text-left"
                   >
                     <span className="text-[1.0625rem] font-medium tracking-tight md:text-[1.125rem]">
                       {faq.question}
@@ -67,10 +71,19 @@ export function StudioFaq() {
                     </span>
                   </button>
                 </h3>
-                <div id={panelId} role="region" aria-labelledby={buttonId} hidden={!open}>
-                  <p className="max-w-2xl pb-7 text-[0.9375rem] leading-[1.75] text-[#4a4e51]">
-                    {faq.answer}
-                  </p>
+                {/* Height is animated with a 0fr/1fr grid row, so the answer
+                    stays in the DOM and remains selectable and crawlable. */}
+                <div
+                  id={panelId}
+                  role="region"
+                  aria-labelledby={buttonId}
+                  className="studio-faq__panel"
+                >
+                  <div>
+                    <p className="max-w-2xl px-1 pb-7 text-[0.9375rem] leading-[1.75] text-[#4a4e51]">
+                      {faq.answer}
+                    </p>
+                  </div>
                 </div>
               </div>
             );

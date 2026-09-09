@@ -6,13 +6,21 @@ import {
   DIGITAL_STUDIO_HERO_CREDIT,
   DIGITAL_STUDIO_SECTIONS,
 } from "@/lib/digital-marketing-studio";
-import { CASE_STUDIES_PATH, canonicalPath, siteLocation, siteName } from "@/lib/site";
+import {
+  CASE_STUDIES_PATH,
+  canonicalPath,
+  siteLocation,
+  siteName,
+} from "@/lib/site";
 
 const STUDIO_LINKS = [
   { label: "Selected work", href: `#${DIGITAL_STUDIO_SECTIONS.work}` },
   { label: "Capabilities", href: `#${DIGITAL_STUDIO_SECTIONS.capabilities}` },
   { label: "Process", href: `#${DIGITAL_STUDIO_SECTIONS.process}` },
-  { label: "Engagement models", href: `#${DIGITAL_STUDIO_SECTIONS.engagements}` },
+  {
+    label: "Engagement models",
+    href: `#${DIGITAL_STUDIO_SECTIONS.engagements}`,
+  },
   { label: "Questions", href: `#${DIGITAL_STUDIO_SECTIONS.faq}` },
 ] as const;
 
@@ -20,8 +28,14 @@ const STUDIO_LINKS = [
 const COMLABS_LINKS = [
   { label: "Services", href: "/services" },
   { label: "Case studies", href: CASE_STUDIES_PATH },
-  { label: "SEO, AEO & Search Engineering", href: "/services/seo-aeo-copywriting" },
-  { label: "Web & Digital Experience", href: "/services/website-design-development" },
+  {
+    label: "SEO, AEO & Search Engineering",
+    href: "/services/seo-aeo-copywriting",
+  },
+  {
+    label: "Web & Digital Experience",
+    href: "/services/website-design-development",
+  },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ] as const;
@@ -39,13 +53,19 @@ export function StudioFooter() {
         <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-20">
           <div>
             <Link href={canonicalPath("/")} aria-label={`${siteName} home`}>
-              <ComlabsLogo decorative className="h-6 w-auto brightness-0 invert" />
+              <ComlabsLogo
+                decorative
+                className="h-6 w-auto brightness-0 invert"
+              />
             </Link>
             <p className="mt-5 max-w-xs text-sm leading-relaxed text-[rgba(250,250,247,0.62)]">
-              The digital marketing and design studio inside {siteName} — positioning, creative,
-              search, performance and analytics as one system.
+              The digital marketing and design studio inside {siteName} —
+              positioning, creative, search, performance and analytics as one
+              system.
             </p>
-            <p className="mt-4 text-sm text-[rgba(250,250,247,0.62)]">{siteLocation}</p>
+            <p className="mt-4 text-sm text-[rgba(250,250,247,0.62)]">
+              {siteLocation}
+            </p>
             <a
               href={`mailto:${DIGITAL_MARKETING_CONTACT_EMAIL}`}
               className="mt-2 inline-block text-sm text-[rgba(250,250,247,0.62)] underline-offset-4 transition-colors hover:text-[var(--studio-white)]"

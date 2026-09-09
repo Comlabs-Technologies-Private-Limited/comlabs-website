@@ -39,14 +39,15 @@ export function StudioWorkInterlude() {
           data-studio-reveal
           className="studio-display mt-6 max-w-[16ch] text-[clamp(2.25rem,5.6vw,4.5rem)]"
         >
-          Four businesses. One <em className="studio-serif">method</em>.
+          Four businesses. One <span className="studio-accent">method</span>.
         </h2>
         <p
           data-studio-reveal
           className="mt-7 max-w-lg text-[0.9375rem] leading-[1.75] text-[#4a4e51]"
         >
-          Each of these started with a positioning problem and ended as a digital experience the
-          business could actually sell from. Read the full write-ups in our case studies.
+          Each of these started with a positioning problem and ended as a
+          digital experience the business could actually sell from. Read the
+          full write-ups in our case studies.
         </p>
         <p
           data-studio-reveal

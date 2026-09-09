@@ -25,8 +25,8 @@ export function StudioEngagements() {
             data-studio-reveal
             className="mt-6 max-w-sm text-[0.9375rem] leading-[1.75] text-[#4a4e51]"
           >
-            Every engagement is shaped around the problem in front of us, not a fixed roster of
-            deliverables.
+            Every engagement is shaped around the problem in front of us, not a
+            fixed roster of deliverables.
           </p>
         </div>
 
@@ -35,13 +35,13 @@ export function StudioEngagements() {
             <article
               key={engagement.index}
               data-studio-reveal
-              className="grid gap-4 border-t border-[var(--studio-line)] py-8 last:border-b md:grid-cols-[4rem_minmax(0,1fr)] md:gap-10 md:py-10"
+              className="studio-row grid gap-4 border-t border-[var(--studio-line)] py-8 transition-colors duration-400 last:border-b hover:border-[rgba(17,19,21,0.34)] hover:bg-[rgba(78,114,242,0.035)] md:grid-cols-[4rem_minmax(0,1fr)] md:gap-10 md:py-10"
             >
-              <span className="font-mono text-[0.6875rem] tracking-widest text-[var(--studio-grey)]">
+              <span className="studio-row__index font-mono text-[0.6875rem] tracking-widest text-[var(--studio-grey)]">
                 {engagement.index}
               </span>
               <div>
-                <h3 className="studio-display text-[clamp(1.5rem,2.6vw,2.125rem)]">
+                <h3 className="studio-row__title studio-display text-[clamp(1.5rem,2.6vw,2.125rem)]">
                   {engagement.title}
                 </h3>
                 <p className="mt-4 max-w-xl text-[0.9375rem] leading-[1.75] text-[#4a4e51]">

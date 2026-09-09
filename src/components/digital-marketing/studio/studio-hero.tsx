@@ -17,7 +17,9 @@ import { registerGsap } from "@/lib/gsap-client";
  * client-only and loaded after the hero paints. Everything a reader or crawler
  * needs is server-rendered DOM underneath it.
  */
-const StudioHeroCanvas = dynamic(() => import("./studio-hero-canvas"), { ssr: false });
+const StudioHeroCanvas = dynamic(() => import("./studio-hero-canvas"), {
+  ssr: false,
+});
 
 const SIGNAL_CARDS = [
   {
@@ -46,14 +48,21 @@ export function StudioHero() {
       if (!root) return;
 
       const gsap = registerGsap();
-      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const reduce = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
       const stage = root.querySelectorAll<HTMLElement>("[data-hero-stage]");
       const cards = root.querySelectorAll<HTMLElement>("[data-hero-card]");
       const wordmark = root.querySelector<HTMLElement>("[data-hero-wordmark]");
       const media = root.querySelector<HTMLElement>("[data-hero-media]");
 
       if (reduce) {
-        gsap.set([stage, cards, wordmark, media], { clearProps: "all", opacity: 1, y: 0, scale: 1 });
+        gsap.set([stage, cards, wordmark, media], {
+          clearProps: "all",
+          opacity: 1,
+          y: 0,
+          scale: 1,
+        });
         return;
       }
 
@@ -61,10 +70,30 @@ export function StudioHero() {
       const timeline = gsap.timeline({ defaults: { ease: "power3.out" } });
 
       timeline
-        .fromTo(media, { scale: 1.08, opacity: 0.4 }, { scale: 1, opacity: 1, duration: 1.5 }, 0)
-        .fromTo(stage, { y: 28, opacity: 0 }, { y: 0, opacity: 1, duration: 0.9, stagger: 0.11 }, 0.25)
-        .fromTo(cards, { y: 34, opacity: 0 }, { y: 0, opacity: 1, duration: 0.85, stagger: 0.09 }, 0.65)
-        .fromTo(wordmark, { yPercent: 26, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 1 }, 0.85);
+        .fromTo(
+          media,
+          { scale: 1.08, opacity: 0.4 },
+          { scale: 1, opacity: 1, duration: 1.5 },
+          0,
+        )
+        .fromTo(
+          stage,
+          { y: 28, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.9, stagger: 0.11 },
+          0.25,
+        )
+        .fromTo(
+          cards,
+          { y: 34, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.85, stagger: 0.09 },
+          0.65,
+        )
+        .fromTo(
+          wordmark,
+          { yPercent: 26, opacity: 0 },
+          { yPercent: 0, opacity: 1, duration: 1 },
+          0.85,
+        );
     },
     { scope: rootRef },
   );
@@ -76,7 +105,10 @@ export function StudioHero() {
       aria-labelledby="studio-hero-heading"
       className="relative isolate flex min-h-[100svh] flex-col overflow-hidden bg-[var(--studio-black)] text-[var(--studio-white)]"
     >
-      <div data-hero-media className="absolute inset-0 -z-10 motion-safe:opacity-0">
+      <div
+        data-hero-media
+        className="absolute inset-0 -z-10 motion-safe:opacity-0"
+      >
         <Image
           src={digitalStudioHeroImage}
           alt={DIGITAL_STUDIO_HERO_ALT}
@@ -104,17 +136,18 @@ export function StudioHero() {
             <h1
               id="studio-hero-heading"
               data-hero-stage
-              className="studio-display mt-6 text-[clamp(2.75rem,7.4vw,6.25rem)] motion-safe:opacity-0"
+              className="studio-display studio-h1 mt-6 motion-safe:opacity-0"
             >
               Marketing that turns attention into{" "}
-              <em className="studio-serif">measurable growth</em>.
+              <span className="studio-accent">measurable growth</span>.
             </h1>
             <p
               data-hero-stage
               className="mt-7 max-w-xl text-[0.9375rem] leading-relaxed text-[rgba(250,250,247,0.72)] motion-safe:opacity-0 md:text-base"
             >
-              We connect positioning, creative, search, performance and analytics into one growth
-              system — so every campaign strengthens the business behind it.
+              We connect positioning, creative, search, performance and
+              analytics into one growth system — so every campaign strengthens
+              the business behind it.
             </p>
             <div
               data-hero-stage
@@ -122,15 +155,18 @@ export function StudioHero() {
             >
               <a
                 href={`#${DIGITAL_STUDIO_SECTIONS.contact}`}
-                className="inline-flex h-12 items-center justify-center bg-[var(--studio-white)] px-7 text-sm font-medium text-[var(--studio-ink)] transition-colors duration-300 hover:bg-[var(--studio-blue)] hover:text-[var(--studio-white)]"
+                className="studio-cta inline-flex h-12 items-center justify-center gap-2.5 bg-[var(--studio-white)] px-7 text-sm font-medium text-[var(--studio-ink)] hover:bg-[var(--studio-blue)] hover:text-[var(--studio-white)]"
               >
                 Start a conversation
+                <span aria-hidden className="studio-cta__marker">
+                  ↗
+                </span>
               </a>
               <a
                 href={`#${DIGITAL_STUDIO_SECTIONS.work}`}
-                className="inline-flex h-12 items-center justify-center border border-[var(--studio-line-dark)] px-7 text-sm font-medium transition-colors duration-300 hover:border-[var(--studio-white)]"
+                className="studio-ghost inline-flex h-12 items-center justify-center border border-[var(--studio-line-dark)] px-7 text-sm font-medium hover:border-[var(--studio-white)]"
               >
-                See selected work
+                <span>See selected work</span>
               </a>
             </div>
           </div>

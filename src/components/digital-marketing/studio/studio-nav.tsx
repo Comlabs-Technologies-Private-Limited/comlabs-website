@@ -79,13 +79,23 @@ export function StudioNav() {
           >
             <ComlabsLogo
               decorative
-              className={cn("h-6 w-auto transition-[filter] duration-500", dark && "brightness-0 invert")}
+              className={cn(
+                "h-6 w-auto transition-[filter] duration-500",
+                dark && "brightness-0 invert",
+              )}
             />
           </Link>
 
-          <nav aria-label="Studio sections" className="hidden items-center gap-9 md:flex">
+          <nav
+            aria-label="Studio sections"
+            className="hidden items-center gap-9 md:flex"
+          >
             {LINKS.map((link) => (
-              <a key={link.label} href={link.href} className="text-sm font-medium">
+              <a
+                key={link.label}
+                href={link.href}
+                className="text-sm font-medium"
+              >
                 <SlideLabel>{link.label}</SlideLabel>
               </a>
             ))}
@@ -128,7 +138,10 @@ export function StudioNav() {
           className="fixed inset-0 z-60 flex flex-col bg-[var(--studio-ink)] text-[var(--studio-white)] md:hidden"
         >
           <div className="studio-shell flex h-16 items-center justify-between">
-            <ComlabsLogo decorative className="h-6 w-auto brightness-0 invert" />
+            <ComlabsLogo
+              decorative
+              className="h-6 w-auto brightness-0 invert"
+            />
             <button
               ref={closeRef}
               type="button"
@@ -143,19 +156,23 @@ export function StudioNav() {
             </button>
           </div>
 
-          <nav aria-label="Studio sections" className="studio-shell mt-6 flex flex-col">
-            {[...LINKS, { label: "Contact", href: `#${DIGITAL_STUDIO_SECTIONS.contact}` }].map(
-              (link) => (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  onClick={() => setMenuOpen(false)}
-                  className="studio-display border-t border-[var(--studio-line-dark)] py-5 text-[2rem]"
-                >
-                  {link.label}
-                </a>
-              ),
-            )}
+          <nav
+            aria-label="Studio sections"
+            className="studio-shell mt-6 flex flex-col"
+          >
+            {[
+              ...LINKS,
+              { label: "Contact", href: `#${DIGITAL_STUDIO_SECTIONS.contact}` },
+            ].map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                onClick={() => setMenuOpen(false)}
+                className="studio-display border-t border-[var(--studio-line-dark)] py-5 text-[2rem]"
+              >
+                {link.label}
+              </a>
+            ))}
           </nav>
         </div>
       ) : null}

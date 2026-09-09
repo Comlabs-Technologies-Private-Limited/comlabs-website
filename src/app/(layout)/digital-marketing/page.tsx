@@ -22,7 +22,11 @@ import {
   DIGITAL_MARKETING_PATH,
 } from "@/lib/digital-marketing";
 import { buildPageMetadata } from "@/lib/metadata";
-import { getBreadcrumbSchema, getFaqPageSchema, getServiceSchema } from "@/lib/schema";
+import {
+  getBreadcrumbSchema,
+  getFaqPageSchema,
+  getServiceSchema,
+} from "@/lib/schema";
 
 export const metadata: Metadata = buildPageMetadata({
   title: DIGITAL_MARKETING_META.title,

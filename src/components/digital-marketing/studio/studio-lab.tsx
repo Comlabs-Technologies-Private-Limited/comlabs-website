@@ -28,8 +28,8 @@ export function StudioLab() {
           data-studio-reveal
           className="max-w-sm text-[0.9375rem] leading-[1.75] text-[#4a4e51]"
         >
-          Not deliverables for their own sake — these are the working documents the decisions get
-          made from.
+          Not deliverables for their own sake — these are the working documents
+          the decisions get made from.
         </p>
       </div>
 
@@ -37,14 +37,17 @@ export function StudioLab() {
         className="studio-rail mt-12 flex snap-x snap-mandatory gap-px overflow-x-auto bg-[var(--studio-line)] md:mt-16"
         // The rail bleeds to both edges, so the first and last cards get the
         // page gutter as padding instead of the shell doing it.
-        style={{ paddingInline: "var(--studio-gutter)", scrollPaddingInline: "var(--studio-gutter)" }}
+        style={{
+          paddingInline: "var(--studio-gutter)",
+          scrollPaddingInline: "var(--studio-gutter)",
+        }}
         tabIndex={0}
         aria-label="Marketing lab artefacts, scroll horizontally"
       >
         {DIGITAL_STUDIO_LAB.map((item, index) => (
           <li
             key={item.id}
-            className="flex w-[17rem] shrink-0 snap-start flex-col bg-[var(--studio-white)] p-7 sm:w-[19rem] md:w-[21rem]"
+            className="studio-cell flex w-[17rem] shrink-0 snap-start flex-col bg-[var(--studio-white)] p-7 hover:bg-[rgba(78,114,242,0.04)] sm:w-[19rem] md:w-[21rem]"
           >
             <div className="flex items-baseline justify-between gap-4">
               <span className="font-mono text-[0.6875rem] tracking-widest text-[var(--studio-grey)]">
@@ -54,8 +57,18 @@ export function StudioLab() {
                 {item.label}
               </span>
             </div>
-            <h3 className="studio-display mt-10 text-[1.375rem]">{item.title}</h3>
-            <p className="mt-4 text-[0.875rem] leading-[1.75] text-[#4a4e51]">{item.note}</p>
+            <h3 className="studio-cell__title studio-display mt-10 flex items-baseline gap-2.5 text-[1.375rem]">
+              {item.title}
+              <span
+                aria-hidden
+                className="studio-cell__marker text-[var(--studio-blue)]"
+              >
+                →
+              </span>
+            </h3>
+            <p className="mt-4 text-[0.875rem] leading-[1.75] text-[#4a4e51]">
+              {item.note}
+            </p>
           </li>
         ))}
       </ul>

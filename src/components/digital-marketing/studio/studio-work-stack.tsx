@@ -23,7 +23,7 @@ export function StudioWorkStack() {
           // Sticky only from `lg`, where a panel is reliably shorter than the
           // viewport. Below that the panels stack in normal flow instead of
           // pinning something too tall to fully read.
-          className="border-t border-[var(--studio-line-dark)] bg-[var(--studio-ink)] lg:sticky lg:top-20"
+          className="studio-work border-t border-[var(--studio-line-dark)] bg-[var(--studio-ink)] shadow-[0_-1px_0_rgba(250,250,247,0.06)] lg:sticky lg:top-20"
         >
           <div className="studio-shell grid items-center gap-10 py-14 md:py-20 lg:grid-cols-2 lg:gap-16">
             <div className="order-2 lg:order-1">
@@ -35,7 +35,7 @@ export function StudioWorkStack() {
                   {project.discipline}
                 </span>
               </div>
-              <h3 className="studio-display mt-5 text-[clamp(2rem,4.6vw,3.5rem)]">
+              <h3 className="studio-work__title studio-display mt-5 text-[clamp(2rem,4.6vw,3.5rem)]">
                 {project.client}
               </h3>
               <p className="mt-5 max-w-lg text-[0.9375rem] leading-[1.75] text-[rgba(250,250,247,0.68)]">
@@ -53,18 +53,31 @@ export function StudioWorkStack() {
                   aria-hidden
                   className="block h-px w-8 bg-[var(--studio-white)] transition-[width] duration-400 group-hover:w-12"
                 />
+                <span
+                  aria-hidden
+                  className="studio-cta__marker text-[var(--studio-cyan)]"
+                >
+                  ↗
+                </span>
                 <span className="sr-only">: {project.client}</span>
               </Link>
             </div>
 
             <div className="order-1 lg:order-2">
-              <div className="relative aspect-[4/3] overflow-hidden border border-[var(--studio-line-dark)]">
+              <div
+                data-studio-media
+                className="studio-work__frame relative aspect-[4/3] border border-[var(--studio-line-dark)]"
+              >
                 <Image
                   src={project.image}
                   alt={project.imageAlt}
                   fill
                   sizes="(min-width: 1024px) 46vw, 100vw"
-                  className="object-cover object-top"
+                  className="studio-work__image object-cover object-top"
+                />
+                <span
+                  aria-hidden
+                  className="studio-work__veil absolute inset-0"
                 />
               </div>
             </div>

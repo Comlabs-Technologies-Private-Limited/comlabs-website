@@ -1,25 +1,35 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+
+import {
+  DIGITAL_STUDIO_HERO_ALT,
+  digitalStudioHeroImage,
+} from "@/lib/digital-marketing-studio";
 
 /**
- * Atmospheric shader layer that sits over the hero photograph.
+ * WebGL hero treatment.
  *
- * It is deliberately *not* a Three.js scene: the effect is a single full-screen
- * fragment shader (drifting light bands in the studio blue/cyan/amber, plus
- * animated film grain), so raw WebGL keeps it at a few kilobytes instead of
- * pulling a renderer into the critical path.
+ * The hero photograph is uploaded as a texture and drawn through custom GLSL:
+ * a cover-fit sampler, a soft cursor refraction lens, pointer-velocity driven
+ * chromatic separation and grain, a smoothed scroll-velocity bend, fine film
+ * grain, and a `uProgress` entrance reveal.
  *
- * The component renders nothing meaningful without WebGL — the photograph and
- * all hero text sit underneath in normal DOM, so losing the canvas costs only
- * the atmosphere. It is loaded dynamically, capped at 1.5× DPR, paused when
- * scrolled out of view or when the tab is hidden, and re-initialises after a
- * `webglcontextlost` event.
+ * Written against raw WebGL rather than Three.js: this is one full-screen
+ * quad with one material, so a renderer abstraction would add far more weight
+ * than it saves. There is exactly one context on the page.
+ *
+ * The DOM `<Image>` in `studio-hero.tsx` stays mounted underneath and is what
+ * a visitor sees while the texture loads, if WebGL is unavailable, if a shader
+ * fails to compile, if the texture is blocked, or under reduced motion. The
+ * canvas only fades in once it has actually drawn a frame.
  */
 
 const VERTEX_SHADER = `
 attribute vec2 aPosition;
+varying vec2 vUv;
 void main() {
+  vUv = aPosition * 0.5 + 0.5;
   gl_Position = vec4(aPosition, 0.0, 1.0);
 }
 `;
@@ -27,55 +37,88 @@ void main() {
 const FRAGMENT_SHADER = `
 precision mediump float;
 
-uniform vec2 uResolution;
-uniform float uTime;
+varying vec2 vUv;
 
-// Studio palette. Blue is the signal; cyan and amber stay atmospheric.
-const vec3 BLUE  = vec3(0.306, 0.447, 0.949);
-const vec3 CYAN  = vec3(0.459, 0.835, 0.816);
-const vec3 AMBER = vec3(0.851, 0.604, 0.329);
+uniform sampler2D uTexture;
+uniform float uTime;
+uniform vec2 uResolution;
+uniform vec2 uImageResolution;
+uniform vec2 uMouse;
+uniform float uVelocity;
+uniform float uHover;
+uniform float uScrollVelocity;
+uniform float uProgress;
+
+/** object-fit: cover, solved in UV space. */
+vec2 coverUv(vec2 uv, vec2 canvas, vec2 image) {
+  vec2 ratio = vec2(
+    min((canvas.x / canvas.y) / (image.x / image.y), 1.0),
+    min((canvas.y / canvas.x) / (image.y / image.x), 1.0)
+  );
+  return vec2(
+    uv.x * ratio.x + (1.0 - ratio.x) * 0.5,
+    uv.y * ratio.y + (1.0 - ratio.y) * 0.5
+  );
+}
 
 float hash(vec2 p) {
   return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
 }
 
-float noise(vec2 p) {
-  vec2 i = floor(p);
-  vec2 f = fract(p);
-  vec2 u = f * f * (3.0 - 2.0 * f);
-  return mix(
-    mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x),
-    mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x),
-    u.y
-  );
-}
-
 void main() {
-  vec2 uv = gl_FragCoord.xy / uResolution.xy;
-  vec2 p = vec2(uv.x * (uResolution.x / max(uResolution.y, 1.0)), uv.y);
+  float aspect = uResolution.x / max(uResolution.y, 1.0);
 
-  float t = uTime * 0.045;
+  // --- Cursor refraction -------------------------------------------------
+  // Distance is measured in aspect-corrected space so the lens stays round.
+  vec2 toMouse = vUv - uMouse;
+  toMouse.x *= aspect;
+  float dist = length(toMouse);
 
-  // Two slow, overlapping light fields drifting across the frame.
-  float fieldA = noise(p * 1.7 + vec2(t, t * 0.6));
-  float fieldB = noise(p * 2.6 - vec2(t * 0.8, t * 0.35));
+  float radius = 0.28;
+  float lens = smoothstep(radius, 0.0, dist);
+  // Squared falloff keeps the centre soft instead of pinched.
+  lens *= lens;
 
-  float blueMask = smoothstep(0.42, 0.98, fieldA) * (1.0 - uv.x * 0.55);
-  float cyanMask = smoothstep(0.58, 1.0, fieldB) * 0.45;
-  float amberMask = smoothstep(0.55, 1.0, fieldA * fieldB) * uv.x * 0.7;
+  float strength = (0.016 + uVelocity * 0.022) * mix(0.55, 1.0, uHover);
+  vec2 refraction = normalize(toMouse + 1e-5) * lens * strength;
+  refraction.x /= aspect;
 
-  vec3 color = BLUE * blueMask + CYAN * cyanMask + AMBER * amberMask;
+  // --- Scroll bend -------------------------------------------------------
+  float bend = sin(vUv.x * 3.14159) * uScrollVelocity * 0.05;
+  vec2 scrollOffset = vec2(0.0, uScrollVelocity * 0.022 + bend);
 
-  // Vignette so the atmosphere never washes out the headline area.
-  float vignette = smoothstep(1.15, 0.28, length(uv - vec2(0.5)));
-  color *= vignette;
+  // --- Entrance reveal ---------------------------------------------------
+  // A radial mask opening outward from just below centre.
+  vec2 fromCentre = vUv - vec2(0.5, 0.44);
+  fromCentre.x *= aspect;
+  float reveal = smoothstep(length(fromCentre), length(fromCentre) + 0.35, uProgress * 1.35);
+  float settle = (1.0 - uProgress) * 0.03;
 
-  // Fine animated grain keeps large flat areas from banding.
-  float grain = (hash(gl_FragCoord.xy + fract(uTime) * 137.0) - 0.5) * 0.055;
-  color += grain;
+  vec2 uv = vUv - refraction - scrollOffset;
+  uv += (uv - 0.5) * settle;
+  uv = coverUv(uv, uResolution, uImageResolution);
 
-  float alpha = clamp(blueMask * 0.5 + cyanMask * 0.4 + amberMask * 0.45 + 0.06, 0.0, 0.62);
-  gl_FragColor = vec4(color, alpha);
+  // --- Chromatic separation ----------------------------------------------
+  // Rises with pointer velocity and inside the lens only, so the image is
+  // never permanently fringed.
+  float split = (uVelocity * 0.0032 + lens * uVelocity * 0.006);
+  vec2 shift = normalize(toMouse + 1e-5) * split;
+  shift.x /= aspect;
+
+  vec3 color;
+  color.r = texture2D(uTexture, uv + shift).r;
+  color.g = texture2D(uTexture, uv).g;
+  color.b = texture2D(uTexture, uv - shift).b;
+
+  // --- Grain -------------------------------------------------------------
+  float grainAmount = 0.028 + uVelocity * 0.02 * lens;
+  float grain = hash(gl_FragCoord.xy + floor(uTime * 24.0)) - 0.5;
+  color += grain * grainAmount;
+
+  // Reveal darkens the not-yet-open area rather than clipping it.
+  color *= mix(0.06, 1.0, reveal);
+
+  gl_FragColor = vec4(color, 1.0);
 }
 `;
 
@@ -91,28 +134,62 @@ function compile(gl: WebGLRenderingContext, type: number, source: string) {
   return shader;
 }
 
+function loadTexture(src: string) {
+  return new Promise<HTMLImageElement | null>((resolve) => {
+    const image = new window.Image();
+    image.crossOrigin = "anonymous";
+    image.decoding = "async";
+    image.onload = () => resolve(image);
+    image.onerror = () => resolve(null);
+    image.src = src;
+  });
+}
+
 export default function StudioHeroCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
+    // Constrained devices keep the plain DOM photograph: a full-viewport
+    // fragment shader is the wrong trade on a low-core phone.
+    const coarse = window.matchMedia("(pointer: coarse)").matches;
+    const lowCore = (navigator.hardwareConcurrency ?? 8) <= 4;
+    if (coarse && lowCore) return;
+
     const gl = canvas.getContext("webgl", {
-      alpha: true,
+      alpha: false,
       antialias: false,
       depth: false,
       stencil: false,
-      premultipliedAlpha: false,
       powerPreference: "low-power",
     });
     if (!gl) return;
 
+    let disposed = false;
+    let frame = 0;
+    let contextLost = false;
+    let tabVisible = document.visibilityState === "visible";
+    let onScreen = true;
+
+    // Pointer and scroll state live in closures, never in React state: these
+    // update on every move and every frame.
+    const mouse = { x: 0.5, y: 0.5 };
+    const target = { x: 0.5, y: 0.5 };
+    let velocity = 0;
+    let hover = 0;
+    let hoverTarget = 0;
+    let scrollVelocity = 0;
+    let lastScrollY = window.scrollY;
+    let startedAt = 0;
+
+    const program = gl.createProgram();
     const vertex = compile(gl, gl.VERTEX_SHADER, VERTEX_SHADER);
     const fragment = compile(gl, gl.FRAGMENT_SHADER, FRAGMENT_SHADER);
-    const program = gl.createProgram();
-    if (!vertex || !fragment || !program) return;
+    if (!program || !vertex || !fragment) return;
 
     gl.attachShader(program, vertex);
     gl.attachShader(program, fragment);
@@ -122,27 +199,30 @@ export default function StudioHeroCanvas() {
 
     const buffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([-1, -1, 3, -1, -1, 3]),
+      gl.STATIC_DRAW,
+    );
     const positionLocation = gl.getAttribLocation(program, "aPosition");
     gl.enableVertexAttribArray(positionLocation);
     gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
 
-    gl.enable(gl.BLEND);
-    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    const uniforms = {
+      texture: gl.getUniformLocation(program, "uTexture"),
+      time: gl.getUniformLocation(program, "uTime"),
+      resolution: gl.getUniformLocation(program, "uResolution"),
+      imageResolution: gl.getUniformLocation(program, "uImageResolution"),
+      mouse: gl.getUniformLocation(program, "uMouse"),
+      velocity: gl.getUniformLocation(program, "uVelocity"),
+      hover: gl.getUniformLocation(program, "uHover"),
+      scrollVelocity: gl.getUniformLocation(program, "uScrollVelocity"),
+      progress: gl.getUniformLocation(program, "uProgress"),
+    };
 
-    const resolutionLocation = gl.getUniformLocation(program, "uResolution");
-    const timeLocation = gl.getUniformLocation(program, "uTime");
-
-    let frame = 0;
-    let disposed = false;
-    let contextLost = false;
-    let tabVisible = document.visibilityState === "visible";
-    let onScreen = true;
-    const startedAt = performance.now();
+    let texture: WebGLTexture | null = null;
 
     function resize() {
-      // Capped DPR: this is a soft atmospheric layer, so extra pixels buy
-      // nothing visible and cost fill rate on phones.
       const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       const width = Math.max(1, Math.round(canvas!.clientWidth * dpr));
       const height = Math.max(1, Math.round(canvas!.clientHeight * dpr));
@@ -152,18 +232,80 @@ export default function StudioHeroCanvas() {
       gl!.viewport(0, 0, width, height);
     }
 
+    function onPointerMove(event: PointerEvent) {
+      const rect = canvas!.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) return;
+      const x = (event.clientX - rect.left) / rect.width;
+      // GL's origin is bottom-left.
+      const y = 1 - (event.clientY - rect.top) / rect.height;
+      const dx = x - target.x;
+      const dy = y - target.y;
+      velocity = Math.min(velocity + Math.hypot(dx, dy) * 5.5, 1.6);
+      target.x = x;
+      target.y = y;
+      hoverTarget = x >= 0 && x <= 1 && y >= 0 && y <= 1 ? 1 : 0;
+    }
+
+    function onPointerLeave() {
+      hoverTarget = 0;
+    }
+
+    function onScroll() {
+      const delta = window.scrollY - lastScrollY;
+      lastScrollY = window.scrollY;
+      scrollVelocity = Math.max(-1, Math.min(1, scrollVelocity + delta / 220));
+    }
+
     function render(now: number) {
       frame = 0;
-      if (disposed || contextLost) return;
+      if (disposed || contextLost || !texture) return;
+      if (!startedAt) startedAt = now;
+
       resize();
-      gl!.uniform2f(resolutionLocation, canvas!.width, canvas!.height);
-      gl!.uniform1f(timeLocation, (now - startedAt) / 1000);
+
+      // Critically damped easing — approaches rest without oscillating.
+      mouse.x += (target.x - mouse.x) * 0.075;
+      mouse.y += (target.y - mouse.y) * 0.075;
+      hover += (hoverTarget - hover) * 0.08;
+      velocity *= 0.92;
+      scrollVelocity *= 0.9;
+
+      const elapsed = (now - startedAt) / 1000;
+      // ~1050ms reveal, eased out, played exactly once.
+      const linear = Math.min(elapsed / 1.05, 1);
+      const progress = 1 - Math.pow(1 - linear, 3);
+
+      gl!.uniform1f(uniforms.time, elapsed);
+      gl!.uniform2f(uniforms.resolution, canvas!.width, canvas!.height);
+      gl!.uniform2f(uniforms.mouse, mouse.x, mouse.y);
+      gl!.uniform1f(uniforms.velocity, velocity);
+      gl!.uniform1f(uniforms.hover, hover);
+      gl!.uniform1f(uniforms.scrollVelocity, scrollVelocity);
+      gl!.uniform1f(uniforms.progress, progress);
       gl!.drawArrays(gl!.TRIANGLES, 0, 3);
-      schedule();
+
+      // Once the reveal is done and every driver has settled, stop drawing
+      // until something moves again.
+      const settled =
+        progress >= 1 &&
+        Math.abs(velocity) < 0.001 &&
+        Math.abs(scrollVelocity) < 0.001 &&
+        Math.abs(hover - hoverTarget) < 0.001 &&
+        Math.abs(mouse.x - target.x) < 0.0005 &&
+        Math.abs(mouse.y - target.y) < 0.0005;
+      if (!settled) schedule();
     }
 
     function schedule() {
-      if (frame || disposed || contextLost || !tabVisible || !onScreen) return;
+      if (
+        frame ||
+        disposed ||
+        contextLost ||
+        !tabVisible ||
+        !onScreen ||
+        !texture
+      )
+        return;
       frame = requestAnimationFrame(render);
     }
 
@@ -177,12 +319,7 @@ export default function StudioHeroCanvas() {
       event.preventDefault();
       contextLost = true;
       stop();
-    }
-
-    function onContextRestored() {
-      // The GPU resources above are gone; a fresh mount rebuilds them, so the
-      // page simply continues without the atmosphere rather than half-drawing.
-      contextLost = true;
+      setReady(false);
     }
 
     function onVisibilityChange() {
@@ -197,22 +334,47 @@ export default function StudioHeroCanvas() {
         if (onScreen) schedule();
         else stop();
       },
-      { rootMargin: "120px" },
+      { rootMargin: "80px" },
     );
 
     canvas.addEventListener("webglcontextlost", onContextLost);
-    canvas.addEventListener("webglcontextrestored", onContextRestored);
     document.addEventListener("visibilitychange", onVisibilityChange);
+    window.addEventListener("pointermove", onPointerMove, { passive: true });
+    window.addEventListener("scroll", onScroll, { passive: true });
+    canvas.addEventListener("pointerleave", onPointerLeave);
     observer.observe(canvas);
-    schedule();
+
+    void loadTexture(digitalStudioHeroImage).then((image) => {
+      if (disposed || !image) return;
+      texture = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_2D, texture);
+      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+      // Non-power-of-two source: clamp and linear filtering, no mipmaps.
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
+      gl.uniform1i(uniforms.texture, 0);
+      gl.uniform2f(
+        uniforms.imageResolution,
+        image.naturalWidth,
+        image.naturalHeight,
+      );
+      setReady(true);
+      schedule();
+    });
 
     return () => {
       disposed = true;
       stop();
       observer.disconnect();
-      document.removeEventListener("visibilitychange", onVisibilityChange);
       canvas.removeEventListener("webglcontextlost", onContextLost);
-      canvas.removeEventListener("webglcontextrestored", onContextRestored);
+      canvas.removeEventListener("pointerleave", onPointerLeave);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+      window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("scroll", onScroll);
+      if (texture) gl.deleteTexture(texture);
       gl.deleteProgram(program);
       gl.deleteShader(vertex);
       gl.deleteShader(fragment);
@@ -225,7 +387,11 @@ export default function StudioHeroCanvas() {
     <canvas
       ref={canvasRef}
       aria-hidden
-      className="pointer-events-none absolute inset-0 h-full w-full mix-blend-screen"
+      // Decorative: the DOM photograph with its alt text sits underneath.
+      title={DIGITAL_STUDIO_HERO_ALT}
+      className={`pointer-events-none absolute inset-0 h-full w-full transition-opacity duration-700 ${
+        ready ? "opacity-100" : "opacity-0"
+      }`}
     />
   );
 }
