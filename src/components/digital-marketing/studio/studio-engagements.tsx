@@ -1,3 +1,4 @@
+import { StudioShaderSlot } from "@/components/digital-marketing/studio/studio-shader-slot";
 import { DIGITAL_MARKETING_ENGAGEMENTS } from "@/lib/digital-marketing";
 import { DIGITAL_STUDIO_SECTIONS } from "@/lib/digital-marketing-studio";
 
@@ -28,6 +29,11 @@ export function StudioEngagements() {
             Every engagement is shaped around the problem in front of us, not a
             fixed roster of deliverables.
           </p>
+          <StudioShaderSlot
+            variant="scan"
+            seed={11}
+            className="mt-10 hidden aspect-[4/5] max-w-sm lg:block"
+          />
         </div>
 
         <div data-studio-stagger>

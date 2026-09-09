@@ -411,6 +411,15 @@ button:focus-visible .studio-slide > span:last-child {
   transform: translateX(4px);
 }
 
+.studio-row__visual {
+  transition: transform 520ms var(--studio-ease-precise);
+}
+
+.studio-row:hover .studio-row__visual,
+.studio-row:focus-within .studio-row__visual {
+  transform: translateY(-4px);
+}
+
 /* Capability and marketing-lab cells. */
 .studio-cell {
   transition:

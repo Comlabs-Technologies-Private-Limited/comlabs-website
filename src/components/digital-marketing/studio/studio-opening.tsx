@@ -1,3 +1,4 @@
+import { StudioShaderSlot } from "@/components/digital-marketing/studio/studio-shader-slot";
 import { DIGITAL_STUDIO_OPENING } from "@/lib/digital-marketing-studio";
 
 /** Opening proof split — the two commitments the rest of the page evidences. */
@@ -19,6 +20,11 @@ export function StudioOpening() {
           >
             Strategy, creative and performance under one roof.
           </h2>
+          <StudioShaderSlot
+            variant="flow"
+            seed={7}
+            className="mt-10 hidden aspect-[4/5] max-w-sm lg:block"
+          />
         </div>
 
         <div
