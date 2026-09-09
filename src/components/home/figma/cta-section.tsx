@@ -1,10 +1,16 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { ArrowRight } from "lucide-react";
 
 import { BlurReveal, BLUR_REVEAL_NORMAL_SPEED } from "@/components/blur-reveal";
 import { RevealCopy, useAfterTitleReveal } from "@/components/home/figma/after-title-reveal";
 import { canonicalPath } from "@/lib/site";
+
+const CtaPixelBeams = dynamic(
+  () => import("./cta-pixel-beams").then((mod) => mod.CtaPixelBeams),
+  { ssr: false },
+);
 
 export function FigmaCtaSection() {
   const { revealed, onTitleComplete } = useAfterTitleReveal();
@@ -14,10 +20,20 @@ export function FigmaCtaSection() {
       <div className="hatch-aligned-frame border-y border-border px-1 py-1 md:px-0 md:py-0">
         <section
           id="contact"
-          className="section-layout overflow-hidden"
+          className="section-layout relative overflow-hidden"
           style={{ background: "var(--foreground)" }}
         >
-        <div className="mx-auto max-w-2xl px-10 py-14 text-center md:py-16">
+        <div className="pointer-events-none absolute inset-0" aria-hidden>
+          <CtaPixelBeams />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(ellipse at 50% 48%, rgba(28,25,23,0.45) 0%, rgba(28,25,23,0.12) 54%, transparent 78%)",
+            }}
+          />
+        </div>
+        <div className="relative mx-auto max-w-2xl px-10 py-14 text-center md:py-16">
           <p
             className="mb-6 text-xs font-semibold tracking-widest uppercase"
             style={{ color: "rgba(247,247,244,0.45)" }}
