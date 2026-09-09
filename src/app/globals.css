@@ -20,7 +20,9 @@
   --destructive-foreground: #ffffff;
   --border: rgba(28, 25, 23, 0.1);
   --hairline-hatch: rgba(28, 25, 23, 0.09);
-  --page-hatch-width: calc((100% - min(100% - 64px, 1440px)) / 2);
+  /* Illustration presentation shells only — nudge opacity to lighten/darken lines. */
+  --canvas-hatch-color: rgba(28, 25, 23, 0.06);
+  --page-hatch-width: calc((100% - min(100% - 64px, 1440px)) / 4);
   --input: transparent;
   --input-background: #eeeee9;
   --switch-background: #c8c8c0;
@@ -387,28 +389,29 @@
   margin-inline: auto;
 }
 
-@media (max-width: 767px) {
-  .section-layout {
-    width: calc(100% - 40px);
-  }
-
-  /* Half-width band on mobile. */
-  :root {
-    --page-hatch-width: 10px;
-  }
-}
-
 .flat-frame {
   border: 1px solid var(--border);
   border-radius: 0;
   background: transparent;
 }
 
+/* Full-width top/bottom hairlines between hatch vertical rules. */
+.hatch-aligned-frame {
+  margin-inline: var(--page-hatch-width);
+}
+
+/* Nested section-layout must not re-apply the page inset — fill the hatch band. */
+.hatch-aligned-frame > .section-layout {
+  width: 100%;
+  max-width: none;
+  margin-inline: 0;
+}
+
 /*
  * Hatched page gutters. Each post-hero section paints an overlay whose two
  * background layers sit in the outer margins either side of .section-layout,
  * so the texture runs unbroken from the hero down to the footer. The band
- * tracks the gutter on desktop and halves on mobile.
+ * tracks the gutter at every viewport width.
  */
 .gutter-hatch {
   position: absolute;
@@ -459,6 +462,87 @@
   right: var(--page-hatch-width);
 }
 
+/*
+ * Horizontal hatch band between the vertical gutter rules — spans hatch-to-hatch.
+ */
+.gutter-hatch-rule {
+  position: relative;
+  display: block;
+  pointer-events: none;
+  margin-inline: var(--page-hatch-width);
+  height: calc(var(--page-hatch-width) + 1px);
+  background-image: repeating-linear-gradient(
+    45deg,
+    var(--gutter-hatch-color, var(--hairline-hatch)) 0,
+    var(--gutter-hatch-color, var(--hairline-hatch)) 1px,
+    transparent 1px,
+    transparent 6px
+  );
+}
+
+/*
+ * Full-area hatch fill — matches gutter-hatch 45° lines for inset canvases.
+ * Use .hatch-canvas-layer as an absolute sibling behind grid content so the
+ * pattern shares one viewport origin across columns (background-attachment: fixed).
+ */
+.hatch-canvas-fill {
+  position: relative;
+  background-color: var(--background);
+}
+
+.hatch-canvas-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-color: var(--background);
+  background-image: repeating-linear-gradient(
+    45deg,
+    var(--canvas-hatch-color, var(--hairline-hatch)) 0,
+    var(--canvas-hatch-color, var(--hairline-hatch)) 1px,
+    transparent 1px,
+    transparent 6px
+  );
+  background-attachment: fixed;
+}
+
+.hatch-canvas-fill > .hatch-canvas-layer + * {
+  position: relative;
+  z-index: 1;
+}
+
+.gutter-hatch-rule::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--gutter-line-color, var(--border));
+}
+
+/* Pin to section edges — top hairline on ::before, bottom on ::after. */
+.gutter-hatch-rule-edge {
+  position: absolute;
+  left: var(--page-hatch-width);
+  right: var(--page-hatch-width);
+  z-index: 2;
+  margin-inline: 0;
+  height: calc(var(--page-hatch-width) + 1px);
+}
+
+.gutter-hatch-rule-edge-top {
+  top: 0;
+}
+
+.gutter-hatch-rule-edge-bottom {
+  bottom: 0;
+}
+
+.gutter-hatch-rule-edge-bottom::before {
+  top: auto;
+  bottom: 0;
+}
 /* Light-on-dark hatch and rule for the dark bands. */
 .gutter-hatch-on-dark {
   --gutter-hatch-color: rgba(244, 242, 237, 0.1);

@@ -16,6 +16,10 @@ export type ChromaticImageProps = {
   tilt?: number;
   /** Listen on the parent so a pointer-events-none background still tracks the cursor. */
   trackParent?: boolean;
+  /** Focal point for cover framing — 0–1, default center. */
+  focusX?: number;
+  focusY?: number;
+  objectPosition?: string;
 };
 
 const VERTEX_SHADER = `
@@ -39,6 +43,7 @@ uniform float uProgress;
 uniform float uZoom;
 uniform float uWarp;
 uniform float uChromatic;
+uniform vec2 uFocus;
 varying vec2 vUv;
 
 vec2 cover(vec2 uv) {
@@ -55,7 +60,7 @@ void main() {
   vec2 movement = (uPointer - vec2(0.5)) * vec2(uCanvasAspect, 1.0);
   vec2 direction = movement / max(length(movement), 0.2);
 
-  vec2 baseUv = mix(vUv, vec2(0.5), uZoom * uProgress * 0.28);
+  vec2 baseUv = mix(vUv, uFocus, uZoom * uProgress * 0.28);
   float band = sin(vUv.y * 24.0 + uPointer.x * 5.0);
   float fineBand = sin(vUv.y * 71.0 - uPointer.y * 4.0);
   baseUv.x += (band * 0.72 + fineBand * 0.28) * uWarp * strength * 0.16;
@@ -116,6 +121,9 @@ export function ChromaticImage({
   chromaticShift = 0.01,
   tilt = 0.3,
   trackParent = false,
+  focusX = 0.5,
+  focusY = 0.5,
+  objectPosition = "50% 50%",
 }: ChromaticImageProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -162,12 +170,14 @@ export function ChromaticImage({
       zoom: gl.getUniformLocation(program, "uZoom"),
       warp: gl.getUniformLocation(program, "uWarp"),
       chromatic: gl.getUniformLocation(program, "uChromatic"),
+      focus: gl.getUniformLocation(program, "uFocus"),
     };
 
     gl.uniform1i(uniforms.image, 0);
     gl.uniform1f(uniforms.zoom, zoom);
     gl.uniform1f(uniforms.warp, displacement);
     gl.uniform1f(uniforms.chromatic, chromaticShift);
+    gl.uniform2f(uniforms.focus, focusX, focusY);
 
     const texture = gl.createTexture();
     gl.activeTexture(gl.TEXTURE0);
@@ -341,7 +351,7 @@ export function ChromaticImage({
       gl.deleteShader(vertex);
       gl.deleteShader(fragment);
     };
-  }, [backgroundColor, displacement, chromaticShift, src, tilt, trackParent, zoom]);
+  }, [backgroundColor, displacement, chromaticShift, focusX, focusY, src, tilt, trackParent, zoom]);
 
   return (
     <div
@@ -357,6 +367,7 @@ export function ChromaticImage({
           "absolute inset-0 size-full object-cover transition-opacity duration-300",
           ready ? "opacity-0" : "opacity-100",
         )}
+        style={{ objectPosition }}
       />
       <canvas
         ref={canvasRef}

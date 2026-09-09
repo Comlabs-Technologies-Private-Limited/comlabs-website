@@ -327,23 +327,23 @@ function DesignCursor({ reduce, active }: { reduce: boolean; active: boolean }) 
 function Sidebar() {
   return (
     <div
-      className="flex h-full w-[118px] shrink-0 flex-col lg:w-[132px]"
+      className="flex h-full w-[92px] shrink-0 flex-col sm:w-[118px] lg:w-[132px]"
       style={{
         background: surface,
         borderRight: `1px solid ${border}`,
       }}
     >
-      <div className="flex items-center justify-between px-3 pt-3">
+      <div className="flex items-center justify-between px-2 pt-2 sm:px-3 sm:pt-3">
         <AppMark />
         <SidebarToggle />
       </div>
       <p
-        className="mt-3 px-3 text-[9px] leading-none font-medium tracking-tight lg:text-[10px]"
+        className="mt-2 px-2 text-[8px] leading-none font-medium tracking-tight sm:mt-3 sm:px-3 sm:text-[9px] lg:text-[10px]"
         style={{ color: ink }}
       >
         Agency v2.2
       </p>
-      <div className="mt-2 flex items-center gap-1 px-3">
+      <div className="mt-1.5 flex items-center gap-1 px-2 sm:mt-2 sm:px-3">
         <span className="text-[7px] leading-none tracking-tight lg:text-[8px]" style={{ color: inkMuted }}>
           Drafts
         </span>
@@ -359,7 +359,7 @@ function Sidebar() {
         </span>
       </div>
       <div
-        className="mx-2 mt-3 grid grid-cols-2 rounded-[8px] p-0.5"
+        className="mx-1.5 mt-2 grid grid-cols-2 rounded-[8px] p-0.5 sm:mx-2 sm:mt-3"
         style={{ background: surfaceSunk }}
       >
         <span
@@ -376,12 +376,12 @@ function Sidebar() {
         </span>
       </div>
       <p
-        className="mt-4 px-3 text-[7px] leading-none font-medium tracking-tight"
+        className="mt-3 px-2 text-[6.5px] leading-none font-medium tracking-tight sm:px-3 sm:text-[7px]"
         style={{ color: inkFaint }}
       >
         Pages
       </p>
-      <ul className="mt-2 flex min-h-0 flex-1 flex-col gap-0.5 overflow-hidden px-2">
+      <ul className="mt-1.5 flex min-h-0 flex-1 flex-col gap-0.5 overflow-hidden px-1.5 sm:mt-2 sm:px-2">
         {PAGES.map((page) => {
           const selected = page === "Home";
           return (
@@ -411,7 +411,7 @@ export function WebsiteDesignIllustration() {
   return (
     <IllustrationStage className="p-0">
       <div
-        className="flex h-full min-h-0 overflow-hidden"
+        className="flex h-full min-h-0 w-full min-w-0 overflow-hidden"
         style={{
           background: surface,
         }}
@@ -426,7 +426,7 @@ export function WebsiteDesignIllustration() {
             backgroundSize: "16px 16px",
           }}
         >
-          <div className="grid h-full min-h-0 grid-cols-2 grid-rows-3 gap-2 p-2 lg:gap-3 lg:p-3">
+          <div className="grid h-full min-h-0 grid-cols-2 grid-rows-3 gap-1.5 p-1.5 sm:gap-2 sm:p-2 lg:gap-3 lg:p-3">
             <PhoneFrame />
             <UserFrame />
             <BoardFrame className="col-span-2 flex min-h-0 flex-col" />

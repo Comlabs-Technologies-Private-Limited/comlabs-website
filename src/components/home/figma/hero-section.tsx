@@ -11,10 +11,11 @@ import { ChromaticImage } from "@/components/ui/chromatic-image";
 import { HERO_BACKGROUND_PATH, mediaUrl } from "@/lib/cloudinary";
 import { canonicalPath } from "@/lib/site";
 
+/** Quiet over the headline; opens toward the right and bottom so the landscape reads. */
 const HERO_OVERLAY =
-  "linear-gradient(180deg, rgba(247,247,244,0.76) 0%, rgba(247,247,244,0.68) 45%, rgba(247,247,244,0.78) 100%)";
+  "linear-gradient(118deg, rgba(247,247,244,0.84) 0%, rgba(247,247,244,0.66) 30%, rgba(247,247,244,0.40) 58%, rgba(247,247,244,0.16) 100%)";
 const HERO_OVERLAY_MOBILE =
-  "linear-gradient(180deg, rgba(247,247,244,0.64) 0%, rgba(247,247,244,0.56) 45%, rgba(247,247,244,0.66) 100%)";
+  "linear-gradient(118deg, rgba(247,247,244,0.78) 0%, rgba(247,247,244,0.54) 36%, rgba(247,247,244,0.26) 100%)";
 
 export function FigmaHeroSection() {
   const theme = useOptionalTheme();
@@ -22,7 +23,7 @@ export function FigmaHeroSection() {
   const { revealed, onTitleComplete } = useAfterTitleReveal();
 
   return (
-    <section className="relative overflow-hidden bg-background px-6 pt-16 pb-16 md:pt-24 md:pb-20">
+    <section className="relative overflow-hidden bg-background py-14 md:py-16">
       {!isDark ? (
         <>
           <ChromaticImage
@@ -30,10 +31,13 @@ export function FigmaHeroSection() {
             alt=""
             trackParent
             backgroundColor="#f7f7f4"
-            zoom={0.14}
-            displacement={0.035}
-            chromaticShift={0.009}
+            zoom={0.06}
+            displacement={0.03}
+            chromaticShift={0.008}
             tilt={0}
+            focusX={0.36}
+            focusY={0.38}
+            objectPosition="36% 38%"
             className="pointer-events-none absolute inset-0 z-0 size-full bg-background"
           />
           <div
@@ -48,102 +52,89 @@ export function FigmaHeroSection() {
           />
         </>
       ) : null}
-      <motion.div
+
+      <span aria-hidden className="gutter-hatch z-[2]" />
+      <span
         aria-hidden
-        className="pointer-events-none absolute -top-24 right-[-18%] z-[2] h-[24rem] w-[24rem] rounded-full"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(201,100,66,0.20) 0%, rgba(201,100,66,0.08) 35%, rgba(201,100,66,0) 70%)",
-        }}
-        initial={{ opacity: 0.2, scale: 0.95 }}
-        animate={{ opacity: [0.2, 0.38, 0.2], scale: [0.95, 1.03, 0.95] }}
-        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        className="gutter-hatch-rule gutter-hatch-rule-edge gutter-hatch-rule-edge-top border-b border-neutral-200"
       />
-      <motion.div
+      <span
         aria-hidden
-        className="pointer-events-none absolute bottom-[-8rem] left-[-8rem] z-[2] h-[18rem] w-[18rem] rounded-full"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(201,100,66,0.12) 0%, rgba(201,100,66,0.05) 40%, rgba(201,100,66,0) 72%)",
-        }}
-        initial={{ opacity: 0.16, scale: 0.98 }}
-        animate={{ opacity: [0.16, 0.28, 0.16], scale: [0.98, 1.06, 0.98] }}
-        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+        className="gutter-hatch-rule gutter-hatch-rule-edge gutter-hatch-rule-edge-bottom "
       />
 
-      <div className="relative z-10 mx-auto max-w-4xl text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45, delay: 0.08 }}
-          className="mb-9 inline-flex items-center gap-2 rounded-full border border-border px-3.5 py-1.5 text-xs font-medium"
-          style={{ color: "var(--warm-orange)", background: "var(--warm-orange-light)" }}
-        >
-          <span
-            className="inline-block h-1.5 w-1.5 rounded-full"
-            style={{ background: "var(--warm-orange)" }}
+      <div className="section-layout relative z-10 px-1 md:px-4">
+        <div className="mx-auto max-w-4xl text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, delay: 0.08 }}
+            className="mb-9 inline-flex items-center gap-2 rounded-full border border-border px-3.5 py-1.5 text-xs font-medium"
+            style={{ color: "var(--warm-orange)", background: "var(--warm-orange-light)" }}
+          >
+            <span
+              className="inline-block h-1.5 w-1.5 rounded-full"
+              style={{ background: "var(--warm-orange)" }}
+            />
+            Currently taking new projects
+          </motion.div>
+
+          <BlurReveal
+            as="h1"
+            inView
+            speedReveal={BLUR_REVEAL_NORMAL_SPEED}
+            onAnimationComplete={onTitleComplete}
+            className="mb-7 text-3xl leading-[1.08] font-bold tracking-tight md:text-6xl"
+            style={{ letterSpacing: "-0.03em" }}
+            segments={[
+              { text: "We Run the" },
+              {
+                text: "Technology",
+                className: "font-bold",
+                style: { color: "var(--warm-orange)" },
+                breakAfter: true,
+              },
+              { text: "Your Business Depends On" },
+            ]}
           />
-          Currently taking new projects
-        </motion.div>
 
-        <BlurReveal
-          as="h1"
-          inView
-          speedReveal={BLUR_REVEAL_NORMAL_SPEED}
-          onAnimationComplete={onTitleComplete}
-          className="mb-7 text-3xl leading-[1.08] font-bold tracking-tight md:text-6xl"
-          style={{ letterSpacing: "-0.03em" }}
-          segments={[
-            { text: "We Run the" },
-            {
-              text: "Technology",
-              className: "font-bold",
-              style: { color: "var(--warm-orange)" },
-              breakAfter: true,
-            },
-            { text: "Your Business Depends On" },
-          ]}
-        />
-
-        <RevealCopy
-          revealed={revealed}
-          className="mx-auto mb-10 max-w-2xl text-md leading-relaxed text-muted-foreground md:text-lg"
-        >
-          Comlabs is an engineering and technology operations company supporting production
-          applications, AI systems, cloud infrastructure and digital products from build through
-          operation.
-        </RevealCopy>
-
-        <RevealCopy
-          revealed={revealed}
-          delay={0.28}
-          as="div"
-          className="flex flex-wrap items-center justify-center gap-3"
-        >
-          <a
-            href={canonicalPath("/contact")}
-            className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-background transition-opacity hover:opacity-90"
-            style={{ background: "var(--foreground)" }}
+          <RevealCopy
+            revealed={revealed}
+            className="mx-auto mb-6 max-w-2xl text-pretty text-base leading-relaxed text-foreground/80 md:max-w-[34rem] md:text-[17px] md:leading-[1.55] md:text-foreground/75"
           >
-            Talk to us <ArrowRight size={14} />
-          </a>
-          <a
-            href="#services"
-            className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium transition-colors hover:bg-accent"
+            We build, scale and support your applications, AI systems and cloud infrastructure from
+            first release to daily operation.
+          </RevealCopy>
+
+          <RevealCopy
+            revealed={revealed}
+            delay={0.12}
+            as="div"
+            className="flex flex-wrap items-center justify-center gap-3"
           >
-            Explore our capabilities
-          </a>
-        </RevealCopy>
+            <a
+              href={canonicalPath("/contact")}
+              className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-background transition-opacity hover:opacity-90"
+              style={{ background: "var(--foreground)" }}
+            >
+              Talk to us <ArrowRight size={14} />
+            </a>
+            <a
+              href="#services"
+              className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium transition-colors hover:bg-accent"
+            >
+              Explore services.
+            </a>
+          </RevealCopy>
+        </div>
       </div>
 
-      <RevealCopy
-        revealed={revealed}
-        delay={0.5}
-        as="div"
-        className="relative z-10 mx-auto mt-16 max-w-5xl"
-      >
-        <div aria-label="Trusted clients">
-          <EnterpriseClientsTrust />
+      <RevealCopy revealed={revealed} delay={0.32} as="div" className="relative z-10 mt-16 w-full">
+        <span aria-hidden className="gutter-hatch-rule" />
+        <div className="section-layout px-1 pt-10 md:px-4 md:pt-12">
+          <div aria-label="Trusted clients">
+            <EnterpriseClientsTrust />
+          </div>
         </div>
       </RevealCopy>
     </section>

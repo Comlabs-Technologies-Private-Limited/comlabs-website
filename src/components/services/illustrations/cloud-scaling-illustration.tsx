@@ -462,7 +462,7 @@ function Metric({
 }) {
   return (
     <div>
-      <p className="text-[6.5px] tracking-tight lg:text-[7.5px]" style={{ color: inkFaint }}>
+      <p className="text-[7.5px] tracking-tight lg:text-[8.5px]" style={{ color: inkMuted }}>
         {label}
       </p>
       <p

@@ -63,7 +63,7 @@ export function FigmaFooter({
 
   return (
     <footer
-      className="border-t px-6 py-14"
+      className="relative border-t py-14"
       style={
         tone === "dark"
           ? {
@@ -74,7 +74,11 @@ export function FigmaFooter({
           : undefined
       }
     >
-      <div className="mx-auto max-w-6xl">
+      <span
+        aria-hidden
+        className={tone === "dark" ? "gutter-hatch gutter-hatch-on-dark" : "gutter-hatch"}
+      />
+      <div className="section-layout px-1 md:px-4">
         <div className="mb-12 flex flex-col justify-between gap-10 md:flex-row">
           <div>
             <Link href="/" className="mb-3 block" aria-label="Comlabs home">
