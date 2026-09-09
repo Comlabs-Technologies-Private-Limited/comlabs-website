@@ -5,7 +5,7 @@ import { Beam, Group, Pixelate, Shader, SolidColor } from "shaders/react";
 
 const CTA_BLACK = "#1c1917";
 const BEAM_CORE = "#f7f7f4";
-const BEAM_EDGE = "#c96442";
+const BEAM_EDGE = "#a8a29e";
 
 type AutoAnimate = {
   type: "auto-animate";
@@ -46,7 +46,7 @@ export function CtaPixelBeams() {
       style={{ background: CTA_BLACK }}
     >
       <SolidColor color={CTA_BLACK} />
-      <Pixelate scale={42} gap={0.14} roundness={0}>
+      <Pixelate scale={96} gap={0.1} roundness={0}>
         <Group>
           <Beam
             startPosition={{ x: -0.15, y: 0.08 }}
@@ -58,7 +58,7 @@ export function CtaPixelBeams() {
             insideColor={BEAM_CORE}
             outsideColor={BEAM_EDGE}
             blendMode="screen"
-            opacity={0.7}
+            opacity={0.36}
           />
           <Beam
             startPosition={{ x: -0.08, y: 0.42 }}
@@ -70,7 +70,7 @@ export function CtaPixelBeams() {
             insideColor={BEAM_EDGE}
             outsideColor={CTA_BLACK}
             blendMode="screen"
-            opacity={0.55}
+            opacity={0.26}
           />
           <Beam
             startPosition={{ x: 0.05, y: -0.12 }}
@@ -82,7 +82,7 @@ export function CtaPixelBeams() {
             insideColor={BEAM_CORE}
             outsideColor={BEAM_EDGE}
             blendMode="screen"
-            opacity={0.4}
+            opacity={0.2}
           />
           <Beam
             startPosition={{ x: 0.55, y: -0.18 }}
@@ -94,7 +94,7 @@ export function CtaPixelBeams() {
             insideColor={BEAM_EDGE}
             outsideColor={CTA_BLACK}
             blendMode="screen"
-            opacity={0.45}
+            opacity={0.22}
           />
         </Group>
       </Pixelate>
