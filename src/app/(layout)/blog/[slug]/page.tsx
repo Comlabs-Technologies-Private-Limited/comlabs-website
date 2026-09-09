@@ -124,7 +124,7 @@ export default async function BlogPostPage({
       <main>
         <article>
           <header
-            className="relative overflow-hidden px-6 pt-12 pb-12 md:pt-16 md:pb-16"
+            className="relative overflow-hidden border-b border-border pt-12 pb-12 md:pt-16 md:pb-16"
             style={{
               backgroundImage: layeredBackgroundImage(
               "linear-gradient(180deg, rgba(247,247,244,0.86) 0%, rgba(247,247,244,0.78) 45%, rgba(247,247,244,0.92) 100%)",
@@ -134,7 +134,8 @@ export default async function BlogPostPage({
               backgroundPosition: "center right",
             }}
           >
-            <div className="relative mx-auto max-w-3xl">
+            <span aria-hidden className="gutter-hatch" />
+            <div className="section-layout relative mx-auto max-w-3xl">
               <PageBreadcrumbs
                 currentPath={`/blog/${post.slug}`}
                 items={[{ label: "Blog", href: "/blog" }, { label: post.title }]}
@@ -151,12 +152,13 @@ export default async function BlogPostPage({
 
                 {post.tags.length > 0 ? (
                   <div
-                    className="inline-flex items-center gap-2 rounded-full border border-border px-3.5 py-1.5 text-xs font-medium"
-                    style={{ color: "var(--warm-orange)", background: "var(--warm-orange-light)" }}
+                    className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase"
+                    style={{ color: "var(--warm-orange)" }}
                   >
                     <span
-                      className="inline-block h-1.5 w-1.5 rounded-full"
-                      style={{ background: "var(--warm-orange)" }}
+                      aria-hidden
+                      className="h-1.5 w-1.5 shrink-0 border"
+                      style={{ borderColor: "var(--warm-orange)" }}
                     />
                     {post.tags[0]}
                   </div>
@@ -197,7 +199,7 @@ export default async function BlogPostPage({
           {post.coverImage ? (
             <div className="border-b border-border bg-card px-6 py-10 md:py-14">
               <div className="mx-auto max-w-5xl">
-                <div className="relative aspect-[16/9] overflow-hidden rounded-3xl border border-border bg-secondary">
+                <div className="relative aspect-[16/9] overflow-hidden border border-border bg-secondary">
                   <Image
                     src={post.coverImage}
                     alt={post.title}
@@ -220,7 +222,7 @@ export default async function BlogPostPage({
                   {post.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="rounded-full border border-border px-3.5 py-1.5 text-xs font-medium text-muted-foreground"
+                      className="border border-border px-3.5 py-1.5 text-xs font-medium text-muted-foreground"
                     >
                       {tag}
                     </span>

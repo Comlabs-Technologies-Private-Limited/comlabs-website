@@ -63,8 +63,9 @@ export function CaseStudyLayout({
           liveSite={extras?.liveSite}
         />
 
-        <div className="border-t border-border px-6 pb-8 md:pb-10">
-          <div className="mx-auto max-w-6xl">
+        <div className="relative border-t border-border pb-8 md:pb-10">
+          <span aria-hidden className="gutter-hatch" />
+          <div className="section-layout">
             <div className="grid grid-cols-12 gap-x-8 gap-y-10 pt-10 lg:gap-x-12 lg:pt-12">
               <div className="col-span-12 lg:col-span-3">
                 <CaseStudyMeta items={meta} />

@@ -28,8 +28,8 @@ export function CaseStudyMedia({ media }: CaseStudyMediaProps) {
     : "h-auto w-full object-contain object-center";
 
   const containerClass = padded
-    ? "overflow-hidden rounded-2xl border border-border"
-    : "overflow-hidden rounded-2xl border border-border bg-card";
+    ? "overflow-hidden border border-border"
+    : "overflow-hidden border border-border bg-card";
 
   return (
     <figure className={`${widthClass} mx-auto`}>

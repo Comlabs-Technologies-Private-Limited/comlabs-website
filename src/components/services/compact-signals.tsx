@@ -11,7 +11,7 @@ function Frame({ children, className }: { children: ReactNode; className?: strin
   return (
     <div
       className={cn(
-        "group relative overflow-hidden rounded-2xl border border-border bg-[#F7F7F4]",
+        "group relative overflow-hidden rounded-none border border-border bg-[#F7F7F4]",
         className,
       )}
     >
@@ -28,7 +28,7 @@ export function ApplicationSupportSignal({ className }: SignalProps) {
           <p className="text-[10px] tracking-[0.14em] text-muted-foreground uppercase">
             INC-2481 · Payments API
           </p>
-          <span className="rounded-full bg-[var(--warm-orange-light)] px-2 py-0.5 text-[10px] text-[var(--warm-orange)]">
+          <span className="bg-[var(--warm-orange-light)] px-2 py-0.5 text-[10px] text-[var(--warm-orange)]">
             P1
           </span>
         </div>
@@ -37,7 +37,7 @@ export function ApplicationSupportSignal({ className }: SignalProps) {
             <li key={step} className="min-w-0">
               <span
                 className={cn(
-                  "mb-2 block h-1 rounded-full bg-neutral-200",
+                  "mb-2 block h-1 rounded-none bg-neutral-200",
                   index < 3 && "bg-[var(--warm-orange)]",
                   index === 3 &&
                     "bg-neutral-200 motion-safe:group-hover:bg-emerald-600/70 motion-reduce:bg-emerald-600/70",
@@ -107,11 +107,11 @@ export function CloudHealthSignal({ className }: SignalProps) {
           <span className="text-[10px] text-emerald-700">Healthy</span>
         </div>
         <div className="mt-4 grid grid-cols-2 gap-2 text-[11px]">
-          <p className="rounded-lg bg-white px-2.5 py-2 text-muted-foreground">
+          <p className="bg-white px-2.5 py-2 text-muted-foreground">
             p95
             <span className="mt-0.5 block text-foreground">128ms</span>
           </p>
-          <p className="rounded-lg bg-white px-2.5 py-2 text-muted-foreground">
+          <p className="bg-white px-2.5 py-2 text-muted-foreground">
             Targets
             <span className="mt-0.5 block text-foreground">3/3</span>
           </p>
@@ -139,7 +139,7 @@ export function WorkflowRequestSignal({ className }: SignalProps) {
             <li key={step} className="flex min-w-0 flex-1 items-center gap-1">
               <span
                 className={cn(
-                  "size-1.5 shrink-0 rounded-full bg-neutral-300",
+                  "size-1.5 shrink-0 rounded-none bg-neutral-300",
                   index < 3 && "bg-[var(--warm-orange)]",
                   index === 3 &&
                     "bg-neutral-300 motion-safe:group-hover:bg-emerald-600 motion-reduce:bg-emerald-600",
@@ -164,12 +164,12 @@ export function PagePerformanceSignal({ className }: SignalProps) {
   return (
     <Frame className={className}>
       <div className="flex h-full min-h-[9.5rem] gap-3 p-4">
-        <div className="flex flex-1 flex-col justify-between rounded-lg bg-white p-3">
-          <span className="h-1.5 w-10 rounded-full bg-neutral-200" />
+        <div className="flex flex-1 flex-col justify-between bg-white p-3">
+          <span className="h-1.5 w-10 rounded-none bg-neutral-200" />
           <div className="space-y-1.5">
-            <span className="block h-1.5 w-full rounded-full bg-neutral-100" />
-            <span className="block h-1.5 w-3/4 rounded-full bg-neutral-100" />
-            <span className="block h-8 rounded-md bg-[var(--warm-orange-light)]" />
+            <span className="block h-1.5 w-full rounded-none bg-neutral-100" />
+            <span className="block h-1.5 w-3/4 rounded-none bg-neutral-100" />
+            <span className="block h-8 rounded-none bg-[var(--warm-orange-light)]" />
           </div>
         </div>
         <div className="flex w-[5.5rem] flex-col justify-between">
@@ -194,10 +194,10 @@ export function MobileTaskSignal({ className }: SignalProps) {
         className="flex h-[9.5rem] w-[5.25rem] flex-col overflow-hidden rounded-[1.35rem] border border-neutral-300 bg-[#1C1917] p-[3px]"
       >
         <div className="flex h-full flex-col rounded-[1.15rem] bg-[#F7F7F4] px-2 pt-3 pb-2">
-          <span className="mx-auto mb-2 h-1 w-6 rounded-full bg-neutral-300" />
+          <span className="mx-auto mb-2 h-1 w-6 rounded-none bg-neutral-300" />
           <p className="text-[8px] tracking-tight text-muted-foreground">Production deploy</p>
           <p className="mt-1 text-[10px] font-medium tracking-tight">Live</p>
-          <span className="mt-auto h-1.5 rounded-full bg-[var(--warm-orange)]" />
+          <span className="mt-auto h-1.5 rounded-none bg-[var(--warm-orange)]" />
           <p className="mt-1 text-[8px] text-muted-foreground">
             Auth ok
             <span className="ml-1 opacity-0 motion-safe:group-hover:opacity-100 motion-reduce:opacity-100">

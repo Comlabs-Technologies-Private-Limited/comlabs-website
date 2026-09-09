@@ -49,9 +49,11 @@ export function ServicePageLayout({ service }: { service: ServicePageData }) {
         <ServicePageHero service={service} />
 
         {triggers.length > 0 ? (
-          <section className="border-b border-border bg-card px-6 py-24 md:py-28">
-            <div className="mx-auto max-w-6xl">
+          <section className="relative border-b border-border bg-card py-24 md:py-28">
+            <span aria-hidden className="gutter-hatch" />
+            <div className="section-layout">
               <MarketingSectionHeader
+                className="mb-12 px-3 md:mb-14 md:px-4"
                 eyebrow="Fit"
                 title={
                   <>
@@ -60,9 +62,18 @@ export function ServicePageLayout({ service }: { service: ServicePageData }) {
                   </>
                 }
               />
-              <div className="grid gap-px overflow-hidden rounded-2xl border border-border bg-border md:grid-cols-2">
-                {triggers.map((item) => (
-                  <article key={item.title} className="bg-background px-6 py-8 md:px-8 md:py-10">
+              <div className="flat-frame grid grid-cols-1 md:grid-cols-2">
+                {triggers.map((item, index) => (
+                  <article
+                    key={item.title}
+                    className={cn(
+                      "bg-background px-6 py-8 md:px-8 md:py-10",
+                      index > 0 && "border-t border-border",
+                      "md:border-t-0",
+                      index >= 2 && "md:border-t md:border-border",
+                      index % 2 !== 0 && "md:border-l md:border-border",
+                    )}
+                  >
                     <h3
                       className="text-[15px] font-medium tracking-tight md:text-base"
                       style={{ letterSpacing: "-0.02em" }}
@@ -88,9 +99,11 @@ export function ServicePageLayout({ service }: { service: ServicePageData }) {
         ) : null}
 
         {hasScope ? (
-          <section className="border-b border-border px-6 py-24 md:py-28">
-            <div className="mx-auto max-w-6xl">
+          <section className="relative border-b border-border py-24 md:py-28">
+            <span aria-hidden className="gutter-hatch" />
+            <div className="section-layout">
               <MarketingSectionHeader
+                className="mb-12 px-3 md:mb-14 md:px-4"
                 eyebrow="Scope"
                 title={
                   <>
@@ -101,7 +114,7 @@ export function ServicePageLayout({ service }: { service: ServicePageData }) {
               />
               <div
                 className={cn(
-                  "grid overflow-hidden rounded-2xl border border-border",
+                  "flat-frame grid",
                   service.problems.length > 0 && ownershipItems.length > 0
                     ? "lg:grid-cols-2"
                     : "grid-cols-1",
@@ -138,15 +151,19 @@ export function ServicePageLayout({ service }: { service: ServicePageData }) {
         {service.process.length > 0 ? (
           <section
             id="engagement"
-            className="border-b border-border bg-secondary/40 px-6 py-24 md:py-28"
+            className="relative border-b border-border bg-secondary/40 py-24 md:py-28"
           >
-            <div className="mx-auto max-w-6xl">
+            <span aria-hidden className="gutter-hatch" />
+            <div className="section-layout">
               <MarketingSectionHeader
+                className="px-3 md:px-4"
                 eyebrow={service.processEyebrow ?? "Engagement"}
                 title={service.processHeading ?? "How the engagement works"}
                 description={service.processIntro}
               />
-              <ServiceProcessRow steps={service.process} />
+              <div className="mt-12 px-3 md:px-4">
+                <ServiceProcessRow steps={service.process} />
+              </div>
             </div>
           </section>
         ) : null}
@@ -154,8 +171,9 @@ export function ServicePageLayout({ service }: { service: ServicePageData }) {
         {service.relatedCaseStudy ? (
           <ServiceRelatedWork caseStudy={service.relatedCaseStudy} />
         ) : service.representativeEngagement ? (
-          <section className="border-b border-border px-6 py-24 md:py-28">
-            <div className="mx-auto max-w-6xl">
+          <section className="relative border-b border-border py-24 md:py-28">
+            <span aria-hidden className="gutter-hatch" />
+            <div className="section-layout px-3 md:px-4">
               <MarketingSectionHeader
                 eyebrow="Engagement"
                 title={service.representativeEngagement.title}
@@ -168,8 +186,9 @@ export function ServicePageLayout({ service }: { service: ServicePageData }) {
         ) : null}
 
         {service.faqs.length > 0 ? (
-          <section className="px-6 py-24 md:py-28">
-            <div className="mx-auto max-w-6xl">
+          <section className="relative py-24 md:py-28">
+            <span aria-hidden className="gutter-hatch" />
+            <div className="section-layout px-3 md:px-4">
               <MarketingSectionHeader
                 eyebrow="FAQ"
                 title={

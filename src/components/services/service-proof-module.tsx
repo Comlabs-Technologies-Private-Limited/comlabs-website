@@ -26,9 +26,10 @@ export function ServiceProofModule({ slug, title, caption }: ServiceProofModuleP
   if (!visual) return null;
 
   return (
-    <section className="border-b border-border bg-card px-6 py-24 md:py-28">
-      <div className="mx-auto max-w-6xl">
-        <MarketingSectionHeader eyebrow="Proof" title={title} description={caption} />
+    <section className="relative border-b border-border bg-card py-24 md:py-28">
+      <span aria-hidden className="gutter-hatch" />
+      <div className="section-layout">
+        <MarketingSectionHeader className="mb-12 px-3 md:mb-14 md:px-4" eyebrow="Proof" title={title} description={caption} />
         {visual}
       </div>
     </section>
@@ -38,14 +39,14 @@ export function ServiceProofModule({ slug, title, caption }: ServiceProofModuleP
 function resolveProofVisual(slug: string): ReactNode {
   if (slug === "website-design-development") {
     return (
-      <div className="overflow-hidden rounded-2xl border border-border">
+      <div className="border-y border-border">
         <WebDigitalProof />
       </div>
     );
   }
   if (slug === "mobile-app-development") {
     return (
-      <div className="overflow-hidden rounded-2xl border border-border">
+      <div className="border-y border-border">
         <MobileOpsProof />
       </div>
     );
@@ -60,7 +61,7 @@ function resolveProofVisual(slug: string): ReactNode {
     <ServiceIllustrationFrame
       label={label}
       chrome={false}
-      className="min-h-[22rem] rounded-2xl border border-border md:min-h-[34rem] md:aspect-[16/10]"
+      className="min-h-[22rem] rounded-none border border-border md:min-h-[34rem] md:aspect-[16/10]"
     >
       <Component />
     </ServiceIllustrationFrame>

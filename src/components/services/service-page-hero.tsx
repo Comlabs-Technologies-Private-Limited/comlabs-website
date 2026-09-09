@@ -17,8 +17,9 @@ export function ServicePageHero({ service }: ServicePageHeroProps) {
   const hasPhoto = Boolean(service.editorialImage);
 
   return (
-    <section className="border-b border-border px-6 pt-12 pb-16 md:pt-16 md:pb-20">
-      <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-16">
+    <section className="relative border-b border-border pt-12 pb-16 md:pt-16 md:pb-20">
+      <span aria-hidden className="gutter-hatch" />
+      <div className="section-layout grid items-center gap-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-16">
         <div>
           <PageBreadcrumbs
             currentPath={service.path}
@@ -60,7 +61,7 @@ export function ServicePageHero({ service }: ServicePageHeroProps) {
 
         <div className="min-w-0">
           {hasPhoto && service.editorialImage ? (
-            <div className="overflow-hidden rounded-3xl border border-border">
+            <div className="overflow-hidden border border-border" style={{ borderRadius: 0 }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={mediaUrl(service.editorialImage.src)}

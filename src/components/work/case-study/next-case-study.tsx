@@ -15,8 +15,9 @@ type NextCaseStudyProps = {
 export function NextCaseStudy({ client, headline, href, thumbnail }: NextCaseStudyProps) {
   return (
     <MarketingFadeIn>
-      <section className="border-t border-border px-6 py-14 md:py-20">
-        <div className="mx-auto max-w-6xl">
+      <section className="relative border-t border-border py-14 md:py-20">
+        <span aria-hidden className="gutter-hatch" />
+        <div className="section-layout">
           <div className="grid grid-cols-12 gap-8 lg:gap-12">
             <div className="col-span-12 lg:col-span-3">
               <p className="text-xs tracking-widest text-muted-foreground uppercase">Next case study</p>
@@ -26,7 +27,7 @@ export function NextCaseStudy({ client, headline, href, thumbnail }: NextCaseStu
                 href={canonicalPath(href)}
                 className="group flex flex-col gap-6 sm:flex-row sm:items-center sm:gap-10"
               >
-                <div className="relative aspect-[16/10] w-full min-h-0 shrink-0 overflow-hidden rounded-2xl border border-border bg-secondary sm:aspect-auto sm:h-28 sm:w-44">
+                <div className="relative aspect-[16/10] w-full min-h-0 shrink-0 overflow-hidden border border-border bg-secondary sm:aspect-auto sm:h-28 sm:w-44">
                   <Image
                     src={thumbnail}
                     alt=""
