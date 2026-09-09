@@ -122,7 +122,7 @@ export default async function BlogIndexPage({
                 No posts yet — check back soon.
               </p>
             ) : (
-              <div className="border-y border-border p-2 md:p-3">
+              <div className="border-y border-border px-0 py-2 md:p-3">
                 <div className="flat-frame">
                   {featured ? (
                     <div className={remaining.length > 0 ? "border-b border-border" : undefined}>

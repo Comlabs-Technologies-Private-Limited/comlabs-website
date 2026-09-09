@@ -41,7 +41,7 @@ export function ServicesIndexGrid({
   services: readonly CanonicalService[];
 }) {
   return (
-    <div className="border-y border-border p-2 md:p-3">
+    <div className="border-y border-border px-0 py-2 md:p-3">
       <div className="flat-frame grid grid-cols-1 lg:grid-cols-2">
         {services.map((service, index) => {
           const startsRow = index % GRID_COLUMNS === 0;

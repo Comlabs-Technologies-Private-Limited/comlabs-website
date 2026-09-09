@@ -20,7 +20,7 @@ export function MarketingWorkGrid({
   showLiveSite = true,
 }: MarketingWorkGridProps) {
   return (
-    <div className="border-y border-border p-2 md:p-3">
+    <div className="border-y border-border px-0 py-2 md:p-3">
       <div className="flat-frame grid grid-cols-1 lg:grid-cols-3">
         {projects.map((project, index) => (
           <MarketingFadeIn
@@ -83,7 +83,7 @@ export function MarketingProjectCards({ projects, compact }: MarketingProjectCar
   const columns = 4;
 
   return (
-    <div className="border-y border-border p-2 md:p-3">
+    <div className="border-y border-border px-0 py-2 md:p-3">
       <div className="flat-frame grid grid-cols-1 lg:grid-cols-4">
         {projects.map((project, index) => (
           <MarketingFadeIn

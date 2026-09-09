@@ -68,7 +68,7 @@ export default function NotFound() {
               </Link>
             </div>
 
-            <div className="mt-16 border-y border-border p-2 md:p-3">
+            <div className="mt-16 border-y border-border px-0 py-2 md:p-3">
               <div className="flat-frame grid grid-cols-1 md:grid-cols-3">
                 {HELP_OPTIONS.map((option, index) => {
                   const Icon = option.icon;

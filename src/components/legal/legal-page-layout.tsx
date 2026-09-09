@@ -95,7 +95,7 @@ export async function LegalPageLayout({
         <section className="relative py-14 md:py-16">
           <span aria-hidden className="gutter-hatch" />
           <div className="section-layout">
-            <div className="border-y border-border p-2 md:p-3">
+            <div className="border-y border-border px-0 py-2 md:p-3">
               <div className="flat-frame grid grid-cols-1 lg:grid-cols-[240px_1px_1fr]">
                 {/* Table of contents */}
                 <nav
