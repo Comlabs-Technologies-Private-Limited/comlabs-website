@@ -39,7 +39,7 @@ export function StudioWorkInterlude() {
           data-studio-reveal
           className="studio-display mt-6 max-w-[16ch] text-[clamp(2.25rem,5.6vw,4.5rem)]"
         >
-          Four businesses. One <span className="studio-accent">method</span>.
+          Four businesses. One method.
         </h2>
         <p
           data-studio-reveal

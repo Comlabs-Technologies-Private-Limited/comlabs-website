@@ -24,7 +24,7 @@ export function StudioCta() {
           data-studio-reveal
           className="studio-display mt-6 max-w-[14ch] text-[clamp(2.5rem,7vw,6rem)]"
         >
-          Let&rsquo;s find the <span className="studio-accent">signal</span>.
+          Let&rsquo;s find the signal.
         </h2>
         <p
           data-studio-reveal

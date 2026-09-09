@@ -28,11 +28,11 @@ export function StudioTestimonial() {
                 while remaining a single, complete string for screen readers. */}
             <span data-studio-line>
               <span>
-                <span aria-hidden className="studio-accent">
+                <span aria-hidden>
                   “
                 </span>
                 {proof.quote}
-                <span aria-hidden className="studio-accent">
+                <span aria-hidden>
                   ”
                 </span>
               </span>

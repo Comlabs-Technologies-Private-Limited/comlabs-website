@@ -314,18 +314,14 @@ button:focus-visible .studio-slide > span:last-child {
   --studio-ease-precise: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Hero H1: emphasis carried by the sans display face, not by italics. */
+/* Hero H1. */
 .studio-h1 {
-  font-size: clamp(3.15rem, 6.35vw, 6.5rem);
+  font-size: clamp(2.5rem, 4.6vw, 4.5rem);
   line-height: 0.92;
   letter-spacing: -0.055em;
   max-width: 12ch;
   /* Keeps the closing phrase from breaking to a single orphaned word. */
   text-wrap: balance;
-}
-
-.studio-accent {
-  color: var(--studio-blue);
 }
 
 /* Primary button — fill, lift, and a marker that travels diagonally. */
