@@ -82,7 +82,7 @@ export default async function AboutPage() {
 
         <section className="relative border-y border-border bg-card py-14 md:py-16">
           <span aria-hidden className="gutter-hatch" />
-          <div className="section-layout grid gap-16 px-3 md:px-4 lg:grid-cols-2 lg:gap-20">
+          <div className="section-layout grid gap-16 px-1 md:px-4 lg:grid-cols-2 lg:gap-20">
             <MarketingFadeIn>
               <MarketingSectionHeader
                 className="mb-0"
@@ -124,7 +124,7 @@ export default async function AboutPage() {
           <span aria-hidden className="gutter-hatch" />
           <div className="section-layout">
             <MarketingSectionHeader
-              className="px-3 md:px-4"
+              className="px-1 md:px-4"
               eyebrow="Case Studies"
               title={
                 <>
@@ -138,7 +138,7 @@ export default async function AboutPage() {
             </div>
             <Link
               href={canonicalPath(CASE_STUDIES_PATH)}
-              className="mt-8 inline-flex items-center gap-1.5 px-3 text-sm font-medium text-[var(--warm-orange)] transition-opacity hover:opacity-80 md:px-4"
+              className="mt-8 inline-flex items-center gap-1.5 px-1 text-sm font-medium text-[var(--warm-orange)] transition-opacity hover:opacity-80 md:px-4"
             >
               View all case studies <ArrowRight size={14} />
             </Link>

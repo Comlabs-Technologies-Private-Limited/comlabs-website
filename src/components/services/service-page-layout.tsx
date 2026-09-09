@@ -53,7 +53,7 @@ export function ServicePageLayout({ service }: { service: ServicePageData }) {
             <span aria-hidden className="gutter-hatch" />
             <div className="section-layout">
               <MarketingSectionHeader
-                className="mb-12 px-3 md:mb-14 md:px-4"
+                className="mb-12 px-1 md:mb-14 md:px-4"
                 eyebrow="Fit"
                 title={
                   <>
@@ -103,7 +103,7 @@ export function ServicePageLayout({ service }: { service: ServicePageData }) {
             <span aria-hidden className="gutter-hatch" />
             <div className="section-layout">
               <MarketingSectionHeader
-                className="mb-12 px-3 md:mb-14 md:px-4"
+                className="mb-12 px-1 md:mb-14 md:px-4"
                 eyebrow="Scope"
                 title={
                   <>
@@ -156,12 +156,12 @@ export function ServicePageLayout({ service }: { service: ServicePageData }) {
             <span aria-hidden className="gutter-hatch" />
             <div className="section-layout">
               <MarketingSectionHeader
-                className="px-3 md:px-4"
+                className="px-1 md:px-4"
                 eyebrow={service.processEyebrow ?? "Engagement"}
                 title={service.processHeading ?? "How the engagement works"}
                 description={service.processIntro}
               />
-              <div className="mt-12 px-3 md:px-4">
+              <div className="mt-12 px-1 md:px-4">
                 <ServiceProcessRow steps={service.process} />
               </div>
             </div>
@@ -173,7 +173,7 @@ export function ServicePageLayout({ service }: { service: ServicePageData }) {
         ) : service.representativeEngagement ? (
           <section className="relative border-b border-border py-14 md:py-16">
             <span aria-hidden className="gutter-hatch" />
-            <div className="section-layout px-3 md:px-4">
+            <div className="section-layout px-1 md:px-4">
               <MarketingSectionHeader
                 eyebrow="Engagement"
                 title={service.representativeEngagement.title}
@@ -188,7 +188,7 @@ export function ServicePageLayout({ service }: { service: ServicePageData }) {
         {service.faqs.length > 0 ? (
           <section className="relative py-14 md:py-16">
             <span aria-hidden className="gutter-hatch" />
-            <div className="section-layout px-3 md:px-4">
+            <div className="section-layout px-1 md:px-4">
               <MarketingSectionHeader
                 eyebrow="FAQ"
                 title={

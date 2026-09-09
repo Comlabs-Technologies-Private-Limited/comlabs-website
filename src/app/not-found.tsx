@@ -46,7 +46,7 @@ export default function NotFound() {
         <section className="relative py-14 md:py-16">
           <span aria-hidden className="gutter-hatch" />
           <div className="section-layout">
-            <div className="max-w-2xl px-3 md:px-4">
+            <div className="max-w-2xl px-1 md:px-4">
               <p className="mb-4 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
                 404
               </p>

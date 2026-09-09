@@ -45,7 +45,7 @@ export function MarketingPageHero({
 
   if (isEditorial && backgroundImage) {
     return (
-      <section className="relative overflow-hidden border-b border-white/10 px-6 pt-12 pb-20 md:pt-16 md:pb-24">
+      <section className="relative overflow-hidden border-b border-white/10 pt-12 pb-20 md:pt-16 md:pb-24">
         <img
           src={mediaUrl(backgroundImage.src)}
           alt=""
@@ -58,7 +58,7 @@ export function MarketingPageHero({
         />
         <span aria-hidden className="gutter-hatch gutter-hatch-on-dark z-[1]" />
 
-        <div className="section-layout relative z-10">
+        <div className="section-layout relative z-10 px-1 md:px-4">
           {children}
 
           <motion.div
@@ -139,7 +139,7 @@ export function MarketingPageHero({
 
   return (
     <section
-      className="relative overflow-hidden border-b border-border px-6 pt-12 pb-12 md:pt-16 md:pb-16"
+      className="relative overflow-hidden border-b border-border pt-12 pb-12 md:pt-16 md:pb-16"
       style={{
         backgroundImage: layeredBackgroundImage(
           "linear-gradient(180deg, rgba(247,247,244,0.86) 0%, rgba(247,247,244,0.78) 45%, rgba(247,247,244,0.92) 100%)",
@@ -162,7 +162,7 @@ export function MarketingPageHero({
       />
       <span aria-hidden className="gutter-hatch z-[1]" />
 
-      <div className="section-layout relative">
+      <div className="section-layout relative px-1 md:px-4">
         {children}
 
         <motion.div

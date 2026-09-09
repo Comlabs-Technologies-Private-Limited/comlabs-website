@@ -29,7 +29,7 @@ export function ServiceProofModule({ slug, title, caption }: ServiceProofModuleP
     <section className="relative border-b border-border bg-card py-14 md:py-16">
       <span aria-hidden className="gutter-hatch" />
       <div className="section-layout">
-        <MarketingSectionHeader className="mb-12 px-3 md:mb-14 md:px-4" eyebrow="Proof" title={title} description={caption} />
+        <MarketingSectionHeader className="mb-12 px-1 md:mb-14 md:px-4" eyebrow="Proof" title={title} description={caption} />
         {visual}
       </div>
     </section>

@@ -111,7 +111,7 @@ export default async function BlogIndexPage({
           <span aria-hidden className="gutter-hatch" />
           <div className="section-layout">
             <MarketingSectionHeader
-              className="mb-10 px-3 md:mb-12 md:px-4"
+              className="mb-10 px-1 md:mb-12 md:px-4"
               eyebrow="Latest"
               title="From the engineering floor."
               description="Short notes from production work and internal builds — written for people who have to operate the system after it ships."
