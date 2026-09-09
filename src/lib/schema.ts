@@ -203,6 +203,31 @@ export function getContactPageSchema(input: {
   } as const;
 }
 
+export function getWebPageSchema(input: {
+  url: string;
+  name: string;
+  description: string;
+  dateModified?: string;
+}) {
+  const url = canonicalUrl(input.url);
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "@id": url,
+    url,
+    name: input.name,
+    description: input.description,
+    ...(input.dateModified ? { dateModified: input.dateModified } : {}),
+    isPartOf: {
+      "@id": websiteId,
+    },
+    publisher: {
+      "@id": organizationId,
+    },
+  } as const;
+}
+
 export function getBlogSchema(input: {
   url: string;
   name: string;
