@@ -64,7 +64,7 @@ export function FigmaHeroSection() {
       />
 
       <div className="section-layout relative z-10 px-1 md:px-4">
-        <div className="mx-auto max-w-4xl text-left md:text-center">
+        <div className="mx-auto max-w-4xl text-center">
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
@@ -100,7 +100,7 @@ export function FigmaHeroSection() {
 
           <RevealCopy
             revealed={revealed}
-            className="mb-6 max-w-2xl text-pretty text-base leading-relaxed text-foreground/80 md:mx-auto md:max-w-[34rem] md:text-[17px] md:leading-[1.55] md:text-foreground/75"
+            className="mx-auto mb-6 max-w-2xl text-pretty text-base leading-relaxed text-foreground/80 md:max-w-[34rem] md:text-[17px] md:leading-[1.55] md:text-foreground/75"
           >
             We build, scale and support your applications, AI systems and cloud infrastructure from
             first release to daily operation.
@@ -110,7 +110,7 @@ export function FigmaHeroSection() {
             revealed={revealed}
             delay={0.12}
             as="div"
-            className="flex flex-wrap items-center justify-start gap-3 md:justify-center"
+            className="flex flex-wrap items-center justify-center gap-3"
           >
             <a
               href={canonicalPath("/contact")}
