@@ -67,11 +67,20 @@ export default async function AboutPage() {
           title={siteName}
           description={`An engineering and technology operations company in ${siteLocation}. We support production applications, AI systems, cloud infrastructure and digital products from build through operation.`}
           backgroundImage={editorialImages.aboutDesert}
+          action={
+            <Link
+              href={canonicalPath("/contact")}
+              className="inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30 focus-visible:ring-offset-2"
+            >
+              Talk to us
+              <ArrowRight size={14} aria-hidden />
+            </Link>
+          }
         >
           <PageBreadcrumbs currentPath="/about" tone="dark" items={[{ label: "About" }]} />
         </MarketingPageHero>
 
-        <section className="relative border-y border-border bg-card py-24 md:py-28">
+        <section className="relative border-y border-border bg-card py-14 md:py-16">
           <span aria-hidden className="gutter-hatch" />
           <div className="section-layout grid gap-16 px-3 md:px-4 lg:grid-cols-2 lg:gap-20">
             <MarketingFadeIn>
@@ -111,7 +120,7 @@ export default async function AboutPage() {
           </div>
         </section>
 
-        <section className="relative py-24 md:py-28">
+        <section className="relative py-14 md:py-16">
           <span aria-hidden className="gutter-hatch" />
           <div className="section-layout">
             <MarketingSectionHeader

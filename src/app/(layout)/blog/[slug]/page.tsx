@@ -197,7 +197,7 @@ export default async function BlogPostPage({
           </header>
 
           {post.coverImage ? (
-            <div className="border-b border-border bg-card px-6 py-10 md:py-14">
+            <div className="border-b border-border bg-card px-6 py-14 md:py-16">
               <div className="mx-auto max-w-5xl">
                 <div className="relative aspect-[16/9] overflow-hidden border border-border bg-secondary">
                   <Image
@@ -213,7 +213,7 @@ export default async function BlogPostPage({
             </div>
           ) : null}
 
-          <div className="border-b border-border bg-background px-6 py-16 md:py-24">
+          <div className="border-b border-border bg-background px-6 py-14 md:py-16">
             <div className="mx-auto max-w-3xl">
               <PostBody html={post.content} />
 

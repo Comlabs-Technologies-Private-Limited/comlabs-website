@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
 import { PostCard } from "@/components/blog/PostCard";
 import { FigmaFooter } from "@/components/layout/figma-footer";
@@ -16,7 +17,7 @@ import { PageBreadcrumbs } from "@/components/seo/page-breadcrumbs";
 import { listPosts } from "@/lib/admin/posts";
 import { buildPageMetadata } from "@/lib/metadata";
 import { getBlogSchema } from "@/lib/schema";
-import { isBlogEnabled } from "@/lib/site";
+import { canonicalPath, isBlogEnabled } from "@/lib/site";
 import { cn } from "@/lib/utils";
 import type { PostSummary } from "@/types/post";
 
@@ -93,11 +94,20 @@ export default async function BlogIndexPage({
             </>
           }
           description="Notes on application reliability, AI agents, cloud infrastructure, software engineering and production operations."
+          action={
+            <Link
+              href={canonicalPath("/contact")}
+              className="inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30 focus-visible:ring-offset-2"
+            >
+              Talk to us
+              <ArrowRight size={14} aria-hidden />
+            </Link>
+          }
         >
           <PageBreadcrumbs currentPath="/blog" items={[{ label: "Blog" }]} />
         </MarketingPageHero>
 
-        <section className="relative border-y border-border bg-card py-24 md:py-32">
+        <section className="relative border-y border-border bg-card py-14 md:py-16">
           <span aria-hidden className="gutter-hatch" />
           <div className="section-layout">
             <MarketingSectionHeader

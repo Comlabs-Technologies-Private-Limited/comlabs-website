@@ -43,7 +43,7 @@ export default function NotFound() {
       <FigmaNavLoader />
 
       <main>
-        <section className="relative py-24 md:py-32">
+        <section className="relative py-14 md:py-16">
           <span aria-hidden className="gutter-hatch" />
           <div className="section-layout">
             <div className="max-w-2xl px-3 md:px-4">

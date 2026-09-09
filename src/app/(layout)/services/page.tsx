@@ -76,7 +76,7 @@ export default function ServicesIndexPage() {
           <PageBreadcrumbs currentPath="/services" items={[{ label: "Services" }]} />
         </MarketingPageHero>
 
-        <section className="relative border-y border-border bg-card py-24 md:py-32">
+        <section className="relative border-y border-border bg-card py-14 md:py-16">
           <span aria-hidden className="gutter-hatch" />
           <div className="section-layout">
             <MarketingSectionHeader
@@ -95,7 +95,7 @@ export default function ServicesIndexPage() {
           </div>
         </section>
 
-        <section className="relative py-24 md:py-28">
+        <section className="relative py-14 md:py-16">
           <span aria-hidden className="gutter-hatch" />
           <div className="section-layout">
             <MarketingSectionHeader
