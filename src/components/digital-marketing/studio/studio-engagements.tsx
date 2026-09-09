@@ -33,7 +33,7 @@ export function StudioEngagements() {
           <StudioShaderSlot
             variant="scan"
             seed={11}
-            className="mt-10 hidden aspect-[4/5] max-w-sm lg:block"
+            className="mt-10 hidden aspect-[3/4] max-h-[18rem] max-w-[16rem] lg:block"
           >
             <StudioGlassCard
               title="How should we work together?"

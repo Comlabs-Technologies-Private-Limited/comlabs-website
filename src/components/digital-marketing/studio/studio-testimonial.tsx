@@ -32,16 +32,11 @@ export function StudioTestimonial() {
 
         <div className="mt-10 grid gap-12 md:mt-14 xl:grid-cols-[minmax(0,1fr)_18rem] xl:items-end xl:gap-16">
           <figure>
-            <blockquote className="studio-display max-w-[22ch] text-[clamp(1.75rem,4.6vw,3.5rem)] md:max-w-[26ch]">
-              {/* Masked wrapper: the quote rises into view as one block of lines
-                while remaining a single, complete string for screen readers. */}
-              <span data-studio-line>
-                <span>
-                  <span aria-hidden>“</span>
-                  {proof.quote}
-                  <span aria-hidden>”</span>
-                </span>
-              </span>
+            <blockquote
+              data-studio-reveal
+              className="studio-display max-w-[22ch] text-[clamp(1.75rem,4.6vw,3.5rem)] md:max-w-[26ch]"
+            >
+              &ldquo;{proof.quote}&rdquo;
             </blockquote>
 
             <figcaption
@@ -59,7 +54,7 @@ export function StudioTestimonial() {
             <StudioShaderSlot
               variant="pixel"
               seed={23}
-              className="hidden aspect-[4/5] xl:block"
+              className="hidden aspect-[3/4] max-h-[18rem] max-w-[16rem] xl:block"
             >
               <StudioGlassCard
                 title={project.client}

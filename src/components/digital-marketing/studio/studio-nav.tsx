@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { ComlabsLogo } from "@/components/brand/comlabs-logo";
 import { DIGITAL_MARKETING_PATH } from "@/lib/digital-marketing";
 import { DIGITAL_STUDIO_SECTIONS } from "@/lib/digital-marketing-studio";
+import { setStudioScrollLocked } from "@/lib/studio-lenis-bridge";
 import { cn } from "@/lib/utils";
 
 const LINKS = [
@@ -45,17 +46,16 @@ export function StudioNav() {
   }, []);
 
   useEffect(() => {
+    setStudioScrollLocked(menuOpen);
     if (!menuOpen) return;
-    const previous = document.documentElement.style.overflow;
-    document.documentElement.style.overflow = "hidden";
     closeRef.current?.focus();
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") setMenuOpen(false);
     }
     window.addEventListener("keydown", onKeyDown);
     return () => {
-      document.documentElement.style.overflow = previous;
       window.removeEventListener("keydown", onKeyDown);
+      setStudioScrollLocked(false);
     };
   }, [menuOpen]);
 

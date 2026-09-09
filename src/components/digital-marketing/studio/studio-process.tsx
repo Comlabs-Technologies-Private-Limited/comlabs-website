@@ -31,7 +31,7 @@ export function StudioProcess() {
           <StudioShaderSlot
             variant="scan"
             seed={17}
-            className="hidden aspect-[5/4] lg:block"
+            className="hidden aspect-[4/3] max-h-[16rem] max-w-[16rem] lg:block"
           >
             <StudioGlassCard
               title="What we measure"

@@ -1,29 +1,32 @@
 "use client";
 
 import { useEffect } from "react";
+import Lenis from "lenis";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 import { registerGsap } from "@/lib/gsap-client";
+import { setStudioLenis } from "@/lib/studio-lenis-bridge";
 
 /**
  * The page's single motion controller.
  *
- * Everything scroll- or pointer-driven on this page runs from here, inside one
- * `gsap.context()` that reverts every tween, trigger and listener on unmount.
- * There is one RAF source (GSAP's), no smooth-scroll library, and no scroll
- * hijacking — native scrolling is preserved.
+ * Lenis smooth scroll and GSAP share one ticker so ScrollTrigger scrub values
+ * stay frame-locked to the eased scroll position. Horizontal rails opt out via
+ * `data-lenis-prevent`.
  *
  * Three reveal patterns only:
  *   `data-studio-line`   masked heading lines rising from 110%
  *   `data-studio-reveal` supporting copy rising 22px
  *   `data-studio-media`  clip-path wipe with a counter-scaling image
  *
- * Under `prefers-reduced-motion: reduce` none of the start states apply (they
- * live in a `no-preference` query), so this whole effect exits immediately and
- * the page renders fully static.
+ * Under `prefers-reduced-motion: reduce` Lenis and start states are skipped.
  */
 
 const EASE_EDITORIAL = "power3.out";
 const EASE_PRECISE = "expo.out";
+
+/** Fixed nav clearance for in-page anchor jumps. */
+const ANCHOR_OFFSET = 80;
 
 export function StudioMotion() {
   useEffect(() => {
@@ -31,6 +34,23 @@ export function StudioMotion() {
 
     const gsap = registerGsap();
     const fine = window.matchMedia("(pointer: fine)").matches;
+
+    const lenis = new Lenis({
+      lerp: 0.085,
+      smoothWheel: true,
+      wheelMultiplier: 0.9,
+      autoRaf: false,
+      anchors: { offset: ANCHOR_OFFSET },
+    });
+    setStudioLenis(lenis);
+
+    lenis.on("scroll", ScrollTrigger.update);
+
+    const onTick = (time: number) => {
+      lenis.raf(time * 1000);
+    };
+    gsap.ticker.add(onTick);
+    gsap.ticker.lagSmoothing(0);
 
     const context = gsap.context(() => {
       // `context.revert()` undoes tweens and triggers but not hand-added DOM
@@ -44,6 +64,10 @@ export function StudioMotion() {
         "[data-studio-line]",
       )) {
         const lines = wrapper.querySelectorAll<HTMLElement>(":scope > span");
+        if (wrapper.getBoundingClientRect().top < viewportHeight * 0.92) {
+          gsap.set(lines, { yPercent: 0, opacity: 1 });
+          continue;
+        }
         gsap.to(lines, {
           yPercent: 0,
           opacity: 1,
@@ -245,7 +269,14 @@ export function StudioMotion() {
       };
     });
 
-    return () => context.revert();
+    ScrollTrigger.refresh();
+
+    return () => {
+      context.revert();
+      lenis.destroy();
+      setStudioLenis(null);
+      gsap.ticker.remove(onTick);
+    };
   }, []);
 
   return null;

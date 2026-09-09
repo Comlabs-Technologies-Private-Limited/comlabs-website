@@ -38,6 +38,7 @@ export function StudioLab() {
       </div>
 
       <ul
+        data-lenis-prevent
         className="studio-rail mt-12 flex snap-x snap-mandatory gap-px overflow-x-auto bg-[var(--studio-line)] md:mt-16"
         // The rail bleeds to both edges, so the first and last cards get the
         // page gutter as padding instead of the shell doing it.

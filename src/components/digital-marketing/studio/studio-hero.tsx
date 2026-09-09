@@ -200,7 +200,7 @@ export function StudioHero() {
             aria-hidden
             // Sized from the shell width so the seven letters span the full
             // measure at every breakpoint instead of a fixed viewport ratio.
-            className="studio-display -mb-[0.06em] w-full text-[calc((100vw-2*var(--studio-gutter))/4.15)] leading-[0.8] text-[rgba(250,250,247,0.9)] motion-safe:opacity-0"
+            className="studio-display -mb-[0.06em] w-full text-[calc((100vw-2*var(--studio-gutter))/4.15)] leading-[0.8] text-[rgba(250,250,247,0.52)] motion-safe:opacity-0"
           >
             Comlabs
           </p>

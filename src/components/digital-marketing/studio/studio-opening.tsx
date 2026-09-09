@@ -29,7 +29,7 @@ export function StudioOpening() {
           <StudioShaderSlot
             variant="flow"
             seed={7}
-            className="mt-10 hidden aspect-[4/5] max-w-sm lg:block"
+            className="mt-10 hidden aspect-[3/4] max-h-[18rem] max-w-[16rem] lg:block"
           >
             <StudioGlassCard
               title="One connected system"

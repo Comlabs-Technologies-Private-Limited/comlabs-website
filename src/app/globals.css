@@ -167,6 +167,24 @@
    Page-scoped tokens and primitives. Nothing here leaks outside `.dm-studio`.
    ========================================================================== */
 
+/* Lenis smooth scroll — active only while StudioMotion mounts on /digital-marketing */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+html.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+html.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+html.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
 .dm-studio {
   --studio-ink: #111315;
   --studio-black: #090b0d;
