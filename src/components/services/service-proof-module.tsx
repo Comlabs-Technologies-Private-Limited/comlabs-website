@@ -26,7 +26,7 @@ export function ServiceProofModule({ slug, title, caption }: ServiceProofModuleP
   if (!visual) return null;
 
   return (
-    <section className="relative border-b border-border bg-card py-24 md:py-28">
+    <section className="relative border-b border-border bg-card py-14 md:py-16">
       <span aria-hidden className="gutter-hatch" />
       <div className="section-layout">
         <MarketingSectionHeader className="mb-12 px-3 md:mb-14 md:px-4" eyebrow="Proof" title={title} description={caption} />

@@ -14,7 +14,7 @@ export function RelatedService({ services }: RelatedServiceProps) {
 
   return (
     <MarketingFadeIn>
-      <section className="relative border-t border-border py-12 md:py-16">
+      <section className="relative border-t border-border py-14 md:py-16">
         <span aria-hidden className="gutter-hatch" />
         <div className="section-layout">
           <div className="grid grid-cols-12 gap-8">

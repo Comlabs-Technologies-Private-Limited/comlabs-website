@@ -166,7 +166,7 @@ export default async function BlogPostPage({
               </div>
 
               <h1
-                className="mt-8 text-3xl leading-[1.12] font-medium tracking-tight md:mt-10 md:text-4xl lg:text-[2.75rem]"
+                className="mt-8 text-3xl leading-[1.12] font-bold tracking-tight md:mt-10 md:text-5xl lg:text-[3.25rem]"
                 style={{ letterSpacing: "-0.03em" }}
               >
                 {post.title}
@@ -197,8 +197,9 @@ export default async function BlogPostPage({
           </header>
 
           {post.coverImage ? (
-            <div className="border-b border-border bg-card px-6 py-10 md:py-14">
-              <div className="mx-auto max-w-5xl">
+            <div className="relative border-b border-border bg-card py-14 md:py-16">
+              <span aria-hidden className="gutter-hatch" />
+              <div className="section-layout mx-auto max-w-5xl">
                 <div className="relative aspect-[16/9] overflow-hidden border border-border bg-secondary">
                   <Image
                     src={post.coverImage}
@@ -213,8 +214,9 @@ export default async function BlogPostPage({
             </div>
           ) : null}
 
-          <div className="border-b border-border bg-background px-6 py-16 md:py-24">
-            <div className="mx-auto max-w-3xl">
+          <div className="relative border-b border-border bg-background py-14 md:py-16">
+            <span aria-hidden className="gutter-hatch" />
+            <div className="section-layout mx-auto max-w-3xl">
               <PostBody html={post.content} />
 
               {post.tags.length > 0 ? (
@@ -232,7 +234,7 @@ export default async function BlogPostPage({
 
               {BLOG_RELATED_SERVICES[post.slug] ? (
                 <nav aria-label="Related services" className="mt-10 border-t border-border pt-8">
-                  <p className="mb-3 text-xs font-medium tracking-widest text-muted-foreground uppercase">
+                  <p className="mb-3 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
                     Related services
                   </p>
                   <ul className="flex flex-col gap-2">

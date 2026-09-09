@@ -15,7 +15,7 @@ type NextCaseStudyProps = {
 export function NextCaseStudy({ client, headline, href, thumbnail }: NextCaseStudyProps) {
   return (
     <MarketingFadeIn>
-      <section className="relative border-t border-border py-14 md:py-20">
+      <section className="relative border-t border-border py-14 md:py-16">
         <span aria-hidden className="gutter-hatch" />
         <div className="section-layout">
           <div className="grid grid-cols-12 gap-8 lg:gap-12">

@@ -69,7 +69,7 @@ export async function LegalPageLayout({
       <FigmaNavLoader />
 
       <main>
-        <section className="relative border-b border-border py-16 md:py-20">
+        <section className="relative border-b border-border py-14 md:py-16">
           <span aria-hidden className="gutter-hatch" />
           <div className="section-layout">
             <div className="max-w-2xl px-3 md:px-4">
@@ -92,7 +92,7 @@ export async function LegalPageLayout({
           </div>
         </section>
 
-        <section className="relative py-16 md:py-20">
+        <section className="relative py-14 md:py-16">
           <span aria-hidden className="gutter-hatch" />
           <div className="section-layout">
             <div className="border-y border-border p-2 md:p-3">

@@ -56,7 +56,7 @@ export function FigmaHomePage({
       className="min-h-screen bg-background text-foreground antialiased"
       style={{ fontFamily: "var(--font-sans)" }}
     >
-      <FigmaNav caseStudies={caseStudies} />
+      <FigmaNav caseStudies={caseStudies} showBottomBorder={false} />
 
       <main>
         <FigmaHeroSection />

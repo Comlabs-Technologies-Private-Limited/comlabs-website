@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
 import { FigmaFooter } from "@/components/layout/figma-footer";
 import { FigmaNavLoader } from "@/components/layout/figma-nav-loader";
@@ -76,11 +77,20 @@ export default async function CaseStudiesIndexPage() {
             </>
           }
           description="Published work across application support, automation, AI systems, AWS and infrastructure, custom software, mobile products and digital experiences."
+          action={
+            <Link
+              href={canonicalPath("/contact")}
+              className="inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30 focus-visible:ring-offset-2"
+            >
+              Start a project
+              <ArrowRight size={14} aria-hidden />
+            </Link>
+          }
         >
           <PageBreadcrumbs currentPath={CASE_STUDIES_PATH} items={[{ label: "Case Studies" }]} />
         </MarketingPageHero>
 
-        <section className="relative border-y border-border bg-card py-24 md:py-32">
+        <section className="relative border-y border-border bg-card py-14 md:py-16">
           <span aria-hidden className="gutter-hatch" />
           <div className="section-layout">
             <MarketingSectionHeader
@@ -97,7 +107,7 @@ export default async function CaseStudiesIndexPage() {
           </div>
         </section>
 
-        <section className="relative py-20 md:py-24">
+        <section className="relative py-14 md:py-16">
           <span aria-hidden className="gutter-hatch" />
           <div className="section-layout">
             <MarketingFadeIn>

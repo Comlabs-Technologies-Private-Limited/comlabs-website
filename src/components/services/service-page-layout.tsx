@@ -49,7 +49,7 @@ export function ServicePageLayout({ service }: { service: ServicePageData }) {
         <ServicePageHero service={service} />
 
         {triggers.length > 0 ? (
-          <section className="relative border-b border-border bg-card py-24 md:py-28">
+          <section className="relative border-b border-border bg-card py-14 md:py-16">
             <span aria-hidden className="gutter-hatch" />
             <div className="section-layout">
               <MarketingSectionHeader
@@ -99,7 +99,7 @@ export function ServicePageLayout({ service }: { service: ServicePageData }) {
         ) : null}
 
         {hasScope ? (
-          <section className="relative border-b border-border py-24 md:py-28">
+          <section className="relative border-b border-border py-14 md:py-16">
             <span aria-hidden className="gutter-hatch" />
             <div className="section-layout">
               <MarketingSectionHeader
@@ -151,7 +151,7 @@ export function ServicePageLayout({ service }: { service: ServicePageData }) {
         {service.process.length > 0 ? (
           <section
             id="engagement"
-            className="relative border-b border-border bg-secondary/40 py-24 md:py-28"
+            className="relative border-b border-border bg-secondary/40 py-14 md:py-16"
           >
             <span aria-hidden className="gutter-hatch" />
             <div className="section-layout">
@@ -171,7 +171,7 @@ export function ServicePageLayout({ service }: { service: ServicePageData }) {
         {service.relatedCaseStudy ? (
           <ServiceRelatedWork caseStudy={service.relatedCaseStudy} />
         ) : service.representativeEngagement ? (
-          <section className="relative border-b border-border py-24 md:py-28">
+          <section className="relative border-b border-border py-14 md:py-16">
             <span aria-hidden className="gutter-hatch" />
             <div className="section-layout px-3 md:px-4">
               <MarketingSectionHeader
@@ -186,7 +186,7 @@ export function ServicePageLayout({ service }: { service: ServicePageData }) {
         ) : null}
 
         {service.faqs.length > 0 ? (
-          <section className="relative py-24 md:py-28">
+          <section className="relative py-14 md:py-16">
             <span aria-hidden className="gutter-hatch" />
             <div className="section-layout px-3 md:px-4">
               <MarketingSectionHeader

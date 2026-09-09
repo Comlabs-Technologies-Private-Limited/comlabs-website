@@ -96,12 +96,15 @@ type FigmaNavProps = {
   showBlogLink?: boolean;
   tone?: "light" | "dark";
   caseStudies?: NavCaseStudyItem[];
+  /** Hairline seam under the nav — every page except the homepage, whose hero sits flush beneath it. */
+  showBottomBorder?: boolean;
 };
 
 export function FigmaNav({
   showBlogLink = true,
   tone = "light",
   caseStudies,
+  showBottomBorder = true,
 }: FigmaNavProps) {
   const dark = tone === "dark";
   const [menuOpen, setMenuOpen] = useState(false);
@@ -208,6 +211,7 @@ export function FigmaNav({
         ref={headerRef}
         className={cn(
           "sticky top-0 z-[80]",
+          showBottomBorder && "border-b",
           dark ? "border-white/10" : "border-border",
         )}
         style={{

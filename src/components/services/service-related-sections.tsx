@@ -32,7 +32,7 @@ export function ServiceRelatedWork({
   const project = PROJECTS.find((item) => item.href === caseStudy.href);
 
   return (
-    <section className="relative border-y border-border bg-card py-24 md:py-28">
+    <section className="relative border-y border-border bg-card py-14 md:py-16">
       <span aria-hidden className="gutter-hatch" />
       <div className="section-layout">
         <div className="mb-10 flex items-end justify-between gap-6 px-3 md:mb-12 md:px-4">
@@ -106,7 +106,7 @@ export function ServiceRelatedServices({
   const columnClass = columns === 2 ? "md:grid-cols-2" : "md:grid-cols-3";
 
   return (
-    <section className="relative border-t border-border bg-card py-24 md:py-28">
+    <section className="relative border-t border-border bg-card py-14 md:py-16">
       <span aria-hidden className="gutter-hatch" />
       <div className="section-layout">
         <MarketingSectionHeader
