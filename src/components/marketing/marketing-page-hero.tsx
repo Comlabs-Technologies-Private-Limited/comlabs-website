@@ -45,7 +45,7 @@ export function MarketingPageHero({
 
   if (isEditorial && backgroundImage) {
     return (
-      <section className="relative overflow-hidden px-6 pt-12 pb-20 md:pt-16 md:pb-24">
+      <section className="relative overflow-hidden border-b border-white/10 px-6 pt-12 pb-20 md:pt-16 md:pb-24">
         <img
           src={mediaUrl(backgroundImage.src)}
           alt=""
@@ -56,24 +56,22 @@ export function MarketingPageHero({
           className="absolute inset-0"
           style={{ background: overlayStyle }}
         />
+        <span aria-hidden className="gutter-hatch gutter-hatch-on-dark z-[1]" />
 
-        <div className="relative z-10 mx-auto max-w-6xl">
+        <div className="section-layout relative z-10">
           {children}
 
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45, delay: 0.05, ease: EASE }}
-            className={`${eyebrowMargin} inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-xs font-medium`}
-            style={{
-              color: "var(--warm-orange)",
-              background: "rgba(247,247,244,0.08)",
-              borderColor: "rgba(247,247,244,0.14)",
-            }}
+            className={`${eyebrowMargin} flex items-center gap-2 text-xs font-semibold tracking-widest uppercase`}
+            style={{ color: "var(--warm-orange)" }}
           >
             <span
-              className="inline-block h-1.5 w-1.5 rounded-full"
-              style={{ background: "var(--warm-orange)" }}
+              aria-hidden
+              className="h-1.5 w-1.5 shrink-0 border"
+              style={{ borderColor: "var(--warm-orange)" }}
             />
             {eyebrow}
           </motion.div>
@@ -141,7 +139,7 @@ export function MarketingPageHero({
 
   return (
     <section
-      className="relative overflow-hidden px-6 pt-12 pb-12 md:pt-16 md:pb-16"
+      className="relative overflow-hidden border-b border-border px-6 pt-12 pb-12 md:pt-16 md:pb-16"
       style={{
         backgroundImage: layeredBackgroundImage(
           "linear-gradient(180deg, rgba(247,247,244,0.86) 0%, rgba(247,247,244,0.78) 45%, rgba(247,247,244,0.92) 100%)",
@@ -162,22 +160,23 @@ export function MarketingPageHero({
         animate={{ opacity: [0.15, 0.28, 0.15], scale: [0.96, 1.02, 0.96] }}
         transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
       />
+      <span aria-hidden className="gutter-hatch z-[1]" />
 
-      <div className="relative mx-auto max-w-6xl">
+      <div className="section-layout relative">
         {children}
 
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45, delay: 0.05, ease: EASE }}
-          className="mb-6 inline-flex items-center gap-2 rounded-full border border-border px-3.5 py-1.5 text-xs font-medium"
-          style={{ color: "var(--warm-orange)", background: "var(--warm-orange-light)" }}
+          className="mb-6 flex items-center gap-2 text-xs font-semibold tracking-widest text-muted-foreground uppercase"
         >
           <span
-            className="inline-block h-1.5 w-1.5 rounded-full"
-            style={{ background: "var(--warm-orange)" }}
+            aria-hidden
+            className="h-1.5 w-1.5 shrink-0 border"
+            style={{ borderColor: "var(--warm-orange)" }}
           />
-          {eyebrow}
+          <span style={{ color: "var(--warm-orange)" }}>{eyebrow}</span>
         </motion.div>
 
         <motion.h1
