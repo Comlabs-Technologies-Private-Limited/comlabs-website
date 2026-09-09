@@ -33,7 +33,7 @@ type Props = {
 export function StudioGlassCard({
   title,
   rows,
-  tone = "light",
+  tone = "dark",
   numbered = false,
   className,
 }: Props) {
@@ -42,7 +42,7 @@ export function StudioGlassCard({
       aria-hidden
       data-tone={tone}
       className={cn(
-        "studio-glass pointer-events-none absolute top-[18%] left-[14%] flex w-[104%] flex-col",
+        "studio-glass pointer-events-none absolute top-[14%] left-[10%] flex w-[108%] flex-col",
         className,
       )}
       style={{ "--studio-glass-rows": rows.length } as React.CSSProperties}
