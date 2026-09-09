@@ -2,11 +2,14 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { canonicalPath } from "@/lib/site";
+import { cn } from "@/lib/utils";
 import type { PostSummary } from "@/types/post";
 
 type PostCardProps = {
   post: PostSummary;
   featured?: boolean;
+  /** Divider classes supplied by the parent grid, so shared edges are drawn once. */
+  className?: string;
 };
 
 function formatDate(value: string | null): string | null {
@@ -18,19 +21,16 @@ function formatDate(value: string | null): string | null {
   });
 }
 
-export function PostCard({ post, featured = false }: PostCardProps) {
+export function PostCard({ post, featured = false, className }: PostCardProps) {
   const date = formatDate(post.publishedAt);
   const href = canonicalPath(`/blog/${post.slug}`);
   const tag = post.tags[0];
 
   if (featured) {
     return (
-      <article>
-        <Link
-          href={href}
-          className="group grid overflow-hidden rounded-3xl border border-border bg-background transition-[border-color,box-shadow] duration-300 hover:border-foreground/20 hover:shadow-[0_8px_32px_rgba(28,25,23,0.06)] lg:grid-cols-2"
-        >
-          <div className="relative aspect-[16/10] overflow-hidden bg-secondary lg:aspect-auto lg:min-h-[360px]">
+      <article className={className}>
+        <Link href={href} className="group grid lg:grid-cols-2">
+          <div className="relative aspect-[16/10] overflow-hidden border-b border-border bg-secondary lg:aspect-auto lg:min-h-[360px] lg:border-r lg:border-b-0">
             {post.coverImage ? (
               <Image
                 src={post.coverImage}
@@ -38,7 +38,7 @@ export function PostCard({ post, featured = false }: PostCardProps) {
                 fill
                 priority
                 sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                className="object-cover"
               />
             ) : (
               <div className="flex h-full min-h-[240px] items-center justify-center bg-[var(--warm-orange-light)]">
@@ -86,11 +86,8 @@ export function PostCard({ post, featured = false }: PostCardProps) {
   }
 
   return (
-    <article className="h-full">
-      <Link
-        href={href}
-        className="group flex h-full flex-col overflow-hidden rounded-3xl border border-border bg-background transition-[border-color,box-shadow] duration-300 hover:border-foreground/20 hover:shadow-[0_8px_32px_rgba(28,25,23,0.06)]"
-      >
+    <article className={cn("h-full", className)}>
+      <Link href={href} className="group flex h-full flex-col">
         <div className="relative aspect-[16/10] overflow-hidden border-b border-border bg-secondary">
           {post.coverImage ? (
             <Image
@@ -98,7 +95,7 @@ export function PostCard({ post, featured = false }: PostCardProps) {
               alt={post.title}
               fill
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
-              className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+              className="object-cover"
             />
           ) : (
             <div className="flex h-full items-center justify-center bg-[var(--warm-orange-light)]">

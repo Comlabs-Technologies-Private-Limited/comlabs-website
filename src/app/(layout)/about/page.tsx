@@ -71,8 +71,9 @@ export default async function AboutPage() {
           <PageBreadcrumbs currentPath="/about" tone="dark" items={[{ label: "About" }]} />
         </MarketingPageHero>
 
-        <section className="border-y border-border bg-card px-6 py-24 md:py-28">
-          <div className="mx-auto grid max-w-6xl gap-16 lg:grid-cols-2 lg:gap-20">
+        <section className="relative border-y border-border bg-card py-24 md:py-28">
+          <span aria-hidden className="gutter-hatch" />
+          <div className="section-layout grid gap-16 px-3 md:px-4 lg:grid-cols-2 lg:gap-20">
             <MarketingFadeIn>
               <MarketingSectionHeader
                 className="mb-0"
@@ -110,9 +111,11 @@ export default async function AboutPage() {
           </div>
         </section>
 
-        <section className="px-6 py-24 md:py-28">
-          <div className="mx-auto max-w-6xl">
+        <section className="relative py-24 md:py-28">
+          <span aria-hidden className="gutter-hatch" />
+          <div className="section-layout">
             <MarketingSectionHeader
+              className="px-3 md:px-4"
               eyebrow="Case Studies"
               title={
                 <>
@@ -121,10 +124,12 @@ export default async function AboutPage() {
               }
               description="Explore case studies across software, infrastructure, AI systems, mobile products and digital experiences."
             />
-            <MarketingProjectCards projects={projects} />
+            <div className="mt-12">
+              <MarketingProjectCards projects={projects} />
+            </div>
             <Link
               href={canonicalPath(CASE_STUDIES_PATH)}
-              className="mt-8 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--warm-orange)] transition-opacity hover:opacity-80"
+              className="mt-8 inline-flex items-center gap-1.5 px-3 text-sm font-medium text-[var(--warm-orange)] transition-opacity hover:opacity-80 md:px-4"
             >
               View all case studies <ArrowRight size={14} />
             </Link>
