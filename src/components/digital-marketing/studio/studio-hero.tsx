@@ -107,6 +107,7 @@ export function StudioHero() {
     >
       <div
         data-hero-media
+        data-studio-hero-media
         className="absolute inset-0 -z-10 motion-safe:opacity-0"
       >
         <Image
@@ -197,6 +198,7 @@ export function StudioHero() {
         <div className="mt-14 overflow-hidden md:mt-16">
           <p
             data-hero-wordmark
+            data-studio-hero-wordmark
             aria-hidden
             // Sized from the shell width so the seven letters span the full
             // measure at every breakpoint instead of a fixed viewport ratio.

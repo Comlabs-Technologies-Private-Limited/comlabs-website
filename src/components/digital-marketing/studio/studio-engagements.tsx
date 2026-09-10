@@ -33,7 +33,7 @@ export function StudioEngagements() {
           <StudioShaderSlot
             variant="scan"
             seed={11}
-            className="mt-10 hidden aspect-[3/4] max-h-[18rem] max-w-[16rem] lg:block"
+            className="studio-engagement-visual mt-10 hidden aspect-[3/4] max-h-[18rem] max-w-[16rem] lg:block"
           >
             <StudioGlassCard
               title="How should we work together?"
@@ -45,11 +45,12 @@ export function StudioEngagements() {
           </StudioShaderSlot>
         </div>
 
-        <div data-studio-stagger>
+        <div data-studio-stagger data-studio-engagements>
           {DIGITAL_MARKETING_ENGAGEMENTS.map((engagement) => (
             <article
               key={engagement.index}
               data-studio-reveal
+              data-studio-engagement
               className="studio-row grid gap-4 border-t border-[var(--studio-line)] py-8 transition-colors duration-400 last:border-b hover:border-[rgba(17,19,21,0.34)] hover:bg-[rgba(78,114,242,0.035)] md:grid-cols-[4rem_minmax(0,1fr)] md:gap-10 md:py-10"
             >
               <span className="studio-row__index font-mono text-[0.6875rem] tracking-widest text-[var(--studio-grey)]">

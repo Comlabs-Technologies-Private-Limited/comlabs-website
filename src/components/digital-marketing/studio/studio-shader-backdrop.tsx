@@ -1,23 +1,14 @@
-"use client";
-
-import dynamic from "next/dynamic";
-
-import type { StudioShaderVariant } from "./studio-shader-panel";
-
-const StudioShaderPanel = dynamic(() => import("./studio-shader-panel"), {
-  ssr: false,
-});
+import type { StudioFieldVariant } from "./studio-shader-slot";
 
 type Props = {
-  variant: StudioShaderVariant;
+  variant: StudioFieldVariant;
   tone?: "light" | "dark";
   seed?: number;
 };
 
 /**
- * Full-bleed shader behind a section. Sits under the content at low opacity
- * with a paper fade at the top and bottom edges so it never hard-cuts against
- * the neighbouring sections. Decorative only.
+ * Full-bleed field behind a section, faded to paper at the top and bottom
+ * edges so it never hard-cuts against its neighbours. CSS only.
  */
 export function StudioShaderBackdrop({
   variant,
@@ -29,7 +20,11 @@ export function StudioShaderBackdrop({
       aria-hidden
       className="studio-backdrop pointer-events-none absolute inset-0 -z-20"
     >
-      <StudioShaderPanel variant={variant} tone={tone} seed={seed} />
+      <span
+        className={`studio-field-${variant} absolute inset-0`}
+        data-tone={tone}
+        style={{ animationDelay: `${seed * -1.7}s` }}
+      />
     </div>
   );
 }

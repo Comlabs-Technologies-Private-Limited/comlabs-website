@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 import {
   DIGITAL_STUDIO_HERO_ALT,
@@ -8,22 +8,30 @@ import {
 } from "@/lib/digital-marketing-studio";
 
 /**
- * WebGL hero treatment.
+ * Hero WebGL treatment — the page's only WebGL context.
  *
  * The hero photograph is uploaded as a texture and drawn through custom GLSL:
- * a cover-fit sampler, a soft cursor refraction lens, pointer-velocity driven
- * chromatic separation and grain, a smoothed scroll-velocity bend, fine film
- * grain, and a `uProgress` entrance reveal.
+ * a cover-fit sampler, a soft directional UV displacement around the pointer,
+ * gentle refraction, fine grain, and slight RGB separation driven by pointer
+ * and scroll velocity. No ripple, liquid or blob.
  *
- * Written against raw WebGL rather than Three.js: this is one full-screen
- * quad with one material, so a renderer abstraction would add far more weight
- * than it saves. There is exactly one context on the page.
+ * The canvas starts hidden and is faded in by toggling `data-ready` only once
+ * the texture has decoded, both shaders have compiled, the program has linked
+ * and the first frame has actually been drawn. If any of that fails the
+ * attribute is never set, so the static `<Image>` underneath stays visible and
+ * the hero is never blank.
  *
- * The DOM `<Image>` in `studio-hero.tsx` stays mounted underneath and is what
- * a visitor sees while the texture loads, if WebGL is unavailable, if a shader
- * fails to compile, if the texture is blocked, or under reduced motion. The
- * canvas only fades in once it has actually drawn a frame.
+ * The renderer is sized from the hero container through a ResizeObserver
+ * rather than from the canvas's own box, so the backing store always matches
+ * the element it covers instead of the 300×150 canvas default.
  */
+
+const DEV = process.env.NODE_ENV !== "production";
+
+function warn(message: string, detail?: unknown) {
+  // Diagnostics only in development; production degrades silently to the image.
+  if (DEV) console.warn(`[studio-hero-canvas] ${message}`, detail ?? "");
+}
 
 const VERTEX_SHADER = `
 attribute vec2 aPosition;
@@ -49,7 +57,7 @@ uniform float uHover;
 uniform float uScrollVelocity;
 uniform float uProgress;
 
-/** object-fit: cover, solved in UV space. */
+/** object-fit: cover, solved in UV space so any aspect ratio is preserved. */
 vec2 coverUv(vec2 uv, vec2 canvas, vec2 image) {
   vec2 ratio = vec2(
     min((canvas.x / canvas.y) / (image.x / image.y), 1.0),
@@ -68,41 +76,42 @@ float hash(vec2 p) {
 void main() {
   float aspect = uResolution.x / max(uResolution.y, 1.0);
 
-  // --- Cursor refraction -------------------------------------------------
-  // Distance is measured in aspect-corrected space so the lens stays round.
+  // Aspect-corrected distance to the pointer keeps the lens circular.
   vec2 toMouse = vUv - uMouse;
   toMouse.x *= aspect;
   float dist = length(toMouse);
+  vec2 dir = normalize(toMouse + 1e-5);
 
-  float radius = 0.28;
-  float lens = smoothstep(radius, 0.0, dist);
-  // Squared falloff keeps the centre soft instead of pinched.
+  // Directional displacement: the frame yields away from the pointer, with a
+  // squared falloff so the centre stays soft rather than pinched.
+  float lens = smoothstep(0.34, 0.0, dist);
   lens *= lens;
+  float strength = (0.012 + uVelocity * 0.018) * mix(0.6, 1.0, uHover);
+  vec2 displace = dir * lens * strength;
+  displace.x /= aspect;
 
-  float strength = (0.016 + uVelocity * 0.022) * mix(0.55, 1.0, uHover);
-  vec2 refraction = normalize(toMouse + 1e-5) * lens * strength;
-  refraction.x /= aspect;
+  // Refraction: a slight secondary bend across the lens edge.
+  float edge = smoothstep(0.34, 0.14, dist) - smoothstep(0.14, 0.0, dist);
+  vec2 refract = dir * edge * 0.006 * mix(0.5, 1.0, uHover);
+  refract.x /= aspect;
 
-  // --- Scroll bend -------------------------------------------------------
-  float bend = sin(vUv.x * 3.14159) * uScrollVelocity * 0.05;
-  vec2 scrollOffset = vec2(0.0, uScrollVelocity * 0.022 + bend);
+  // Scroll adds a vertical drift and a shallow bend across the frame.
+  float bend = sin(vUv.x * 3.14159) * uScrollVelocity * 0.035;
+  vec2 scrollOffset = vec2(0.0, uScrollVelocity * 0.016 + bend);
 
-  // --- Entrance reveal ---------------------------------------------------
-  // A radial mask opening outward from just below centre.
+  // Entrance: a radial opening from just below centre, played once.
   vec2 fromCentre = vUv - vec2(0.5, 0.44);
   fromCentre.x *= aspect;
   float reveal = smoothstep(length(fromCentre), length(fromCentre) + 0.35, uProgress * 1.35);
-  float settle = (1.0 - uProgress) * 0.03;
+  float settle = (1.0 - uProgress) * 0.028;
 
-  vec2 uv = vUv - refraction - scrollOffset;
+  vec2 uv = vUv - displace - refract - scrollOffset;
   uv += (uv - 0.5) * settle;
   uv = coverUv(uv, uResolution, uImageResolution);
 
-  // --- Chromatic separation ----------------------------------------------
-  // Rises with pointer velocity and inside the lens only, so the image is
-  // never permanently fringed.
-  float split = (uVelocity * 0.0032 + lens * uVelocity * 0.006);
-  vec2 shift = normalize(toMouse + 1e-5) * split;
+  // RGB separation, confined to the lens and to moments of movement.
+  float split = uVelocity * 0.0022 + lens * uVelocity * 0.005;
+  vec2 shift = dir * split;
   shift.x /= aspect;
 
   vec3 color;
@@ -110,24 +119,28 @@ void main() {
   color.g = texture2D(uTexture, uv).g;
   color.b = texture2D(uTexture, uv - shift).b;
 
-  // --- Grain -------------------------------------------------------------
-  float grainAmount = 0.028 + uVelocity * 0.02 * lens;
-  float grain = hash(gl_FragCoord.xy + floor(uTime * 24.0)) - 0.5;
-  color += grain * grainAmount;
+  // Fine grain, stepped so it reads as film rather than per-frame noise.
+  float grain = hash(gl_FragCoord.xy + floor(uTime * 18.0)) - 0.5;
+  color += grain * (0.024 + uVelocity * 0.016 * lens);
 
-  // Reveal darkens the not-yet-open area rather than clipping it.
-  color *= mix(0.06, 1.0, reveal);
+  color *= mix(0.05, 1.0, reveal);
 
   gl_FragColor = vec4(color, 1.0);
 }
 `;
 
-function compile(gl: WebGLRenderingContext, type: number, source: string) {
+function compile(
+  gl: WebGLRenderingContext,
+  type: number,
+  source: string,
+  label: string,
+) {
   const shader = gl.createShader(type);
   if (!shader) return null;
   gl.shaderSource(shader, source);
   gl.compileShader(shader);
   if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+    warn(`${label} shader failed to compile`, gl.getShaderInfoLog(shader));
     gl.deleteShader(shader);
     return null;
   }
@@ -137,28 +150,34 @@ function compile(gl: WebGLRenderingContext, type: number, source: string) {
 function loadTexture(src: string) {
   return new Promise<HTMLImageElement | null>((resolve) => {
     const image = new window.Image();
+    // Required to upload a remote texture; Unsplash serves permissive CORS.
     image.crossOrigin = "anonymous";
     image.decoding = "async";
     image.onload = () => resolve(image);
-    image.onerror = () => resolve(null);
+    image.onerror = () => {
+      warn(
+        "hero texture failed to load (CORS or network); keeping static image",
+      );
+      resolve(null);
+    };
     image.src = src;
   });
 }
 
 export default function StudioHeroCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    // Constrained devices keep the plain DOM photograph: a full-viewport
-    // fragment shader is the wrong trade on a low-core phone.
+    // A full-viewport fragment shader is the wrong trade on a low-core phone.
     const coarse = window.matchMedia("(pointer: coarse)").matches;
-    const lowCore = (navigator.hardwareConcurrency ?? 8) <= 4;
-    if (coarse && lowCore) return;
+    if (coarse && (navigator.hardwareConcurrency ?? 8) <= 4) return;
+
+    // Size from the element the canvas covers, not the canvas's own box.
+    const host = canvas.parentElement ?? canvas;
 
     const gl = canvas.getContext("webgl", {
       alpha: false,
@@ -167,34 +186,28 @@ export default function StudioHeroCanvas() {
       stencil: false,
       powerPreference: "low-power",
     });
-    if (!gl) return;
+    if (!gl) {
+      warn("WebGL unavailable; keeping static image");
+      return;
+    }
 
-    let disposed = false;
-    let frame = 0;
-    let contextLost = false;
-    let tabVisible = document.visibilityState === "visible";
-    let onScreen = true;
-
-    // Pointer and scroll state live in closures, never in React state: these
-    // update on every move and every frame.
-    const mouse = { x: 0.5, y: 0.5 };
-    const target = { x: 0.5, y: 0.5 };
-    let velocity = 0;
-    let hover = 0;
-    let hoverTarget = 0;
-    let scrollVelocity = 0;
-    let lastScrollY = window.scrollY;
-    let startedAt = 0;
-
+    const vertex = compile(gl, gl.VERTEX_SHADER, VERTEX_SHADER, "vertex");
+    const fragment = compile(
+      gl,
+      gl.FRAGMENT_SHADER,
+      FRAGMENT_SHADER,
+      "fragment",
+    );
     const program = gl.createProgram();
-    const vertex = compile(gl, gl.VERTEX_SHADER, VERTEX_SHADER);
-    const fragment = compile(gl, gl.FRAGMENT_SHADER, FRAGMENT_SHADER);
-    if (!program || !vertex || !fragment) return;
+    if (!vertex || !fragment || !program) return;
 
     gl.attachShader(program, vertex);
     gl.attachShader(program, fragment);
     gl.linkProgram(program);
-    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return;
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+      warn("program failed to link", gl.getProgramInfoLog(program));
+      return;
+    }
     gl.useProgram(program);
 
     const buffer = gl.createBuffer();
@@ -208,7 +221,7 @@ export default function StudioHeroCanvas() {
     gl.enableVertexAttribArray(positionLocation);
     gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
 
-    const uniforms = {
+    const u = {
       texture: gl.getUniformLocation(program, "uTexture"),
       time: gl.getUniformLocation(program, "uTime"),
       resolution: gl.getUniformLocation(program, "uResolution"),
@@ -221,78 +234,85 @@ export default function StudioHeroCanvas() {
     };
 
     let texture: WebGLTexture | null = null;
+    let frame = 0;
+    let disposed = false;
+    let contextLost = false;
+    let painted = false;
+    let tabVisible = document.visibilityState === "visible";
+    let onScreen = true;
+    let startedAt = 0;
 
-    function resize() {
+    // Pointer and scroll state live in closures — never React state.
+    const smoothed = { x: 0.5, y: 0.5 };
+    const target = { x: 0.5, y: 0.5 };
+    let velocity = 0;
+    let hover = 0;
+    let hoverTarget = 0;
+    let scrollVelocity = 0;
+    let lastScrollY = window.scrollY;
+    let width = 0;
+    let height = 0;
+
+    function applySize() {
       const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-      const width = Math.max(1, Math.round(canvas!.clientWidth * dpr));
-      const height = Math.max(1, Math.round(canvas!.clientHeight * dpr));
-      if (canvas!.width === width && canvas!.height === height) return;
+      const rect = host.getBoundingClientRect();
+      const nextWidth = Math.max(1, Math.round(rect.width * dpr));
+      const nextHeight = Math.max(1, Math.round(rect.height * dpr));
+      if (nextWidth === width && nextHeight === height) return;
+      width = nextWidth;
+      height = nextHeight;
       canvas!.width = width;
       canvas!.height = height;
       gl!.viewport(0, 0, width, height);
     }
 
-    function onPointerMove(event: PointerEvent) {
-      const rect = canvas!.getBoundingClientRect();
-      if (rect.width === 0 || rect.height === 0) return;
-      const x = (event.clientX - rect.left) / rect.width;
-      // GL's origin is bottom-left.
-      const y = 1 - (event.clientY - rect.top) / rect.height;
-      const dx = x - target.x;
-      const dy = y - target.y;
-      velocity = Math.min(velocity + Math.hypot(dx, dy) * 5.5, 1.6);
-      target.x = x;
-      target.y = y;
-      hoverTarget = x >= 0 && x <= 1 && y >= 0 && y <= 1 ? 1 : 0;
-    }
-
-    function onPointerLeave() {
-      hoverTarget = 0;
-    }
-
-    function onScroll() {
-      const delta = window.scrollY - lastScrollY;
-      lastScrollY = window.scrollY;
-      scrollVelocity = Math.max(-1, Math.min(1, scrollVelocity + delta / 220));
-    }
-
-    function render(now: number) {
-      frame = 0;
-      if (disposed || contextLost || !texture) return;
+    function draw(now: number) {
       if (!startedAt) startedAt = now;
+      applySize();
 
-      resize();
-
-      // Critically damped easing — approaches rest without oscillating.
-      mouse.x += (target.x - mouse.x) * 0.075;
-      mouse.y += (target.y - mouse.y) * 0.075;
+      // Critically damped easing: approaches rest without oscillating.
+      smoothed.x += (target.x - smoothed.x) * 0.07;
+      smoothed.y += (target.y - smoothed.y) * 0.07;
       hover += (hoverTarget - hover) * 0.08;
       velocity *= 0.92;
       scrollVelocity *= 0.9;
 
       const elapsed = (now - startedAt) / 1000;
-      // ~1050ms reveal, eased out, played exactly once.
       const linear = Math.min(elapsed / 1.05, 1);
       const progress = 1 - Math.pow(1 - linear, 3);
 
-      gl!.uniform1f(uniforms.time, elapsed);
-      gl!.uniform2f(uniforms.resolution, canvas!.width, canvas!.height);
-      gl!.uniform2f(uniforms.mouse, mouse.x, mouse.y);
-      gl!.uniform1f(uniforms.velocity, velocity);
-      gl!.uniform1f(uniforms.hover, hover);
-      gl!.uniform1f(uniforms.scrollVelocity, scrollVelocity);
-      gl!.uniform1f(uniforms.progress, progress);
+      gl!.uniform1f(u.time, elapsed);
+      gl!.uniform2f(u.resolution, width, height);
+      gl!.uniform2f(u.mouse, smoothed.x, smoothed.y);
+      gl!.uniform1f(u.velocity, velocity);
+      gl!.uniform1f(u.hover, hover);
+      gl!.uniform1f(u.scrollVelocity, scrollVelocity);
+      gl!.uniform1f(u.progress, progress);
       gl!.drawArrays(gl!.TRIANGLES, 0, 3);
 
-      // Once the reveal is done and every driver has settled, stop drawing
-      // until something moves again.
+      if (!painted) {
+        painted = true;
+        // Only now is there something real to show.
+        canvas!.dataset.ready = "true";
+      }
+
+      return progress;
+    }
+
+    function render(now: number) {
+      frame = 0;
+      if (disposed || contextLost || !texture) return;
+      const progress = draw(now);
+
+      // Stop drawing once the reveal is done and every driver has settled;
+      // pointer and scroll handlers restart the loop.
       const settled =
         progress >= 1 &&
         Math.abs(velocity) < 0.001 &&
         Math.abs(scrollVelocity) < 0.001 &&
         Math.abs(hover - hoverTarget) < 0.001 &&
-        Math.abs(mouse.x - target.x) < 0.0005 &&
-        Math.abs(mouse.y - target.y) < 0.0005;
+        Math.abs(smoothed.x - target.x) < 0.0005 &&
+        Math.abs(smoothed.y - target.y) < 0.0005;
       if (!settled) schedule();
     }
 
@@ -315,11 +335,35 @@ export default function StudioHeroCanvas() {
       frame = 0;
     }
 
+    function onPointerMove(event: PointerEvent) {
+      const rect = host.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) return;
+      const x = (event.clientX - rect.left) / rect.width;
+      const y = 1 - (event.clientY - rect.top) / rect.height;
+      velocity = Math.min(
+        velocity + Math.hypot(x - target.x, y - target.y) * 5.5,
+        1.6,
+      );
+      target.x = x;
+      target.y = y;
+      hoverTarget = x >= 0 && x <= 1 && y >= 0 && y <= 1 ? 1 : 0;
+      schedule();
+    }
+
+    function onScroll() {
+      const delta = window.scrollY - lastScrollY;
+      lastScrollY = window.scrollY;
+      scrollVelocity = Math.max(-1, Math.min(1, scrollVelocity + delta / 220));
+      schedule();
+    }
+
     function onContextLost(event: Event) {
       event.preventDefault();
       contextLost = true;
       stop();
-      setReady(false);
+      // Hand the hero back to the static image rather than showing a dead canvas.
+      canvas!.removeAttribute("data-ready");
+      warn("WebGL context lost; reverting to static image");
     }
 
     function onVisibilityChange() {
@@ -328,7 +372,14 @@ export default function StudioHeroCanvas() {
       else stop();
     }
 
-    const observer = new IntersectionObserver(
+    const resizeObserver = new ResizeObserver(() => {
+      if (disposed || contextLost || !texture) return;
+      applySize();
+      schedule();
+    });
+    resizeObserver.observe(host);
+
+    const intersectionObserver = new IntersectionObserver(
       (entries) => {
         onScreen = entries[0]?.isIntersecting ?? true;
         if (onScreen) schedule();
@@ -336,41 +387,53 @@ export default function StudioHeroCanvas() {
       },
       { rootMargin: "80px" },
     );
+    intersectionObserver.observe(canvas);
 
     canvas.addEventListener("webglcontextlost", onContextLost);
     document.addEventListener("visibilitychange", onVisibilityChange);
     window.addEventListener("pointermove", onPointerMove, { passive: true });
     window.addEventListener("scroll", onScroll, { passive: true });
-    canvas.addEventListener("pointerleave", onPointerLeave);
-    observer.observe(canvas);
 
     void loadTexture(digitalStudioHeroImage).then((image) => {
       if (disposed || !image) return;
-      texture = gl.createTexture();
-      gl.bindTexture(gl.TEXTURE_2D, texture);
-      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-      // Non-power-of-two source: clamp and linear filtering, no mipmaps.
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
-      gl.uniform1i(uniforms.texture, 0);
-      gl.uniform2f(
-        uniforms.imageResolution,
-        image.naturalWidth,
-        image.naturalHeight,
-      );
-      setReady(true);
+      try {
+        texture = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+        // Non-power-of-two source: clamp, linear filter, no mipmaps.
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texImage2D(
+          gl.TEXTURE_2D,
+          0,
+          gl.RGB,
+          gl.RGB,
+          gl.UNSIGNED_BYTE,
+          image,
+        );
+        gl.uniform1i(u.texture, 0);
+        gl.uniform2f(
+          u.imageResolution,
+          image.naturalWidth,
+          image.naturalHeight,
+        );
+      } catch (error) {
+        // A tainted (non-CORS) image throws here; keep the static hero.
+        warn("texture upload rejected; keeping static image", error);
+        texture = null;
+        return;
+      }
       schedule();
     });
 
     return () => {
       disposed = true;
       stop();
-      observer.disconnect();
+      resizeObserver.disconnect();
+      intersectionObserver.disconnect();
       canvas.removeEventListener("webglcontextlost", onContextLost);
-      canvas.removeEventListener("pointerleave", onPointerLeave);
       document.removeEventListener("visibilitychange", onVisibilityChange);
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("scroll", onScroll);
@@ -387,11 +450,8 @@ export default function StudioHeroCanvas() {
     <canvas
       ref={canvasRef}
       aria-hidden
-      // Decorative: the DOM photograph with its alt text sits underneath.
       title={DIGITAL_STUDIO_HERO_ALT}
-      className={`pointer-events-none absolute inset-0 h-full w-full transition-opacity duration-700 ${
-        ready ? "opacity-100" : "opacity-0"
-      }`}
+      className="studio-hero-canvas pointer-events-none absolute inset-0 h-full w-full"
     />
   );
 }

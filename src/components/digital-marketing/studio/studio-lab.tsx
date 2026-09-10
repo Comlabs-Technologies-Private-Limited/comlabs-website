@@ -47,6 +47,7 @@ export function StudioLab() {
           scrollPaddingInline: "var(--studio-gutter)",
         }}
         tabIndex={0}
+        data-studio-rail
         aria-label="Marketing lab artefacts, scroll horizontally"
       >
         {DIGITAL_STUDIO_LAB.map((item, index) => (
@@ -86,6 +87,13 @@ export function StudioLab() {
           </li>
         ))}
       </ul>
+
+      {/* Rail progress — scaled by the motion controller as the rail scrolls. */}
+      <div aria-hidden className="studio-shell mt-8">
+        <div className="h-px w-full max-w-40 bg-[var(--studio-line)]">
+          <span className="studio-rail__fill block h-px w-full bg-[var(--studio-ink)]" />
+        </div>
+      </div>
     </section>
   );
 }
