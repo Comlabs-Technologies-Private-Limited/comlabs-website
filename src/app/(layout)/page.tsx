@@ -4,15 +4,14 @@ import { FigmaHomePage } from "@/components/home/figma-home-page";
 import { HomeJsonLd } from "@/components/seo/home-json-ld";
 import { listPublishedCaseStudySummaries } from "@/lib/admin/case-studies";
 import { buildPageMetadata } from "@/lib/metadata";
-import { siteDefaultDescription } from "@/lib/site";
+import { siteDefaultDescription, siteHomeTitle } from "@/lib/site";
 
-const HOME_TITLE = "Comlabs Technologies | Application Support, AI, AWS & Software";
 const HOME_CASE_STUDY_COUNT = 3;
 
 export const revalidate = 60;
 
 export const metadata: Metadata = buildPageMetadata({
-  title: HOME_TITLE,
+  title: siteHomeTitle,
   description: siteDefaultDescription,
   path: "/",
   absoluteTitle: true,

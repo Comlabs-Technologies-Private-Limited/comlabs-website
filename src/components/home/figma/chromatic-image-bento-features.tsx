@@ -59,6 +59,8 @@ export function ChromaticImageBentoFeatures({
           <ChromaticImage
             src={imageSrc}
             alt={imageAlt}
+            width={1600}
+            height={2000}
             backgroundColor={backgroundColor}
             zoom={0.14}
             displacement={0.035}

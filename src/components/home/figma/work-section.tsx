@@ -13,7 +13,7 @@ import {
 } from "@/components/home/figma/after-title-reveal";
 import { canonicalPath } from "@/lib/site";
 import { cn } from "@/lib/utils";
-import { mediaUrl } from "@/lib/cloudinary";
+import { CASE_STUDY_MEDIA_SIZE, mediaUrl } from "@/lib/cloudinary";
 
 export type WorkProject = {
   title: string;
@@ -98,6 +98,8 @@ export function FigmaWorkSection({ projects }: FigmaWorkSectionProps) {
                   <img
                     src={mediaUrl(project.image)}
                     alt={`${project.title} case study`}
+                    width={CASE_STUDY_MEDIA_SIZE.width}
+                    height={CASE_STUDY_MEDIA_SIZE.height}
                     className="absolute inset-0 h-full w-full max-w-none object-cover object-top"
                   />
                 </div>

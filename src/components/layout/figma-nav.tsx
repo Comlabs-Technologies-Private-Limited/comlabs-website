@@ -221,9 +221,8 @@ export function FigmaNav({
         onMouseLeave={scheduleClose}
       >
         <div className="relative mx-auto flex h-14 max-w-6xl items-center justify-between px-6">
-          <Link href="/" aria-label="Comlabs home">
+          <Link href="/">
             <ComlabsLogo
-              decorative
               className={cn("h-5 w-auto", dark && "brightness-0 invert")}
             />
           </Link>
@@ -411,8 +410,8 @@ export function FigmaNav({
             }}
           >
             <div className="flex h-14 items-center justify-between px-6">
-              <Link href="/" aria-label="Comlabs home" onClick={closeMobile}>
-                <ComlabsLogo decorative className={cn("h-5 w-auto", dark && "brightness-0 invert")} />
+              <Link href="/" onClick={closeMobile}>
+                <ComlabsLogo className={cn("h-5 w-auto", dark && "brightness-0 invert")} />
               </Link>
               <div className="flex items-center gap-1">
                 <ThemeToggle dark={dark} />

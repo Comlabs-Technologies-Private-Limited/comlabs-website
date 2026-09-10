@@ -54,7 +54,6 @@ export function StudioFooter() {
           <div>
             <Link href={canonicalPath("/")} aria-label={`${siteName} home`}>
               <ComlabsLogo
-                decorative
                 className="h-6 w-auto brightness-0 invert"
               />
             </Link>

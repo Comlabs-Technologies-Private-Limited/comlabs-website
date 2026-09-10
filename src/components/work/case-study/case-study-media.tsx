@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 import type { CaseStudyMedia as CaseStudyMediaType } from "@/lib/case-studies";
-import { mediaUrl } from "@/lib/cloudinary";
+import { CASE_STUDY_MEDIA_SIZE, mediaUrl } from "@/lib/cloudinary";
 
 import { CaseStudyCaption } from "./case-study-caption";
 
@@ -39,13 +39,20 @@ export function CaseStudyMedia({ media }: CaseStudyMediaProps) {
       >
         {isRemoteSrc(src) ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={mediaUrl(src)} alt={alt} className={imageClass} loading="lazy" />
+          <img
+            src={mediaUrl(src)}
+            alt={alt}
+            width={CASE_STUDY_MEDIA_SIZE.width}
+            height={CASE_STUDY_MEDIA_SIZE.height}
+            className={imageClass}
+            loading="lazy"
+          />
         ) : (
           <Image
             src={src}
             alt={alt}
-            width={1440}
-            height={900}
+            width={CASE_STUDY_MEDIA_SIZE.width}
+            height={CASE_STUDY_MEDIA_SIZE.height}
             className={imageClass}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 960px"
           />

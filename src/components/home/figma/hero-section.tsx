@@ -8,7 +8,7 @@ import { EnterpriseClientsTrust } from "@/components/home/enterprise-clients-sec
 import { RevealCopy, useAfterTitleReveal } from "@/components/home/figma/after-title-reveal";
 import { useOptionalTheme } from "@/components/theme/theme-provider";
 import { ChromaticImage } from "@/components/ui/chromatic-image";
-import { HERO_BACKGROUND_PATH, mediaUrl } from "@/lib/cloudinary";
+import { HERO_BACKGROUND_ALT, HERO_BACKGROUND_PATH, HERO_BACKGROUND_SIZE, mediaUrl } from "@/lib/cloudinary";
 import { canonicalPath } from "@/lib/site";
 
 /** Quiet over the headline; opens toward the right and bottom so the landscape reads. */
@@ -28,7 +28,9 @@ export function FigmaHeroSection() {
         <>
           <ChromaticImage
             src={mediaUrl(HERO_BACKGROUND_PATH)}
-            alt=""
+            alt={HERO_BACKGROUND_ALT}
+            width={HERO_BACKGROUND_SIZE.width}
+            height={HERO_BACKGROUND_SIZE.height}
             trackParent
             backgroundColor="#f7f7f4"
             zoom={0.06}

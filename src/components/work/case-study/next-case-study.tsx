@@ -30,7 +30,7 @@ export function NextCaseStudy({ client, headline, href, thumbnail }: NextCaseStu
                 <div className="relative aspect-[16/10] w-full min-h-0 shrink-0 overflow-hidden border border-border bg-secondary sm:aspect-auto sm:h-28 sm:w-44">
                   <Image
                     src={thumbnail}
-                    alt=""
+                    alt={`${client} case study`}
                     fill
                     sizes="(max-width: 640px) calc(100vw - 48px), 176px"
                     className="object-cover object-top"

@@ -5,7 +5,7 @@ import { ArrowRight, ExternalLink } from "lucide-react";
 
 import type { WorkProject } from "@/components/home/figma/work-section";
 import { MarketingFadeIn } from "@/components/marketing/marketing-motion";
-import { mediaUrl } from "@/lib/cloudinary";
+import { CASE_STUDY_MEDIA_SIZE, mediaUrl } from "@/lib/cloudinary";
 import { cn } from "@/lib/utils";
 import { referringAnchorProps } from "@/lib/seo/prepare-html-links";
 import { canonicalPath } from "@/lib/site";
@@ -39,6 +39,8 @@ export function MarketingWorkGrid({
                 <img
                   src={mediaUrl(project.image)}
                   alt={`${project.title} case study`}
+                  width={CASE_STUDY_MEDIA_SIZE.width}
+                  height={CASE_STUDY_MEDIA_SIZE.height}
                   className="absolute inset-0 h-full w-full max-w-none object-cover object-top"
                 />
               </div>

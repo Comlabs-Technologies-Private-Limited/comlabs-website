@@ -48,8 +48,9 @@ export function MarketingPageHero({
       <section className="relative overflow-hidden border-b border-white/10 pt-12 pb-20 md:pt-16 md:pb-24">
         <img
           src={mediaUrl(backgroundImage.src)}
-          alt=""
-          aria-hidden
+          alt={backgroundImage.alt}
+          width={backgroundImage.width}
+          height={backgroundImage.height}
           className="absolute inset-0 h-full w-full object-cover object-center"
         />
         <div

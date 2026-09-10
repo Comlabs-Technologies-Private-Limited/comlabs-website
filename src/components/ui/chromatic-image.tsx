@@ -20,6 +20,8 @@ export type ChromaticImageProps = {
   focusX?: number;
   focusY?: number;
   objectPosition?: string;
+  width?: number;
+  height?: number;
 };
 
 const VERTEX_SHADER = `
@@ -124,6 +126,8 @@ export function ChromaticImage({
   focusX = 0.5,
   focusY = 0.5,
   objectPosition = "50% 50%",
+  width = 1600,
+  height = 900,
 }: ChromaticImageProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -363,6 +367,8 @@ export function ChromaticImage({
       <img
         src={src}
         alt={alt}
+        width={width}
+        height={height}
         className={cn(
           "absolute inset-0 size-full object-cover transition-opacity duration-300",
           ready ? "opacity-0" : "opacity-100",

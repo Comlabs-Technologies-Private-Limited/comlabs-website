@@ -1,6 +1,6 @@
 import { CareersForm } from "@/components/careers/careers-form";
 import { FigmaNav, type NavCaseStudyItem } from "@/components/layout/figma-nav";
-import { HERO_BACKGROUND_PATH, mediaUrl } from "@/lib/cloudinary";
+import { HERO_BACKGROUND_ALT, HERO_BACKGROUND_PATH, HERO_BACKGROUND_SIZE, mediaUrl } from "@/lib/cloudinary";
 
 const BACKGROUND_IMAGE = HERO_BACKGROUND_PATH;
 
@@ -20,8 +20,9 @@ export function CareersPage({ caseStudies }: CareersPageProps) {
         <div className="relative flex md:min-h-screen flex-col justify-end px-8 py-12 lg:min-h-0 lg:px-12 lg:py-28">
           <img
             src={mediaUrl(BACKGROUND_IMAGE)}
-            alt=""
-            aria-hidden
+            alt={HERO_BACKGROUND_ALT}
+            width={HERO_BACKGROUND_SIZE.width}
+            height={HERO_BACKGROUND_SIZE.height}
             className="absolute inset-0 h-full w-full object-cover object-center"
           />
           <div

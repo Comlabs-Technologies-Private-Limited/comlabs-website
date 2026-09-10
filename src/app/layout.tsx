@@ -11,6 +11,7 @@ import {
   siteDefaultDescription,
   siteFaviconPath,
   siteFaviconPngPath,
+  siteHomeTitle,
   siteName,
   siteOgImage,
   siteUrl,
@@ -33,7 +34,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   applicationName: siteName,
   title: {
-    default: "Comlabs Technologies | Application Support, AI, AWS & Software",
+    default: siteHomeTitle,
     template: "%s | Comlabs Technologies",
   },
   description: siteDefaultDescription,

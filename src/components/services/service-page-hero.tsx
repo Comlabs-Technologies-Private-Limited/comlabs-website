@@ -66,6 +66,8 @@ export function ServicePageHero({ service }: ServicePageHeroProps) {
               <img
                 src={mediaUrl(service.editorialImage.src)}
                 alt={service.editorialImage.alt}
+                width={service.editorialImage.width}
+                height={service.editorialImage.height}
                 className="aspect-[5/4] h-full w-full object-cover"
               />
             </div>
