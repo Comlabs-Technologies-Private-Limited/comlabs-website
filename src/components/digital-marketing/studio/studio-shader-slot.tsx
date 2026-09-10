@@ -1,24 +1,24 @@
-"use client";
-
-import dynamic from "next/dynamic";
-
-import type { StudioShaderVariant } from "./studio-shader-panel";
+import type { ReactNode } from "react";
 
 /**
- * Framed slot for a shader panel. The frame is server-rendered so layout is
- * stable; the WebGL panel inside is client-only. Anything passed as children
- * is layered above the canvas — a glass illustration now, photography later.
+ * Framed visual slot.
+ *
+ * These fields used to be one WebGL context each. They are now pure CSS —
+ * layered gradients with a single compositor-driven drift — so the hero keeps
+ * the page's only WebGL context and none of these run an animation loop.
+ * The API is unchanged, so call sites and the glass cards layered over them
+ * are untouched.
  */
-const StudioShaderPanel = dynamic(() => import("./studio-shader-panel"), {
-  ssr: false,
-});
+
+export type StudioFieldVariant = "pixel" | "flow" | "scan";
 
 type Props = {
-  variant: StudioShaderVariant;
+  variant: StudioFieldVariant;
   tone?: "light" | "dark";
+  /** Offsets the drift so neighbouring slots don't move in lockstep. */
   seed?: number;
   className?: string;
-  children?: React.ReactNode;
+  children?: ReactNode;
 };
 
 export function StudioShaderSlot({
@@ -32,13 +32,18 @@ export function StudioShaderSlot({
     tone === "dark"
       ? "border-[var(--studio-line-dark)]"
       : "border-[var(--studio-line)]";
+
   return (
     <div
       aria-hidden
       data-studio-media
       className={`studio-slot relative overflow-hidden border ${border} ${className}`}
     >
-      <StudioShaderPanel variant={variant} tone={tone} seed={seed} />
+      <span
+        className={`studio-field-${variant} absolute inset-0`}
+        data-tone={tone}
+        style={{ animationDelay: `${seed * -1.7}s` }}
+      />
       {children}
     </div>
   );

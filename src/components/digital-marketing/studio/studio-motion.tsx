@@ -169,10 +169,135 @@ export function StudioMotion() {
         );
       }
 
+      // --- Signature hero transition ---------------------------------------
+      // As the hero leaves, the portrait settles back and lifts while the
+      // oversized wordmark is wiped away from the bottom by a clip-path. The
+      // section boundary passes through the wordmark rather than over it.
+      const heroSection = document.getElementById("studio-hero");
+      const heroMedia = document.querySelector<HTMLElement>(
+        "[data-studio-hero-media]",
+      );
+      const heroWordmark = document.querySelector<HTMLElement>(
+        "[data-studio-hero-wordmark]",
+      );
+      if (heroSection && heroMedia && heroWordmark) {
+        const heroTimeline = gsap.timeline({
+          scrollTrigger: {
+            trigger: heroSection,
+            start: "top top",
+            end: "bottom top",
+            scrub: 0.6,
+          },
+        });
+        heroTimeline
+          .fromTo(
+            heroMedia,
+            { scale: 1, yPercent: 0 },
+            { scale: 1.06, yPercent: -6, ease: "none" },
+            0,
+          )
+          .fromTo(
+            heroWordmark,
+            { clipPath: "inset(0% 0% 0% 0%)", yPercent: 0 },
+            { clipPath: "inset(0% 0% 100% 0%)", yPercent: -18, ease: "none" },
+            0,
+          );
+      }
+
+      // --- Selected work: the outgoing panel compresses and darkens --------
+      const workPanels = gsap.utils.toArray<HTMLElement>(".studio-work");
+      workPanels.forEach((panel, index) => {
+        const body = panel.querySelector<HTMLElement>(".studio-work__body");
+        const meta = panel.querySelector<HTMLElement>(".studio-work__meta");
+        const title = panel.querySelector<HTMLElement>(".studio-work__title");
+
+        // Metadata leads, title follows.
+        if (meta && title) {
+          gsap.fromTo(
+            [meta, title],
+            { y: 18, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 0.6,
+              stagger: 0.09,
+              ease: EASE_EDITORIAL,
+              scrollTrigger: { trigger: panel, start: "top 78%", once: true },
+            },
+          );
+        }
+
+        // Only panels that something stacks over need to recede.
+        const next = workPanels[index + 1];
+        if (!next || !body) return;
+        gsap.fromTo(
+          panel,
+          { scale: 1, filter: "brightness(1)" },
+          {
+            scale: 0.965,
+            filter: "brightness(0.72)",
+            ease: "none",
+            scrollTrigger: {
+              trigger: next,
+              start: "top bottom",
+              end: "top top",
+              scrub: true,
+            },
+          },
+        );
+      });
+
+      // --- Marketing lab: rail progress ------------------------------------
+      const rail = document.querySelector<HTMLElement>("[data-studio-rail]");
+      const railFill =
+        document.querySelector<HTMLElement>(".studio-rail__fill");
+      if (rail && railFill) {
+        gsap.set(railFill, { transformOrigin: "left center", scaleX: 0.08 });
+        const setScale = gsap.quickTo(railFill, "scaleX", {
+          duration: 0.3,
+          ease: "power2.out",
+        });
+        const onRailScroll = () => {
+          const max = rail.scrollWidth - rail.clientWidth;
+          setScale(max > 0 ? Math.max(0.08, rail.scrollLeft / max) : 1);
+        };
+        rail.addEventListener("scroll", onRailScroll, { passive: true });
+        teardown.push(() => rail.removeEventListener("scroll", onRailScroll));
+        onRailScroll();
+      }
+
+      // --- Engagements: hovering a model lights the adjacent visual --------
+      const engagementGroup = document.querySelector<HTMLElement>(
+        "[data-studio-engagements]",
+      );
+      const engagementVisual = document.querySelector<HTMLElement>(
+        ".studio-engagement-visual",
+      );
+      if (engagementGroup && engagementVisual) {
+        const rows = Array.from(
+          engagementGroup.querySelectorAll<HTMLElement>(
+            "[data-studio-engagement]",
+          ),
+        );
+        rows.forEach((row, index) => {
+          const onEnter = () => {
+            engagementVisual.dataset.active = String(index);
+          };
+          row.addEventListener("pointerenter", onEnter);
+          row.addEventListener("focusin", onEnter);
+          teardown.push(() => {
+            row.removeEventListener("pointerenter", onEnter);
+            row.removeEventListener("focusin", onEnter);
+          });
+        });
+      }
+
       // --- Work-image parallax ---------------------------------------------
       // The photograph drifts against its frame as the panel passes, which is
       // what stops a sticky stack from feeling like flat slides.
-      for (const frame of gsap.utils.toArray<HTMLElement>(".studio-work__frame")) {
+      for (const frame of gsap.utils.toArray<HTMLElement>(
+        ".studio-work__frame",
+      )) {
         const image = frame.querySelector<HTMLElement>(".studio-work__image");
         if (!image) continue;
         gsap.to(

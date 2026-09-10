@@ -26,8 +26,8 @@ export function StudioWorkStack() {
           className="studio-work border-t border-[var(--studio-line-dark)] bg-[var(--studio-ink)] shadow-[0_-1px_0_rgba(250,250,247,0.06)] lg:sticky lg:top-20"
         >
           <div className="studio-shell grid items-center gap-10 py-14 md:py-20 lg:grid-cols-2 lg:gap-16">
-            <div className="order-2 lg:order-1">
-              <div className="flex items-center gap-4">
+            <div className="studio-work__body order-2 lg:order-1">
+              <div className="studio-work__meta flex items-center gap-4">
                 <span className="font-mono text-[0.6875rem] tracking-widest text-[var(--studio-cyan)]">
                   {String(index + 1).padStart(2, "0")}
                 </span>
