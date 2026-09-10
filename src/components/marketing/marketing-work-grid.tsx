@@ -1,76 +1,159 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, ExternalLink } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 import type { WorkProject } from "@/components/home/figma/work-section";
 import { MarketingFadeIn } from "@/components/marketing/marketing-motion";
-import { CASE_STUDY_MEDIA_SIZE, mediaUrl } from "@/lib/cloudinary";
-import { cn } from "@/lib/utils";
-import { referringAnchorProps } from "@/lib/seo/prepare-html-links";
 import { canonicalPath } from "@/lib/site";
+import { cn } from "@/lib/utils";
 
 type MarketingWorkGridProps = {
   projects: WorkProject[];
-  showLiveSite?: boolean;
 };
 
-export function MarketingWorkGrid({
-  projects,
-  showLiveSite = true,
-}: MarketingWorkGridProps) {
-  return (
-    <div className="border-y border-border px-0 py-2 md:p-3">
-      <div className="flat-frame grid grid-cols-1 lg:grid-cols-3">
-        {projects.map((project, index) => (
-          <MarketingFadeIn
-            key={project.href}
-            delay={index * 0.06}
-            className={cn(
-              "flex min-w-0 flex-col",
-              index > 0 && "border-t border-border",
-              "lg:border-t-0",
-              index >= 3 && "lg:border-t lg:border-border",
-              index % 3 !== 0 && "lg:border-l lg:border-border",
-            )}
-          >
-            <Link href={canonicalPath(project.href)} className="group flex flex-1 flex-col">
-              <div className="relative w-full overflow-hidden bg-secondary" style={{ aspectRatio: "16 / 10" }}>
-                <img
-                  src={mediaUrl(project.image)}
-                  alt={`${project.title} case study`}
-                  width={CASE_STUDY_MEDIA_SIZE.width}
-                  height={CASE_STUDY_MEDIA_SIZE.height}
-                  className="absolute inset-0 h-full w-full max-w-none object-cover object-top"
-                />
-              </div>
-              <div className="flex flex-1 flex-col border-t border-border p-6 lg:p-7">
-                <div className="mb-1.5 flex items-start justify-between gap-3">
-                  <h2 className="text-sm font-semibold">{project.title}</h2>
-                  <ExternalLink
-                    size={13}
-                    className="mt-0.5 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100"
-                  />
-                </div>
-                <p className="text-xs text-muted-foreground">{project.category}</p>
-                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{project.desc}</p>
-                <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--warm-orange)]">
-                  Read case study <ArrowRight size={14} />
+type CaseStudyCardProps = {
+  project: WorkProject;
+  featured?: boolean;
+  className?: string;
+};
+
+function CaseStudyCard({ project, featured = false, className }: CaseStudyCardProps) {
+  const href = canonicalPath(project.href);
+
+  if (featured) {
+    return (
+      <article className={className}>
+        <Link href={href} className="group grid lg:grid-cols-2">
+          <div className="relative aspect-[16/10] overflow-hidden border-b border-border bg-secondary lg:aspect-auto lg:min-h-[360px] lg:border-r lg:border-b-0">
+            {project.image ? (
+              <Image
+                src={project.image}
+                alt={`${project.title} case study`}
+                fill
+                priority
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="object-cover object-top"
+              />
+            ) : (
+              <div className="flex h-full min-h-[240px] items-center justify-center bg-[var(--warm-orange-light)]">
+                <span className="text-4xl font-medium tracking-tight text-[var(--warm-orange)]">
+                  {project.title.slice(0, 1)}
                 </span>
               </div>
-            </Link>
-            {showLiveSite && project.liveSiteUrl ? (
-              <div className="mt-auto border-t border-border px-6 py-3 lg:px-7">
-                <a
-                  {...referringAnchorProps(project.liveSiteUrl)}
-                  className="text-xs text-muted-foreground transition-colors hover:text-[var(--warm-orange)]"
-                >
-                  Visit {new URL(project.liveSiteUrl).hostname}
-                </a>
-              </div>
+            )}
+          </div>
+          <div className="flex flex-col justify-center p-8 md:p-10">
+            <p className="mb-4 text-xs font-medium tracking-[0.18em] uppercase text-muted-foreground">
+              Featured
+            </p>
+            <p
+              className="mb-3 text-xs font-medium tracking-widest uppercase"
+              style={{ color: "var(--warm-orange)" }}
+            >
+              {project.category}
+            </p>
+            <h2
+              className="text-2xl font-medium leading-snug tracking-tight text-foreground md:text-3xl"
+              style={{ letterSpacing: "-0.03em" }}
+            >
+              {project.title}
+            </h2>
+            {project.desc ? (
+              <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground md:text-base">
+                {project.desc}
+              </p>
             ) : null}
-          </MarketingFadeIn>
-        ))}
+            <span className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--warm-orange)] transition-transform duration-300 group-hover:translate-x-0.5">
+              Read case study
+            </span>
+          </div>
+        </Link>
+      </article>
+    );
+  }
+
+  return (
+    <article className={cn("h-full", className)}>
+      <Link href={href} className="group flex h-full flex-col">
+        <div className="relative aspect-[16/10] overflow-hidden border-b border-border bg-secondary">
+          {project.image ? (
+            <Image
+              src={project.image}
+              alt={`${project.title} case study`}
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+              className="object-cover object-top"
+            />
+          ) : (
+            <div className="flex h-full items-center justify-center bg-[var(--warm-orange-light)]">
+              <span className="text-3xl font-medium tracking-tight text-[var(--warm-orange)]">
+                {project.title.slice(0, 1)}
+              </span>
+            </div>
+          )}
+        </div>
+        <div className="flex flex-1 flex-col p-6 md:p-7">
+          <p
+            className="mb-3 text-xs font-medium tracking-widest uppercase"
+            style={{ color: "var(--warm-orange)" }}
+          >
+            {project.category}
+          </p>
+          <h2
+            className="mb-3 text-xl font-medium leading-snug tracking-tight text-foreground transition-colors group-hover:text-foreground/80 md:text-[1.35rem]"
+            style={{ letterSpacing: "-0.025em" }}
+          >
+            {project.title}
+          </h2>
+          {project.desc ? (
+            <p className="line-clamp-3 flex-1 text-sm leading-relaxed text-muted-foreground md:text-[15px]">
+              {project.desc}
+            </p>
+          ) : null}
+        </div>
+      </Link>
+    </article>
+  );
+}
+
+export function MarketingWorkGrid({ projects }: MarketingWorkGridProps) {
+  const featured = projects[0];
+  const remaining = projects.slice(1);
+
+  if (projects.length === 0) {
+    return (
+      <p className="py-16 text-center text-muted-foreground">
+        No case studies yet — check back soon.
+      </p>
+    );
+  }
+
+  return (
+    <div className="border-y border-border px-0 py-2 md:p-3">
+      <div className="flat-frame">
+        {featured ? (
+          <div className={remaining.length > 0 ? "border-b border-border" : undefined}>
+            <CaseStudyCard project={featured} featured />
+          </div>
+        ) : null}
+        {remaining.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2">
+            {remaining.map((project, index) => (
+              <CaseStudyCard
+                key={project.href}
+                project={project}
+                className={cn(
+                  index > 0 && "border-t border-border",
+                  "md:border-t-0",
+                  index >= 2 && "md:border-t md:border-border",
+                  index % 2 !== 0 && "md:border-l md:border-border",
+                )}
+              />
+            ))}
+          </div>
+        ) : null}
       </div>
     </div>
   );
