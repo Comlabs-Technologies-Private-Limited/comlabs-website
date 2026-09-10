@@ -87,9 +87,8 @@ export function FigmaFooter({
       <div className="section-layout px-1 md:px-4">
         <div className="mb-12 flex flex-col justify-between gap-10 md:flex-row">
           <div>
-            <Link href="/" className="mb-3 block" aria-label="Comlabs home">
+            <Link href="/" className="mb-3 block">
               <ComlabsLogo
-                decorative
                 className={tone === "dark" ? "h-6 w-auto brightness-0 invert" : "h-6 w-auto"}
               />
             </Link>

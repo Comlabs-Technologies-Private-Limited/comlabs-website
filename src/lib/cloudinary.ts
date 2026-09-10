@@ -30,6 +30,9 @@ function isLocalStaticAsset(src: string): boolean {
 }
 
 export const HERO_BACKGROUND_PATH = "/hero/hero-bg.png";
+export const HERO_BACKGROUND_ALT = "Open desert landscape under a bright sky";
+export const HERO_BACKGROUND_SIZE = { width: 1920, height: 1080 } as const;
+export const CASE_STUDY_MEDIA_SIZE = { width: 1440, height: 900 } as const;
 
 export function getCloudinaryCloudName(): string | undefined {
   const name = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME?.trim();

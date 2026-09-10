@@ -61,7 +61,7 @@ export function ServiceRelatedWork({
                 <div className="relative aspect-[16/10] overflow-hidden border-b border-border bg-secondary lg:aspect-auto lg:min-h-[360px] lg:border-r lg:border-b-0">
                   <Image
                     src={project.image}
-                    alt=""
+                    alt={`${caseStudy.client} case study`}
                     fill
                     sizes="(max-width: 1023px) 100vw, 50vw"
                     className="object-cover object-top"
@@ -146,7 +146,7 @@ export function ServiceRelatedServices({
                       <div className="relative aspect-[16/9] overflow-hidden border-b border-border">
                         <Image
                           src={image.src}
-                          alt=""
+                          alt={image.alt}
                           fill
                           sizes="(max-width: 767px) 100vw, 33vw"
                           className="object-cover"

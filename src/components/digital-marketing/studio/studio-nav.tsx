@@ -78,7 +78,6 @@ export function StudioNav() {
             aria-label="Comlabs digital marketing studio"
           >
             <ComlabsLogo
-              decorative
               className={cn(
                 "h-6 w-auto transition-[filter] duration-500",
                 dark && "brightness-0 invert",
@@ -139,7 +138,6 @@ export function StudioNav() {
         >
           <div className="studio-shell flex h-16 items-center justify-between">
             <ComlabsLogo
-              decorative
               className="h-6 w-auto brightness-0 invert"
             />
             <button

@@ -2,7 +2,7 @@ import { FigmaNav, type NavCaseStudyItem } from "@/components/layout/figma-nav";
 import { FigmaFooter } from "@/components/layout/figma-footer";
 import { ContactForm } from "@/components/contact/contact-form";
 import { PageBreadcrumbs } from "@/components/seo/page-breadcrumbs";
-import { HERO_BACKGROUND_PATH, mediaUrl } from "@/lib/cloudinary";
+import { HERO_BACKGROUND_ALT, HERO_BACKGROUND_PATH, HERO_BACKGROUND_SIZE, mediaUrl } from "@/lib/cloudinary";
 import { canonicalPath, siteLocation, siteName } from "@/lib/site";
 import Link from "next/link";
 
@@ -31,8 +31,9 @@ export function ContactPage({
           <div className="relative flex min-h-[50vh] flex-col justify-end px-8 py-12 md:min-h-screen lg:sticky lg:top-0 lg:h-screen lg:min-h-0 lg:px-12 lg:py-28">
             <img
               src={mediaUrl(BACKGROUND_IMAGE)}
-              alt=""
-              aria-hidden
+              alt={HERO_BACKGROUND_ALT}
+              width={HERO_BACKGROUND_SIZE.width}
+              height={HERO_BACKGROUND_SIZE.height}
               className="absolute inset-0 h-full w-full object-cover object-center"
             />
             <div

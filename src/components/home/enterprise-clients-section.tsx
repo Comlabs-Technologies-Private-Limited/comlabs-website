@@ -5,6 +5,8 @@ type ClientLogo = {
   name: string;
   src: string;
   alt: string;
+  width: number;
+  height: number;
   imageClassName?: string;
 };
 
@@ -13,36 +15,48 @@ const clients: ClientLogo[] = [
     name: "Vodafone",
     src: "/logos/clients/vodafone.svg",
     alt: "Vodafone logo",
+    width: 160,
+    height: 48,
     imageClassName: "h-8",
   },
   {
     name: "Jio",
     src: "/logos/clients/jio.svg",
     alt: "Jio logo",
+    width: 140,
+    height: 48,
     imageClassName: "h-9",
   },
   {
     name: "Reliance Industries",
     src: "/logos/clients/reliance.svg",
     alt: "Reliance Industries logo",
+    width: 180,
+    height: 48,
     imageClassName: "h-8",
   },
   {
     name: "Hathway",
     src: "/logos/clients/hathway.png",
     alt: "Hathway logo",
+    width: 160,
+    height: 48,
     imageClassName: "h-10",
   },
   {
     name: "Microscan",
     src: "/logos/clients/microscan.png",
     alt: "Microscan logo",
+    width: 160,
+    height: 48,
     imageClassName: "h-8 max-w-[6.5rem]",
   },
   {
     name: "Formial Labs",
     src: "/logos/clients/formial-labs.png",
     alt: "Formial Labs logo",
+    width: 168,
+    height: 48,
     imageClassName: "h-8 max-w-[7rem]",
   },
 ];
@@ -53,6 +67,8 @@ function LogoBox({ client }: { client: ClientLogo }) {
       <img
         src={mediaUrl(client.src)}
         alt={client.alt}
+        width={client.width}
+        height={client.height}
         className={cn(
           "w-auto object-contain opacity-[0.78]",
           client.imageClassName ?? "h-8",

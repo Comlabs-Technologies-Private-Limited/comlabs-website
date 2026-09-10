@@ -11,6 +11,10 @@ export const siteUrl = (
 
 export const siteName = "Comlabs Technologies Pvt Ltd" as const;
 export const siteShortName = "Comlabs Technologies" as const;
+
+/** Homepage document title — keep at or below 60 characters for SERP display. */
+export const siteHomeTitle =
+  "Comlabs Technologies | App Support, AI, AWS & Software" as const;
 export const siteDescriptor =
   "Application Support · AI Infrastructure · Cloud · Engineering" as const;
 export const siteLocation = "Pune, Maharashtra, India" as const;
