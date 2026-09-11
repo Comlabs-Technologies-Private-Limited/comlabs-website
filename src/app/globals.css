@@ -23,6 +23,9 @@
   /* Illustration presentation shells only — nudge opacity to lighten/darken lines. */
   --canvas-hatch-color: rgba(28, 25, 23, 0.06);
   --page-hatch-width: calc((100% - min(100% - 64px, 1440px)) / 4);
+  /* Outer bound for the whole site, so full-bleed bands stop spreading on
+     ultra-wide displays instead of running to the viewport edge. */
+  --site-shell-max: 1920px;
   --input: transparent;
   --input-background: #eeeee9;
   --switch-background: #c8c8c0;
