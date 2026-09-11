@@ -65,7 +65,9 @@ export function StudioNav() {
     <>
       <header
         className={cn(
-          "fixed inset-x-0 top-0 z-50 transition-[background-color,border-color,color] duration-500",
+          // Fixed elements escape the page shell, so this is centred and capped
+          // to the same width rather than running to the viewport edge.
+          "fixed top-0 left-1/2 z-50 w-full max-w-[var(--site-shell-max)] -translate-x-1/2 transition-[background-color,border-color,color] duration-500",
           dark
             ? "border-b border-transparent bg-transparent text-[var(--studio-white)]"
             : "border-b border-[var(--studio-line)] bg-[var(--studio-paper-veil)] text-[var(--studio-ink)] backdrop-blur-md",
