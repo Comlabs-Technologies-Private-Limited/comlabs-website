@@ -28,12 +28,12 @@ const clients: ClientLogo[] = [
     imageClassName: "h-9",
   },
   {
-    name: "Reliance Industries",
-    src: "/logos/clients/reliance.svg",
-    alt: "Reliance Industries logo",
-    width: 180,
-    height: 48,
-    imageClassName: "h-8",
+    name: "Chiaki",
+    src: "/logos/clients/chiaki.png",
+    alt: "Chiaki logo",
+    width: 200,
+    height: 200,
+    imageClassName: "h-10",
   },
   {
     name: "Hathway",

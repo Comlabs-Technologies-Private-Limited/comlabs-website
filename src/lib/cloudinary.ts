@@ -19,6 +19,7 @@ const LOCAL_ONLY_PATHS = new Set([
   "/favicon.svg",
   "/favicon.png",
   "/apple-touch-icon.png",
+  "/logos/clients/chiaki.png",
 ]);
 
 const LOCAL_ONLY_PREFIXES = ["/media/digital-marketing/"] as const;
