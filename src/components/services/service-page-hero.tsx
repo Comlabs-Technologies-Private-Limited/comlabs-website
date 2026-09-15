@@ -1,9 +1,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
-import { ServiceCompactSignal } from "@/components/services/compact-signals";
 import { PageBreadcrumbs } from "@/components/seo/page-breadcrumbs";
-import type { CanonicalServiceSlug } from "@/lib/canonical-services";
 import { mediaUrl } from "@/lib/cloudinary";
 import type { ServicePageData } from "@/lib/services-data";
 import { canonicalPath } from "@/lib/site";
@@ -61,7 +59,10 @@ export function ServicePageHero({ service }: ServicePageHeroProps) {
 
         <div className="min-w-0">
           {hasPhoto && service.editorialImage ? (
-            <div className="overflow-hidden border border-border" style={{ borderRadius: 0 }}>
+            <div
+              className="overflow-hidden border border-border"
+              style={{ borderRadius: 0 }}
+            >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={mediaUrl(service.editorialImage.src)}
@@ -71,12 +72,25 @@ export function ServicePageHero({ service }: ServicePageHeroProps) {
                 className="aspect-[5/4] h-full w-full object-cover"
               />
             </div>
-          ) : (
-            <ServiceCompactSignal
-              slug={service.slug as CanonicalServiceSlug}
-              className="min-h-[16rem] md:min-h-[20rem]"
-            />
-          )}
+          ) : service.suitableFor.length > 0 ? (
+            /* No photograph for this service — answer the reader's first
+               question instead of filling the column with decoration. */
+            <div className="border border-border bg-card p-6 md:p-8">
+              <p className="text-[11px] tracking-widest text-muted-foreground uppercase">
+                Typically for
+              </p>
+              <ul className="mt-5">
+                {service.suitableFor.map((item) => (
+                  <li
+                    key={item}
+                    className="border-t border-border py-3 text-[15px] text-foreground/85 first:border-t-0 first:pt-0 last:pb-0"
+                  >
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
         </div>
       </div>
     </section>

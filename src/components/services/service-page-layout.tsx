@@ -10,7 +10,6 @@ import {
 import { ServiceFaqList } from "@/components/services/service-faq-list";
 import { ServicePageHero } from "@/components/services/service-page-hero";
 import { ServiceProcessRow } from "@/components/services/service-process-row";
-import { ServiceProofModule } from "@/components/services/service-proof-module";
 import {
   ServiceRelatedServices,
   ServiceRelatedWork,
@@ -25,7 +24,9 @@ export function ServicePageLayout({ service }: { service: ServicePageData }) {
   const pageUrl = canonicalUrl(service.path);
   const triggers = service.buyerTriggers ?? [];
   const ownershipItems =
-    service.deliverables.length > 0 ? service.deliverables : (service.outcomes ?? []);
+    service.deliverables.length > 0
+      ? service.deliverables
+      : (service.outcomes ?? []);
   const hasScope = service.problems.length > 0 || ownershipItems.length > 0;
 
   return (
@@ -41,7 +42,9 @@ export function ServicePageLayout({ service }: { service: ServicePageData }) {
           serviceType: service.serviceType,
         })}
       />
-      {service.faqs.length > 0 ? <JsonLdScript data={getFaqPageSchema(service.faqs)} /> : null}
+      {service.faqs.length > 0 ? (
+        <JsonLdScript data={getFaqPageSchema(service.faqs)} />
+      ) : null}
 
       <FigmaNavLoader />
 
@@ -58,7 +61,10 @@ export function ServicePageLayout({ service }: { service: ServicePageData }) {
                 title={
                   <>
                     When this service is the{" "}
-                    <MarketingOrangeHighlight>right move</MarketingOrangeHighlight>.
+                    <MarketingOrangeHighlight>
+                      right move
+                    </MarketingOrangeHighlight>
+                    .
                   </>
                 }
               />
@@ -90,14 +96,6 @@ export function ServicePageLayout({ service }: { service: ServicePageData }) {
           </section>
         ) : null}
 
-        {service.proofTitle && service.proofCaption ? (
-          <ServiceProofModule
-            slug={service.slug}
-            title={service.proofTitle}
-            caption={service.proofCaption}
-          />
-        ) : null}
-
         {hasScope ? (
           <section className="relative border-b border-border py-14 md:py-16">
             <span aria-hidden className="gutter-hatch" />
@@ -108,7 +106,10 @@ export function ServicePageLayout({ service }: { service: ServicePageData }) {
                 title={
                   <>
                     Problems on one side.{" "}
-                    <MarketingOrangeHighlight>Responsibility</MarketingOrangeHighlight> on the other.
+                    <MarketingOrangeHighlight>
+                      Responsibility
+                    </MarketingOrangeHighlight>{" "}
+                    on the other.
                   </>
                 }
               />
@@ -123,13 +124,19 @@ export function ServicePageLayout({ service }: { service: ServicePageData }) {
                 {service.problems.length > 0 ? (
                   <ScopePanel
                     eyebrow={service.problemsEyebrow ?? "Failure modes"}
-                    heading={service.problemsHeading ?? "Where this work starts."}
+                    heading={
+                      service.problemsHeading ?? "Where this work starts."
+                    }
                     items={service.problems}
                   />
                 ) : null}
                 {ownershipItems.length > 0 ? (
                   <ScopePanel
-                    eyebrow={service.deliverablesEyebrow ?? service.outcomesEyebrow ?? "Ownership"}
+                    eyebrow={
+                      service.deliverablesEyebrow ??
+                      service.outcomesEyebrow ??
+                      "Ownership"
+                    }
                     heading={
                       service.deliverablesHeading ??
                       service.outcomesHeading ??
@@ -193,7 +200,11 @@ export function ServicePageLayout({ service }: { service: ServicePageData }) {
                 eyebrow="FAQ"
                 title={
                   <>
-                    Common <MarketingOrangeHighlight>questions</MarketingOrangeHighlight>.
+                    Common{" "}
+                    <MarketingOrangeHighlight>
+                      questions
+                    </MarketingOrangeHighlight>
+                    .
                   </>
                 }
               />
@@ -229,7 +240,9 @@ function ScopePanel({
 }) {
   return (
     <div className={cn("bg-background px-6 py-8 md:px-10 md:py-10", className)}>
-      <p className="mb-3 text-[11px] tracking-widest text-muted-foreground uppercase">{eyebrow}</p>
+      <p className="mb-3 text-[11px] tracking-widest text-muted-foreground uppercase">
+        {eyebrow}
+      </p>
       <h2
         className="mb-8 max-w-sm text-lg font-medium tracking-tight text-foreground md:text-xl"
         style={{ letterSpacing: "-0.03em" }}
@@ -248,7 +261,9 @@ function ScopePanel({
             >
               {String(index + 1).padStart(2, "0")}
             </span>
-            <p className="text-[15px] leading-relaxed text-foreground/85">{item}</p>
+            <p className="text-[15px] leading-relaxed text-foreground/85">
+              {item}
+            </p>
           </li>
         ))}
       </ul>
