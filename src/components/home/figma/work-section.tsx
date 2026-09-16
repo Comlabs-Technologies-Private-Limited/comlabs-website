@@ -94,13 +94,16 @@ export function FigmaWorkSection({ projects }: FigmaWorkSectionProps) {
                   index % 3 !== 0 && "lg:border-l lg:border-border",
                 )}
               >
-                <div className="relative aspect-video w-full overflow-hidden bg-secondary">
+                {/* Matches CASE_STUDY_MEDIA_SIZE (1440x900). A 16/9 box cropped
+                    the bottom of every 16/10 source, cutting through the project
+                    name set into the artwork. */}
+                <div className="relative aspect-[16/10] w-full overflow-hidden bg-secondary">
                   <img
                     src={mediaUrl(project.image)}
                     alt={`${project.title} case study`}
                     width={CASE_STUDY_MEDIA_SIZE.width}
                     height={CASE_STUDY_MEDIA_SIZE.height}
-                    className="absolute inset-0 h-full w-full max-w-none object-cover object-top"
+                    className="absolute inset-0 h-full w-full max-w-none object-cover object-center"
                   />
                 </div>
                 <div className="flex flex-1 flex-col border-t border-border p-7">
