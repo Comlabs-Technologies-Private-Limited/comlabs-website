@@ -10,25 +10,34 @@ import { FigmaFooter } from "@/components/layout/figma-footer";
 import { FigmaNavLoader } from "@/components/layout/figma-nav-loader";
 import { MarketingCtaSection } from "@/components/marketing/marketing-cta-section";
 import { PageBreadcrumbs } from "@/components/seo/page-breadcrumbs";
-import { getPublishedPostBySlug, getPublishedPostSlugs } from "@/lib/admin/posts";
+import {
+  getPublishedPostBySlug,
+  getPublishedPostSlugs,
+} from "@/lib/admin/posts";
 import { buildPageMetadata } from "@/lib/metadata";
-import { HERO_BACKGROUND_PATH, layeredBackgroundImage, absoluteMediaUrl } from "@/lib/cloudinary";
+import {
+  HERO_BACKGROUND_PATH,
+  layeredBackgroundImage,
+  absoluteMediaUrl,
+} from "@/lib/cloudinary";
 import { indexableCanonicalUrl } from "@/lib/seo/indexable-canonical";
 import { canonicalPath, isBlogEnabled, siteUrl } from "@/lib/site";
+import { cn } from "@/lib/utils";
 import type { Post as PostType } from "@/types/post";
 
-const BLOG_RELATED_SERVICES: Record<string, { label: string; href: string }[]> = {
-  "when-ai-agents-get-stuck-in-loops": [
-    {
-      label: "AI Agent Engineering",
-      href: "/services/ai-agent-development",
-    },
-    {
-      label: "L1–L4 Application Support",
-      href: "/services/application-support",
-    },
-  ],
-};
+const BLOG_RELATED_SERVICES: Record<string, { label: string; href: string }[]> =
+  {
+    "when-ai-agents-get-stuck-in-loops": [
+      {
+        label: "AI Agent Engineering",
+        href: "/services/ai-agent-development",
+      },
+      {
+        label: "L1–L4 Application Support",
+        href: "/services/application-support",
+      },
+    ],
+  };
 
 export const revalidate = 60;
 export const dynamicParams = true;
@@ -63,7 +72,10 @@ export async function generateMetadata({
   const post = await getPost(slug);
   if (!post) return {};
 
-  const canonical = indexableCanonicalUrl(post.canonicalUrl, `/blog/${post.slug}`);
+  const canonical = indexableCanonicalUrl(
+    post.canonicalUrl,
+    `/blog/${post.slug}`,
+  );
   const ogImage = absoluteMediaUrl(
     post.ogImage || post.coverImage || "/opengraph.png",
     siteUrl,
@@ -127,92 +139,111 @@ export default async function BlogPostPage({
             className="relative overflow-hidden border-b border-border pt-12 pb-12 md:pt-16 md:pb-16"
             style={{
               backgroundImage: layeredBackgroundImage(
-              "linear-gradient(180deg, rgba(247,247,244,0.86) 0%, rgba(247,247,244,0.78) 45%, rgba(247,247,244,0.92) 100%)",
-              HERO_BACKGROUND_PATH,
-            ),
+                "linear-gradient(180deg, rgba(247,247,244,0.86) 0%, rgba(247,247,244,0.78) 45%, rgba(247,247,244,0.92) 100%)",
+                HERO_BACKGROUND_PATH,
+              ),
               backgroundSize: "cover",
               backgroundPosition: "center right",
             }}
           >
             <span aria-hidden className="gutter-hatch" />
-            <div className="section-layout relative mx-auto max-w-3xl">
+            <div
+              className={cn(
+                "section-layout relative mx-auto",
+                post.coverImage ? "max-w-5xl" : "max-w-3xl",
+              )}
+            >
               <PageBreadcrumbs
                 currentPath={`/blog/${post.slug}`}
-                items={[{ label: "Blog", href: "/blog" }, { label: post.title }]}
+                items={[
+                  { label: "Blog", href: "/blog" },
+                  { label: post.title },
+                ]}
                 className="mb-0"
               />
 
-              <div className="mt-6 flex flex-col items-start gap-4 md:mt-8">
-                <Link
-                  href={canonicalPath("/blog")}
-                  className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  <ArrowLeft size={14} /> All posts
-                </Link>
-
-                {post.tags.length > 0 ? (
-                  <div
-                    className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase"
-                    style={{ color: "var(--warm-orange)" }}
-                  >
-                    <span
-                      aria-hidden
-                      className="h-1.5 w-1.5 shrink-0 border"
-                      style={{ borderColor: "var(--warm-orange)" }}
-                    />
-                    {post.tags[0]}
-                  </div>
-                ) : null}
-              </div>
-
-              <h1
-                className="mt-8 text-3xl leading-[1.12] font-bold tracking-tight md:mt-10 md:text-5xl lg:text-[3.25rem]"
-                style={{ letterSpacing: "-0.03em" }}
+              {/* The cover image belongs next to the title, not in a band
+                  between the title and the article: it does its orientation
+                  job at the moment the reader needs it, and the body starts a
+                  full section sooner. */}
+              <div
+                className={cn(
+                  "gap-10 lg:gap-14",
+                  post.coverImage &&
+                    "lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,0.72fr)] lg:items-center",
+                )}
               >
-                {post.title}
-              </h1>
+                <div className={post.coverImage ? "max-w-2xl" : undefined}>
+                  <div className="mt-6 flex flex-col items-start gap-4 md:mt-8">
+                    <Link
+                      href={canonicalPath("/blog")}
+                      className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                    >
+                      <ArrowLeft size={14} /> All posts
+                    </Link>
 
-              {post.excerpt ? (
-                <p className="mt-5 text-base leading-[1.7] text-muted-foreground md:text-lg">
-                  {post.excerpt}
-                </p>
-              ) : null}
+                    {post.tags.length > 0 ? (
+                      <div
+                        className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase"
+                        style={{ color: "var(--warm-orange)" }}
+                      >
+                        <span
+                          aria-hidden
+                          className="h-1.5 w-1.5 shrink-0 border"
+                          style={{ borderColor: "var(--warm-orange)" }}
+                        />
+                        {post.tags[0]}
+                      </div>
+                    ) : null}
+                  </div>
 
-              <div className="mt-6 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-                <span>{post.author || "Comlabs Technologies Pvt Ltd"}</span>
-                {publishedDate ? (
-                  <>
-                    <span aria-hidden>·</span>
-                    <time dateTime={post.publishedAt ?? post.createdAt}>{publishedDate}</time>
-                  </>
-                ) : null}
-                {post.readingTime ? (
-                  <>
-                    <span aria-hidden>·</span>
-                    <span>{post.readingTime} min read</span>
-                  </>
+                  <h1
+                    className="mt-8 text-3xl leading-[1.12] font-bold tracking-tight md:mt-10 md:text-5xl lg:text-[3.25rem]"
+                    style={{ letterSpacing: "-0.03em" }}
+                  >
+                    {post.title}
+                  </h1>
+
+                  {post.excerpt ? (
+                    <p className="mt-5 text-base leading-[1.7] text-muted-foreground md:text-lg">
+                      {post.excerpt}
+                    </p>
+                  ) : null}
+
+                  <div className="mt-6 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+                    <span>{post.author || "Comlabs Technologies Pvt Ltd"}</span>
+                    {publishedDate ? (
+                      <>
+                        <span aria-hidden>·</span>
+                        <time dateTime={post.publishedAt ?? post.createdAt}>
+                          {publishedDate}
+                        </time>
+                      </>
+                    ) : null}
+                    {post.readingTime ? (
+                      <>
+                        <span aria-hidden>·</span>
+                        <span>{post.readingTime} min read</span>
+                      </>
+                    ) : null}
+                  </div>
+                </div>
+
+                {post.coverImage ? (
+                  <div className="relative mt-10 aspect-[16/10] overflow-hidden border border-border bg-secondary lg:mt-0 lg:aspect-[4/5]">
+                    <Image
+                      src={post.coverImage}
+                      alt={post.title}
+                      fill
+                      priority
+                      sizes="(min-width: 1024px) 38vw, 100vw"
+                      className="object-cover object-center"
+                    />
+                  </div>
                 ) : null}
               </div>
             </div>
           </header>
-
-          {post.coverImage ? (
-            <div className="relative border-b border-border bg-card py-14 md:py-16">
-              <span aria-hidden className="gutter-hatch" />
-              <div className="section-layout mx-auto max-w-5xl">
-                <div className="relative aspect-[16/9] overflow-hidden border border-border bg-secondary">
-                  <Image
-                    src={post.coverImage}
-                    alt={post.title}
-                    fill
-                    priority
-                    sizes="(max-width: 1280px) 100vw, 1280px"
-                    className="object-cover object-center"
-                  />
-                </div>
-              </div>
-            </div>
-          ) : null}
 
           <div className="relative border-b border-border bg-background py-14 md:py-16">
             <span aria-hidden className="gutter-hatch" />
@@ -233,7 +264,10 @@ export default async function BlogPostPage({
               ) : null}
 
               {BLOG_RELATED_SERVICES[post.slug] ? (
-                <nav aria-label="Related services" className="mt-10 border-t border-border pt-8">
+                <nav
+                  aria-label="Related services"
+                  className="mt-10 border-t border-border pt-8"
+                >
                   <p className="mb-3 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
                     Related services
                   </p>
