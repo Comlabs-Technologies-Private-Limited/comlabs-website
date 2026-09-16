@@ -10,25 +10,33 @@ import { FigmaFooter } from "@/components/layout/figma-footer";
 import { FigmaNavLoader } from "@/components/layout/figma-nav-loader";
 import { MarketingCtaSection } from "@/components/marketing/marketing-cta-section";
 import { PageBreadcrumbs } from "@/components/seo/page-breadcrumbs";
-import { getPublishedPostBySlug, getPublishedPostSlugs } from "@/lib/admin/posts";
+import {
+  getPublishedPostBySlug,
+  getPublishedPostSlugs,
+} from "@/lib/admin/posts";
 import { buildPageMetadata } from "@/lib/metadata";
-import { HERO_BACKGROUND_PATH, layeredBackgroundImage, absoluteMediaUrl } from "@/lib/cloudinary";
+import {
+  HERO_BACKGROUND_PATH,
+  layeredBackgroundImage,
+  absoluteMediaUrl,
+} from "@/lib/cloudinary";
 import { indexableCanonicalUrl } from "@/lib/seo/indexable-canonical";
 import { canonicalPath, isBlogEnabled, siteUrl } from "@/lib/site";
 import type { Post as PostType } from "@/types/post";
 
-const BLOG_RELATED_SERVICES: Record<string, { label: string; href: string }[]> = {
-  "when-ai-agents-get-stuck-in-loops": [
-    {
-      label: "AI Agent Engineering",
-      href: "/services/ai-agent-development",
-    },
-    {
-      label: "L1–L4 Application Support",
-      href: "/services/application-support",
-    },
-  ],
-};
+const BLOG_RELATED_SERVICES: Record<string, { label: string; href: string }[]> =
+  {
+    "when-ai-agents-get-stuck-in-loops": [
+      {
+        label: "AI Agent Engineering",
+        href: "/services/ai-agent-development",
+      },
+      {
+        label: "L1–L4 Application Support",
+        href: "/services/application-support",
+      },
+    ],
+  };
 
 export const revalidate = 60;
 export const dynamicParams = true;
@@ -63,7 +71,10 @@ export async function generateMetadata({
   const post = await getPost(slug);
   if (!post) return {};
 
-  const canonical = indexableCanonicalUrl(post.canonicalUrl, `/blog/${post.slug}`);
+  const canonical = indexableCanonicalUrl(
+    post.canonicalUrl,
+    `/blog/${post.slug}`,
+  );
   const ogImage = absoluteMediaUrl(
     post.ogImage || post.coverImage || "/opengraph.png",
     siteUrl,
@@ -127,9 +138,9 @@ export default async function BlogPostPage({
             className="relative overflow-hidden border-b border-border pt-12 pb-12 md:pt-16 md:pb-16"
             style={{
               backgroundImage: layeredBackgroundImage(
-              "linear-gradient(180deg, rgba(247,247,244,0.86) 0%, rgba(247,247,244,0.78) 45%, rgba(247,247,244,0.92) 100%)",
-              HERO_BACKGROUND_PATH,
-            ),
+                "linear-gradient(180deg, rgba(247,247,244,0.86) 0%, rgba(247,247,244,0.78) 45%, rgba(247,247,244,0.92) 100%)",
+                HERO_BACKGROUND_PATH,
+              ),
               backgroundSize: "cover",
               backgroundPosition: "center right",
             }}
@@ -138,7 +149,10 @@ export default async function BlogPostPage({
             <div className="section-layout relative mx-auto max-w-3xl">
               <PageBreadcrumbs
                 currentPath={`/blog/${post.slug}`}
-                items={[{ label: "Blog", href: "/blog" }, { label: post.title }]}
+                items={[
+                  { label: "Blog", href: "/blog" },
+                  { label: post.title },
+                ]}
                 className="mb-0"
               />
 
@@ -183,7 +197,9 @@ export default async function BlogPostPage({
                 {publishedDate ? (
                   <>
                     <span aria-hidden>·</span>
-                    <time dateTime={post.publishedAt ?? post.createdAt}>{publishedDate}</time>
+                    <time dateTime={post.publishedAt ?? post.createdAt}>
+                      {publishedDate}
+                    </time>
                   </>
                 ) : null}
                 {post.readingTime ? (
@@ -196,27 +212,26 @@ export default async function BlogPostPage({
             </div>
           </header>
 
-          {post.coverImage ? (
-            <div className="relative border-b border-border bg-card py-14 md:py-16">
-              <span aria-hidden className="gutter-hatch" />
-              <div className="section-layout mx-auto max-w-5xl">
-                <div className="relative aspect-[16/9] overflow-hidden border border-border bg-secondary">
-                  <Image
-                    src={post.coverImage}
-                    alt={post.title}
-                    fill
-                    priority
-                    sizes="(max-width: 1280px) 100vw, 1280px"
-                    className="object-cover object-center"
-                  />
-                </div>
-              </div>
-            </div>
-          ) : null}
-
           <div className="relative border-b border-border bg-background py-14 md:py-16">
             <span aria-hidden className="gutter-hatch" />
             <div className="section-layout mx-auto max-w-3xl">
+              {/* The cover image opens the article rather than sitting in its
+                  own band above it: the reader meets it on the way into the
+                  text, at the same measure as the prose. */}
+              {post.coverImage ? (
+                <figure className="mb-10 md:mb-12">
+                  <div className="relative aspect-[16/9] overflow-hidden border border-border bg-secondary">
+                    <Image
+                      src={post.coverImage}
+                      alt={post.title}
+                      fill
+                      priority
+                      sizes="(min-width: 768px) 768px, 100vw"
+                      className="object-cover object-center"
+                    />
+                  </div>
+                </figure>
+              ) : null}
               <PostBody html={post.content} />
 
               {post.tags.length > 0 ? (
@@ -233,7 +248,10 @@ export default async function BlogPostPage({
               ) : null}
 
               {BLOG_RELATED_SERVICES[post.slug] ? (
-                <nav aria-label="Related services" className="mt-10 border-t border-border pt-8">
+                <nav
+                  aria-label="Related services"
+                  className="mt-10 border-t border-border pt-8"
+                >
                   <p className="mb-3 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
                     Related services
                   </p>

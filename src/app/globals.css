@@ -1474,6 +1474,108 @@ button:focus-visible .studio-slide > span:last-child {
   margin: 2em 0;
 }
 
+/* --------------------------------------------------------------------------
+   Post tables.
+   CMS content arrives as raw HTML, so there is no wrapper to hang a scroll
+   container on: the table itself becomes the scroller. `width: max-content`
+   with `max-width: 100%` lets it size to its content and scroll horizontally
+   once that exceeds the column, which is the only honest answer for a
+   four-column comparison table on a 390px screen.
+   -------------------------------------------------------------------------- */
+.post-body table {
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-collapse: collapse;
+  border: 1px solid var(--border);
+  margin: 2.25em 0;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  text-align: left;
+}
+
+/* On wide screens the table steps outside the prose measure, so four columns
+   of real sentences get room instead of being squeezed into 768px. */
+@media (min-width: 1024px) {
+  .post-body table {
+    max-width: calc(100% + 11rem);
+    margin-inline: -5.5rem;
+  }
+}
+
+.post-body thead {
+  background: var(--secondary);
+}
+
+.post-body th {
+  padding: 0.8rem 1.1rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  white-space: nowrap;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: bottom;
+}
+
+.post-body td {
+  padding: 1rem 1.1rem;
+  vertical-align: top;
+  min-width: 12rem;
+  color: var(--foreground);
+}
+
+/* Hairlines only: rows divide, columns divide more faintly still. */
+.post-body tbody tr + tr td {
+  border-top: 1px solid var(--hairline-hatch);
+}
+
+.post-body th + th,
+.post-body td + td {
+  border-left: 1px solid var(--hairline-hatch);
+}
+
+/* The label column stays narrow and carries slightly more weight. */
+.post-body td:first-child {
+  min-width: 6.5rem;
+  font-weight: 500;
+}
+
+.post-body tbody tr:hover td {
+  background: color-mix(in srgb, var(--secondary) 45%, transparent);
+}
+
+.post-body table p {
+  margin: 0;
+}
+
+.post-body table p + p {
+  margin-top: 0.5em;
+}
+
+@media (max-width: 767px) {
+  .post-body table {
+    font-size: 0.875rem;
+  }
+
+  .post-body td {
+    min-width: 11rem;
+    padding: 0.85rem 0.9rem;
+  }
+
+  .post-body th {
+    padding: 0.7rem 0.9rem;
+  }
+
+  .post-body td:first-child {
+    min-width: 5.5rem;
+  }
+}
+
 /* Tiptap placeholder */
 .tiptap p.is-editor-empty:first-child::before {
   content: attr(data-placeholder);
