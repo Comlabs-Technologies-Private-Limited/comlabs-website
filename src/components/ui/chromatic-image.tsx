@@ -22,6 +22,12 @@ export type ChromaticImageProps = {
   objectPosition?: string;
   width?: number;
   height?: number;
+  /**
+   * Hold the whole component blank, then reveal it once there is something
+   * final to show. Without this the plain <img> paints first and the WebGL
+   * canvas cross-fades over it, which reads as the image arriving twice.
+   */
+  fadeIn?: boolean;
 };
 
 const VERTEX_SHADER = `
@@ -92,7 +98,12 @@ function createShader(gl: WebGLRenderingContext, type: number, source: string) {
   return shader;
 }
 
-function approach(current: number, target: number, speed: number, delta: number) {
+function approach(
+  current: number,
+  target: number,
+  speed: number,
+  delta: number,
+) {
   return current + (target - current) * (1 - Math.exp(-speed * delta));
 }
 
@@ -128,10 +139,16 @@ export function ChromaticImage({
   objectPosition = "50% 50%",
   width = 1600,
   height = 900,
+  fadeIn = false,
 }: ChromaticImageProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [ready, setReady] = useState(false);
+  /**
+   * True once the outcome is settled either way: the canvas has drawn, or we
+   * fell back to the plain <img>. Only then is it safe to reveal.
+   */
+  const [settled, setSettled] = useState(false);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -139,29 +156,40 @@ export function ChromaticImage({
     if (!container || !canvas) return;
 
     setReady(false);
+    setSettled(false);
+
+    // Any failure below leaves the plain <img> as the final image, so the
+    // reveal must still fire — otherwise the component would stay blank.
+    const fallBackToImage = () => setSettled(true);
+
     const gl = canvas.getContext("webgl", {
       alpha: false,
       antialias: false,
       premultipliedAlpha: false,
     });
-    if (!gl) return;
+    if (!gl) return fallBackToImage();
 
     const vertex = createShader(gl, gl.VERTEX_SHADER, VERTEX_SHADER);
     const fragment = createShader(gl, gl.FRAGMENT_SHADER, FRAGMENT_SHADER);
-    if (!vertex || !fragment) return;
+    if (!vertex || !fragment) return fallBackToImage();
 
     const program = gl.createProgram();
-    if (!program) return;
+    if (!program) return fallBackToImage();
     gl.attachShader(program, vertex);
     gl.attachShader(program, fragment);
     gl.linkProgram(program);
-    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return;
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS))
+      return fallBackToImage();
     gl.useProgram(program);
 
     const position = gl.getAttribLocation(program, "aPosition");
     const buffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([-1, -1, 3, -1, -1, 3]),
+      gl.STATIC_DRAW,
+    );
     gl.enableVertexAttribArray(position);
     gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
 
@@ -204,7 +232,9 @@ export function ChromaticImage({
     let frame = 0;
     let isRendering = false;
     let previousTime = performance.now();
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
 
     const resize = () => {
       const width = canvas.clientWidth;
@@ -257,7 +287,9 @@ export function ChromaticImage({
     };
 
     const pointerRoot =
-      trackParent && container.parentElement ? container.parentElement : container;
+      trackParent && container.parentElement
+        ? container.parentElement
+        : container;
 
     const applyPointer = (clientX: number, clientY: number) => {
       const bounds = pointerRoot.getBoundingClientRect();
@@ -309,13 +341,27 @@ export function ChromaticImage({
     image.onload = () => {
       if (disposed) return;
       gl.bindTexture(gl.TEXTURE_2D, texture);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
-      gl.uniform1f(uniforms.imageAspect, image.naturalWidth / image.naturalHeight);
+      gl.texImage2D(
+        gl.TEXTURE_2D,
+        0,
+        gl.RGBA,
+        gl.RGBA,
+        gl.UNSIGNED_BYTE,
+        image,
+      );
+      gl.uniform1f(
+        uniforms.imageAspect,
+        image.naturalWidth / image.naturalHeight,
+      );
       imageLoaded = true;
       setReady(true);
+      setSettled(true);
       requestRender();
     };
-    image.onerror = () => setReady(false);
+    image.onerror = () => {
+      setReady(false);
+      setSettled(true);
+    };
     image.src = src;
 
     const resizeObserver = new ResizeObserver(() => {
@@ -323,15 +369,25 @@ export function ChromaticImage({
       requestRender();
     });
     resizeObserver.observe(container);
-    pointerRoot.addEventListener("pointerdown", onPointerDown, { passive: true });
-    pointerRoot.addEventListener("pointermove", updatePointer, { passive: true });
+    pointerRoot.addEventListener("pointerdown", onPointerDown, {
+      passive: true,
+    });
+    pointerRoot.addEventListener("pointermove", updatePointer, {
+      passive: true,
+    });
     pointerRoot.addEventListener("pointerup", onPointerUp, { passive: true });
-    pointerRoot.addEventListener("pointercancel", onPointerUp, { passive: true });
-    pointerRoot.addEventListener("pointerleave", resetPointer, { passive: true });
+    pointerRoot.addEventListener("pointercancel", onPointerUp, {
+      passive: true,
+    });
+    pointerRoot.addEventListener("pointerleave", resetPointer, {
+      passive: true,
+    });
     pointerRoot.addEventListener("touchstart", updateTouch, { passive: true });
     pointerRoot.addEventListener("touchmove", updateTouch, { passive: true });
     pointerRoot.addEventListener("touchend", onTouchEnd, { passive: true });
-    pointerRoot.addEventListener("touchcancel", resetPointer, { passive: true });
+    pointerRoot.addEventListener("touchcancel", resetPointer, {
+      passive: true,
+    });
     resize();
     requestRender();
 
@@ -355,13 +411,28 @@ export function ChromaticImage({
       gl.deleteShader(vertex);
       gl.deleteShader(fragment);
     };
-  }, [backgroundColor, displacement, chromaticShift, focusX, focusY, src, tilt, trackParent, zoom]);
+  }, [
+    backgroundColor,
+    displacement,
+    chromaticShift,
+    focusX,
+    focusY,
+    src,
+    tilt,
+    trackParent,
+    zoom,
+  ]);
 
   return (
     <div
       ref={containerRef}
       aria-hidden={alt === "" ? true : undefined}
-      className={cn("relative isolate overflow-hidden bg-neutral-100", className)}
+      className={cn(
+        "relative isolate overflow-hidden bg-neutral-100",
+        fadeIn && "transition-opacity duration-700 ease-out",
+        fadeIn && (settled ? "opacity-100" : "opacity-0"),
+        className,
+      )}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
@@ -370,7 +441,8 @@ export function ChromaticImage({
         width={width}
         height={height}
         className={cn(
-          "absolute inset-0 size-full object-cover transition-opacity duration-300",
+          "absolute inset-0 size-full object-cover",
+          fadeIn ? "transition-none" : "transition-opacity duration-300",
           ready ? "opacity-0" : "opacity-100",
         )}
         style={{ objectPosition }}
@@ -379,7 +451,8 @@ export function ChromaticImage({
         ref={canvasRef}
         aria-hidden="true"
         className={cn(
-          "absolute -inset-[2.5%] size-[105%] will-change-transform transition-opacity duration-300",
+          "absolute -inset-[2.5%] size-[105%] will-change-transform",
+          fadeIn ? "transition-none" : "transition-opacity duration-300",
           ready ? "opacity-100" : "opacity-0",
         )}
       />
