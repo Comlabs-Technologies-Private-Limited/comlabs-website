@@ -3,12 +3,11 @@
 import { Brain, Building2, Cog, Cpu, ShoppingBag } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
-import { BlurReveal, BLUR_REVEAL_NORMAL_SPEED } from "@/components/blur-reveal";
 import {
+  RevealHeading,
   RevealStagger,
   RevealStaggerItem,
-  useAfterTitleReveal,
-} from "@/components/home/figma/after-title-reveal";
+} from "@/components/home/figma/section-reveal";
 
 type IndustryItem = {
   title: string;
@@ -46,20 +45,19 @@ const INDUSTRIES: IndustryItem[] = [
 
 /** Quiet industries strip — lighter weight than Services or Work. */
 export function FigmaIndustriesSection() {
-  const { revealed, onTitleComplete } = useAfterTitleReveal();
   return (
-    <section id="industries" className="relative border-y border-border py-14 md:py-16">
+    <section
+      id="industries"
+      className="relative border-y border-border py-14 md:py-16"
+    >
       <span aria-hidden className="gutter-hatch" />
       <div className="section-layout">
         <div className="mb-8 max-w-2xl px-1 md:px-4 md:mb-10">
           <p className="mb-4 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
             Industries
           </p>
-          <BlurReveal
+          <RevealHeading
             as="h2"
-            inView
-            speedReveal={BLUR_REVEAL_NORMAL_SPEED}
-            onAnimationComplete={onTitleComplete}
             className="text-2xl font-bold tracking-tight md:text-4xl"
             style={{ letterSpacing: "-0.03em" }}
             segments={[
@@ -71,7 +69,7 @@ export function FigmaIndustriesSection() {
         </div>
       </div>
 
-      <RevealStagger revealed={revealed} delay={0.08} className="w-full">
+      <RevealStagger delay={0.08} className="w-full">
         <div className="hatch-aligned-frame border-y border-border px-1 py-1 md:px-4 md:py-0">
           <div className="section-layout">
             <div className="flex flex-col divide-y divide-border sm:flex-row sm:flex-wrap sm:gap-x-8 sm:divide-y-0 lg:flex-nowrap lg:items-stretch lg:divide-x lg:divide-y-0 lg:gap-x-0">

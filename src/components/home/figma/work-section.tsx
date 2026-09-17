@@ -3,14 +3,13 @@
 import { ArrowRight, ExternalLink } from "lucide-react";
 import { motion } from "motion/react";
 
-import { BlurReveal, BLUR_REVEAL_NORMAL_SPEED } from "@/components/blur-reveal";
 import {
-  AFTER_TITLE_BODY_DELAY,
   RevealCopy,
+  RevealHeading,
   RevealStagger,
-  afterTitleItemVariants,
-  useAfterTitleReveal,
-} from "@/components/home/figma/after-title-reveal";
+  SECTION_BODY_DELAY,
+  sectionItemVariants,
+} from "@/components/home/figma/section-reveal";
 import { canonicalPath } from "@/lib/site";
 import { cn } from "@/lib/utils";
 import { CASE_STUDY_MEDIA_SIZE, mediaUrl } from "@/lib/cloudinary";
@@ -30,10 +29,11 @@ type FigmaWorkSectionProps = {
 };
 
 export function FigmaWorkSection({ projects }: FigmaWorkSectionProps) {
-  const { revealed, onTitleComplete } = useAfterTitleReveal();
-
   return (
-    <section id="work" className="relative border-y border-border bg-card py-14 md:py-16">
+    <section
+      id="work"
+      className="relative border-y border-border bg-card py-14 md:py-16"
+    >
       <span aria-hidden className="gutter-hatch" />
       <div className="section-layout">
         <div className="mb-12 flex items-end justify-between gap-6 px-1 md:px-4">
@@ -41,11 +41,8 @@ export function FigmaWorkSection({ projects }: FigmaWorkSectionProps) {
             <p className="mb-4 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
               Case Studies
             </p>
-            <BlurReveal
+            <RevealHeading
               as="h2"
-              inView
-              speedReveal={BLUR_REVEAL_NORMAL_SPEED}
-              onAnimationComplete={onTitleComplete}
               className="text-2xl font-bold tracking-tight md:text-4xl"
               style={{ letterSpacing: "-0.03em" }}
               segments={[
@@ -54,19 +51,13 @@ export function FigmaWorkSection({ projects }: FigmaWorkSectionProps) {
                 { text: "." },
               ]}
             />
-            <RevealCopy
-              revealed={revealed}
-              className="mt-4 text-sm leading-relaxed text-muted-foreground md:text-base"
-            >
-              A selection of engagements across application support, AI systems, infrastructure,
-              custom software, mobile products and digital experiences.
+            <RevealCopy className="mt-4 text-sm leading-relaxed text-muted-foreground md:text-base">
+              A selection of engagements across application support, AI systems,
+              infrastructure, custom software, mobile products and digital
+              experiences.
             </RevealCopy>
           </div>
-          <RevealCopy
-            revealed={revealed}
-            as="div"
-            className="hidden shrink-0 md:block"
-          >
+          <RevealCopy as="div" className="hidden shrink-0 md:block">
             <a
               href={canonicalPath("/case-studies")}
               className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
@@ -77,58 +68,67 @@ export function FigmaWorkSection({ projects }: FigmaWorkSectionProps) {
         </div>
       </div>
 
-      <RevealStagger revealed={revealed} delay={AFTER_TITLE_BODY_DELAY} className="w-full">
+      <RevealStagger delay={SECTION_BODY_DELAY} className="w-full">
         <div className="hatch-aligned-frame border-y border-border px-1 py-1 md:px-0 md:py-0">
           <div className="section-layout md:p-3">
             <div className="flat-frame grid grid-cols-1 lg:grid-cols-3 lg:items-stretch">
               {projects.map((project, index) => (
-              <motion.a
-                key={project.href}
-                href={canonicalPath(project.href)}
-                variants={afterTitleItemVariants}
-                className={cn(
-                  "flex h-full min-w-0 flex-col",
-                  index > 0 && "border-t border-border",
-                  "lg:border-t-0",
-                  index >= 3 && "lg:border-t lg:border-border",
-                  index % 3 !== 0 && "lg:border-l lg:border-border",
-                )}
-              >
-                {/* Matches CASE_STUDY_MEDIA_SIZE (1440x900). A 16/9 box cropped
+                <motion.a
+                  key={project.href}
+                  href={canonicalPath(project.href)}
+                  variants={sectionItemVariants}
+                  className={cn(
+                    "flex h-full min-w-0 flex-col",
+                    index > 0 && "border-t border-border",
+                    "lg:border-t-0",
+                    index >= 3 && "lg:border-t lg:border-border",
+                    index % 3 !== 0 && "lg:border-l lg:border-border",
+                  )}
+                >
+                  {/* Matches CASE_STUDY_MEDIA_SIZE (1440x900). A 16/9 box cropped
                     the bottom of every 16/10 source, cutting through the project
                     name set into the artwork. */}
-                <div className="relative aspect-[16/10] w-full overflow-hidden bg-secondary">
-                  <img
-                    src={mediaUrl(project.image)}
-                    alt={`${project.title} case study`}
-                    width={CASE_STUDY_MEDIA_SIZE.width}
-                    height={CASE_STUDY_MEDIA_SIZE.height}
-                    className="absolute inset-0 h-full w-full max-w-none object-cover object-center"
-                  />
-                </div>
-                <div className="flex flex-1 flex-col border-t border-border p-7">
-                  <div className="mb-1.5 flex items-start justify-between gap-3">
-                    <h3 className="text-sm font-semibold tracking-tight">{project.title}</h3>
-                    <ExternalLink size={13} className="mt-0.5 shrink-0 text-muted-foreground" />
+                  <div className="relative aspect-[16/10] w-full overflow-hidden bg-secondary">
+                    <img
+                      src={mediaUrl(project.image)}
+                      alt={`${project.title} case study`}
+                      width={CASE_STUDY_MEDIA_SIZE.width}
+                      height={CASE_STUDY_MEDIA_SIZE.height}
+                      className="absolute inset-0 h-full w-full max-w-none object-cover object-center"
+                    />
                   </div>
-                  <p className="mb-3 text-xs text-muted-foreground">
-                    {project.category}
-                    {project.featured ? <span className="ml-3">Featured</span> : null}
-                  </p>
-                  <p className="flex-1 text-sm leading-relaxed text-muted-foreground">{project.desc}</p>
-                  <div className="mt-4 shrink-0">
-                    <span className="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--warm-orange)]">
-                      Read case study <ArrowRight size={14} />
-                    </span>
-                    {project.liveSiteUrl ? (
-                      <span className="mt-2 block text-xs text-[var(--warm-orange)]">
-                        {new URL(project.liveSiteUrl).hostname}
+                  <div className="flex flex-1 flex-col border-t border-border p-7">
+                    <div className="mb-1.5 flex items-start justify-between gap-3">
+                      <h3 className="text-sm font-semibold tracking-tight">
+                        {project.title}
+                      </h3>
+                      <ExternalLink
+                        size={13}
+                        className="mt-0.5 shrink-0 text-muted-foreground"
+                      />
+                    </div>
+                    <p className="mb-3 text-xs text-muted-foreground">
+                      {project.category}
+                      {project.featured ? (
+                        <span className="ml-3">Featured</span>
+                      ) : null}
+                    </p>
+                    <p className="flex-1 text-sm leading-relaxed text-muted-foreground">
+                      {project.desc}
+                    </p>
+                    <div className="mt-4 shrink-0">
+                      <span className="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--warm-orange)]">
+                        Read case study <ArrowRight size={14} />
                       </span>
-                    ) : null}
+                      {project.liveSiteUrl ? (
+                        <span className="mt-2 block text-xs text-[var(--warm-orange)]">
+                          {new URL(project.liveSiteUrl).hostname}
+                        </span>
+                      ) : null}
+                    </div>
                   </div>
-                </div>
-              </motion.a>
-            ))}
+                </motion.a>
+              ))}
             </div>
           </div>
         </div>

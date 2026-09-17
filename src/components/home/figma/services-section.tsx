@@ -3,20 +3,23 @@
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
-import { BlurReveal, BLUR_REVEAL_NORMAL_SPEED } from "@/components/blur-reveal";
 import {
-  AFTER_TITLE_BODY_DELAY,
   RevealCopy,
+  RevealHeading,
   RevealStagger,
   RevealStaggerItem,
-  useAfterTitleReveal,
-} from "@/components/home/figma/after-title-reveal";
+  SECTION_BODY_DELAY,
+} from "@/components/home/figma/section-reveal";
 import {
   ServiceIllustrationFrame,
   serviceIllustrations,
 } from "@/components/services/illustrations";
 import { IllustrationWindowPresentation } from "@/components/services/illustrations/illustration-primitives";
-import { HOME_SERVICES, type HomeService, type HomeServiceId } from "@/lib/home-services";
+import {
+  HOME_SERVICES,
+  type HomeService,
+  type HomeServiceId,
+} from "@/lib/home-services";
 import { canonicalPath } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
@@ -37,9 +40,9 @@ const SERVICE_ORDER: readonly HomeServiceId[] = [
 const GRID_COLUMNS = 2;
 
 function orderedServices(): HomeService[] {
-  return SERVICE_ORDER.map((id) => HOME_SERVICES.find((service) => service.id === id)).filter(
-    (service): service is HomeService => Boolean(service),
-  );
+  return SERVICE_ORDER.map((id) =>
+    HOME_SERVICES.find((service) => service.id === id),
+  ).filter((service): service is HomeService => Boolean(service));
 }
 
 /** Short window title for the homepage presentation shell. */
@@ -99,7 +102,13 @@ function ServiceVisual({ service }: { service: HomeService }) {
  * so no two neighbours ever stack into a 2px line, and the desktop-only
  * vertical rule is reset at mobile widths.
  */
-function ServiceCell({ service, index }: { service: HomeService; index: number }) {
+function ServiceCell({
+  service,
+  index,
+}: {
+  service: HomeService;
+  index: number;
+}) {
   const startsRow = index % GRID_COLUMNS === 0;
 
   return (
@@ -145,7 +154,6 @@ function ServiceCell({ service, index }: { service: HomeService; index: number }
 }
 
 export function FigmaServicesSection() {
-  const { revealed, onTitleComplete } = useAfterTitleReveal();
   const services = orderedServices();
 
   return (
@@ -156,11 +164,8 @@ export function FigmaServicesSection() {
           <p className="mb-4 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
             Services
           </p>
-          <BlurReveal
+          <RevealHeading
             as="h2"
-            inView
-            speedReveal={BLUR_REVEAL_NORMAL_SPEED}
-            onAnimationComplete={onTitleComplete}
             className="max-w-3xl text-2xl font-bold tracking-tight md:text-4xl"
             style={{ letterSpacing: "-0.03em" }}
             segments={[
@@ -169,18 +174,15 @@ export function FigmaServicesSection() {
               { text: "after launch." },
             ]}
           />
-          <RevealCopy
-            revealed={revealed}
-            className="mt-5 max-w-2xl text-sm leading-relaxed text-muted-foreground md:text-base"
-          >
-            From application support and agentic systems to AWS infrastructure and custom software,
-            we work across the technology stack where reliability, scale and engineering depth
-            matter.
+          <RevealCopy className="mt-5 max-w-2xl text-sm leading-relaxed text-muted-foreground md:text-base">
+            From application support and agentic systems to AWS infrastructure
+            and custom software, we work across the technology stack where
+            reliability, scale and engineering depth matter.
           </RevealCopy>
         </div>
       </div>
 
-      <RevealStagger revealed={revealed} delay={AFTER_TITLE_BODY_DELAY} className="w-full">
+      <RevealStagger delay={SECTION_BODY_DELAY} className="w-full">
         {/* Top/bottom rules span hatch-to-hatch; card grid sits inset inside. */}
         <div className="hatch-aligned-frame overflow-hidden border-y border-border px-1 py-1 md:px-0 md:py-0">
           <div className="section-layout md:p-3">
@@ -188,7 +190,11 @@ export function FigmaServicesSection() {
               <span aria-hidden className="hatch-canvas-layer" />
               <div className="grid min-w-0 grid-cols-1 lg:grid-cols-2">
                 {services.map((service, index) => (
-                  <ServiceCell key={service.id} service={service} index={index} />
+                  <ServiceCell
+                    key={service.id}
+                    service={service}
+                    index={index}
+                  />
                 ))}
               </div>
             </div>

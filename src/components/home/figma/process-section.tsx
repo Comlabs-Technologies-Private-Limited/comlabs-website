@@ -1,7 +1,9 @@
 "use client";
 
-import { BlurReveal, BLUR_REVEAL_NORMAL_SPEED } from "@/components/blur-reveal";
-import { RevealCopy, useAfterTitleReveal } from "@/components/home/figma/after-title-reveal";
+import {
+  RevealCopy,
+  RevealHeading,
+} from "@/components/home/figma/section-reveal";
 import { ChromaticImageBentoFeatures } from "@/components/home/figma/chromatic-image-bento-features";
 import { PROCESS_STEPS } from "@/components/home/figma/home-data";
 
@@ -18,7 +20,6 @@ const rightFeatures = PROCESS_STEPS.slice(2).map((step) => ({
 }));
 
 export function FigmaProcessSection() {
-  const { revealed, onTitleComplete } = useAfterTitleReveal();
   return (
     <section id="process" className="relative bg-[#141414] py-14 md:py-16">
       <span aria-hidden className="gutter-hatch gutter-hatch-on-dark" />
@@ -27,11 +28,8 @@ export function FigmaProcessSection() {
           <p className="mb-4 text-xs font-semibold tracking-widest text-neutral-100/55 uppercase">
             How we work
           </p>
-          <BlurReveal
+          <RevealHeading
             as="h2"
-            inView
-            speedReveal={BLUR_REVEAL_NORMAL_SPEED}
-            onAnimationComplete={onTitleComplete}
             className="text-2xl font-bold tracking-tight text-neutral-100 md:text-4xl"
             style={{ letterSpacing: "-0.03em" }}
             segments={[
@@ -43,7 +41,7 @@ export function FigmaProcessSection() {
         </div>
       </div>
 
-      <RevealCopy revealed={revealed} delay={0.08} as="div" className="w-full">
+      <RevealCopy delay={0.08} as="div" className="w-full">
         <div className="hatch-aligned-frame border-y border-white/10 px-1 py-1 md:px-0 md:py-0">
           <div className="section-layout md:p-3">
             <ChromaticImageBentoFeatures
