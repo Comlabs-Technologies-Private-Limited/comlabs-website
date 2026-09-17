@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { ComlabsLogo } from "@/components/brand/comlabs-logo";
 import { DIGITAL_MARKETING_PATH } from "@/lib/digital-marketing";
 import { DIGITAL_STUDIO_SECTIONS } from "@/lib/digital-marketing-studio";
+import { canonicalPath } from "@/lib/site";
 import { setStudioScrollLocked } from "@/lib/studio-lenis-bridge";
 import { cn } from "@/lib/utils";
 
@@ -75,7 +76,7 @@ export function StudioNav() {
       >
         <div className="studio-shell flex h-16 items-center justify-between md:h-20">
           <Link
-            href={DIGITAL_MARKETING_PATH}
+            href={canonicalPath(DIGITAL_MARKETING_PATH)}
             className="shrink-0"
             aria-label="Comlabs digital marketing studio"
           >
@@ -139,9 +140,7 @@ export function StudioNav() {
           className="fixed inset-0 z-60 flex flex-col bg-[var(--studio-ink)] text-[var(--studio-white)] md:hidden"
         >
           <div className="studio-shell flex h-16 items-center justify-between">
-            <ComlabsLogo
-              className="h-6 w-auto brightness-0 invert"
-            />
+            <ComlabsLogo className="h-6 w-auto brightness-0 invert" />
             <button
               ref={closeRef}
               type="button"
