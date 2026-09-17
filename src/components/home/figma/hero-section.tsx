@@ -41,7 +41,8 @@ export function FigmaHeroSection() {
             focusX={0.36}
             focusY={0.38}
             objectPosition="36% 38%"
-            className="hero-bg-fade pointer-events-none absolute inset-0 z-0 size-full bg-background"
+            fadeIn
+            className="pointer-events-none absolute inset-0 z-0 size-full bg-background"
           />
           <div
             aria-hidden

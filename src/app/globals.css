@@ -1585,35 +1585,6 @@ button:focus-visible .studio-slide > span:last-child {
   height: 0;
 }
 
-/* --------------------------------------------------------------------------
-   Homepage hero photograph: eases up from transparent as the page paints.
-
-   Deliberately a CSS animation rather than a JS one. Motion emits its initial
-   state into the server HTML, so a JS fade leaves the image at opacity 0 until
-   hydration finishes — and Chrome will not count a transparent element as
-   contentful, which pushes LCP out to hydration time. A CSS keyframe starts
-   with the first paint instead: opacity leaves 0 within a frame, so the image
-   is LCP-eligible almost immediately and still arrives gently.
-   -------------------------------------------------------------------------- */
-.hero-bg-fade {
-  animation: hero-bg-fade 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-@keyframes hero-bg-fade {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hero-bg-fade {
-    animation: none;
-  }
-}
-
 /* Homepage Services / Proof flat frame — wide inset layout with hairline grid. */
 .section-layout {
   width: min(calc(100% - 64px), 1440px);
