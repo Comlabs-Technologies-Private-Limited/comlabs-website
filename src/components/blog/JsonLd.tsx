@@ -1,4 +1,6 @@
-import { canonicalUrl, organizationId, siteName, siteOgImagePath, siteUrl } from "@/lib/site";
+import { absoluteMediaUrl } from "@/lib/cloudinary";
+import { indexableCanonicalUrl } from "@/lib/seo/indexable-canonical";
+import { canonicalUrl, organizationId, siteName, siteUrl } from "@/lib/site";
 import type { Post } from "@/types/post";
 
 type JsonLdProps = {
@@ -6,16 +8,15 @@ type JsonLdProps = {
 };
 
 export function PostJsonLd({ post }: JsonLdProps) {
-  const pageUrl = post.canonicalUrl
-    ? canonicalUrl(post.canonicalUrl)
-    : canonicalUrl(`/blog/${post.slug}`);
-  const image = post.ogImage || post.coverImage || `${siteUrl}${siteOgImagePath}`;
+  const pageUrl = indexableCanonicalUrl(post.canonicalUrl, `/blog/${post.slug}`);
+  const image = absoluteMediaUrl(post.ogImage || post.coverImage || "/opengraph.png", siteUrl);
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     headline: post.metaTitle || post.title,
     description: post.metaDescription || post.excerpt,
+    url: pageUrl,
     image,
     datePublished: post.publishedAt ?? post.createdAt,
     dateModified: post.updatedAt,

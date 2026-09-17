@@ -1,8 +1,21 @@
 import type { Metadata } from "next";
 import { JetBrains_Mono, Plus_Jakarta_Sans } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
+import { GoogleTag } from "@/components/analytics/google-tag";
 import { RootShell } from "@/components/root-shell";
-import { siteDefaultDescription, siteFaviconPath, siteName, siteOgImage, siteUrl } from "@/lib/site";
+import { indexFollowRobots } from "@/lib/metadata";
+import {
+  siteAppleIconPath,
+  siteDefaultDescription,
+  siteFaviconPath,
+  siteFaviconPngPath,
+  siteHomeTitle,
+  siteName,
+  siteOgImage,
+  siteUrl,
+} from "@/lib/site";
 import "./globals.css";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -17,19 +30,21 @@ const jetbrainsMono = JetBrains_Mono({
   weight: ["400", "500"],
 });
 
-
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   applicationName: siteName,
   title: {
-    default: "Comlabs Technologies Pvt Ltd | Website Design Studio",
-    template: "%s | Comlabs Technologies Pvt Ltd",
+    default: siteHomeTitle,
+    template: "%s | Comlabs Technologies",
   },
   description: siteDefaultDescription,
   icons: {
-    icon: [{ url: siteFaviconPath, type: "image/png" }],
+    icon: [
+      { url: siteFaviconPath, type: "image/svg+xml" },
+      { url: siteFaviconPngPath, type: "image/png", sizes: "32x32" },
+    ],
     shortcut: siteFaviconPath,
-    apple: [{ url: siteFaviconPath, type: "image/png" }],
+    apple: [{ url: siteAppleIconPath, type: "image/png", sizes: "180x180" }],
   },
   openGraph: {
     type: "website",
@@ -44,10 +59,7 @@ export const metadata: Metadata = {
     description: siteDefaultDescription,
     images: [siteOgImage.url],
   },
-  robots: {
-    index: true,
-    follow: true,
-  },
+  robots: indexFollowRobots,
 };
 
 export default function RootLayout({
@@ -56,8 +68,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <RootShell fontClassName={`${plusJakartaSans.variable} ${jetbrainsMono.variable}`}>
-      {children}
-    </RootShell>
+    <html
+      lang="en"
+      className={`${plusJakartaSans.variable} ${jetbrainsMono.variable} h-full antialiased`}
+      suppressHydrationWarning
+    >
+      <head>
+        <GoogleTag />
+      </head>
+      <RootShell>
+        {children}
+        <Analytics />
+        <SpeedInsights />
+      </RootShell>
+    </html>
   );
 }

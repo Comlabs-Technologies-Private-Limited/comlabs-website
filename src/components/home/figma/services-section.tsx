@@ -1,34 +1,206 @@
 "use client";
 
-import { ServiceRow, serviceItems } from "@/components/home/services-section";
+import { ArrowRight } from "lucide-react";
+import Link from "next/link";
+
+import {
+  RevealCopy,
+  RevealHeading,
+  RevealStagger,
+  RevealStaggerItem,
+  SECTION_BODY_DELAY,
+} from "@/components/home/figma/section-reveal";
+import {
+  ServiceIllustrationFrame,
+  serviceIllustrations,
+} from "@/components/services/illustrations";
+import { IllustrationWindowPresentation } from "@/components/services/illustrations/illustration-primitives";
+import {
+  HOME_SERVICES,
+  type HomeService,
+  type HomeServiceId,
+} from "@/lib/home-services";
+import { canonicalPath } from "@/lib/site";
+import { cn } from "@/lib/utils";
+
+/**
+ * Reading order for the shared 2x3 grid. Agentic AI and Application Support
+ * share the first row; the remaining four keep their existing relative order.
+ */
+const SERVICE_ORDER: readonly HomeServiceId[] = [
+  "agentic-infrastructure",
+  "application-support",
+  "cloud-infrastructure",
+  "custom-software",
+  "mobile-app",
+  "website-design",
+];
+
+/** Desktop columns — the divider maths below follows from this. */
+const GRID_COLUMNS = 2;
+
+function orderedServices(): HomeService[] {
+  return SERVICE_ORDER.map((id) =>
+    HOME_SERVICES.find((service) => service.id === id),
+  ).filter((service): service is HomeService => Boolean(service));
+}
+
+/** Short window title for the homepage presentation shell. */
+const SERVICE_WINDOW_TITLES: Partial<Record<HomeServiceId, string>> = {
+  "agentic-infrastructure": "Workflow",
+  "application-support": "Support thread",
+  "cloud-infrastructure": "Control plane",
+  "custom-software": "Onboarding",
+  "website-design": "Design",
+};
+
+const FLAT_PRESENTATION_SERVICES = new Set<HomeServiceId>(["mobile-app"]);
+
+/** Taller viewport on small screens — L1–L4 ledger needs vertical room. */
+const WINDOW_VIEWPORT_CLASS: Partial<Record<HomeServiceId, string>> = {
+  "application-support":
+    "aspect-auto h-[23rem] md:h-auto md:aspect-[4/3] md:min-h-0",
+};
+
+/** Illustration in a floating window on a muted canvas — presentation only. */
+function ServiceVisual({ service }: { service: HomeService }) {
+  const illustration = serviceIllustrations[service.id];
+  if (!illustration) return null;
+  const { Component, label } = illustration;
+
+  const frame = (
+    <ServiceIllustrationFrame
+      label={label}
+      chrome={false}
+      className={
+        FLAT_PRESENTATION_SERVICES.has(service.id)
+          ? "aspect-[4/3] w-full rounded-none border-0 md:aspect-[4/3] md:rounded-none"
+          : "absolute inset-0 aspect-auto h-full w-full rounded-none border-0"
+      }
+      stageClassName="p-0"
+    >
+      <Component />
+    </ServiceIllustrationFrame>
+  );
+
+  if (FLAT_PRESENTATION_SERVICES.has(service.id)) {
+    return frame;
+  }
+
+  return (
+    <IllustrationWindowPresentation
+      title={SERVICE_WINDOW_TITLES[service.id]}
+      viewportClassName={WINDOW_VIEWPORT_CLASS[service.id]}
+    >
+      {frame}
+    </IllustrationWindowPresentation>
+  );
+}
+
+/**
+ * One grid cell. Shared edges are drawn by the cell that sits after the seam,
+ * so no two neighbours ever stack into a 2px line, and the desktop-only
+ * vertical rule is reset at mobile widths.
+ */
+function ServiceCell({
+  service,
+  index,
+}: {
+  service: HomeService;
+  index: number;
+}) {
+  const startsRow = index % GRID_COLUMNS === 0;
+
+  return (
+    <RevealStaggerItem
+      className={cn(
+        "flex min-w-0 flex-col",
+        index > 0 && "border-t border-border",
+        "lg:border-t-0",
+        index >= GRID_COLUMNS && "lg:border-t lg:border-border",
+        !startsRow && "lg:border-l lg:border-border",
+      )}
+    >
+      <div className="relative z-[1] bg-background flex flex-1 flex-col p-6 lg:p-8">
+        <h3
+          className="text-sm leading-[1.2] font-bold tracking-tight md:text-xl"
+          style={{ letterSpacing: "-0.03em" }}
+        >
+          {service.title}
+        </h3>
+        <p className="mt-3 text-sm leading-relaxed text-muted-foreground md:hidden">
+          {service.mobileDescription}
+        </p>
+        <p className="mt-3 hidden text-sm leading-relaxed text-muted-foreground md:block">
+          {service.description}
+        </p>
+        <Link
+          href={canonicalPath(service.href)}
+          className="group mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--warm-orange)] transition-opacity hover:opacity-80"
+        >
+          {service.linkLabel}
+          <ArrowRight
+            size={15}
+            className="transition-transform duration-200 group-hover:translate-x-0.5"
+            aria-hidden
+          />
+        </Link>
+      </div>
+      <div className="relative z-[1] min-w-0 w-full max-w-full overflow-hidden p-3 md:p-4">
+        <ServiceVisual service={service} />
+      </div>
+    </RevealStaggerItem>
+  );
+}
 
 export function FigmaServicesSection() {
+  const services = orderedServices();
+
   return (
-    <section id="services" className="px-6 py-24 md:py-32">
-      <div className="mx-auto max-w-6xl">
-        <div className="mb-16 md:mb-20">
+    <section id="services" className="relative py-14 md:py-16">
+      <span aria-hidden className="gutter-hatch" />
+      <div className="section-layout">
+        <div className="mb-12 px-1 md:px-4 md:mb-16">
           <p className="mb-4 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
             Services
           </p>
-          <h2
-            className="max-w-2xl text-2xl font-bold tracking-tight md:text-5xl"
+          <RevealHeading
+            as="h2"
+            className="max-w-3xl text-2xl font-bold tracking-tight md:text-4xl"
             style={{ letterSpacing: "-0.03em" }}
-          >
-            Everything you need to ship{" "}
-            <span style={{ color: "var(--warm-orange)" }}>great</span> products.
-          </h2>
-          <p className="mt-5 max-w-xl text-sm leading-relaxed text-muted-foreground md:text-base">
-            Websites, custom software, mobile products, and infrastructure — built to remove friction
-            and help your business grow.
-          </p>
-        </div>
-
-        <div className="flex flex-col gap-20 md:gap-28 lg:gap-32">
-          {serviceItems.map((service, index) => (
-            <ServiceRow key={service.id} {...service} index={index} variant="figma" />
-          ))}
+            segments={[
+              { text: "Engineering that stays" },
+              { text: "responsible", style: { color: "var(--warm-orange)" } },
+              { text: "after launch." },
+            ]}
+          />
+          <RevealCopy className="mt-5 max-w-2xl text-sm leading-relaxed text-muted-foreground md:text-base">
+            From application support and agentic systems to AWS infrastructure
+            and custom software, we work across the technology stack where
+            reliability, scale and engineering depth matter.
+          </RevealCopy>
         </div>
       </div>
+
+      <RevealStagger delay={SECTION_BODY_DELAY} className="w-full">
+        {/* Top/bottom rules span hatch-to-hatch; card grid sits inset inside. */}
+        <div className="hatch-aligned-frame overflow-hidden border-y border-border px-1 py-1 md:px-0 md:py-0">
+          <div className="section-layout md:p-3">
+            <div className="flat-frame hatch-canvas-fill relative min-w-0 overflow-hidden">
+              <span aria-hidden className="hatch-canvas-layer" />
+              <div className="grid min-w-0 grid-cols-1 lg:grid-cols-2">
+                {services.map((service, index) => (
+                  <ServiceCell
+                    key={service.id}
+                    service={service}
+                    index={index}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </RevealStagger>
     </section>
   );
 }

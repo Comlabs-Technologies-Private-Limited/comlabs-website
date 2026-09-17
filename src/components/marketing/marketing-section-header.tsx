@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 type MarketingSectionHeaderProps = {
   eyebrow: string;
   title: ReactNode;
-  description?: string;
+  description?: ReactNode;
   className?: string;
 };
 
@@ -25,9 +25,9 @@ export function MarketingSectionHeader({
         {title}
       </h2>
       {description ? (
-        <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground md:text-base">
+        <div className="mt-4 max-w-xl space-y-4 text-sm leading-relaxed text-muted-foreground md:text-base">
           {description}
-        </p>
+        </div>
       ) : null}
     </div>
   );

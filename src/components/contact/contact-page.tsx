@@ -1,76 +1,126 @@
-"use client";
-
-import { FigmaNav } from "@/components/layout/figma-nav";
+import Image from "next/image";
+import { FigmaNav, type NavCaseStudyItem } from "@/components/layout/figma-nav";
+import { FigmaFooter } from "@/components/layout/figma-footer";
 import { ContactForm } from "@/components/contact/contact-form";
+import { PageBreadcrumbs } from "@/components/seo/page-breadcrumbs";
+import { HERO_BACKGROUND_ALT, HERO_BACKGROUND_PATH } from "@/lib/cloudinary";
+import { canonicalPath, siteLocation, siteName } from "@/lib/site";
+import Link from "next/link";
 
-const BACKGROUND_IMAGE = "/hero/hero-bg.png";
+const BACKGROUND_IMAGE = HERO_BACKGROUND_PATH;
 
-export function ContactPage() {
+type ContactPageProps = {
+  caseStudies?: NavCaseStudyItem[];
+  footerCaseStudies?: Array<{ label: string; href: string }>;
+  services?: Array<{ label: string; href: string }>;
+};
+
+export function ContactPage({
+  caseStudies,
+  footerCaseStudies,
+  services = [],
+}: ContactPageProps) {
   return (
     <div
       className="min-h-screen bg-background text-foreground antialiased"
       style={{ fontFamily: "var(--font-sans)" }}
     >
-      <FigmaNav />
+      <FigmaNav caseStudies={caseStudies} />
 
-      <div className="grid min-h-screen lg:grid-cols-2">
-        {/* LEFT — cinematic panel */}
-        <div className="relative flex md:min-h-screen flex-col justify-end px-8 py-12 lg:min-h-0 lg:px-12 lg:py-28">
-          <img
-            src={BACKGROUND_IMAGE}
-            alt=""
-            aria-hidden
-            className="absolute inset-0 h-full w-full object-cover object-center"
-          />
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                "linear-gradient(180deg, rgba(28,25,23,0.15) 0%, rgba(28,25,23,0.55) 55%, rgba(28,25,23,0.82) 100%)",
-            }}
-          />
+      <main>
+        <div className="grid min-h-screen lg:grid-cols-2">
+          <div className="relative flex min-h-[50vh] flex-col justify-end px-8 py-12 md:min-h-screen lg:sticky lg:top-0 lg:h-screen lg:min-h-0 lg:px-12 lg:py-28">
+            {/* `fill` + `sizes` so the loader serves a width-appropriate file;
+                the raw <img> sent the full-resolution original to phones. */}
+            <Image
+              src={BACKGROUND_IMAGE}
+              alt={HERO_BACKGROUND_ALT}
+              fill
+              priority
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              className="object-cover object-center"
+            />
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(180deg, rgba(28,25,23,0.15) 0%, rgba(28,25,23,0.55) 55%, rgba(28,25,23,0.82) 100%)",
+              }}
+            />
 
-          <div className="relative z-10 max-w-lg">
-            <p
-              className="mb-4 text-xs font-semibold tracking-[0.14em] uppercase"
-              style={{ color: "rgba(247,247,244,0.5)" }}
-            >
-              Contact us
-            </p>
-            <blockquote
-              className="text-2xl leading-[1.2] font-bold tracking-tight md:text-4xl"
-              style={{ color: "var(--background)", letterSpacing: "-0.03em" }}
-            >
-              &ldquo;Tell us what you&apos;re building. We&apos;ll tell you how we&apos;d approach
-              it.&rdquo;
-            </blockquote>
-            <p className="mt-6 text-sm leading-relaxed" style={{ color: "rgba(247,247,244,0.55)" }}>
-              Comlabs Technologies Pvt Ltd · Pune, Maharashtra, India
-            </p>
-          </div>
-        </div>
-
-        {/* RIGHT — form */}
-        <div className="flex items-center px-6 py-12 md:px-12 lg:px-16 lg:py-20">
-          <div className="mx-auto w-full max-w-md">
-            <h1
-              className="text-3xl font-bold tracking-tight md:text-4xl"
-              style={{ letterSpacing: "-0.03em" }}
-            >
-              Start a project.
-            </h1>
-            <p className="mt-3 text-base leading-relaxed text-muted-foreground">
-              Share your website, custom software, mobile app, or infrastructure goal. We&apos;ll
-              review where you are and how we can help you ship it.
-            </p>
-
-            <div className="mt-10">
-              <ContactForm />
+            <div className="relative z-10 max-w-lg">
+              <p
+                className="mb-4 text-xs font-semibold tracking-widest uppercase"
+                style={{ color: "rgba(247,247,244,0.5)" }}
+              >
+                Contact
+              </p>
+              <blockquote
+                className="text-2xl leading-[1.2] font-medium tracking-tight md:text-4xl"
+                style={{ color: "var(--background)", letterSpacing: "-0.03em" }}
+              >
+                &ldquo;Tell us what you need supported, built or operated.
+                We&apos;ll tell you how we&apos;d approach it.&rdquo;
+              </blockquote>
+              <p
+                className="mt-6 text-sm leading-relaxed"
+                style={{ color: "rgba(247,247,244,0.55)" }}
+              >
+                {siteName} · {siteLocation}
+              </p>
             </div>
-            {/* Owner note: add verified public contact details when confirmed (phone, address, LinkedIn, GBP URL). */}
+          </div>
+
+          <div className="flex items-center px-6 py-12 md:px-12 lg:px-16 lg:py-20">
+            <div className="mx-auto w-full max-w-md">
+              <PageBreadcrumbs
+                currentPath="/contact"
+                items={[{ label: "Contact" }]}
+              />
+              <h1
+                className="text-2xl font-bold tracking-tight md:text-4xl"
+                style={{ letterSpacing: "-0.03em" }}
+              >
+                Contact Comlabs
+              </h1>
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground md:text-base">
+                Talk to us about application support, AI engineering, AWS
+                infrastructure, custom software, mobile products or digital
+                experience requirements.
+              </p>
+
+              <div className="mt-10">
+                <ContactForm />
+              </div>
+
+              {services.length > 0 ? (
+                <nav
+                  aria-label="Services"
+                  className="mt-12 border-t border-border pt-8"
+                >
+                  <p className="mb-3 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
+                    Related services
+                  </p>
+                  <ul className="flex flex-col gap-2">
+                    {services.map((service) => (
+                      <li key={service.href}>
+                        <Link
+                          href={canonicalPath(service.href)}
+                          className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                        >
+                          {service.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+              ) : null}
+            </div>
           </div>
         </div>
-      </div>
+      </main>
+
+      <FigmaFooter caseStudies={footerCaseStudies} />
     </div>
   );
 }

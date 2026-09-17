@@ -3,9 +3,16 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import {
+  RevealCopy,
+  RevealHeading,
+  RevealStagger,
+  RevealStaggerItem,
+  SECTION_BODY_DELAY,
+} from "@/components/home/figma/section-reveal";
 import { TESTIMONIALS } from "@/components/home/figma/home-data";
-import { MarketingFadeIn } from "@/components/marketing/marketing-motion";
-import { MarketingOrangeHighlight } from "@/components/marketing/marketing-section-header";
+import { referringAnchorProps } from "@/lib/seo/prepare-html-links";
+import { cn } from "@/lib/utils";
 
 function FounderAvatar({
   name,
@@ -40,66 +47,86 @@ function FounderAvatar({
 
 export function FigmaTestimonialsSection() {
   return (
-    <section id="testimonials" className="border-y border-border bg-card px-6 py-24 md:py-28">
-      <div className="mx-auto max-w-6xl">
-        <MarketingFadeIn className="mb-12 max-w-2xl md:mb-16">
+    <section
+      id="testimonials"
+      className="relative border-y border-border bg-card py-14 md:py-16"
+    >
+      <span aria-hidden className="gutter-hatch" />
+      <div className="section-layout">
+        <div className="mb-12 max-w-2xl px-1 md:px-4 md:mb-16">
           <p className="mb-4 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
             Testimonials
           </p>
-          <h2
+          <RevealHeading
+            as="h2"
             className="text-2xl font-bold tracking-tight md:text-4xl"
             style={{ letterSpacing: "-0.03em" }}
-          >
-            What founders say <MarketingOrangeHighlight>about us</MarketingOrangeHighlight>.
-          </h2>
-          <p className="mt-4 text-sm leading-relaxed text-muted-foreground md:text-base">
-            Direct feedback from founders we&apos;ve shipped websites, products, and platforms with.
-          </p>
-        </MarketingFadeIn>
-
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-          {TESTIMONIALS.map((testimonial) => (
-            <blockquote
-              key={testimonial.name}
-              className="flex min-h-[280px] flex-col rounded-3xl border border-border bg-background p-6 md:min-h-[300px] md:p-8"
-            >
-              <p className="flex-1 text-base leading-[1.7] text-foreground">
-                &ldquo;{testimonial.quote}&rdquo;
-              </p>
-
-              <footer className="mt-8 flex items-center gap-3">
-                <FounderAvatar
-                  name={testimonial.name}
-                  initials={testimonial.initials}
-                  avatarSrc={testimonial.avatarSrc}
-                />
-
-                <div className="min-w-0">
-                  <cite className="not-italic">
-                    {testimonial.linkedinUrl ? (
-                      <Link
-                        href={testimonial.linkedinUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="block truncate text-sm font-medium text-foreground transition-opacity hover:opacity-80"
-                      >
-                        {testimonial.name}
-                      </Link>
-                    ) : (
-                      <span className="block truncate text-sm font-medium text-foreground">
-                        {testimonial.name}
-                      </span>
-                    )}
-                  </cite>
-                  <p className="mt-0.5 truncate text-sm text-muted-foreground">
-                    {testimonial.title}, {testimonial.company}
-                  </p>
-                </div>
-              </footer>
-            </blockquote>
-          ))}
+            segments={[
+              { text: "What it feels like to work with" },
+              { text: "Comlabs", style: { color: "var(--warm-orange)" } },
+            ]}
+          />
+          <RevealCopy className="mt-4 text-sm leading-relaxed text-muted-foreground md:text-base">
+            Direct feedback from teams we have helped build, improve and operate
+            critical digital systems.
+          </RevealCopy>
         </div>
       </div>
+
+      <RevealStagger delay={SECTION_BODY_DELAY} className="w-full">
+        <div className="hatch-aligned-frame border-y border-border px-1 py-1 md:px-0 md:py-0">
+          <div className="section-layout md:p-3">
+            <div className="flat-frame grid grid-cols-1 lg:grid-cols-3">
+              {TESTIMONIALS.map((testimonial, index) => (
+                <RevealStaggerItem
+                  key={testimonial.name}
+                  className={cn(
+                    "flex min-w-0 flex-col",
+                    index > 0 && "border-t border-border",
+                    "lg:border-t-0",
+                    index >= 3 && "lg:border-t lg:border-border",
+                    index % 3 !== 0 && "lg:border-l lg:border-border",
+                  )}
+                >
+                  <blockquote className="flex h-full flex-col p-6 lg:p-8">
+                    <p className="flex-1 font-sans text-base leading-[1.7] text-foreground">
+                      &ldquo;{testimonial.quote}&rdquo;
+                    </p>
+
+                    <footer className="mt-8 flex items-center gap-3">
+                      <FounderAvatar
+                        name={testimonial.name}
+                        initials={testimonial.initials}
+                        avatarSrc={testimonial.avatarSrc}
+                      />
+
+                      <div className="min-w-0">
+                        <cite className="not-italic">
+                          {testimonial.linkedinUrl ? (
+                            <Link
+                              {...referringAnchorProps(testimonial.linkedinUrl)}
+                              className="block truncate text-sm font-medium text-foreground transition-opacity hover:opacity-80"
+                            >
+                              {testimonial.name}
+                            </Link>
+                          ) : (
+                            <span className="block truncate text-sm font-medium text-foreground">
+                              {testimonial.name}
+                            </span>
+                          )}
+                        </cite>
+                        <p className="mt-0.5 truncate text-sm text-muted-foreground">
+                          {testimonial.title}, {testimonial.company}
+                        </p>
+                      </div>
+                    </footer>
+                  </blockquote>
+                </RevealStaggerItem>
+              ))}
+            </div>
+          </div>
+        </div>
+      </RevealStagger>
     </section>
   );
 }

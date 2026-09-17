@@ -5,6 +5,7 @@ import {
   siteLocation,
   siteName,
   siteShortName,
+  siteSocialProfileUrls,
   websiteId,
 } from "@/lib/site";
 
@@ -18,13 +19,14 @@ export function getOrganizationSchema() {
     url: canonicalUrl("/"),
     logo: logoUrl,
     description:
-      "Comlabs Technologies is a design and engineering studio building websites, custom software, mobile products, and scalable digital infrastructure.",
+      "Comlabs Technologies is an engineering and technology operations company supporting production applications, AI systems, cloud infrastructure and digital products.",
     address: {
       "@type": "PostalAddress",
       addressLocality: "Pune",
       addressRegion: "Maharashtra",
       addressCountry: "IN",
     },
+    sameAs: [...siteSocialProfileUrls],
   } as const;
 }
 
@@ -63,7 +65,9 @@ export function getServiceSchema(input: {
     description: input.description,
     serviceType: input.serviceType,
     provider: {
+      "@type": "Organization",
       "@id": organizationId,
+      name: siteName,
     },
     areaServed: [
       {
@@ -106,6 +110,142 @@ export function getBreadcrumbSchema(
       name: item.name,
       item: canonicalUrl(item.url),
     })),
+  } as const;
+}
+
+export function getServiceCollectionSchema(input: {
+  url: string;
+  name: string;
+  description: string;
+  services: { name: string; url: string }[];
+}) {
+  return getCollectionPageSchema({
+    url: input.url,
+    name: input.name,
+    description: input.description,
+    items: input.services,
+  });
+}
+
+export function getCollectionPageSchema(input: {
+  url: string;
+  name: string;
+  description: string;
+  items: { name: string; url: string }[];
+}) {
+  const url = canonicalUrl(input.url);
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "@id": url,
+    url,
+    name: input.name,
+    description: input.description,
+    publisher: {
+      "@id": organizationId,
+    },
+    mainEntity: {
+      "@type": "ItemList",
+      itemListElement: input.items.map((item, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        name: item.name,
+        url: canonicalUrl(item.url),
+      })),
+    },
+  } as const;
+}
+
+export function getAboutPageSchema(input: {
+  url: string;
+  name: string;
+  description: string;
+}) {
+  const url = canonicalUrl(input.url);
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    "@id": url,
+    url,
+    name: input.name,
+    description: input.description,
+    mainEntity: {
+      "@id": organizationId,
+    },
+    publisher: {
+      "@id": organizationId,
+    },
+  } as const;
+}
+
+export function getContactPageSchema(input: {
+  url: string;
+  name: string;
+  description: string;
+}) {
+  const url = canonicalUrl(input.url);
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    "@id": url,
+    url,
+    name: input.name,
+    description: input.description,
+    mainEntity: {
+      "@id": organizationId,
+    },
+    publisher: {
+      "@id": organizationId,
+    },
+  } as const;
+}
+
+export function getWebPageSchema(input: {
+  url: string;
+  name: string;
+  description: string;
+  dateModified?: string;
+}) {
+  const url = canonicalUrl(input.url);
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "@id": url,
+    url,
+    name: input.name,
+    description: input.description,
+    ...(input.dateModified ? { dateModified: input.dateModified } : {}),
+    isPartOf: {
+      "@id": websiteId,
+    },
+    publisher: {
+      "@id": organizationId,
+    },
+  } as const;
+}
+
+export function getBlogSchema(input: {
+  url: string;
+  name: string;
+  description: string;
+}) {
+  const url = canonicalUrl(input.url);
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "@id": url,
+    url,
+    name: input.name,
+    description: input.description,
+    publisher: {
+      "@id": organizationId,
+    },
+    inLanguage: "en-IN",
   } as const;
 }
 

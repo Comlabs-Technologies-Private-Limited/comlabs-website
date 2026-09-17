@@ -1,7 +1,14 @@
 import type { Post as PrismaPost } from "@prisma/client";
+import { sanitizeBlogHtml } from "@/lib/mcp/sanitize";
 import { calcReadingTime, slugify } from "@/lib/post-utils";
-import { getPrisma } from "@/lib/prisma";
+import {
+  getStaticPostBySlug,
+  getStaticPublishedPostBySlug,
+  mergePostSummaries,
+} from "@/lib/posts";
+import { getPrisma, isDatabaseConfigured } from "@/lib/prisma";
 import { buildPostSeo } from "@/lib/seo/auto-metadata";
+import { sanitizeCanonicalInput } from "@/lib/seo/indexable-canonical";
 import { revalidateContentPaths } from "@/lib/seo/revalidate-content";
 import type { Post, PostStatus, PostSummary } from "@/types/post";
 
@@ -59,35 +66,64 @@ export async function listPosts(options?: {
   status?: PostStatus;
   search?: string;
 }): Promise<PostSummary[]> {
-  const prisma = getPrisma();
-  const records = await prisma.post.findMany({
-    where: {
-      ...(options?.status ? { status: options.status } : {}),
-      ...(options?.search
-        ? {
-            OR: [
-              { title: { contains: options.search } },
-              { slug: { contains: options.search } },
-            ],
-          }
-        : {}),
-    },
-    orderBy: { updatedAt: "desc" },
-  });
+  let databasePosts: PostSummary[] = [];
 
-  return records.map(serializePostSummary);
+  if (isDatabaseConfigured()) {
+    try {
+      const prisma = getPrisma();
+      const records = await prisma.post.findMany({
+        where: {
+          ...(options?.status ? { status: options.status } : {}),
+          ...(options?.search
+            ? {
+                OR: [
+                  { title: { contains: options.search } },
+                  { slug: { contains: options.search } },
+                ],
+              }
+            : {}),
+        },
+        orderBy: { updatedAt: "desc" },
+      });
+      databasePosts = records.map(serializePostSummary);
+    } catch {
+      databasePosts = [];
+    }
+  }
+
+  return mergePostSummaries(databasePosts, options);
 }
 
 export async function getPostById(id: string): Promise<Post | null> {
-  const prisma = getPrisma();
-  const record = await prisma.post.findUnique({ where: { id } });
-  return record ? serializePost(record) : null;
+  if (id.startsWith("static:")) {
+    return getStaticPostBySlug(id.slice("static:".length));
+  }
+
+  if (!isDatabaseConfigured()) {
+    return getStaticPostBySlug(id);
+  }
+
+  try {
+    const prisma = getPrisma();
+    const record = await prisma.post.findUnique({ where: { id } });
+    if (record) return serializePost(record);
+  } catch {
+    // fall through
+  }
+  return getStaticPostBySlug(id);
 }
 
 export async function getPostBySlug(slug: string): Promise<Post | null> {
-  const prisma = getPrisma();
-  const record = await prisma.post.findFirst({ where: { slug } });
-  return record ? serializePost(record) : null;
+  if (isDatabaseConfigured()) {
+    try {
+      const prisma = getPrisma();
+      const record = await prisma.post.findFirst({ where: { slug } });
+      if (record) return serializePost(record);
+    } catch {
+      // fall through to static posts
+    }
+  }
+  return getStaticPostBySlug(slug);
 }
 
 export async function resolvePost(idOrSlug: string): Promise<Post | null> {
@@ -97,27 +133,30 @@ export async function resolvePost(idOrSlug: string): Promise<Post | null> {
 }
 
 export async function getPublishedPostBySlug(slug: string): Promise<Post | null> {
-  const prisma = getPrisma();
-  const record = await prisma.post.findFirst({
-    where: { slug, status: "published" },
-  });
-  return record ? serializePost(record) : null;
+  if (isDatabaseConfigured()) {
+    try {
+      const prisma = getPrisma();
+      const record = await prisma.post.findFirst({
+        where: { slug, status: "published" },
+      });
+      if (record) return serializePost(record);
+    } catch {
+      // fall through to static posts
+    }
+  }
+  return getStaticPublishedPostBySlug(slug);
 }
 
 export async function getPublishedPostSlugs(): Promise<string[]> {
-  const prisma = getPrisma();
-  const records = await prisma.post.findMany({
-    where: { status: "published" },
-    select: { slug: true },
-  });
-  return records.map((record) => record.slug);
+  const posts = await listPosts({ status: "published" });
+  return posts.map((post) => post.slug);
 }
 
 export async function createPost(input: PostInput): Promise<Post> {
   const prisma = getPrisma();
   const slug = input.slug?.trim() || slugify(input.title ?? "");
   const status = input.status ?? "draft";
-  const content = input.content ?? "";
+  const content = input.content ? sanitizeBlogHtml(input.content) : "";
   const seo = buildPostSeo({
     title: input.title?.trim() ?? "",
     content,
@@ -140,7 +179,7 @@ export async function createPost(input: PostInput): Promise<Post> {
       metaTitle: seo.metaTitle,
       metaDescription: seo.metaDescription,
       ogImage: input.ogImage ?? "",
-      canonicalUrl: input.canonicalUrl ?? "",
+      canonicalUrl: sanitizeCanonicalInput(input.canonicalUrl),
       publishedAt: resolvePublishedAt(status, null),
     },
   });
@@ -155,7 +194,8 @@ export async function updatePost(id: string, input: PostInput): Promise<Post | n
   if (!existing) return null;
 
   const status = input.status ?? (existing.status as PostStatus);
-  const content = input.content ?? existing.content;
+  const content =
+    input.content !== undefined ? sanitizeBlogHtml(input.content) : existing.content;
   const title = input.title !== undefined ? input.title.trim() : existing.title;
   const slug = input.slug !== undefined ? input.slug.trim() : existing.slug;
   const seo = buildPostSeo({
@@ -172,7 +212,7 @@ export async function updatePost(id: string, input: PostInput): Promise<Post | n
       ...(input.title !== undefined ? { title } : {}),
       ...(input.slug !== undefined ? { slug } : {}),
       excerpt: seo.excerpt,
-      ...(input.content !== undefined ? { content: input.content } : {}),
+      ...(input.content !== undefined ? { content } : {}),
       ...(input.coverImage !== undefined ? { coverImage: input.coverImage } : {}),
       ...(input.tags !== undefined ? { tags: input.tags } : {}),
       ...(input.status !== undefined ? { status: input.status } : {}),
@@ -180,7 +220,9 @@ export async function updatePost(id: string, input: PostInput): Promise<Post | n
       metaTitle: seo.metaTitle,
       metaDescription: seo.metaDescription,
       ...(input.ogImage !== undefined ? { ogImage: input.ogImage } : {}),
-      ...(input.canonicalUrl !== undefined ? { canonicalUrl: input.canonicalUrl } : {}),
+      ...(input.canonicalUrl !== undefined
+        ? { canonicalUrl: sanitizeCanonicalInput(input.canonicalUrl) }
+        : {}),
       readingTime: calcReadingTime(content),
       publishedAt: resolvePublishedAt(status, existing.publishedAt),
     },

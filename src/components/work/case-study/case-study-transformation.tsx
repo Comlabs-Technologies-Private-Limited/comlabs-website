@@ -22,7 +22,7 @@ function FlowList({ items }: { items: string[] }) {
 
 export function CaseStudyTransformation({ before, after }: CaseStudyTransformationProps) {
   return (
-    <div className="mt-10 grid gap-8 border-y border-border py-10 md:grid-cols-2 md:gap-12">
+    <div className="mt-8 grid gap-8 border-y border-border py-8 md:grid-cols-2 md:gap-12">
       <div>
         <p className="mb-4 text-xs tracking-widest text-muted-foreground uppercase">Before</p>
         <FlowList items={before} />

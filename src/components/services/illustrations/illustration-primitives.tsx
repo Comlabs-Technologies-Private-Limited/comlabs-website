@@ -1,0 +1,420 @@
+"use client";
+
+import type { CSSProperties, ReactNode } from "react";
+import { motion } from "framer-motion";
+
+import { cn } from "@/lib/utils";
+
+import {
+  illustrationColors,
+  illustrationEase,
+  illustrationRadius,
+  illustrationShadow,
+} from "./illustration-tokens";
+
+/** White interface panel — the base material for every illustration. */
+export function Panel({
+  children,
+  className,
+  style,
+  elevation = "panel",
+  radius = illustrationRadius.panel,
+}: {
+  children?: ReactNode;
+  className?: string;
+  style?: CSSProperties;
+  elevation?: "panel" | "raised" | "flat";
+  radius?: number;
+}) {
+  return (
+    <div
+      className={cn("border", className)}
+      style={{
+        background: illustrationColors.surfacePanel,
+        borderColor: illustrationColors.border,
+        borderRadius: radius,
+        boxShadow:
+          elevation === "flat" ? undefined : illustrationShadow[elevation],
+        ...style,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+/** Uppercase micro-label used for section and stage names. */
+export function MicroLabel({
+  children,
+  className,
+  tone = "muted",
+}: {
+  children: ReactNode;
+  className?: string;
+  tone?: "faint" | "muted" | "accent";
+}) {
+  const color =
+    tone === "accent"
+      ? illustrationColors.accent
+      : tone === "faint"
+        ? illustrationColors.inkFaint
+        : illustrationColors.inkMuted;
+
+  return (
+    <span
+      className={cn(
+        "block text-[8px] leading-[1.3] font-medium tracking-[0.04em] lg:text-[9px]",
+        className,
+      )}
+      style={{ color }}
+    >
+      {children}
+    </span>
+  );
+}
+
+/** Small status pill. Always pairs colour with a text label. */
+export function Chip({
+  children,
+  tone = "neutral",
+  size = "default",
+  className,
+  style,
+}: {
+  children: ReactNode;
+  tone?: "neutral" | "accent" | "quiet" | "health";
+  size?: "default" | "compact";
+  className?: string;
+  style?: CSSProperties;
+}) {
+  const palette =
+    tone === "accent"
+      ? {
+          background: illustrationColors.accentSoft,
+          color: illustrationColors.accent,
+          borderColor: "rgba(201, 100, 66, 0.16)",
+        }
+      : tone === "health"
+        ? {
+            background: illustrationColors.healthSoft,
+            color: illustrationColors.health,
+            borderColor: "rgba(63, 122, 90, 0.16)",
+          }
+        : tone === "quiet"
+          ? {
+              background: illustrationColors.surfaceMuted,
+              color: illustrationColors.inkFaint,
+              borderColor: illustrationColors.border,
+            }
+          : {
+              background: illustrationColors.surface,
+              color: illustrationColors.inkMuted,
+              borderColor: illustrationColors.border,
+            };
+
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center self-center border font-medium whitespace-nowrap",
+        size === "compact"
+          ? "gap-0.5 px-1.5 py-[3px] text-[7.5px] leading-none tracking-[0.02em] lg:text-[8.5px]"
+          : "gap-1 px-2 py-[4px] text-[8.5px] leading-none lg:text-[9.5px]",
+        className,
+      )}
+      style={{ borderRadius: illustrationRadius.chip, ...palette, ...style }}
+    >
+      {children}
+    </span>
+  );
+}
+
+/** Status dot — decorative reinforcement only; never the sole status signal. */
+export function StatusDot({
+  tone = "accent",
+  className,
+}: {
+  tone?: "accent" | "muted" | "idle" | "health";
+  className?: string;
+}) {
+  const background =
+    tone === "accent"
+      ? illustrationColors.accent
+      : tone === "health"
+        ? illustrationColors.health
+        : tone === "muted"
+          ? illustrationColors.inkFaint
+          : illustrationColors.wire;
+
+  return (
+    <span
+      className={cn("inline-block h-[5px] w-[5px] shrink-0 rounded-full", className)}
+      style={{ background }}
+    />
+  );
+}
+
+/** Neutral text placeholder bar used inside miniature layouts. */
+export function Bar({
+  width = "100%",
+  height = 4,
+  tone = "muted",
+  className,
+  style,
+}: {
+  width?: number | string;
+  height?: number;
+  tone?: "muted" | "strong" | "wire" | "accent";
+  className?: string;
+  style?: CSSProperties;
+}) {
+  const background =
+    tone === "strong"
+      ? "rgba(28,25,23,0.42)"
+      : tone === "wire"
+        ? illustrationColors.wire
+        : tone === "accent"
+          ? illustrationColors.accent
+          : "rgba(28,25,23,0.12)";
+
+  return (
+    <span
+      className={cn("block", className)}
+      style={{
+        width,
+        height,
+        borderRadius: 999,
+        background,
+        ...style,
+      }}
+    />
+  );
+}
+
+/** Browser / window traffic-light dots. */
+export function WindowDots() {
+  return (
+    <span className="flex items-center gap-[3px]">
+      {[0, 1, 2].map((dot) => (
+        <span
+          key={dot}
+          className="block h-[5px] w-[5px] rounded-full"
+          style={{ background: "rgba(28,25,23,0.12)" }}
+        />
+      ))}
+    </span>
+  );
+}
+
+export function CheckGlyph({
+  size = 8,
+  color = illustrationColors.ink,
+}: {
+  size?: number;
+  color?: string;
+}) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 12 12"
+      fill="none"
+      aria-hidden
+      className="shrink-0"
+    >
+      <path
+        d="M2.5 6.4 4.8 8.7 9.5 3.6"
+        stroke={color}
+        strokeWidth="1.35"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+export function ArrowGlyph({
+  size = 8,
+  color = illustrationColors.inkFaint,
+}: {
+  size?: number;
+  color?: string;
+}) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 12 12" fill="none" aria-hidden>
+      <path
+        d="M2.5 6h7M6.6 3.1 9.5 6l-2.9 2.9"
+        stroke={color}
+        strokeWidth="1.25"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+export function ActivitySpinner({
+  size = 12,
+  active = true,
+  reduce = false,
+  color = illustrationColors.accent,
+}: {
+  size?: number;
+  active?: boolean;
+  reduce?: boolean;
+  color?: string;
+}) {
+  return (
+    <motion.span
+      className="block rounded-full border"
+      style={{
+        width: size,
+        height: size,
+        borderColor: `${color}33`,
+        borderTopColor: color,
+      }}
+      animate={!reduce && active ? { rotate: 360 } : undefined}
+      transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }}
+    />
+  );
+}
+
+export function DrawnCheck({
+  show,
+  reduce = false,
+  size = 12,
+  color = illustrationColors.health,
+}: {
+  show: boolean;
+  reduce?: boolean;
+  size?: number;
+  color?: string;
+}) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 12 12" fill="none" aria-hidden>
+      <motion.path
+        d="M2.5 6.4 4.8 8.7 9.5 3.6"
+        stroke={color}
+        strokeWidth="1.4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        initial={false}
+        animate={{ pathLength: show ? 1 : 0, opacity: show ? 1 : 0 }}
+        transition={{ duration: reduce ? 0 : 0.32, ease: illustrationEase }}
+      />
+    </svg>
+  );
+}
+
+export function ConnectorBeam({
+  active,
+  reduce = false,
+  height = 10,
+}: {
+  active: boolean;
+  reduce?: boolean;
+  height?: number;
+}) {
+  return (
+    <svg width="12" height={height} viewBox={`0 0 12 ${height}`} fill="none" aria-hidden>
+      <line
+        x1="6"
+        y1="0"
+        x2="6"
+        y2={height}
+        stroke={illustrationColors.wire}
+        strokeWidth="1"
+        strokeDasharray="1.6 2.4"
+        strokeLinecap="round"
+      />
+      <motion.line
+        x1="6"
+        y1="0"
+        x2="6"
+        y2={height}
+        stroke={illustrationColors.accent}
+        strokeWidth="1.2"
+        strokeLinecap="round"
+        initial={false}
+        animate={{ pathLength: active ? 1 : 0, opacity: active ? 1 : 0 }}
+        transition={{ duration: reduce ? 0 : 0.42, ease: illustrationEase }}
+      />
+    </svg>
+  );
+}
+
+const PRESENTATION_DOT_COLORS = ["#FF5F57", "#FEBC2E", "#28C840"] as const;
+
+function PresentationWindowDots() {
+  return (
+    <span className="flex w-[52px] shrink-0 items-center gap-1.5" aria-hidden>
+      {PRESENTATION_DOT_COLORS.map((color) => (
+        <span
+          key={color}
+          className="block size-2 rounded-full"
+          style={{ background: color, opacity: 0.88 }}
+        />
+      ))}
+    </span>
+  );
+}
+
+/**
+ * Homepage presentation shell — muted canvas, floating window, title bar.
+ * Wraps service illustrations without changing their internal UI.
+ */
+export function IllustrationWindowPresentation({
+  children,
+  title,
+  className,
+  viewportClassName,
+}: {
+  children: ReactNode;
+  title?: string;
+  className?: string;
+  /** Override the default 4:3 viewport — e.g. taller on mobile for dense UIs. */
+  viewportClassName?: string;
+}) {
+  return (
+    <div
+      className={cn("relative min-w-0 w-full max-w-full overflow-hidden", className)}
+    >
+      <div
+        className="min-w-0 overflow-hidden rounded-xl border bg-white"
+        style={{
+          borderColor: illustrationColors.borderStrong,
+          boxShadow:
+            "0 28px 56px -20px rgba(28,25,23,0.14), 0 12px 24px -12px rgba(28,25,23,0.08)",
+        }}
+      >
+        <div
+          className="grid grid-cols-[40px_1fr_40px] items-center border-b px-2 py-2 sm:grid-cols-[52px_1fr_52px] sm:px-3"
+          style={{
+            borderColor: illustrationColors.border,
+            background: illustrationColors.surfaceMuted,
+          }}
+        >
+          <PresentationWindowDots />
+          {title ? (
+            <span
+              className="truncate text-center text-[10px] font-medium tracking-tight md:text-[11px]"
+              style={{ color: illustrationColors.inkMuted }}
+            >
+              {title}
+            </span>
+          ) : (
+            <span aria-hidden />
+          )}
+          <span aria-hidden className="w-[40px] sm:w-[52px]" />
+        </div>
+        <div
+          className={cn(
+            "relative aspect-[4/3] w-full min-w-0 overflow-hidden bg-[#FAFAF8]",
+            viewportClassName,
+          )}
+        >
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+}

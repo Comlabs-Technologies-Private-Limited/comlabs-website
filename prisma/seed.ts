@@ -5,10 +5,17 @@ dotenv.config();
 
 import { formialLabsCaseStudy } from "@/lib/case-studies/formial-labs";
 import { globalServicesCaseStudy } from "@/lib/case-studies/global-services";
+import { radiantCaseStudy } from "@/lib/case-studies/radiant";
 import { vithubCaseStudy } from "@/lib/case-studies/vithub";
+import { STATIC_POSTS } from "@/lib/posts";
 import { getPrisma } from "@/lib/prisma";
 
-const STATIC_CASE_STUDIES = [formialLabsCaseStudy, globalServicesCaseStudy, vithubCaseStudy];
+const STATIC_CASE_STUDIES = [
+  radiantCaseStudy,
+  formialLabsCaseStudy,
+  globalServicesCaseStudy,
+  vithubCaseStudy,
+];
 
 async function main() {
   if (!process.env.MONGODB_URI) {
@@ -41,11 +48,47 @@ async function main() {
         leadImage: caseStudy.leadImage,
         sections: caseStudy.sections,
         status: "published",
-        metaTitle: `${caseStudy.client} — Case Study`,
-        metaDescription: caseStudy.standfirst,
+        metaTitle: caseStudy.metaTitle ?? `${caseStudy.client} — Case Study`,
+        metaDescription: caseStudy.metaDescription ?? caseStudy.standfirst,
       },
     });
     console.log(`Seeded case study: ${caseStudy.slug}`);
+  }
+
+  for (const post of STATIC_POSTS) {
+    await prisma.post.upsert({
+      where: { slug: post.slug },
+      update: {
+        title: post.title,
+        excerpt: post.excerpt,
+        content: post.content,
+        coverImage: post.coverImage,
+        tags: post.tags,
+        status: "published",
+        author: post.author,
+        readingTime: post.readingTime,
+        metaTitle: post.metaTitle,
+        metaDescription: post.metaDescription,
+        ogImage: post.ogImage,
+        publishedAt: post.publishedAt ? new Date(post.publishedAt) : new Date(),
+      },
+      create: {
+        title: post.title,
+        slug: post.slug,
+        excerpt: post.excerpt,
+        content: post.content,
+        coverImage: post.coverImage,
+        tags: post.tags,
+        status: "published",
+        author: post.author,
+        readingTime: post.readingTime,
+        metaTitle: post.metaTitle,
+        metaDescription: post.metaDescription,
+        ogImage: post.ogImage,
+        publishedAt: post.publishedAt ? new Date(post.publishedAt) : new Date(),
+      },
+    });
+    console.log(`Seeded post: ${post.slug}`);
   }
 }
 

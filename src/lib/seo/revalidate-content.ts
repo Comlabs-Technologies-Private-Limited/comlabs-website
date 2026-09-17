@@ -8,6 +8,8 @@ type RevalidateContentInput = {
 /** Bust cached sitemap and public content routes after admin CRUD. */
 export function revalidateContentPaths({ type, slug }: RevalidateContentInput): void {
   revalidatePath("/sitemap.xml");
+  revalidatePath("/case-studies/[slug]", "page");
+  revalidatePath("/blog/[slug]", "page");
 
   if (type === "post") {
     revalidatePath("/blog");
@@ -15,6 +17,8 @@ export function revalidateContentPaths({ type, slug }: RevalidateContentInput): 
     return;
   }
 
-  revalidatePath("/work");
-  if (slug) revalidatePath(`/work/${slug}`);
+  revalidatePath("/case-studies");
+  revalidatePath("/");
+  revalidatePath("/about");
+  if (slug) revalidatePath(`/case-studies/${slug}`);
 }

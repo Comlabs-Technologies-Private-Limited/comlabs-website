@@ -1,47 +1,58 @@
 "use client";
 
-import { motion } from "motion/react";
-
+import {
+  RevealCopy,
+  RevealHeading,
+} from "@/components/home/figma/section-reveal";
+import { ChromaticImageBentoFeatures } from "@/components/home/figma/chromatic-image-bento-features";
 import { PROCESS_STEPS } from "@/components/home/figma/home-data";
+
+const leftFeatures = PROCESS_STEPS.slice(0, 2).map((step) => ({
+  number: step.step,
+  title: step.title,
+  description: step.description,
+}));
+
+const rightFeatures = PROCESS_STEPS.slice(2).map((step) => ({
+  number: step.step,
+  title: step.title,
+  description: step.description,
+}));
 
 export function FigmaProcessSection() {
   return (
-    <section id="process" className="border-y border-border bg-card px-6 py-24">
-      <div className="mx-auto max-w-6xl">
-        <div className="mb-12">
-          <p className="mb-4 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
-            Process
+    <section id="process" className="relative bg-[#141414] py-14 md:py-16">
+      <span aria-hidden className="gutter-hatch gutter-hatch-on-dark" />
+      <div className="section-layout">
+        <div className="mb-10 max-w-2xl px-1 md:px-4 md:mb-12">
+          <p className="mb-4 text-xs font-semibold tracking-widest text-neutral-100/55 uppercase">
+            How we work
           </p>
-          <h2
-            className="text-2xl font-bold tracking-tight md:text-5xl"
+          <RevealHeading
+            as="h2"
+            className="text-2xl font-bold tracking-tight text-neutral-100 md:text-4xl"
             style={{ letterSpacing: "-0.03em" }}
-          >
-            How we <span style={{ color: "var(--warm-orange)" }}>work</span>.
-          </h2>
-        </div>
-
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
-          {PROCESS_STEPS.map((step, i) => (
-            <motion.div
-              key={step.step}
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.07 }}
-              className="relative"
-            >
-              <div
-                className="mb-4 text-xs font-medium tabular-nums"
-                style={{ fontFamily: "var(--font-mono)", color: "var(--warm-orange)" }}
-              >
-                {step.step}
-              </div>
-              <h3 className="mb-2 text-sm font-semibold">{step.title}</h3>
-              <p className="text-sm leading-relaxed text-muted-foreground">{step.description}</p>
-            </motion.div>
-          ))}
+            segments={[
+              { text: "From problem to" },
+              { text: "dependable", style: { color: "var(--warm-orange)" } },
+              { text: "operation." },
+            ]}
+          />
         </div>
       </div>
+
+      <RevealCopy delay={0.08} as="div" className="w-full">
+        <div className="hatch-aligned-frame border-y border-white/10 px-1 py-1 md:px-0 md:py-0">
+          <div className="section-layout md:p-3">
+            <ChromaticImageBentoFeatures
+              leftFeatures={leftFeatures}
+              rightFeatures={rightFeatures}
+              imageSrc="/process/green-dither.webp"
+              imageAlt="Dithered green mountain valley with a river and village"
+            />
+          </div>
+        </div>
+      </RevealCopy>
     </section>
   );
 }

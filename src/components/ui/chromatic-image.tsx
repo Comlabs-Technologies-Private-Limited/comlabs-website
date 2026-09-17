@@ -1,0 +1,462 @@
+"use client";
+
+import { useEffect, useRef, useState, type ReactNode } from "react";
+
+import { cn } from "@/lib/utils";
+
+export type ChromaticImageProps = {
+  src: string;
+  alt: string;
+  children?: ReactNode;
+  className?: string;
+  backgroundColor?: string;
+  zoom?: number;
+  displacement?: number;
+  chromaticShift?: number;
+  tilt?: number;
+  /** Listen on the parent so a pointer-events-none background still tracks the cursor. */
+  trackParent?: boolean;
+  /** Focal point for cover framing — 0–1, default center. */
+  focusX?: number;
+  focusY?: number;
+  objectPosition?: string;
+  width?: number;
+  height?: number;
+  /**
+   * Hold the whole component blank, then reveal it once there is something
+   * final to show. Without this the plain <img> paints first and the WebGL
+   * canvas cross-fades over it, which reads as the image arriving twice.
+   */
+  fadeIn?: boolean;
+};
+
+const VERTEX_SHADER = `
+attribute vec2 aPosition;
+varying vec2 vUv;
+
+void main() {
+  vUv = aPosition * 0.5 + 0.5;
+  gl_Position = vec4(aPosition, 0.0, 1.0);
+}
+`;
+
+const FRAGMENT_SHADER = `
+precision highp float;
+
+uniform sampler2D uImage;
+uniform vec2 uPointer;
+uniform float uImageAspect;
+uniform float uCanvasAspect;
+uniform float uProgress;
+uniform float uZoom;
+uniform float uWarp;
+uniform float uChromatic;
+uniform vec2 uFocus;
+varying vec2 vUv;
+
+vec2 cover(vec2 uv) {
+  if (uImageAspect > uCanvasAspect) {
+    uv.x = (uv.x - 0.5) * uCanvasAspect / uImageAspect + 0.5;
+  } else {
+    uv.y = (uv.y - 0.5) * uImageAspect / uCanvasAspect + 0.5;
+  }
+  return uv;
+}
+
+void main() {
+  float strength = uProgress;
+  vec2 movement = (uPointer - vec2(0.5)) * vec2(uCanvasAspect, 1.0);
+  vec2 direction = movement / max(length(movement), 0.2);
+
+  vec2 baseUv = mix(vUv, uFocus, uZoom * uProgress * 0.28);
+  float band = sin(vUv.y * 24.0 + uPointer.x * 5.0);
+  float fineBand = sin(vUv.y * 71.0 - uPointer.y * 4.0);
+  baseUv.x += (band * 0.72 + fineBand * 0.28) * uWarp * strength * 0.16;
+  baseUv.y += direction.y * uWarp * strength * 0.12;
+  baseUv = cover(baseUv);
+
+  vec2 split = direction * uChromatic * strength;
+  split.x += band * uChromatic * strength * 0.35;
+  float red = texture2D(uImage, clamp(baseUv + split, 0.0, 1.0)).r;
+  float green = texture2D(uImage, clamp(baseUv, 0.0, 1.0)).g;
+  float blue = texture2D(uImage, clamp(baseUv - split, 0.0, 1.0)).b;
+  float alpha = texture2D(uImage, clamp(baseUv, 0.0, 1.0)).a;
+
+  gl_FragColor = vec4(red, green, blue, alpha);
+}
+`;
+
+function createShader(gl: WebGLRenderingContext, type: number, source: string) {
+  const shader = gl.createShader(type);
+  if (!shader) return null;
+  gl.shaderSource(shader, source);
+  gl.compileShader(shader);
+  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+    gl.deleteShader(shader);
+    return null;
+  }
+  return shader;
+}
+
+function approach(
+  current: number,
+  target: number,
+  speed: number,
+  delta: number,
+) {
+  return current + (target - current) * (1 - Math.exp(-speed * delta));
+}
+
+function parseColor(color: string): [number, number, number] {
+  const value = color.startsWith("#") ? color.slice(1) : "111111";
+  const hex =
+    value.length === 3
+      ? value
+          .split("")
+          .map((character) => character + character)
+          .join("")
+      : value;
+  return [
+    parseInt(hex.slice(0, 2), 16) / 255,
+    parseInt(hex.slice(2, 4), 16) / 255,
+    parseInt(hex.slice(4, 6), 16) / 255,
+  ];
+}
+
+export function ChromaticImage({
+  src,
+  alt,
+  children,
+  className,
+  backgroundColor = "#111111",
+  zoom = 0.2,
+  displacement = 0.05,
+  chromaticShift = 0.01,
+  tilt = 0.3,
+  trackParent = false,
+  focusX = 0.5,
+  focusY = 0.5,
+  objectPosition = "50% 50%",
+  width = 1600,
+  height = 900,
+  fadeIn = false,
+}: ChromaticImageProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [ready, setReady] = useState(false);
+  /**
+   * True once the outcome is settled either way: the canvas has drawn, or we
+   * fell back to the plain <img>. Only then is it safe to reveal.
+   */
+  const [settled, setSettled] = useState(false);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    const canvas = canvasRef.current;
+    if (!container || !canvas) return;
+
+    setReady(false);
+    setSettled(false);
+
+    // Any failure below leaves the plain <img> as the final image, so the
+    // reveal must still fire — otherwise the component would stay blank.
+    const fallBackToImage = () => setSettled(true);
+
+    const gl = canvas.getContext("webgl", {
+      alpha: false,
+      antialias: false,
+      premultipliedAlpha: false,
+    });
+    if (!gl) return fallBackToImage();
+
+    const vertex = createShader(gl, gl.VERTEX_SHADER, VERTEX_SHADER);
+    const fragment = createShader(gl, gl.FRAGMENT_SHADER, FRAGMENT_SHADER);
+    if (!vertex || !fragment) return fallBackToImage();
+
+    const program = gl.createProgram();
+    if (!program) return fallBackToImage();
+    gl.attachShader(program, vertex);
+    gl.attachShader(program, fragment);
+    gl.linkProgram(program);
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS))
+      return fallBackToImage();
+    gl.useProgram(program);
+
+    const position = gl.getAttribLocation(program, "aPosition");
+    const buffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([-1, -1, 3, -1, -1, 3]),
+      gl.STATIC_DRAW,
+    );
+    gl.enableVertexAttribArray(position);
+    gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
+
+    const uniforms = {
+      image: gl.getUniformLocation(program, "uImage"),
+      pointer: gl.getUniformLocation(program, "uPointer"),
+      imageAspect: gl.getUniformLocation(program, "uImageAspect"),
+      canvasAspect: gl.getUniformLocation(program, "uCanvasAspect"),
+      progress: gl.getUniformLocation(program, "uProgress"),
+      zoom: gl.getUniformLocation(program, "uZoom"),
+      warp: gl.getUniformLocation(program, "uWarp"),
+      chromatic: gl.getUniformLocation(program, "uChromatic"),
+      focus: gl.getUniformLocation(program, "uFocus"),
+    };
+
+    gl.uniform1i(uniforms.image, 0);
+    gl.uniform1f(uniforms.zoom, zoom);
+    gl.uniform1f(uniforms.warp, displacement);
+    gl.uniform1f(uniforms.chromatic, chromaticShift);
+    gl.uniform2f(uniforms.focus, focusX, focusY);
+
+    const texture = gl.createTexture();
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+
+    const [red, green, blue] = parseColor(backgroundColor);
+    gl.clearColor(red, green, blue, 1);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
+
+    const pointer = { x: 0.5, y: 0.5 };
+    const pointerTarget = { x: 0.5, y: 0.5 };
+    let progress = 0;
+    let progressTarget = 0;
+    let imageLoaded = false;
+    let disposed = false;
+    let frame = 0;
+    let isRendering = false;
+    let previousTime = performance.now();
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    const resize = () => {
+      const width = canvas.clientWidth;
+      const height = canvas.clientHeight;
+      if (!width || !height) return;
+      const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+      const renderWidth = Math.round(width * pixelRatio);
+      const renderHeight = Math.round(height * pixelRatio);
+      if (canvas.width !== renderWidth || canvas.height !== renderHeight) {
+        canvas.width = renderWidth;
+        canvas.height = renderHeight;
+        gl.viewport(0, 0, renderWidth, renderHeight);
+      }
+      gl.uniform1f(uniforms.canvasAspect, width / height);
+    };
+
+    const render = (time: number) => {
+      if (disposed) return;
+      const delta = Math.min((time - previousTime) / 1000, 0.05);
+      previousTime = time;
+      progress = approach(progress, progressTarget, 10, delta);
+      pointer.x = approach(pointer.x, pointerTarget.x, 30, delta);
+      pointer.y = approach(pointer.y, pointerTarget.y, 30, delta);
+
+      gl.uniform1f(uniforms.progress, reduceMotion ? 0 : progress);
+      gl.uniform2f(uniforms.pointer, pointer.x, pointer.y);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+      if (imageLoaded) gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+      const rotateX = reduceMotion ? 0 : (0.5 - pointer.y) * tilt * 18;
+      const rotateY = reduceMotion ? 0 : (pointer.x - 0.5) * tilt * 18;
+      canvas.style.transform = `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.025)`;
+
+      const isSettled =
+        Math.abs(progress - progressTarget) < 0.001 &&
+        Math.abs(pointer.x - pointerTarget.x) < 0.001 &&
+        Math.abs(pointer.y - pointerTarget.y) < 0.001;
+      if (isSettled) {
+        isRendering = false;
+      } else {
+        frame = requestAnimationFrame(render);
+      }
+    };
+
+    const requestRender = () => {
+      if (isRendering) return;
+      isRendering = true;
+      previousTime = performance.now();
+      frame = requestAnimationFrame(render);
+    };
+
+    const pointerRoot =
+      trackParent && container.parentElement
+        ? container.parentElement
+        : container;
+
+    const applyPointer = (clientX: number, clientY: number) => {
+      const bounds = pointerRoot.getBoundingClientRect();
+      if (!bounds.width || !bounds.height) return;
+      pointerTarget.x = (clientX - bounds.left) / bounds.width;
+      pointerTarget.y = 1 - (clientY - bounds.top) / bounds.height;
+      progressTarget = 1;
+      requestRender();
+    };
+
+    const updatePointer = (event: PointerEvent) => {
+      applyPointer(event.clientX, event.clientY);
+    };
+
+    const resetPointer = () => {
+      pointerTarget.x = 0.5;
+      pointerTarget.y = 0.5;
+      progressTarget = 0;
+      requestRender();
+    };
+
+    const onPointerDown = (event: PointerEvent) => {
+      if (event.pointerType === "mouse") return;
+      applyPointer(event.clientX, event.clientY);
+    };
+
+    const onPointerUp = (event: PointerEvent) => {
+      if (event.pointerType === "mouse") return;
+      resetPointer();
+    };
+
+    const updateTouch = (event: TouchEvent) => {
+      const touch = event.touches[0];
+      if (!touch) return;
+      applyPointer(touch.clientX, touch.clientY);
+    };
+
+    const onTouchEnd = (event: TouchEvent) => {
+      const touch = event.touches[0];
+      if (touch) {
+        applyPointer(touch.clientX, touch.clientY);
+        return;
+      }
+      resetPointer();
+    };
+
+    const image = new Image();
+    image.crossOrigin = "anonymous";
+    image.onload = () => {
+      if (disposed) return;
+      gl.bindTexture(gl.TEXTURE_2D, texture);
+      gl.texImage2D(
+        gl.TEXTURE_2D,
+        0,
+        gl.RGBA,
+        gl.RGBA,
+        gl.UNSIGNED_BYTE,
+        image,
+      );
+      gl.uniform1f(
+        uniforms.imageAspect,
+        image.naturalWidth / image.naturalHeight,
+      );
+      imageLoaded = true;
+      setReady(true);
+      setSettled(true);
+      requestRender();
+    };
+    image.onerror = () => {
+      setReady(false);
+      setSettled(true);
+    };
+    image.src = src;
+
+    const resizeObserver = new ResizeObserver(() => {
+      resize();
+      requestRender();
+    });
+    resizeObserver.observe(container);
+    pointerRoot.addEventListener("pointerdown", onPointerDown, {
+      passive: true,
+    });
+    pointerRoot.addEventListener("pointermove", updatePointer, {
+      passive: true,
+    });
+    pointerRoot.addEventListener("pointerup", onPointerUp, { passive: true });
+    pointerRoot.addEventListener("pointercancel", onPointerUp, {
+      passive: true,
+    });
+    pointerRoot.addEventListener("pointerleave", resetPointer, {
+      passive: true,
+    });
+    pointerRoot.addEventListener("touchstart", updateTouch, { passive: true });
+    pointerRoot.addEventListener("touchmove", updateTouch, { passive: true });
+    pointerRoot.addEventListener("touchend", onTouchEnd, { passive: true });
+    pointerRoot.addEventListener("touchcancel", resetPointer, {
+      passive: true,
+    });
+    resize();
+    requestRender();
+
+    return () => {
+      disposed = true;
+      cancelAnimationFrame(frame);
+      resizeObserver.disconnect();
+      pointerRoot.removeEventListener("pointerdown", onPointerDown);
+      pointerRoot.removeEventListener("pointermove", updatePointer);
+      pointerRoot.removeEventListener("pointerup", onPointerUp);
+      pointerRoot.removeEventListener("pointercancel", onPointerUp);
+      pointerRoot.removeEventListener("pointerleave", resetPointer);
+      pointerRoot.removeEventListener("touchstart", updateTouch);
+      pointerRoot.removeEventListener("touchmove", updateTouch);
+      pointerRoot.removeEventListener("touchend", onTouchEnd);
+      pointerRoot.removeEventListener("touchcancel", resetPointer);
+      canvas.style.transform = "";
+      gl.deleteTexture(texture);
+      gl.deleteBuffer(buffer);
+      gl.deleteProgram(program);
+      gl.deleteShader(vertex);
+      gl.deleteShader(fragment);
+    };
+  }, [
+    backgroundColor,
+    displacement,
+    chromaticShift,
+    focusX,
+    focusY,
+    src,
+    tilt,
+    trackParent,
+    zoom,
+  ]);
+
+  return (
+    <div
+      ref={containerRef}
+      aria-hidden={alt === "" ? true : undefined}
+      className={cn(
+        "relative isolate overflow-hidden bg-neutral-100",
+        fadeIn && "transition-opacity duration-700 ease-out",
+        fadeIn && (settled ? "opacity-100" : "opacity-0"),
+        className,
+      )}
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={src}
+        alt={alt}
+        width={width}
+        height={height}
+        className={cn(
+          "absolute inset-0 size-full object-cover",
+          fadeIn ? "transition-none" : "transition-opacity duration-300",
+          ready ? "opacity-0" : "opacity-100",
+        )}
+        style={{ objectPosition }}
+      />
+      <canvas
+        ref={canvasRef}
+        aria-hidden="true"
+        className={cn(
+          "absolute -inset-[2.5%] size-[105%] will-change-transform",
+          fadeIn ? "transition-none" : "transition-opacity duration-300",
+          ready ? "opacity-100" : "opacity-0",
+        )}
+      />
+      {children}
+    </div>
+  );
+}

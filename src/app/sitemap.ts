@@ -1,83 +1,148 @@
 import type { MetadataRoute } from "next";
+import { connection } from "next/server";
 
 import { listCaseStudies } from "@/lib/admin/case-studies";
 import { listPosts } from "@/lib/admin/posts";
 import { CASE_STUDY_ORDER } from "@/lib/case-studies";
-import { canonicalUrl, indexableStaticPaths, isBlogEnabled } from "@/lib/site";
+import { listStaticPosts } from "@/lib/posts";
+import { isDatabaseConfigured } from "@/lib/prisma";
+import {
+  CASE_STUDIES_PATH,
+  canonicalUrl,
+  caseStudyPath,
+  indexableStaticPaths,
+  isBlogEnabled,
+} from "@/lib/site";
 
-export const revalidate = 60;
-
-function priorityForPath(path: string): number {
+/**
+ * Relative importance of a URL within this site, which is all `priority`
+ * conveys — it says nothing about ranking against other sites. Google stopped
+ * using the field in 2023; Bing and other crawlers still read it, and it is
+ * part of the sitemaps.org schema, so it is worth emitting accurately.
+ *
+ * Bands, highest first: entry points, then the pages that convert, then
+ * supporting content, then legal.
+ */
+function priorityFor(path: string): number {
   if (path === "/") return 1;
-  if (path === "/services") return 0.9;
-  if (path.startsWith("/services/")) return 0.85;
-  if (path === "/work") return 0.85;
-  if (path.startsWith("/work/")) return 0.8;
-  return 0.7;
+  if (path === "/contact") return 0.9;
+  if (path === "/services" || path === CASE_STUDIES_PATH) return 0.9;
+
+  // Service and case-study detail pages carry the commercial argument.
+  if (path.startsWith("/services/")) return 0.8;
+  if (path.startsWith(`${CASE_STUDIES_PATH}/`)) return 0.8;
+
+  if (path === "/digital-marketing" || path === "/about") return 0.7;
+  if (path === "/blog") return 0.7;
+  if (path.startsWith("/blog/")) return 0.6;
+  if (path === "/careers") return 0.5;
+
+  // Legal pages must stay indexable but should never outrank the work.
+  return 0.3;
 }
 
-function changeFrequencyForPath(
-  path: string,
-): MetadataRoute.Sitemap[0]["changeFrequency"] {
-  if (path === "/") return "weekly";
-  if (path.startsWith("/services")) return "monthly";
-  if (path.startsWith("/work")) return "monthly";
-  return "monthly";
+function entry(path: string, lastModified?: Date): MetadataRoute.Sitemap[0] {
+  return {
+    url: canonicalUrl(path),
+    lastModified,
+    priority: priorityFor(path),
+  };
 }
 
-async function getCaseStudyEntries(): Promise<MetadataRoute.Sitemap> {
-  try {
-    const caseStudies = await listCaseStudies({ status: "published" });
-    return caseStudies.map((study) => ({
-      url: canonicalUrl(`/work/${study.slug}`),
-      lastModified: new Date(study.updatedAt),
-      changeFrequency: "monthly" as const,
-      priority: 0.8,
-    }));
-  } catch {
-    return CASE_STUDY_ORDER.map((slug) => ({
-      url: canonicalUrl(`/work/${slug}`),
-      changeFrequency: "monthly" as const,
-      priority: 0.8,
-    }));
+function dedupe(entries: MetadataRoute.Sitemap): MetadataRoute.Sitemap {
+  const seen = new Set<string>();
+  return entries.filter((item) => {
+    if (seen.has(item.url)) return false;
+    seen.add(item.url);
+    return true;
+  });
+}
+
+async function getCaseStudyEntries(): Promise<{
+  entries: MetadataRoute.Sitemap;
+  latestUpdatedAt?: Date;
+}> {
+  const bySlug = new Map<string, Date | undefined>();
+
+  for (const slug of CASE_STUDY_ORDER) {
+    bySlug.set(slug, undefined);
   }
+
+  if (isDatabaseConfigured()) {
+    try {
+      const caseStudies = await listCaseStudies({ status: "published" });
+      for (const study of caseStudies) {
+        bySlug.set(study.slug, new Date(study.updatedAt));
+      }
+    } catch {
+      // Keep statically authored case-study URLs if the database is unavailable.
+    }
+  }
+
+  const entries = [...bySlug.entries()].map(([slug, lastModified]) =>
+    entry(caseStudyPath(slug), lastModified),
+  );
+  const latestUpdatedAt = [...bySlug.values()].reduce<Date | undefined>(
+    (current, next) => {
+      if (!next) return current;
+      return !current || next > current ? next : current;
+    },
+    undefined,
+  );
+
+  return { entries, latestUpdatedAt };
 }
 
-async function getBlogPostEntries(): Promise<MetadataRoute.Sitemap> {
-  if (!isBlogEnabled()) return [];
+async function getBlogPostEntries(): Promise<{
+  posts: MetadataRoute.Sitemap;
+  latestUpdatedAt?: Date;
+}> {
+  if (!isBlogEnabled()) return { posts: [] };
 
   try {
     const posts = await listPosts({ status: "published" });
-    return posts.map((post) => ({
-      url: canonicalUrl(`/blog/${post.slug}`),
-      lastModified: new Date(post.updatedAt),
-      changeFrequency: "weekly" as const,
-      priority: 0.7,
-    }));
+    const mapped = posts.map((post) =>
+      entry(
+        `/blog/${post.slug}`,
+        post.updatedAt ? new Date(post.updatedAt) : undefined,
+      ),
+    );
+    const latest = posts.reduce<Date | undefined>((current, post) => {
+      if (!post.updatedAt) return current;
+      const next = new Date(post.updatedAt);
+      return !current || next > current ? next : current;
+    }, undefined);
+    return { posts: mapped, latestUpdatedAt: latest };
   } catch {
-    return [];
+    const posts = listStaticPosts({ status: "published" });
+    const mapped = posts.map((post) =>
+      entry(
+        `/blog/${post.slug}`,
+        post.updatedAt ? new Date(post.updatedAt) : undefined,
+      ),
+    );
+    const latest = posts.reduce<Date | undefined>((current, post) => {
+      if (!post.updatedAt) return current;
+      const next = new Date(post.updatedAt);
+      return !current || next > current ? next : current;
+    }, undefined);
+    return { posts: mapped, latestUpdatedAt: latest };
   }
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const staticEntries: MetadataRoute.Sitemap = indexableStaticPaths.map((path) => ({
-    url: canonicalUrl(path),
-    changeFrequency: changeFrequencyForPath(path),
-    priority: priorityForPath(path),
-  }));
+  await connection();
 
+  const { posts: blogPostEntries, latestUpdatedAt } =
+    await getBlogPostEntries();
+  const { entries: caseStudyEntries, latestUpdatedAt: latestCaseStudyAt } =
+    await getCaseStudyEntries();
+  const staticEntries = indexableStaticPaths.map((path) =>
+    path === CASE_STUDIES_PATH ? entry(path, latestCaseStudyAt) : entry(path),
+  );
   const blogEntries: MetadataRoute.Sitemap = isBlogEnabled()
-    ? [
-        {
-          url: canonicalUrl("/blog"),
-          changeFrequency: "weekly",
-          priority: 0.7,
-        },
-        ...(await getBlogPostEntries()),
-      ]
+    ? [entry("/blog", latestUpdatedAt), ...blogPostEntries]
     : [];
 
-  const caseStudyEntries = await getCaseStudyEntries();
-
-  return [...staticEntries, ...blogEntries, ...caseStudyEntries];
+  return dedupe([...staticEntries, ...blogEntries, ...caseStudyEntries]);
 }

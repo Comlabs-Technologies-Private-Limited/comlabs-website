@@ -1,6 +1,6 @@
-import { BreadcrumbJsonLd } from "@/components/blog/JsonLd";
 import type { CaseStudyContent } from "@/lib/case-studies";
-import { canonicalUrl, organizationId, siteName, siteUrl } from "@/lib/site";
+import { JsonLdScript } from "@/components/seo/json-ld-script";
+import { caseStudyPath, canonicalUrl, organizationId, siteName, siteUrl } from "@/lib/site";
 
 type CaseStudyJsonLdProps = {
   content: CaseStudyContent;
@@ -15,18 +15,20 @@ export function CaseStudyJsonLd({
   metaDescription,
   updatedAt,
 }: CaseStudyJsonLdProps) {
-  const pageUrl = canonicalUrl(`/work/${content.slug}`);
+  const pageUrl = canonicalUrl(caseStudyPath(content.slug));
   const image = content.leadImage.src.startsWith("http")
     ? content.leadImage.src
     : `${siteUrl}${content.leadImage.src}`;
+  const headline = [content.headline.before, content.headline.highlight, content.headline.after]
+    .filter(Boolean)
+    .join("");
 
   const articleJsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
-    headline: metaTitle,
+    headline: headline || metaTitle,
     description: metaDescription,
     image,
-    datePublished: `${content.year}-01-01`,
     ...(updatedAt ? { dateModified: updatedAt } : {}),
     author: {
       "@type": "Organization",
@@ -46,21 +48,6 @@ export function CaseStudyJsonLd({
     },
   };
 
-  return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(articleJsonLd).replace(/</g, "\\u003c"),
-        }}
-      />
-      <BreadcrumbJsonLd
-        items={[
-          { name: "Home", url: canonicalUrl("/") },
-          { name: "Work", url: canonicalUrl("/work") },
-          { name: content.client, url: pageUrl },
-        ]}
-      />
-    </>
-  );
+  // The breadcrumb trail is emitted by PageBreadcrumbs inside the case-study hero.
+  return <JsonLdScript data={articleJsonLd} />;
 }

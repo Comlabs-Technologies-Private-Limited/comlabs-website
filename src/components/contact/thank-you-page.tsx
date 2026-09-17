@@ -2,23 +2,32 @@ import Link from "next/link";
 import { ArrowRight, Check } from "lucide-react";
 
 import { FigmaFooter } from "@/components/layout/figma-footer";
-import { FigmaNav } from "@/components/layout/figma-nav";
+import { FigmaNav, type NavCaseStudyItem } from "@/components/layout/figma-nav";
+import { HERO_BACKGROUND_PATH, layeredBackgroundImage } from "@/lib/cloudinary";
 import { canonicalPath, siteName } from "@/lib/site";
 
-export function ThankYouPage() {
+type ThankYouPageProps = {
+  variant?: "contact" | "careers";
+  caseStudies?: NavCaseStudyItem[];
+};
+
+export function ThankYouPage({ variant = "contact", caseStudies }: ThankYouPageProps) {
+  const isCareers = variant === "careers";
   return (
     <div
       className="flex min-h-screen flex-col bg-background text-foreground antialiased"
       style={{ fontFamily: "var(--font-sans)" }}
     >
-      <FigmaNav />
+      <FigmaNav caseStudies={caseStudies} />
 
       <main className="relative flex flex-1 flex-col items-center justify-center px-6 py-20 md:py-28">
         <div
           className="pointer-events-none absolute inset-0"
           style={{
-            backgroundImage:
-              "linear-gradient(180deg, rgba(247,247,244,0.92) 0%, rgba(247,247,244,0.78) 45%, rgba(247,247,244,0.94) 100%), url('/hero/hero-bg.png')",
+            backgroundImage: layeredBackgroundImage(
+              "linear-gradient(180deg, rgba(247,247,244,0.92) 0%, rgba(247,247,244,0.78) 45%, rgba(247,247,244,0.94) 100%)",
+              HERO_BACKGROUND_PATH,
+            ),
             backgroundSize: "cover",
             backgroundPosition: "center right",
           }}
@@ -49,18 +58,20 @@ export function ThankYouPage() {
               className="inline-block h-1.5 w-1.5 rounded-full"
               style={{ background: "var(--warm-orange)" }}
             />
-            Message received
+            {isCareers ? "Application received" : "Message received"}
           </p>
 
           <h1
             className="text-3xl leading-[1.08] font-bold tracking-tight md:text-5xl"
             style={{ letterSpacing: "-0.03em" }}
           >
-            Thank you for choosing {siteName}.
+            {isCareers ? "Thank you for applying." : `Thank you for choosing ${siteName}.`}
           </h1>
 
           <p className="mt-5 text-base leading-relaxed text-muted-foreground md:text-lg">
-            Our team will contact you within 48 hours.
+            {isCareers
+              ? "We'll review your note and follow up if there's a fit."
+              : "Our team will contact you within 48 hours."}
           </p>
 
           <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
@@ -72,10 +83,10 @@ export function ThankYouPage() {
               Back to home <ArrowRight size={14} />
             </Link>
             <Link
-              href={canonicalPath("/work")}
+              href={canonicalPath("/case-studies")}
               className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium transition-colors hover:bg-accent"
             >
-              View our work
+              Explore Case Studies
             </Link>
           </div>
         </div>

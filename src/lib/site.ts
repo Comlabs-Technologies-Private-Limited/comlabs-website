@@ -3,6 +3,7 @@
  * Override with NEXT_PUBLIC_SITE_URL for preview/staging; local dev keeps defaults.
  */
 import { canonicalServicePaths } from "@/lib/canonical-services";
+import { absoluteMediaUrl } from "@/lib/cloudinary";
 
 export const siteUrl = (
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.comlabstechnologies.com"
@@ -10,17 +11,39 @@ export const siteUrl = (
 
 export const siteName = "Comlabs Technologies Pvt Ltd" as const;
 export const siteShortName = "Comlabs Technologies" as const;
+
+/** Homepage document title — keep at or below 60 characters for SERP display. */
+export const siteHomeTitle =
+  "Comlabs Technologies | App Support, AI, AWS & Software" as const;
 export const siteDescriptor =
-  "Design & Engineering Studio" as const;
+  "Application Support · AI Infrastructure · Cloud · Engineering" as const;
 export const siteLocation = "Pune, Maharashtra, India" as const;
 
 /** Default meta description — keep at or below ~155 characters for SERP display. */
 export const siteDefaultDescription =
-  "Comlabs Technologies is a design and engineering studio in Pune building websites, custom software, mobile products, and scalable infrastructure." as const;
+  "Comlabs provides L1–L4 application support, agentic AI engineering, AWS cloud and DevOps, custom software, mobile engineering and digital experience services." as const;
 
 export const organizationId = `${siteUrl}/#organization` as const;
 export const websiteId = `${siteUrl}/#website` as const;
-export const logoUrl = `${siteUrl}/logo.png` as const;
+export const logoUrl = absoluteMediaUrl("/logo.svg", siteUrl);
+
+export const CASE_STUDIES_PATH = "/case-studies" as const;
+
+export function caseStudyPath(slug: string): string {
+  return `${CASE_STUDIES_PATH}/${slug}`;
+}
+
+/** Public social profile URLs already linked in the footer. */
+export const siteSocialProfileUrls = [
+  "https://www.instagram.com/comlabs_technologies",
+  "https://www.linkedin.com/company/comlabs-technologies/",
+  "https://x.com/comlabstech",
+] as const;
+
+export function isSiteHostname(hostname: string): boolean {
+  const host = hostname.replace(/\.$/, "").toLowerCase();
+  return host === "comlabstechnologies.com" || host === "www.comlabstechnologies.com";
+}
 
 /**
  * Absolute canonical URL for an indexable page path or same-origin absolute URL.
@@ -32,8 +55,10 @@ export function canonicalUrl(pathOrUrl: string): string {
 
   if (/^https?:\/\//i.test(pathOrUrl)) {
     const parsed = new URL(pathOrUrl);
-    if (parsed.origin !== siteUrl) return pathOrUrl;
-    return canonicalUrl(`${parsed.pathname}${parsed.search}`);
+    if (isSiteHostname(parsed.hostname)) {
+      return canonicalUrl(`${parsed.pathname}${parsed.search}`);
+    }
+    return pathOrUrl;
   }
 
   const hashIndex = pathOrUrl.indexOf("#");
@@ -71,14 +96,16 @@ export function canonicalPath(href: string): string {
 }
 
 /** Default brand assets served from /public */
-export const siteFaviconPath = "/favicon.png";
+export const siteFaviconPath = "/favicon.svg";
+export const siteFaviconPngPath = "/favicon.png";
+export const siteAppleIconPath = "/apple-touch-icon.png";
 export const siteOgImagePath = "/opengraph.png";
 
 export const siteOgImage = {
-  url: siteOgImagePath,
+  url: absoluteMediaUrl(siteOgImagePath, siteUrl),
   width: 1731,
   height: 909,
-  alt: "Comlabs Technologies Pvt Ltd — design and engineering studio",
+  alt: "Comlabs Technologies Pvt Ltd — application support, AI, cloud and engineering",
   type: "image/png",
 } as const;
 
@@ -89,17 +116,22 @@ export const indexableStaticPaths = [
   "/",
   "/services",
   ...canonicalServicePaths,
+  "/digital-marketing",
   "/about",
-  "/work",
+  "/careers",
+  CASE_STUDIES_PATH,
   "/contact",
+  "/privacy-policy",
+  "/terms-and-conditions",
+  "/refund-policy",
 ] as const;
 
-/** Blog requires MongoDB on the server. */
+/** Blog ships with statically authored posts; hide with NEXT_PUBLIC_BLOG_ENABLED=false. */
 export function isBlogEnabled(): boolean {
-  return Boolean(process.env.MONGODB_URI);
+  return process.env.NEXT_PUBLIC_BLOG_ENABLED !== "false";
 }
 
-/** Client-safe flag — set NEXT_PUBLIC_BLOG_ENABLED=true when the blog is live in production. */
+/** Client-safe flag — the blog is public unless explicitly disabled. */
 export function isBlogPublic(): boolean {
-  return process.env.NEXT_PUBLIC_BLOG_ENABLED === "true";
+  return isBlogEnabled();
 }

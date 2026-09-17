@@ -5,6 +5,8 @@ import { MarketingFadeIn } from "@/components/marketing/marketing-motion";
 import { CaseStudyMedia } from "./case-study-media";
 import { CaseStudyOutcomeRows } from "./case-study-outcome-rows";
 import { CaseStudyPrinciples } from "./case-study-principles";
+import { CaseStudySequence } from "./case-study-sequence";
+import { CaseStudySpecs } from "./case-study-specs";
 import { CaseStudyTransformation } from "./case-study-transformation";
 
 type CaseStudySectionProps = {
@@ -17,7 +19,7 @@ function renderMediaList(media: CaseStudySectionType["media"]) {
   if (items.length === 2) {
     const groupCaption = items.find((item) => item.caption)?.caption;
     return (
-      <div className="mt-10">
+      <div className="mt-8">
         <div className="grid gap-4 md:grid-cols-2">
           {items.map((item) => (
             <CaseStudyMedia key={item.src} media={{ ...item, caption: undefined }} />
@@ -32,7 +34,7 @@ function renderMediaList(media: CaseStudySectionType["media"]) {
     );
   }
   return (
-    <div className="mt-10 space-y-10">
+    <div className="mt-8 space-y-8">
       {items.map((item) => (
         <CaseStudyMedia key={item.src} media={item} />
       ))}
@@ -44,8 +46,11 @@ export function CaseStudySection({ section }: CaseStudySectionProps) {
   const {
     number,
     title,
+    lede,
     paragraphs,
     principles,
+    sequence,
+    specs,
     subsections,
     media,
     transformation,
@@ -54,13 +59,25 @@ export function CaseStudySection({ section }: CaseStudySectionProps) {
 
   return (
     <MarketingFadeIn>
-      <section className="scroll-mt-24 py-16 md:py-24 lg:py-32">
+      <section className="scroll-mt-24 py-8 md:py-10 lg:py-12">
         <div className="mb-8 flex items-baseline gap-4">
-          <span className="text-xs tracking-widest text-muted-foreground tabular-nums">{number}</span>
-          <h2 className="text-xl font-medium tracking-tight md:text-2xl" style={{ letterSpacing: "-0.025em" }}>
+          <span className="shrink-0 text-xs tracking-widest text-muted-foreground tabular-nums">{number}</span>
+          <h2
+            className="text-xl font-medium tracking-tight text-muted-foreground md:text-2xl"
+            style={{ letterSpacing: "-0.025em" }}
+          >
             {title}
           </h2>
         </div>
+
+        {lede ? (
+          <p
+            className="mb-8 max-w-[36rem] text-2xl leading-[1.15] font-medium tracking-tight text-foreground md:text-[2rem]"
+            style={{ letterSpacing: "-0.03em" }}
+          >
+            {lede}
+          </p>
+        ) : null}
 
         {paragraphs?.map((paragraph) => (
           <p
@@ -71,10 +88,14 @@ export function CaseStudySection({ section }: CaseStudySectionProps) {
           </p>
         ))}
 
+        {sequence ? <CaseStudySequence steps={sequence} /> : null}
+
         {principles ? <CaseStudyPrinciples principles={principles} /> : null}
 
+        {specs ? <CaseStudySpecs specs={specs} /> : null}
+
         {subsections?.map((subsection) => (
-          <div key={subsection.title} className="mt-12 md:mt-16">
+          <div key={subsection.title} className="mt-8 md:mt-12">
             <h3 className="text-base font-medium tracking-tight text-foreground md:text-lg">
               {subsection.title}
             </h3>

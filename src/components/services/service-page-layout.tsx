@@ -1,35 +1,33 @@
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import type { ReactNode } from "react";
 
 import { FigmaFooter } from "@/components/layout/figma-footer";
-import { FigmaNav } from "@/components/layout/figma-nav";
+import { FigmaNavLoader } from "@/components/layout/figma-nav-loader";
 import { MarketingCtaSection } from "@/components/marketing/marketing-cta-section";
-import { MarketingFadeIn } from "@/components/marketing/marketing-motion";
-import { MarketingPageHero } from "@/components/marketing/marketing-page-hero";
 import {
   MarketingOrangeHighlight,
   MarketingSectionHeader,
-  MarketingSectionLabel,
 } from "@/components/marketing/marketing-section-header";
 import { ServiceFaqList } from "@/components/services/service-faq-list";
+import { ServicePageHero } from "@/components/services/service-page-hero";
 import { ServiceProcessRow } from "@/components/services/service-process-row";
-import { PageBreadcrumbs } from "@/components/seo/page-breadcrumbs";
+import {
+  ServiceRelatedServices,
+  ServiceRelatedWork,
+} from "@/components/services/service-related-sections";
 import { JsonLdScript } from "@/components/seo/json-ld-script";
 import { getFaqPageSchema, getServiceSchema } from "@/lib/schema";
 import type { ServicePageData } from "@/lib/services-data";
-import { canonicalPath, canonicalUrl, siteLocation } from "@/lib/site";
-
-function formatDeliverableCounter(index: number): string {
-  return `(${String(index + 1).padStart(2, "0")})`;
-}
+import { canonicalUrl } from "@/lib/site";
+import { cn } from "@/lib/utils";
 
 export function ServicePageLayout({ service }: { service: ServicePageData }) {
   const pageUrl = canonicalUrl(service.path);
-  const proofItems = [
-    service.serviceType,
-    `${service.process[0].title} → ${service.process[service.process.length - 1].title}`,
-    siteLocation,
-  ];
+  const triggers = service.buyerTriggers ?? [];
+  const ownershipItems =
+    service.deliverables.length > 0
+      ? service.deliverables
+      : (service.outcomes ?? []);
+  const hasScope = service.problems.length > 0 || ownershipItems.length > 0;
 
   return (
     <div
@@ -48,184 +46,227 @@ export function ServicePageLayout({ service }: { service: ServicePageData }) {
         <JsonLdScript data={getFaqPageSchema(service.faqs)} />
       ) : null}
 
-      <FigmaNav />
+      <FigmaNavLoader />
 
       <main>
-        <MarketingPageHero
-          eyebrow={service.eyebrow}
-          title={service.title}
-          description={service.subheadline}
-          backgroundImage={service.editorialImage}
-          proofItems={proofItems}
-        >
-          <PageBreadcrumbs
-            currentPath={service.path}
-            tone={service.editorialImage ? "dark" : "light"}
-            items={[
-              { label: "Services", href: "/services" },
-              { label: service.title },
-            ]}
-          />
-        </MarketingPageHero>
+        <ServicePageHero service={service} />
 
-        <section className="border-y border-border bg-card px-6 py-24 md:py-28">
-          <div className="mx-auto max-w-6xl lg:grid lg:grid-cols-[minmax(0,11rem)_1fr] lg:gap-16 xl:grid-cols-[minmax(0,12.5rem)_1fr] xl:gap-20">
-            <div className="mb-8 lg:sticky lg:top-32 lg:mb-0 lg:self-start">
-              <MarketingSectionLabel>What we do</MarketingSectionLabel>
-            </div>
-            <div className="max-w-[60ch] space-y-5">
-              {service.proposition.map((paragraph) => (
-                <p
-                  key={paragraph}
-                  className="text-base font-normal leading-[1.7] text-foreground md:text-[17px]"
-                >
-                  {paragraph}
-                </p>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="px-6 py-24 md:py-28">
-          <div className="mx-auto max-w-6xl">
-            <MarketingSectionLabel>Problems we address</MarketingSectionLabel>
-            <div>
-              {service.problems.map((problem) => (
-                <div
-                  key={problem}
-                  className="border-t border-neutral-200 py-5 text-[17px] font-normal leading-relaxed text-neutral-800"
-                >
-                  {problem}
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="border-y border-border bg-card px-6 py-24 md:py-28">
-          <div className="mx-auto max-w-6xl">
-            <MarketingSectionHeader
-              eyebrow="Deliverables"
-              title={
-                <>
-                  What you get at <MarketingOrangeHighlight>delivery</MarketingOrangeHighlight>.
-                </>
-              }
-            />
-            <div className="grid gap-x-12 md:grid-cols-2">
-              {service.deliverables.map((item, index) => (
-                <div
-                  key={item}
-                  className={`flex gap-4 border-t border-neutral-200 py-5 ${index === 0 ? "border-t-0" : ""} md:[&:nth-child(-n+2)]:border-t-0`}
-                >
-                  <span
-                    className="shrink-0 pt-0.5 text-[11px] tabular-nums text-neutral-400"
-                    style={{ fontFamily: "var(--font-mono)" }}
+        {triggers.length > 0 ? (
+          <section className="relative border-b border-border bg-card py-14 md:py-16">
+            <span aria-hidden className="gutter-hatch" />
+            <div className="section-layout">
+              <MarketingSectionHeader
+                className="mb-12 px-1 md:mb-14 md:px-4"
+                eyebrow="Fit"
+                title={
+                  <>
+                    When this service is the{" "}
+                    <MarketingOrangeHighlight>
+                      right move
+                    </MarketingOrangeHighlight>
+                    .
+                  </>
+                }
+              />
+              <div className="flat-frame grid grid-cols-1 md:grid-cols-2">
+                {triggers.map((item, index) => (
+                  <article
+                    key={item.title}
+                    className={cn(
+                      "bg-background px-6 py-8 md:px-8 md:py-10",
+                      index > 0 && "border-t border-border",
+                      "md:border-t-0",
+                      index >= 2 && "md:border-t md:border-border",
+                      index % 2 !== 0 && "md:border-l md:border-border",
+                    )}
                   >
-                    {formatDeliverableCounter(index)}
-                  </span>
-                  <p className="text-base font-normal leading-relaxed text-neutral-800">{item}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="border-b border-border bg-secondary/40 px-6 py-24 md:py-28">
-          <div className="mx-auto max-w-6xl">
-            <MarketingSectionHeader
-              eyebrow="Process"
-              title={
-                <>
-                  How we <MarketingOrangeHighlight>work</MarketingOrangeHighlight>.
-                </>
-              }
-            />
-            <ServiceProcessRow steps={service.process} />
-          </div>
-        </section>
-
-        <section className="px-6 py-24 md:py-28">
-          <div className="mx-auto max-w-6xl">
-            <MarketingSectionLabel>Capabilities</MarketingSectionLabel>
-            <div className="flex flex-wrap gap-2">
-              {service.capabilities.map((capability) => (
-                <span
-                  key={capability}
-                  className="rounded-full border border-neutral-200 px-3.5 py-1.5 text-[13px] font-light text-neutral-700"
-                >
-                  {capability}
-                </span>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {service.relatedCaseStudy ? (
-          <section className="border-y border-border bg-card px-6 py-20 md:py-24">
-            <div className="mx-auto max-w-6xl">
-              <MarketingSectionLabel>Related work</MarketingSectionLabel>
-              <MarketingFadeIn>
-                <Link
-                  href={canonicalPath(service.relatedCaseStudy.href)}
-                  className="group flex max-w-2xl flex-col gap-3 rounded-3xl border border-border bg-background p-8 transition-all duration-300 hover:border-foreground/20 hover:shadow-[0_8px_32px_rgba(28,25,23,0.06)]"
-                >
-                  <p className="text-sm font-semibold text-foreground">
-                    {service.relatedCaseStudy.client}
-                  </p>
-                  <p className="text-sm leading-relaxed text-muted-foreground">
-                    {service.relatedCaseStudy.summary}
-                  </p>
-                  <span className="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--warm-orange)] transition-transform group-hover:translate-x-0.5">
-                    Read case study <ArrowRight size={14} />
-                  </span>
-                </Link>
-              </MarketingFadeIn>
+                    <h3
+                      className="text-[15px] font-medium tracking-tight md:text-base"
+                      style={{ letterSpacing: "-0.02em" }}
+                    >
+                      {item.title}
+                    </h3>
+                    <p className="mt-3 text-[15px] leading-relaxed text-muted-foreground">
+                      {item.description}
+                    </p>
+                  </article>
+                ))}
+              </div>
             </div>
           </section>
         ) : null}
 
-        <section className="px-6 py-24 md:py-28">
-          <div className="mx-auto max-w-6xl">
-            <MarketingSectionHeader
-              eyebrow="FAQ"
-              title={
-                <>
-                  Common <MarketingOrangeHighlight>questions</MarketingOrangeHighlight>.
-                </>
-              }
-            />
-            <ServiceFaqList faqs={service.faqs} />
-          </div>
-        </section>
-
-        <section className="border-t border-border bg-card px-6 py-16 md:py-20">
-          <div className="mx-auto max-w-6xl">
-            <MarketingSectionLabel>Related services</MarketingSectionLabel>
-            <div className="flex flex-wrap gap-3">
-              {service.relatedServices.map((related) => (
-                <Link
-                  key={related.href}
-                  href={canonicalPath(related.href)}
-                  className="rounded-full border border-border px-4 py-2 text-sm text-muted-foreground transition-all hover:border-foreground/20 hover:bg-card hover:text-foreground"
-                >
-                  {related.label}
-                </Link>
-              ))}
+        {hasScope ? (
+          <section className="relative border-b border-border py-14 md:py-16">
+            <span aria-hidden className="gutter-hatch" />
+            <div className="section-layout">
+              <MarketingSectionHeader
+                className="mb-12 px-1 md:mb-14 md:px-4"
+                eyebrow="Scope"
+                title={
+                  <>
+                    Problems on one side.{" "}
+                    <MarketingOrangeHighlight>
+                      Responsibility
+                    </MarketingOrangeHighlight>{" "}
+                    on the other.
+                  </>
+                }
+              />
+              <div
+                className={cn(
+                  "flat-frame grid",
+                  service.problems.length > 0 && ownershipItems.length > 0
+                    ? "lg:grid-cols-2"
+                    : "grid-cols-1",
+                )}
+              >
+                {service.problems.length > 0 ? (
+                  <ScopePanel
+                    eyebrow={service.problemsEyebrow ?? "Failure modes"}
+                    heading={
+                      service.problemsHeading ?? "Where this work starts."
+                    }
+                    items={service.problems}
+                  />
+                ) : null}
+                {ownershipItems.length > 0 ? (
+                  <ScopePanel
+                    eyebrow={
+                      service.deliverablesEyebrow ??
+                      service.outcomesEyebrow ??
+                      "Ownership"
+                    }
+                    heading={
+                      service.deliverablesHeading ??
+                      service.outcomesHeading ??
+                      "What Comlabs can take responsibility for."
+                    }
+                    items={ownershipItems}
+                    className={
+                      service.problems.length > 0
+                        ? "border-t border-border lg:border-t-0 lg:border-l"
+                        : undefined
+                    }
+                  />
+                ) : null}
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        ) : null}
+
+        {service.process.length > 0 ? (
+          <section
+            id="engagement"
+            className="relative border-b border-border bg-secondary/40 py-14 md:py-16"
+          >
+            <span aria-hidden className="gutter-hatch" />
+            <div className="section-layout">
+              <MarketingSectionHeader
+                className="px-1 md:px-4"
+                eyebrow={service.processEyebrow ?? "Engagement"}
+                title={service.processHeading ?? "How the engagement works"}
+                description={service.processIntro}
+              />
+              <div className="mt-12 px-1 md:px-4">
+                <ServiceProcessRow steps={service.process} />
+              </div>
+            </div>
+          </section>
+        ) : null}
+
+        {service.relatedCaseStudy ? (
+          <ServiceRelatedWork caseStudy={service.relatedCaseStudy} />
+        ) : service.representativeEngagement ? (
+          <section className="relative border-b border-border py-14 md:py-16">
+            <span aria-hidden className="gutter-hatch" />
+            <div className="section-layout px-1 md:px-4">
+              <MarketingSectionHeader
+                eyebrow="Engagement"
+                title={service.representativeEngagement.title}
+              />
+              <p className="max-w-2xl text-[15px] leading-relaxed text-muted-foreground md:text-base">
+                {service.representativeEngagement.summary}
+              </p>
+            </div>
+          </section>
+        ) : null}
+
+        {service.faqs.length > 0 ? (
+          <section className="relative py-14 md:py-16">
+            <span aria-hidden className="gutter-hatch" />
+            <div className="section-layout px-1 md:px-4">
+              <MarketingSectionHeader
+                eyebrow="FAQ"
+                title={
+                  <>
+                    Common{" "}
+                    <MarketingOrangeHighlight>
+                      questions
+                    </MarketingOrangeHighlight>
+                    .
+                  </>
+                }
+              />
+              <ServiceFaqList faqs={service.faqs} />
+            </div>
+          </section>
+        ) : null}
+
+        <ServiceRelatedServices services={service.relatedServices} />
 
         <MarketingCtaSection
-          title="Discuss this service."
-          description="Tell us what you are building. We will outline how we would approach scope, timeline, and delivery."
-          ctaLabel="Contact Comlabs"
-          audienceItems={service.suitableFor}
-          footerNote="Comlabs Technologies Pvt Ltd is based in Pune, Maharashtra, India and works with local and remote clients worldwide."
+          title={service.ctaTitle}
+          description={service.ctaDescription}
+          ctaLabel={service.ctaLabel}
         />
       </main>
 
       <FigmaFooter />
+    </div>
+  );
+}
+
+function ScopePanel({
+  eyebrow,
+  heading,
+  items,
+  className,
+}: {
+  eyebrow: string;
+  heading: ReactNode;
+  items: readonly string[];
+  className?: string;
+}) {
+  return (
+    <div className={cn("bg-background px-6 py-8 md:px-10 md:py-10", className)}>
+      <p className="mb-3 text-[11px] tracking-widest text-muted-foreground uppercase">
+        {eyebrow}
+      </p>
+      <h2
+        className="mb-8 max-w-sm text-lg font-medium tracking-tight text-foreground md:text-xl"
+        style={{ letterSpacing: "-0.03em" }}
+      >
+        {heading}
+      </h2>
+      <ul>
+        {items.map((item, index) => (
+          <li
+            key={item}
+            className="flex gap-4 border-t border-border py-5 first:border-t-0 first:pt-0 last:pb-0"
+          >
+            <span
+              className="w-7 shrink-0 pt-0.5 text-[11px] tabular-nums text-muted-foreground"
+              style={{ fontFamily: "var(--font-mono)" }}
+            >
+              {String(index + 1).padStart(2, "0")}
+            </span>
+            <p className="text-[15px] leading-relaxed text-foreground/85">
+              {item}
+            </p>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

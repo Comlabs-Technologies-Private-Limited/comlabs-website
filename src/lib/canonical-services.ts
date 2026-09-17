@@ -1,176 +1,227 @@
 /**
  * Single source of truth for Comlabs service taxonomy.
- * Consumed by homepage cards, service pages, footer, and marketing components.
+ * Consumed by service pages, sitemap, navigation, and marketing components.
  */
 
 export type CanonicalServiceSlug =
-  | "website-design-development"
+  | "application-support"
+  | "ai-agent-development"
+  | "cloud-infrastructure-scaling"
   | "custom-software-development"
+  | "website-design-development"
   | "mobile-app-development"
-  | "seo-aeo-copywriting"
-  | "cloud-infrastructure-scaling";
+  | "seo-aeo-copywriting";
 
 export type CanonicalService = {
   slug: CanonicalServiceSlug;
   path: `/services/${CanonicalServiceSlug}`;
   title: string;
+  /** Short label for nav and footer. */
+  navLabel: string;
   /** One word from `title` highlighted in service index cards. */
   cardTitleHighlight: string;
   cardDescription: string;
+  cardBody: string;
+  /** One-line qualifier shown before capabilities on /services. */
+  bestWhen: string;
+  capabilities: readonly string[];
   linkLabel: string;
   eyebrow: string;
+  /** Shown as a primary card on /services/. SEO/AEO is secondary. */
+  primary: boolean;
 };
 
 export const canonicalServices: readonly CanonicalService[] = [
   {
-    slug: "website-design-development",
-    path: "/services/website-design-development",
-    title: "Website Design & Development",
-    cardTitleHighlight: "Development",
+    slug: "application-support",
+    path: "/services/application-support",
+    title: "L1–L4 Application Support",
+    navLabel: "Application Support",
+    cardTitleHighlight: "Support",
     cardDescription:
-      "High-performance websites designed around positioning, usability and conversion — from first wireframe to production.",
-    linkLabel: "View website services",
-    eyebrow: "Website design & development",
+      "Support that reaches engineering when the problem demands it.",
+    cardBody:
+      "Structured application support from first-line issue handling through technical diagnosis, code-level remediation and specialist escalation.",
+    bestWhen:
+      "Production tickets keep returning to the product team, or first-line support cannot reach the code.",
+    capabilities: [
+      "L1 Service Support",
+      "L2 Technical Support",
+      "L3 Engineering Support",
+      "L4 Specialist Engineering",
+    ],
+    linkLabel: "Explore Application Support",
+    eyebrow: "Application support",
+    primary: true,
   },
   {
-    slug: "custom-software-development",
-    path: "/services/custom-software-development",
-    title: "Custom Software Development",
-    cardTitleHighlight: "Software",
-    cardDescription:
-      "Custom web applications, SaaS products and internal systems built around how your business actually works.",
-    linkLabel: "View custom software",
-    eyebrow: "Custom software development",
-  },
-  {
-    slug: "mobile-app-development",
-    path: "/services/mobile-app-development",
-    title: "Mobile App Development",
-    cardTitleHighlight: "Mobile",
-    cardDescription:
-      "Polished mobile products with clear UX, production-ready engineering and the infrastructure behind them.",
-    linkLabel: "View mobile services",
-    eyebrow: "Mobile app development",
-  },
-  {
-    slug: "seo-aeo-copywriting",
-    path: "/services/seo-aeo-copywriting",
-    title: "SEO / AEO Optimisation & Copywriting",
-    cardTitleHighlight: "Copywriting",
-    cardDescription:
-      "Search strategy, technical optimisation and clear content built to earn visibility across Google and AI-powered search.",
-    linkLabel: "View SEO & copywriting",
-    eyebrow: "SEO / AEO & copywriting",
+    slug: "ai-agent-development",
+    path: "/services/ai-agent-development",
+    title: "Agentic Infrastructure & AI Agents",
+    navLabel: "AI Engineering",
+    cardTitleHighlight: "Agents",
+    cardDescription: "AI built to operate inside real systems.",
+    cardBody:
+      "We engineer AI agents with the context, tools, integrations, evaluations and controls required to perform useful work across business workflows.",
+    bestWhen: "The model can answer, but it cannot safely use your business systems.",
+    capabilities: [
+      "AI Agents",
+      "Agentic Workflows",
+      "RAG & Context",
+      "Tool Orchestration",
+      "Evaluations & Guardrails",
+    ],
+    linkLabel: "Explore AI Engineering",
+    eyebrow: "AI engineering",
+    primary: true,
   },
   {
     slug: "cloud-infrastructure-scaling",
     path: "/services/cloud-infrastructure-scaling",
-    title: "Cloud Infrastructure & Scaling",
-    cardTitleHighlight: "Infrastructure",
+    title: "AWS Cloud & DevOps",
+    navLabel: "Cloud & DevOps",
+    cardTitleHighlight: "DevOps",
+    cardDescription: "Infrastructure built for production.",
+    cardBody:
+      "AWS architecture, deployment systems, observability and operational engineering designed to make releases safer and infrastructure easier to understand.",
+    bestWhen: "Releases still depend on heroics, and production is invisible until users complain.",
+    capabilities: [
+      "AWS",
+      "CI/CD",
+      "Docker",
+      "Terraform",
+      "Observability",
+      "Backup & Recovery",
+    ],
+    linkLabel: "Explore Cloud & DevOps",
+    eyebrow: "AWS Cloud & DevOps",
+    primary: true,
+  },
+  {
+    slug: "custom-software-development",
+    path: "/services/custom-software-development",
+    title: "Custom Software Engineering",
+    navLabel: "Software Engineering",
+    cardTitleHighlight: "Software",
+    cardDescription: "Build the system your operation actually needs.",
+    cardBody:
+      "Custom web applications, SaaS platforms, internal systems, ERP workflows and integrations engineered around real business processes.",
+    bestWhen: "The operation has outgrown the software you bought, and work still lives in handoffs.",
+    capabilities: [
+      "Web Applications",
+      "SaaS",
+      "Internal Platforms",
+      "ERP Workflows",
+      "APIs & Integrations",
+    ],
+    linkLabel: "Explore Software Engineering",
+    eyebrow: "Custom software engineering",
+    primary: true,
+  },
+  {
+    slug: "website-design-development",
+    path: "/services/website-design-development",
+    title: "Web & Digital Experience",
+    navLabel: "Web & Digital Experience",
+    cardTitleHighlight: "Experience",
     cardDescription:
-      "Reliable cloud architecture, deployments and performance engineering designed to keep products fast as usage grows.",
-    linkLabel: "View cloud services",
-    eyebrow: "Cloud infrastructure & scaling",
+      "Your digital presence should carry the same weight as your business.",
+    cardBody:
+      "High-performance websites and product interfaces combining positioning, design, frontend engineering, performance and search fundamentals.",
+    bestWhen: "The company has grown, but the site still describes an earlier version of the business.",
+    capabilities: [
+      "Website Engineering",
+      "Product UI",
+      "Frontend",
+      "Performance",
+      "SEO & AEO",
+    ],
+    linkLabel: "Explore Digital Experience",
+    eyebrow: "Web & digital experience",
+    primary: true,
+  },
+  {
+    slug: "mobile-app-development",
+    path: "/services/mobile-app-development",
+    title: "Mobile Engineering",
+    navLabel: "Mobile Engineering",
+    cardTitleHighlight: "Engineering",
+    cardDescription: "Mobile products engineered beyond the screen.",
+    cardBody:
+      "Production mobile applications connected to the APIs, authentication, payments, infrastructure and operational systems behind them.",
+    bestWhen: "The work has to happen on a phone, with the same systems behind it.",
+    capabilities: [
+      "Cross-platform",
+      "Backend Integration",
+      "Authentication",
+      "Payments",
+      "Deployment",
+    ],
+    linkLabel: "Explore Mobile Engineering",
+    eyebrow: "Mobile engineering",
+    primary: true,
+  },
+  {
+    slug: "seo-aeo-copywriting",
+    path: "/services/seo-aeo-copywriting",
+    title: "SEO, AEO & Search Engineering",
+    navLabel: "SEO & AEO",
+    cardTitleHighlight: "Search",
+    cardDescription:
+      "Technical SEO, AEO and search architecture for Google and AI search discovery.",
+    cardBody:
+      "Technical SEO, content architecture and AI-search optimisation built into the systems that publish your content.",
+    bestWhen: "Pages exist, but search and answer engines cannot read them clearly.",
+    capabilities: [
+      "Technical SEO",
+      "Metadata & schema",
+      "Internal linking",
+      "Core Web Vitals",
+      "AEO",
+    ],
+    linkLabel: "Explore SEO & AEO",
+    eyebrow: "SEO, AEO & search engineering",
+    primary: false,
   },
 ] as const;
 
 export const canonicalServicePaths = canonicalServices.map((service) => service.path);
 
+export const primaryServices = canonicalServices.filter((service) => service.primary);
+
 export function getCanonicalService(slug: string): CanonicalService | undefined {
   return canonicalServices.find((service) => service.slug === slug);
 }
 
-/** Footer and nav service links — same labels everywhere. */
-export const footerServiceLinks = canonicalServices.map((service) => ({
-  label: service.title,
-  href: service.path,
-}));
-
-/** Homepage service section tile backgrounds — local painterly bases. */
-export const homeServiceBackgrounds: Record<CanonicalServiceSlug, string> = {
-  "website-design-development": "/services-bg/service-bg-1.png",
-  "custom-software-development": "/services-bg/service-bg-2.png",
-  "mobile-app-development": "/services-bg/service-bg-3.png",
-  "seo-aeo-copywriting": "/services-bg/service-bg-4.png",
-  "cloud-infrastructure-scaling": "/services-bg/service-bg-5.png",
-};
-
-/** Foreground editorial photos for homepage service rows — hosted on Cloudinary. */
-export const homeServiceMockupImages: Record<CanonicalServiceSlug, string> = {
-  "website-design-development":
-    "https://res.cloudinary.com/p8osc4y4/image/upload/v1786362044/ChatGPT_Image_Aug_10_2026_05_09_44_PM_1_gqznci.png",
-  "custom-software-development":
-    "https://res.cloudinary.com/p8osc4y4/image/upload/v1786363963/ChatGPT_Image_Aug_10_2026_05_42_31_PM_g4qshm.png",
-  "mobile-app-development":
-    "https://res.cloudinary.com/p8osc4y4/image/upload/v1786362044/ChatGPT_Image_Aug_10_2026_05_09_44_PM_3_uo0nwu.png",
-  "seo-aeo-copywriting":
-    "https://res.cloudinary.com/p8osc4y4/image/upload/v1786362045/ChatGPT_Image_Aug_10_2026_05_09_44_PM_4_k8jhhj.png",
-  "cloud-infrastructure-scaling":
-    "https://res.cloudinary.com/p8osc4y4/image/upload/v1786362045/ChatGPT_Image_Aug_10_2026_05_09_44_PM_5_lbsvbf.png",
-};
-
-/** Homepage card visuals keyed by slug — layout/motion only, not service copy. */
-export const homeServiceCardVisuals: Record<
-  CanonicalServiceSlug,
+export const SERVICE_NAV_ITEMS = [
   {
-    id: string;
-    mockupImage?: string;
-    mockupAlt?: string;
-    mockupOverlayClassName?: string;
-    mockupWrapperClassName?: string;
-    mockupClassName?: string;
-  }
-> = {
-  "website-design-development": {
-    id: "website-design",
-    mockupImage: homeServiceMockupImages["website-design-development"],
-    mockupAlt: "Website design and development preview",
-    mockupOverlayClassName: "",
-    mockupWrapperClassName: "mt-12 md:mt-22",
-    mockupClassName: "scale-107 pl-1",
+    title: "L1–L4 Application Support",
+    description: "Support that escalates to engineering.",
+    href: "/services/application-support",
   },
-  "custom-software-development": {
-    id: "custom-software",
-    mockupImage: homeServiceMockupImages["custom-software-development"],
-    mockupAlt: "Custom software development preview",
-    mockupOverlayClassName: "mt-5 md:mt-6 scale-112",
-    mockupWrapperClassName: "",
-    mockupClassName: "",
+  {
+    title: "Agentic Infrastructure & AI Agents",
+    description: "Agents, tools, context and controls.",
+    href: "/services/ai-agent-development",
   },
-  "mobile-app-development": {
-    id: "mobile-app",
-    mockupImage: homeServiceMockupImages["mobile-app-development"],
-    mockupAlt: "Mobile app development preview",
-    mockupOverlayClassName: "inset-2.5 top-8 bottom-2.5 items-stretch md:inset-3 md:top-10",
-    mockupWrapperClassName: "flex h-full w-full max-w-[94%] flex-col",
-    mockupClassName: "",
+  {
+    title: "AWS Cloud & DevOps",
+    description: "AWS, pipelines and production reliability.",
+    href: "/services/cloud-infrastructure-scaling",
   },
-  "seo-aeo-copywriting": {
-    id: "seo-aeo",
-    mockupImage: homeServiceMockupImages["seo-aeo-copywriting"],
-    mockupAlt: "SEO and copywriting preview",
-    mockupOverlayClassName: "md:top-16 top-8 items-",
-    mockupWrapperClassName: "top-16",
-    mockupClassName: "",
+  {
+    title: "Custom Software Engineering",
+    description: "SaaS, platforms and internal systems.",
+    href: "/services/custom-software-development",
   },
-  "cloud-infrastructure-scaling": {
-    id: "cloud-infrastructure",
-    mockupImage: homeServiceMockupImages["cloud-infrastructure-scaling"],
-    mockupAlt: "Cloud infrastructure and scaling preview",
-    mockupOverlayClassName:
-      "inset-x-3 top-8 bottom-0 flex items-end justify-center md:inset-x-5 md:top-10",
-    mockupWrapperClassName: "flex w-full max-w-[92%] flex-col",
-    mockupClassName: "",
+  {
+    title: "Mobile Engineering",
+    description: "Production-ready apps with the systems behind them.",
+    href: "/services/mobile-app-development",
   },
-};
-
-export function buildHomeServiceCards() {
-  return canonicalServices.map((service) => ({
-    ...service,
-    ...homeServiceCardVisuals[service.slug],
-    background: homeServiceBackgrounds[service.slug],
-    linkHref: service.path,
-  }));
-}
-
-export type HomeServiceCard = ReturnType<typeof buildHomeServiceCards>[number];
+  {
+    title: "Web & Digital Experience",
+    description: "Websites, product UI and frontend engineering.",
+    href: "/services/website-design-development",
+  },
+] as const;

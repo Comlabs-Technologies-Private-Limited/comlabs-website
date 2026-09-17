@@ -67,7 +67,7 @@ export function ContactForm({ className }: { className?: string }) {
           autoComplete="name"
           required
           maxLength={120}
-          className="rounded-xl border border-border bg-card shadow-none ring-0 focus:ring-2 focus:ring-foreground/10"
+          className="rounded-none border border-border bg-card shadow-none ring-0 focus:ring-2 focus:ring-foreground/10"
         />
       </div>
 
@@ -83,7 +83,7 @@ export function ContactForm({ className }: { className?: string }) {
           autoComplete="email"
           required
           maxLength={160}
-          className="rounded-xl border border-border bg-card shadow-none ring-0 focus:ring-2 focus:ring-foreground/10"
+          className="rounded-none border border-border bg-card shadow-none ring-0 focus:ring-2 focus:ring-foreground/10"
         />
       </div>
 
@@ -107,7 +107,7 @@ export function ContactForm({ className }: { className?: string }) {
           required
           minLength={20}
           maxLength={4000}
-          className="rounded-xl border border-border bg-card shadow-none ring-0 focus:ring-2 focus:ring-foreground/10"
+          className="rounded-none border border-border bg-card shadow-none ring-0 focus:ring-2 focus:ring-foreground/10"
         />
       </div>
 

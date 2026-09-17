@@ -30,21 +30,3 @@ export function MarketingFadeIn({
     </motion.div>
   );
 }
-
-type MarketingStaggerProps = {
-  children: ReactNode[];
-  className?: string;
-  stagger?: number;
-};
-
-export function MarketingStagger({ children, className, stagger = 0.06 }: MarketingStaggerProps) {
-  return (
-    <>
-      {children.map((child, index) => (
-        <MarketingFadeIn key={index} delay={index * stagger} className={className}>
-          {child}
-        </MarketingFadeIn>
-      ))}
-    </>
-  );
-}

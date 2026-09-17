@@ -5,16 +5,41 @@ import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 
 import { PostBody } from "@/components/blog/PostBody";
-import { BreadcrumbJsonLd, PostJsonLd } from "@/components/blog/JsonLd";
+import { PostJsonLd } from "@/components/blog/JsonLd";
 import { FigmaFooter } from "@/components/layout/figma-footer";
-import { FigmaNav } from "@/components/layout/figma-nav";
+import { FigmaNavLoader } from "@/components/layout/figma-nav-loader";
+import { MarketingCtaSection } from "@/components/marketing/marketing-cta-section";
 import { PageBreadcrumbs } from "@/components/seo/page-breadcrumbs";
-import { getPublishedPostBySlug, getPublishedPostSlugs } from "@/lib/admin/posts";
+import {
+  getPublishedPostBySlug,
+  getPublishedPostSlugs,
+} from "@/lib/admin/posts";
 import { buildPageMetadata } from "@/lib/metadata";
-import { canonicalPath, canonicalUrl, isBlogEnabled, siteOgImagePath } from "@/lib/site";
+import {
+  HERO_BACKGROUND_PATH,
+  layeredBackgroundImage,
+  absoluteMediaUrl,
+} from "@/lib/cloudinary";
+import { indexableCanonicalUrl } from "@/lib/seo/indexable-canonical";
+import { canonicalPath, isBlogEnabled, siteUrl } from "@/lib/site";
 import type { Post as PostType } from "@/types/post";
 
+const BLOG_RELATED_SERVICES: Record<string, { label: string; href: string }[]> =
+  {
+    "when-ai-agents-get-stuck-in-loops": [
+      {
+        label: "AI Agent Engineering",
+        href: "/services/ai-agent-development",
+      },
+      {
+        label: "L1–L4 Application Support",
+        href: "/services/application-support",
+      },
+    ],
+  };
+
 export const revalidate = 60;
+export const dynamicParams = true;
 
 async function getPost(slug: string): Promise<PostType | null> {
   try {
@@ -46,16 +71,23 @@ export async function generateMetadata({
   const post = await getPost(slug);
   if (!post) return {};
 
-  const canonical = post.canonicalUrl
-    ? canonicalUrl(post.canonicalUrl)
-    : canonicalUrl(`/blog/${post.slug}`);
-  const ogImage = post.ogImage || post.coverImage || siteOgImagePath;
+  const canonical = indexableCanonicalUrl(
+    post.canonicalUrl,
+    `/blog/${post.slug}`,
+  );
+  const ogImage = absoluteMediaUrl(
+    post.ogImage || post.coverImage || "/opengraph.png",
+    siteUrl,
+  );
+
+  const title = post.metaTitle || `${post.title} | Comlabs Technologies`;
 
   return {
     ...buildPageMetadata({
-      title: post.metaTitle || post.title,
+      title,
       description: post.metaDescription || post.excerpt,
       path: `/blog/${post.slug}`,
+      absoluteTitle: true,
     }),
     alternates: { canonical },
     openGraph: {
@@ -98,30 +130,29 @@ export default async function BlogPostPage({
       style={{ fontFamily: "var(--font-sans)" }}
     >
       <PostJsonLd post={post} />
-      <BreadcrumbJsonLd
-        items={[
-          { name: "Home", url: canonicalUrl("/") },
-          { name: "Blog", url: canonicalUrl("/blog") },
-          { name: post.title, url: canonicalUrl(`/blog/${post.slug}`) },
-        ]}
-      />
-      <FigmaNav />
+      <FigmaNavLoader />
 
       <main>
         <article>
           <header
-            className="relative overflow-hidden px-6 pt-12 pb-12 md:pt-16 md:pb-16"
+            className="relative overflow-hidden border-b border-border pt-12 pb-12 md:pt-16 md:pb-16"
             style={{
-              backgroundImage:
-                "linear-gradient(180deg, rgba(247,247,244,0.86) 0%, rgba(247,247,244,0.78) 45%, rgba(247,247,244,0.92) 100%), url('/hero/hero-bg.png')",
+              backgroundImage: layeredBackgroundImage(
+                "linear-gradient(180deg, rgba(247,247,244,0.86) 0%, rgba(247,247,244,0.78) 45%, rgba(247,247,244,0.92) 100%)",
+                HERO_BACKGROUND_PATH,
+              ),
               backgroundSize: "cover",
               backgroundPosition: "center right",
             }}
           >
-            <div className="relative mx-auto max-w-3xl">
+            <span aria-hidden className="gutter-hatch" />
+            <div className="section-layout relative mx-auto max-w-3xl">
               <PageBreadcrumbs
                 currentPath={`/blog/${post.slug}`}
-                items={[{ label: "Blog", href: "/blog" }, { label: post.title }]}
+                items={[
+                  { label: "Blog", href: "/blog" },
+                  { label: post.title },
+                ]}
                 className="mb-0"
               />
 
@@ -135,12 +166,13 @@ export default async function BlogPostPage({
 
                 {post.tags.length > 0 ? (
                   <div
-                    className="inline-flex items-center gap-2 rounded-full border border-border px-3.5 py-1.5 text-xs font-medium"
-                    style={{ color: "var(--warm-orange)", background: "var(--warm-orange-light)" }}
+                    className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase"
+                    style={{ color: "var(--warm-orange)" }}
                   >
                     <span
-                      className="inline-block h-1.5 w-1.5 rounded-full"
-                      style={{ background: "var(--warm-orange)" }}
+                      aria-hidden
+                      className="h-1.5 w-1.5 shrink-0 border"
+                      style={{ borderColor: "var(--warm-orange)" }}
                     />
                     {post.tags[0]}
                   </div>
@@ -148,7 +180,7 @@ export default async function BlogPostPage({
               </div>
 
               <h1
-                className="mt-8 text-3xl leading-[1.12] font-bold tracking-tight md:mt-10 md:text-4xl lg:text-[2.75rem]"
+                className="mt-8 text-3xl leading-[1.12] font-bold tracking-tight md:mt-10 md:text-5xl lg:text-[3.25rem]"
                 style={{ letterSpacing: "-0.03em" }}
               >
                 {post.title}
@@ -165,7 +197,9 @@ export default async function BlogPostPage({
                 {publishedDate ? (
                   <>
                     <span aria-hidden>·</span>
-                    <time dateTime={post.publishedAt ?? post.createdAt}>{publishedDate}</time>
+                    <time dateTime={post.publishedAt ?? post.createdAt}>
+                      {publishedDate}
+                    </time>
                   </>
                 ) : null}
                 {post.readingTime ? (
@@ -178,25 +212,26 @@ export default async function BlogPostPage({
             </div>
           </header>
 
-          {post.coverImage ? (
-            <div className="border-b border-border bg-card px-6 py-10 md:py-14">
-              <div className="mx-auto max-w-5xl">
-                <div className="relative aspect-[16/9] overflow-hidden rounded-3xl border border-border bg-secondary">
-                  <Image
-                    src={post.coverImage}
-                    alt={post.title}
-                    fill
-                    priority
-                    sizes="(max-width: 1280px) 100vw, 1280px"
-                    className="object-cover"
-                  />
-                </div>
-              </div>
-            </div>
-          ) : null}
-
-          <div className="border-b border-border bg-background px-6 py-16 md:py-24">
-            <div className="mx-auto max-w-3xl">
+          <div className="relative border-b border-border bg-background py-14 md:py-16">
+            <span aria-hidden className="gutter-hatch" />
+            <div className="section-layout mx-auto max-w-3xl">
+              {/* The cover image opens the article rather than sitting in its
+                  own band above it: the reader meets it on the way into the
+                  text, at the same measure as the prose. */}
+              {post.coverImage ? (
+                <figure className="mb-10 md:mb-12">
+                  <div className="relative aspect-[16/9] overflow-hidden border border-border bg-secondary">
+                    <Image
+                      src={post.coverImage}
+                      alt={post.title}
+                      fill
+                      priority
+                      sizes="(min-width: 768px) 768px, 100vw"
+                      className="object-cover object-center"
+                    />
+                  </div>
+                </figure>
+              ) : null}
               <PostBody html={post.content} />
 
               {post.tags.length > 0 ? (
@@ -204,16 +239,54 @@ export default async function BlogPostPage({
                   {post.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="rounded-full border border-border px-3.5 py-1.5 text-xs font-medium text-muted-foreground"
+                      className="border border-border px-3.5 py-1.5 text-xs font-medium text-muted-foreground"
                     >
                       {tag}
                     </span>
                   ))}
                 </div>
               ) : null}
+
+              {BLOG_RELATED_SERVICES[post.slug] ? (
+                <nav
+                  aria-label="Related services"
+                  className="mt-10 border-t border-border pt-8"
+                >
+                  <p className="mb-3 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
+                    Related services
+                  </p>
+                  <ul className="flex flex-col gap-2">
+                    {BLOG_RELATED_SERVICES[post.slug]!.map((service) => (
+                      <li key={service.href}>
+                        <Link
+                          href={canonicalPath(service.href)}
+                          className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                        >
+                          {service.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+              ) : null}
+
+              <div className="mt-10">
+                <Link
+                  href={canonicalPath("/blog")}
+                  className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  <ArrowLeft size={14} /> All notes
+                </Link>
+              </div>
             </div>
           </div>
         </article>
+
+        <MarketingCtaSection
+          title="Have a looping workflow to untangle?"
+          description="We design and engineer product software with stop conditions, budgets, and traces you can actually read."
+          ctaLabel="Start a conversation"
+        />
       </main>
 
       <FigmaFooter />

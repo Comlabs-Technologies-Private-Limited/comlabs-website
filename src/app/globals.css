@@ -19,6 +19,13 @@
   --destructive: #d4183d;
   --destructive-foreground: #ffffff;
   --border: rgba(28, 25, 23, 0.1);
+  --hairline-hatch: rgba(28, 25, 23, 0.09);
+  /* Illustration presentation shells only — nudge opacity to lighten/darken lines. */
+  --canvas-hatch-color: rgba(28, 25, 23, 0.06);
+  --page-hatch-width: calc((100% - min(100% - 64px, 1440px)) / 4);
+  /* Outer bound for the whole site, so full-bleed bands stop spreading on
+     ultra-wide displays instead of running to the viewport edge. */
+  --site-shell-max: 1920px;
   --input: transparent;
   --input-background: #eeeee9;
   --switch-background: #c8c8c0;
@@ -60,33 +67,37 @@
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.145 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.145 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.985 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
+  --background: #141414;
+  --foreground: #f4f2ed;
+  --card: #1a1a1a;
+  --card-foreground: #f4f2ed;
+  --popover: #1a1a1a;
+  --popover-foreground: #f4f2ed;
+  --primary: #f4f2ed;
+  --primary-foreground: #141414;
+  --secondary: #1f1f1f;
+  --secondary-foreground: #f4f2ed;
+  --muted: #1f1f1f;
+  --muted-foreground: rgba(244, 242, 237, 0.58);
+  --accent: #242424;
+  --accent-foreground: #f4f2ed;
   --destructive: oklch(0.396 0.141 25.723);
   --destructive-foreground: oklch(0.637 0.237 25.331);
-  --border: oklch(0.269 0 0);
-  --input: oklch(0.269 0 0);
-  --ring: oklch(0.439 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(0.269 0 0);
-  --sidebar-ring: oklch(0.439 0 0);
+  --border: rgba(244, 242, 237, 0.12);
+  --hairline-hatch: rgba(244, 242, 237, 0.10);
+  --input: rgba(244, 242, 237, 0.12);
+  --input-background: #1f1f1f;
+  --ring: rgba(244, 242, 237, 0.4);
+  --warm-orange: #c96442;
+  --warm-orange-light: rgba(201, 100, 66, 0.16);
+  --sidebar: #1a1a1a;
+  --sidebar-foreground: #f4f2ed;
+  --sidebar-primary: #f4f2ed;
+  --sidebar-primary-foreground: #141414;
+  --sidebar-accent: #242424;
+  --sidebar-accent-foreground: #f4f2ed;
+  --sidebar-border: rgba(244, 242, 237, 0.12);
+  --sidebar-ring: rgba(244, 242, 237, 0.4);
 }
 
 @theme inline {
@@ -151,6 +162,1119 @@
     overflow-x: clip;
     max-width: 100%;
     overscroll-behavior-x: none;
+  }
+}
+
+/* ==========================================================================
+   Digital Marketing & Design Studio — /digital-marketing
+   Page-scoped tokens and primitives. Nothing here leaks outside `.dm-studio`.
+   ========================================================================== */
+
+/* Lenis smooth scroll — active only while StudioMotion mounts on /digital-marketing */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+html.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+html.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+html.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.dm-studio {
+  --studio-ink: #111315;
+  --studio-black: #090b0d;
+  --studio-paper: #f2f2ee;
+  --studio-white: #fafaf7;
+  --studio-grey: #9a9d9f;
+  --studio-line: rgba(17, 19, 21, 0.16);
+  /* Translucent paper for the sticky nav once it leaves the hero. */
+  --studio-paper-veil: rgba(242, 242, 238, 0.92);
+  --studio-blue: #4e72f2;
+  --studio-cyan: #75d5d0;
+  --studio-amber: #d99a54;
+
+  /* On-dark equivalent of the hairline above. */
+  --studio-line-dark: rgba(250, 250, 247, 0.16);
+
+  --studio-gutter: 24px;
+  --studio-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  background: var(--studio-paper);
+  color: var(--studio-ink);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  letter-spacing: -0.02em;
+}
+
+@media (min-width: 768px) {
+  .dm-studio {
+    --studio-gutter: 40px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .dm-studio {
+    --studio-gutter: 64px;
+  }
+}
+
+.dm-studio :focus-visible {
+  outline: 2px solid var(--studio-blue);
+  outline-offset: 3px;
+  border-radius: 0;
+}
+
+.dm-studio ::selection {
+  background: var(--studio-blue);
+  color: var(--studio-white);
+}
+
+/* Shared horizontal rhythm. */
+.studio-shell {
+  width: 100%;
+  max-width: 1560px;
+  margin-inline: auto;
+  padding-inline: var(--studio-gutter);
+}
+
+/* Uppercase micro-label used above every section heading. */
+.studio-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.studio-eyebrow::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  background: var(--studio-blue);
+}
+
+/* Display type: tight, optically corrected, never below 0.9 line-height. */
+.studio-display {
+  font-weight: 500;
+  line-height: 0.94;
+  letter-spacing: -0.045em;
+}
+
+
+/* --------------------------------------------------------------------------
+   Two-layer text slide, used by nav links and inline links.
+   The visible layer slides up and out; the duplicate slides in behind it.
+   The duplicate is aria-hidden, so screen readers still read one label.
+   -------------------------------------------------------------------------- */
+.studio-slide {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+}
+
+.studio-slide > span {
+  display: block;
+  transition: transform 400ms var(--studio-ease);
+}
+
+.studio-slide > span:last-child {
+  position: absolute;
+  inset: 0;
+  transform: translateY(100%);
+}
+
+.studio-slide:hover > span:first-child,
+.studio-slide:focus-visible > span:first-child,
+a:hover .studio-slide > span:first-child,
+a:focus-visible .studio-slide > span:first-child,
+button:hover .studio-slide > span:first-child,
+button:focus-visible .studio-slide > span:first-child {
+  transform: translateY(-100%);
+}
+
+.studio-slide:hover > span:last-child,
+.studio-slide:focus-visible > span:last-child,
+a:hover .studio-slide > span:last-child,
+a:focus-visible .studio-slide > span:last-child,
+button:hover .studio-slide > span:last-child,
+button:focus-visible .studio-slide > span:last-child {
+  transform: translateY(0);
+}
+
+/* --------------------------------------------------------------------------
+   Scroll reveal. Elements start displaced and are released by GSAP
+   (`data-studio-reveal`), or immediately when motion is reduced / JS is off.
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  .dm-studio [data-studio-reveal] {
+    opacity: 0;
+    transform: translateY(22px);
+    will-change: opacity, transform;
+  }
+
+  .dm-studio [data-studio-reveal][data-studio-revealed="true"] {
+    will-change: auto;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Interaction language. One movement vocabulary, two easings. Everything
+   below animates only transform, opacity, colour or clip-path.
+   -------------------------------------------------------------------------- */
+.dm-studio {
+  --studio-ease-precise: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Hero canvas fades in only after its first real frame (see the component). */
+.studio-hero-canvas {
+  opacity: 0;
+  transition: opacity 700ms var(--studio-ease);
+}
+
+.studio-hero-canvas[data-ready="true"] {
+  opacity: 1;
+}
+
+/* Hero H1. */
+.studio-h1 {
+  font-size: clamp(2.5rem, 4.6vw, 4.5rem);
+  line-height: 0.92;
+  letter-spacing: -0.055em;
+  max-width: 12ch;
+  /* Keeps the closing phrase from breaking to a single orphaned word. */
+  text-wrap: balance;
+}
+
+/* Primary button — fill, lift, and a marker that travels diagonally. */
+.studio-cta {
+  position: relative;
+  transition:
+    background-color 380ms var(--studio-ease),
+    color 380ms var(--studio-ease),
+    transform 380ms var(--studio-ease);
+}
+
+.studio-cta:hover,
+.studio-cta:focus-visible {
+  transform: translateY(-2px) scale(1.015);
+}
+
+.studio-cta:active {
+  transform: scale(0.985);
+  transition-duration: 90ms;
+}
+
+.studio-cta__marker {
+  display: inline-block;
+  transition: transform 380ms var(--studio-ease);
+}
+
+.studio-cta:hover .studio-cta__marker,
+.studio-cta:focus-visible .studio-cta__marker {
+  transform: translate(3px, -3px);
+}
+
+/* Secondary button — hairline darkens, fill wipes in from the left. */
+.studio-ghost {
+  position: relative;
+  overflow: hidden;
+  transition:
+    border-color 380ms var(--studio-ease),
+    color 380ms var(--studio-ease);
+}
+
+.studio-ghost::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: currentColor;
+  opacity: 0.09;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 420ms var(--studio-ease-precise);
+}
+
+.studio-ghost:hover::before,
+.studio-ghost:focus-visible::before {
+  transform: scaleX(1);
+}
+
+.studio-ghost > * {
+  position: relative;
+  transition: transform 380ms var(--studio-ease);
+}
+
+.studio-ghost:hover > *,
+.studio-ghost:focus-visible > * {
+  transform: translateX(2px);
+}
+
+/* Editorial rows: studio principles and engagement models. */
+.studio-row {
+  transition: border-color 420ms var(--studio-ease);
+}
+
+.studio-row__index {
+  transition: color 420ms var(--studio-ease);
+}
+
+.studio-row__title {
+  transition: transform 420ms var(--studio-ease-precise);
+}
+
+.studio-row:hover .studio-row__index,
+.studio-row:focus-within .studio-row__index {
+  color: var(--studio-blue);
+}
+
+.studio-row:hover .studio-row__title,
+.studio-row:focus-within .studio-row__title {
+  transform: translateX(4px);
+}
+
+.studio-row__visual {
+  transition: transform 520ms var(--studio-ease-precise);
+}
+
+.studio-row:hover .studio-row__visual,
+.studio-row:focus-within .studio-row__visual {
+  transform: translateY(-4px);
+}
+
+/* Capability and marketing-lab cells. */
+.studio-cell {
+  transition:
+    background-color 440ms var(--studio-ease),
+    border-color 440ms var(--studio-ease);
+}
+
+.studio-cell__title,
+.studio-cell__marker {
+  transition:
+    transform 440ms var(--studio-ease-precise),
+    opacity 440ms var(--studio-ease);
+}
+
+.studio-cell__marker {
+  opacity: 0;
+  transform: translateX(-4px);
+}
+
+.studio-cell:hover .studio-cell__title,
+.studio-cell:focus-within .studio-cell__title {
+  transform: translateX(3px);
+}
+
+.studio-cell:hover .studio-cell__marker,
+.studio-cell:focus-within .studio-cell__marker {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Selected-work panels. */
+.studio-work__frame {
+  overflow: hidden;
+}
+
+.studio-work__image {
+  transition: transform 700ms var(--studio-ease-precise);
+}
+
+.studio-work__veil {
+  background: linear-gradient(180deg, rgba(78, 114, 242, 0.16), rgba(9, 11, 13, 0.34));
+  opacity: 0;
+  transition: opacity 560ms var(--studio-ease);
+}
+
+.studio-work:hover .studio-work__veil,
+.studio-work:focus-within .studio-work__veil {
+  opacity: 1;
+}
+
+.studio-work__title {
+  transition: transform 440ms var(--studio-ease-precise);
+}
+
+.studio-work:hover .studio-work__title,
+.studio-work:focus-within .studio-work__title {
+  transform: translateY(-3px);
+}
+
+/* Process timeline: the rail fills as the section is read. */
+.studio-track {
+  position: relative;
+  overflow: hidden;
+}
+
+.studio-track::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 100%;
+  background: var(--studio-blue);
+  transform: scaleX(var(--studio-progress, 0));
+  transform-origin: left center;
+  transition: transform 220ms linear;
+}
+
+/* A single signal runs the rail continuously, ahead of the filled portion,
+   so Diagnose → Position → Launch → Compound reads as one movement. */
+.studio-track::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  z-index: 1;
+  width: 18%;
+  background: linear-gradient(90deg, transparent, var(--studio-blue), transparent);
+  animation: studio-signal-travel 6.5s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+}
+
+@keyframes studio-signal-travel {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  12%,
+  84% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(560%);
+    opacity: 0;
+  }
+}
+
+.studio-step__dot {
+  transition:
+    background-color 420ms var(--studio-ease),
+    transform 420ms var(--studio-ease);
+}
+
+.studio-step[data-active="true"] .studio-step__dot {
+  background: var(--studio-blue);
+  transform: scale(1.35);
+}
+
+.studio-step__body {
+  transition:
+    opacity 480ms var(--studio-ease),
+    transform 480ms var(--studio-ease-precise);
+}
+
+.studio-step[data-active="true"] .studio-step__body {
+  transform: translateY(-6px);
+}
+
+/* FAQ: measured-height open and close, plus a plus-to-minus toggle. */
+.studio-faq__panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 460ms var(--studio-ease-precise);
+}
+
+.studio-faq__panel > div {
+  overflow: hidden;
+  /* Removed from the accessibility tree and tab order while collapsed, but
+     still in the DOM so the answers stay crawlable. */
+  visibility: hidden;
+  transition: visibility 0s linear 460ms;
+}
+
+.studio-faq[data-open="true"] .studio-faq__panel {
+  grid-template-rows: 1fr;
+}
+
+.studio-faq[data-open="true"] .studio-faq__panel > div {
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+.studio-faq__question {
+  transition:
+    background-color 380ms var(--studio-ease),
+    transform 380ms var(--studio-ease-precise);
+}
+
+.studio-faq:hover .studio-faq__question {
+  transform: translateX(3px);
+}
+
+.studio-faq[data-open="true"] {
+  background: rgba(17, 19, 21, 0.025);
+}
+
+/* Closing CTA: a cursor-tracked atmospheric field, CSS gradients only. */
+.studio-field {
+  background:
+    radial-gradient(
+      36rem 30rem at var(--studio-field-x, 50%) var(--studio-field-y, 40%),
+      rgba(78, 114, 242, 0.22) 0%,
+      transparent 68%
+    ),
+    radial-gradient(
+      26rem 22rem at calc(var(--studio-field-x, 50%) + 14%) calc(var(--studio-field-y, 40%) + 16%),
+      rgba(117, 213, 208, 0.1) 0%,
+      transparent 70%
+    );
+  transition: opacity 600ms var(--studio-ease);
+}
+
+/* --------------------------------------------------------------------------
+   Reveal patterns. Three only: masked heading lines, supporting copy, media.
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  .dm-studio [data-studio-line] {
+    display: block;
+    overflow: hidden;
+  }
+
+  .dm-studio [data-studio-line] > span {
+    display: block;
+    transform: translateY(110%);
+    opacity: 0;
+    will-change: transform, opacity;
+  }
+
+  .dm-studio [data-studio-media] {
+    clip-path: inset(0 0 100% 0);
+    will-change: clip-path;
+  }
+
+  .dm-studio [data-studio-media] img {
+    transform: scale(1.06);
+    will-change: transform;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Field backgrounds. Formerly one WebGL context each; now layered gradients
+   with a single compositor-driven drift, so nothing here runs a RAF loop.
+   -------------------------------------------------------------------------- */
+[class^="studio-field-"] {
+  --field-ink: rgba(17, 19, 21, 0.5);
+  --field-accent: rgba(78, 114, 242, 0.42);
+  opacity: 0.72;
+  transition: opacity 600ms var(--studio-ease);
+}
+
+[class^="studio-field-"][data-tone="dark"] {
+  --field-ink: rgba(250, 250, 247, 0.34);
+  --field-accent: rgba(78, 114, 242, 0.5);
+}
+
+.studio-slot:hover [class^="studio-field-"] {
+  opacity: 0.88;
+}
+
+/* Pixel: a fine cell grid, with a slow diagonal light passing over it. */
+.studio-field-pixel {
+  background-image:
+    linear-gradient(var(--field-ink) 1px, transparent 1px),
+    linear-gradient(90deg, var(--field-ink) 1px, transparent 1px);
+  background-size: 12px 12px;
+  -webkit-mask-image: linear-gradient(115deg, transparent 30%, #000 48%, #000 56%, transparent 76%);
+  mask-image: linear-gradient(115deg, transparent 30%, #000 48%, #000 56%, transparent 76%);
+  -webkit-mask-size: 260% 260%;
+  mask-size: 260% 260%;
+  animation: studio-field-sweep 26s linear infinite;
+}
+
+/* Flow: two soft light fields drifting through each other. */
+.studio-field-flow {
+  background-image:
+    radial-gradient(60% 55% at 30% 35%, var(--field-accent), transparent 70%),
+    radial-gradient(50% 45% at 72% 68%, rgba(117, 213, 208, 0.3), transparent 72%);
+  background-size: 180% 180%, 200% 200%;
+  animation: studio-field-drift 34s ease-in-out infinite alternate;
+}
+
+/* Scan: hairline rows under a slow travelling band. */
+.studio-field-scan {
+  background-image: repeating-linear-gradient(
+    180deg,
+    var(--field-ink) 0 1px,
+    transparent 1px 9px
+  );
+  -webkit-mask-image: linear-gradient(180deg, transparent 34%, #000 50%, transparent 66%);
+  mask-image: linear-gradient(180deg, transparent 34%, #000 50%, transparent 66%);
+  -webkit-mask-size: 100% 300%;
+  mask-size: 100% 300%;
+  animation: studio-field-scan 30s linear infinite;
+}
+
+@keyframes studio-field-sweep {
+  from {
+    -webkit-mask-position: 0% 0%;
+    mask-position: 0% 0%;
+  }
+  to {
+    -webkit-mask-position: 100% 100%;
+    mask-position: 100% 100%;
+  }
+}
+
+@keyframes studio-field-drift {
+  from {
+    background-position:
+      0% 0%,
+      100% 100%;
+  }
+  to {
+    background-position:
+      100% 60%,
+      0% 20%;
+  }
+}
+
+@keyframes studio-field-scan {
+  from {
+    -webkit-mask-position: 0% 0%;
+    mask-position: 0% 0%;
+  }
+  to {
+    -webkit-mask-position: 0% 100%;
+    mask-position: 0% 100%;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Why Comlabs conceptual visuals. Idle motion is slow; the row's hover is
+   what makes each one state its point.
+   -------------------------------------------------------------------------- */
+.studio-viz__baseline {
+  background: var(--studio-line);
+  transform: scaleX(0.35);
+  transform-origin: left center;
+  transition: transform 700ms var(--studio-ease-precise), background-color 500ms var(--studio-ease);
+}
+
+.studio-row:hover .studio-viz__baseline,
+.studio-row:focus-within .studio-viz__baseline {
+  transform: scaleX(1);
+  background: var(--studio-blue);
+}
+
+/* Signal: scattered marks drop onto the baseline together. */
+.studio-viz__mark {
+  background: rgba(17, 19, 21, 0.34);
+  transition:
+    transform 620ms var(--studio-ease-precise),
+    background-color 420ms var(--studio-ease),
+    opacity 420ms var(--studio-ease);
+  transition-delay: calc(var(--viz-i) * 22ms);
+}
+
+.studio-row:hover .studio-viz__mark,
+.studio-row:focus-within .studio-viz__mark {
+  transform: translateY(var(--viz-dy));
+  background: var(--studio-blue);
+}
+
+/* Creative: frames level out, then one is chosen. */
+.studio-viz__frame {
+  border-color: var(--studio-line);
+  background: transparent;
+  transform-origin: center bottom;
+  transition:
+    transform 560ms var(--studio-ease-precise),
+    border-color 460ms var(--studio-ease),
+    background-color 460ms var(--studio-ease),
+    opacity 460ms var(--studio-ease);
+  transition-delay: calc(var(--viz-i) * 45ms);
+}
+
+.studio-row:hover .studio-viz__frame,
+.studio-row:focus-within .studio-viz__frame {
+  transform: scaleY(0.62);
+  opacity: 0.4;
+}
+
+.studio-row:hover .studio-viz__frame--chosen,
+.studio-row:focus-within .studio-viz__frame--chosen {
+  transform: scaleY(1.18);
+  opacity: 1;
+  border-color: var(--studio-blue);
+  background: rgba(78, 114, 242, 0.1);
+}
+
+/* System: edges draw in and nodes fill as the structure completes. */
+.studio-viz__edge {
+  stroke: var(--studio-line);
+  stroke-width: 0.6;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  transition:
+    stroke-dashoffset 620ms var(--studio-ease-precise),
+    stroke 460ms var(--studio-ease);
+  transition-delay: calc(var(--viz-i) * 90ms);
+}
+
+.studio-row:hover .studio-viz__edge,
+.studio-row:focus-within .studio-viz__edge {
+  stroke-dashoffset: 0;
+  stroke: var(--studio-blue);
+}
+
+.studio-viz__node {
+  border-color: rgba(17, 19, 21, 0.4);
+  background: var(--studio-white);
+  transform: translate(-50%, -50%);
+  transition:
+    border-color 460ms var(--studio-ease),
+    background-color 460ms var(--studio-ease),
+    transform 460ms var(--studio-ease-precise);
+  transition-delay: calc(var(--viz-i) * 90ms);
+}
+
+.studio-row:hover .studio-viz__node,
+.studio-row:focus-within .studio-viz__node {
+  border-color: var(--studio-blue);
+  background: var(--studio-blue);
+  transform: translate(-50%, -50%) scale(1.3);
+}
+
+/* Row copy answers the same hover as the visual. */
+.studio-row__body {
+  transition: color 460ms var(--studio-ease);
+}
+
+.studio-row:hover .studio-row__body,
+.studio-row:focus-within .studio-row__body {
+  color: var(--studio-ink);
+}
+
+/* --------------------------------------------------------------------------
+   Glass illustration cards, layered over shader slots.
+   -------------------------------------------------------------------------- */
+.studio-glass {
+  --glass-bg: rgba(250, 250, 247, 0.58);
+  --glass-line: rgba(17, 19, 21, 0.14);
+  --glass-ink: var(--studio-ink);
+  --glass-muted: rgba(17, 19, 21, 0.5);
+  --glass-active: rgba(78, 114, 242, 0.12);
+  color: var(--glass-ink);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-line);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    0 18px 40px -22px rgba(9, 11, 13, 0.45);
+  backdrop-filter: blur(30px) saturate(1.15);
+  -webkit-backdrop-filter: blur(30px) saturate(1.15);
+  transition:
+    transform 560ms var(--studio-ease-precise),
+    border-color 420ms var(--studio-ease),
+    box-shadow 560ms var(--studio-ease);
+}
+
+.studio-glass[data-tone="dark"] {
+  --glass-bg: rgba(17, 19, 21, 0.62);
+  --glass-line: rgba(250, 250, 247, 0.16);
+  --glass-ink: var(--studio-white);
+  --glass-muted: rgba(250, 250, 247, 0.5);
+  --glass-active: rgba(78, 114, 242, 0.22);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 24px 48px -20px rgba(0, 0, 0, 0.75);
+}
+
+/* Light sweep that crosses the card when the slot is hovered. */
+.studio-glass::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.35) 50%,
+    transparent 70%
+  );
+  transform: translateX(-120%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.studio-slot:hover .studio-glass {
+  transform: translate(-4px, -4px);
+  border-color: rgba(78, 114, 242, 0.45);
+}
+
+.studio-slot:hover .studio-glass::after {
+  animation: studio-glass-sweep 900ms var(--studio-ease-precise) forwards;
+}
+
+@keyframes studio-glass-sweep {
+  from {
+    transform: translateX(-120%);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+}
+
+.studio-glass__chrome {
+  border-bottom: 1px solid var(--glass-line);
+}
+
+.studio-glass__dot {
+  display: block;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--glass-muted);
+  opacity: 0.55;
+}
+
+.studio-glass__title {
+  color: var(--glass-ink);
+}
+
+.studio-glass__label {
+  color: var(--glass-ink);
+}
+
+.studio-glass__meta,
+.studio-glass__num {
+  color: var(--glass-muted);
+  border-color: var(--glass-line);
+}
+
+.studio-glass__tick {
+  background: var(--glass-muted);
+  transition: background-color 400ms var(--studio-ease);
+}
+
+/* Rows: stagger in with the slot, then an active highlight walks them. */
+.studio-glass__row {
+  position: relative;
+  border: 1px solid transparent;
+  animation:
+    studio-glass-row-in 700ms var(--studio-ease-precise) both,
+    studio-glass-row-active calc(var(--studio-glass-rows) * 2.4s) linear infinite;
+  animation-delay:
+    calc(var(--studio-glass-i) * 90ms + 200ms),
+    calc(var(--studio-glass-i) * 2.4s + 1.2s);
+}
+
+@keyframes studio-glass-row-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* One row's turn in the loop: fill, lift the tick to blue, then hand off. */
+@keyframes studio-glass-row-active {
+  0%,
+  100% {
+    background: transparent;
+    border-color: transparent;
+  }
+  6%,
+  30% {
+    background: var(--glass-active);
+    border-color: rgba(78, 114, 242, 0.35);
+  }
+  38% {
+    background: transparent;
+    border-color: transparent;
+  }
+}
+
+/* Section backdrop shader: low opacity, faded at both edges. */
+.studio-backdrop > canvas {
+  opacity: 0.32;
+}
+
+.studio-backdrop::before,
+.studio-backdrop::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  height: 28%;
+  pointer-events: none;
+}
+
+.studio-backdrop::before {
+  top: 0;
+  background: linear-gradient(180deg, var(--studio-paper), transparent);
+}
+
+.studio-backdrop::after {
+  bottom: 0;
+  background: linear-gradient(0deg, var(--studio-paper), transparent);
+}
+
+/* Opening illustrations. */
+.studio-point:hover .studio-diagram__dot,
+.studio-point:focus-within .studio-diagram__dot {
+  border-color: var(--studio-blue);
+}
+
+.studio-diagram__dot {
+  transition:
+    background-color 400ms var(--studio-ease),
+    border-color 400ms var(--studio-ease),
+    transform 400ms var(--studio-ease);
+  animation: studio-node-light 7.2s linear infinite;
+  animation-delay: calc(var(--studio-node) * 1.2s);
+}
+
+/* Each node takes its turn filling blue as the pulse passes it. */
+@keyframes studio-node-light {
+  0%,
+  100% {
+    background: var(--studio-paper);
+    transform: scale(1);
+  }
+  4%,
+  12% {
+    background: var(--studio-blue);
+    border-color: var(--studio-blue);
+    transform: scale(1.25);
+  }
+  18% {
+    background: var(--studio-paper);
+    transform: scale(1);
+  }
+}
+
+.studio-diagram__pulse {
+  background: linear-gradient(90deg, transparent, var(--studio-blue), transparent);
+  animation: studio-pulse-travel 7.2s linear infinite;
+}
+
+@keyframes studio-pulse-travel {
+  from {
+    left: 0.5rem;
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  92% {
+    opacity: 1;
+  }
+  to {
+    left: calc(100% - 3rem);
+    opacity: 0;
+  }
+}
+
+.studio-pair__item {
+  animation: studio-pair-in 600ms var(--studio-ease-precise) both;
+  animation-delay: calc(var(--studio-pair-i) * 110ms + 300ms);
+}
+
+.studio-pair__mark {
+  transition: background-color 400ms var(--studio-ease);
+}
+
+.studio-point:hover .studio-pair__mark,
+.studio-point:focus-within .studio-pair__mark {
+  background: var(--studio-blue);
+}
+
+@keyframes studio-pair-in {
+  from {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Editorial photography. Graded to the palette by default; colour returns on
+   hover, which is the whole reason a grid of these reads as alive.
+   -------------------------------------------------------------------------- */
+.studio-photo img {
+  filter: grayscale(1) contrast(1.06) brightness(0.94);
+  transform: scale(1.01);
+  transition:
+    filter 700ms var(--studio-ease),
+    transform 900ms var(--studio-ease-precise);
+}
+
+.studio-cell:hover .studio-photo img,
+.studio-cell:focus-within .studio-photo img {
+  filter: grayscale(0.1) contrast(1.02) brightness(1);
+  transform: scale(1.05);
+}
+
+/* A blue wash over the grade keeps warm source material inside the palette. */
+.studio-photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(78, 114, 242, 0.14), rgba(9, 11, 13, 0.3));
+  opacity: 1;
+  transition: opacity 700ms var(--studio-ease);
+  pointer-events: none;
+}
+
+.studio-cell:hover .studio-photo::after,
+.studio-cell:focus-within .studio-photo::after {
+  opacity: 0.3;
+}
+
+/* Work-stack images drift against the scroll; set by the motion controller. */
+.studio-work__image {
+  transform: scale(1.06) translateY(var(--studio-parallax, 0px));
+}
+
+.studio-work:hover .studio-work__image,
+.studio-work:focus-within .studio-work__image {
+  transform: scale(1.09) translateY(var(--studio-parallax, 0px));
+}
+
+/* The engagement visual answers whichever model is hovered: the field
+   brightens and the glass card shifts by one step per model. */
+.studio-engagement-visual [class^="studio-field-"] {
+  transition:
+    opacity 520ms var(--studio-ease),
+    filter 520ms var(--studio-ease);
+}
+
+.studio-engagement-visual[data-active] [class^="studio-field-"] {
+  opacity: 0.95;
+}
+
+.studio-engagement-visual .studio-glass {
+  transition:
+    transform 620ms var(--studio-ease-precise),
+    border-color 420ms var(--studio-ease);
+}
+
+.studio-engagement-visual[data-active="0"] .studio-glass {
+  transform: translate(-6px, -6px);
+  border-color: rgba(78, 114, 242, 0.45);
+}
+
+.studio-engagement-visual[data-active="1"] .studio-glass {
+  transform: translate(0, -12px);
+  border-color: rgba(78, 114, 242, 0.45);
+}
+
+.studio-engagement-visual[data-active="2"] .studio-glass {
+  transform: translate(6px, -18px);
+  border-color: rgba(78, 114, 242, 0.45);
+}
+
+/* Each glass row lights in turn with the model above it. */
+.studio-engagement-visual[data-active="0"] .studio-glass__row:nth-child(1),
+.studio-engagement-visual[data-active="1"] .studio-glass__row:nth-child(2),
+.studio-engagement-visual[data-active="2"] .studio-glass__row:nth-child(3) {
+  background: var(--glass-active);
+  border-color: rgba(78, 114, 242, 0.45);
+}
+
+/* Horizontal lab rail — hides the scrollbar but keeps the scroll container. */
+.studio-rail {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.studio-rail::-webkit-scrollbar {
+  display: none;
+}
+
+/* The radial tick ring in the “Selected work” interlude. */
+.studio-ring {
+  animation: studio-ring-spin 48s linear infinite;
+}
+
+@keyframes studio-ring-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dm-studio *,
+  .dm-studio *::before,
+  .dm-studio *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .studio-slide > span:last-child {
+    display: none;
+  }
+
+  .dm-studio [data-studio-line] > span,
+  .dm-studio [data-studio-media],
+  .dm-studio [data-studio-media] img {
+    transform: none !important;
+    opacity: 1 !important;
+    clip-path: none !important;
+  }
+
+  .studio-field {
+    display: none;
+  }
+
+  .studio-glass__row {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .studio-diagram__dot,
+  .studio-diagram__pulse,
+  .studio-pair__item {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .studio-diagram__pulse {
+    display: none;
+  }
+
+  .studio-photo img,
+  .studio-work__image {
+    transform: none !important;
+  }
+
+  [class^="studio-field-"] {
+    animation: none;
+  }
+
+  .studio-track::before {
+    display: none;
+  }
+
+  .studio-viz__mark,
+  .studio-viz__frame,
+  .studio-viz__edge,
+  .studio-viz__node,
+  .studio-viz__baseline {
+    transition: none;
+  }
+
+  .studio-slot:hover .studio-glass::after {
+    animation: none;
   }
 }
 
@@ -274,7 +1398,7 @@
 .post-body h2,
 .post-body h3,
 .post-body h4 {
-  font-weight: 700;
+  font-weight: 500;
   line-height: 1.2;
   letter-spacing: -0.025em;
   color: var(--foreground);
@@ -308,7 +1432,7 @@
   margin-left: 0;
   padding: 0.75em 1.25em;
   background: var(--warm-orange-light);
-  border-radius: 0 0.5rem 0.5rem 0;
+  border-radius: 0;
   color: var(--muted-foreground);
   font-style: italic;
 }
@@ -318,14 +1442,14 @@
   background: var(--secondary);
   color: var(--foreground);
   padding: 0.15em 0.4em;
-  border-radius: 4px;
+  border-radius: 0;
   border: 1px solid var(--border);
 }
 .post-body pre {
   background: var(--foreground);
   color: var(--background);
   padding: 1.25em 1.5em;
-  border-radius: 0.75rem;
+  border-radius: 0;
   overflow-x: auto;
   font-size: 0.875rem;
   line-height: 1.7;
@@ -340,7 +1464,7 @@
 .post-body img {
   width: 100%;
   height: auto;
-  border-radius: 0.75rem;
+  border-radius: 0;
   margin-top: 1.5em;
   margin-bottom: 1.5em;
 }
@@ -350,6 +1474,108 @@
   margin: 2em 0;
 }
 
+/* --------------------------------------------------------------------------
+   Post tables.
+   CMS content arrives as raw HTML, so there is no wrapper to hang a scroll
+   container on: the table itself becomes the scroller. `width: max-content`
+   with `max-width: 100%` lets it size to its content and scroll horizontally
+   once that exceeds the column, which is the only honest answer for a
+   four-column comparison table on a 390px screen.
+   -------------------------------------------------------------------------- */
+.post-body table {
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-collapse: collapse;
+  border: 1px solid var(--border);
+  margin: 2.25em 0;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  text-align: left;
+}
+
+/* On wide screens the table steps outside the prose measure, so four columns
+   of real sentences get room instead of being squeezed into 768px. */
+@media (min-width: 1024px) {
+  .post-body table {
+    max-width: calc(100% + 11rem);
+    margin-inline: -5.5rem;
+  }
+}
+
+.post-body thead {
+  background: var(--secondary);
+}
+
+.post-body th {
+  padding: 0.8rem 1.1rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  white-space: nowrap;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: bottom;
+}
+
+.post-body td {
+  padding: 1rem 1.1rem;
+  vertical-align: top;
+  min-width: 12rem;
+  color: var(--foreground);
+}
+
+/* Hairlines only: rows divide, columns divide more faintly still. */
+.post-body tbody tr + tr td {
+  border-top: 1px solid var(--hairline-hatch);
+}
+
+.post-body th + th,
+.post-body td + td {
+  border-left: 1px solid var(--hairline-hatch);
+}
+
+/* The label column stays narrow and carries slightly more weight. */
+.post-body td:first-child {
+  min-width: 6.5rem;
+  font-weight: 500;
+}
+
+.post-body tbody tr:hover td {
+  background: color-mix(in srgb, var(--secondary) 45%, transparent);
+}
+
+.post-body table p {
+  margin: 0;
+}
+
+.post-body table p + p {
+  margin-top: 0.5em;
+}
+
+@media (max-width: 767px) {
+  .post-body table {
+    font-size: 0.875rem;
+  }
+
+  .post-body td {
+    min-width: 11rem;
+    padding: 0.85rem 0.9rem;
+  }
+
+  .post-body th {
+    padding: 0.7rem 0.9rem;
+  }
+
+  .post-body td:first-child {
+    min-width: 5.5rem;
+  }
+}
+
 /* Tiptap placeholder */
 .tiptap p.is-editor-empty:first-child::before {
   content: attr(data-placeholder);
@@ -357,4 +1583,170 @@
   pointer-events: none;
   float: left;
   height: 0;
+}
+
+/* Homepage Services / Proof flat frame — wide inset layout with hairline grid. */
+.section-layout {
+  width: min(calc(100% - 64px), 1440px);
+  margin-inline: auto;
+}
+
+.flat-frame {
+  border: 1px solid var(--border);
+  border-radius: 0;
+  background: transparent;
+}
+
+/* Full-width top/bottom hairlines between hatch vertical rules. */
+.hatch-aligned-frame {
+  margin-inline: var(--page-hatch-width);
+}
+
+/* Nested section-layout must not re-apply the page inset — fill the hatch band. */
+.hatch-aligned-frame > .section-layout {
+  width: 100%;
+  max-width: none;
+  margin-inline: 0;
+}
+
+/*
+ * Hatched page gutters. Each post-hero section paints an overlay whose two
+ * background layers sit in the outer margins either side of .section-layout,
+ * so the texture runs unbroken from the hero down to the footer. The band
+ * tracks the gutter at every viewport width.
+ */
+.gutter-hatch {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      var(--gutter-hatch-color, var(--hairline-hatch)) 0,
+      var(--gutter-hatch-color, var(--hairline-hatch)) 1px,
+      transparent 1px,
+      transparent 6px
+    ),
+    repeating-linear-gradient(
+      45deg,
+      var(--gutter-hatch-color, var(--hairline-hatch)) 0,
+      var(--gutter-hatch-color, var(--hairline-hatch)) 1px,
+      transparent 1px,
+      transparent 6px
+    );
+  background-position: left top, right top;
+  background-repeat: no-repeat;
+  /* 1px of overshoot sits under the rules below, so no sliver can appear. */
+  background-size:
+    calc(var(--page-hatch-width) + 1px) 100%,
+    calc(var(--page-hatch-width) + 1px) 100%;
+}
+
+/*
+ * The rule closing each hatch band. Positioned rather than painted, so it
+ * lands on the exact gutter edge at every viewport width.
+ */
+.gutter-hatch::before,
+.gutter-hatch::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--gutter-line-color, var(--border));
+}
+
+.gutter-hatch::before {
+  left: var(--page-hatch-width);
+}
+
+.gutter-hatch::after {
+  right: var(--page-hatch-width);
+}
+
+/*
+ * Horizontal hatch band between the vertical gutter rules — spans hatch-to-hatch.
+ */
+.gutter-hatch-rule {
+  position: relative;
+  display: block;
+  pointer-events: none;
+  margin-inline: var(--page-hatch-width);
+  height: calc(var(--page-hatch-width) + 1px);
+  background-image: repeating-linear-gradient(
+    45deg,
+    var(--gutter-hatch-color, var(--hairline-hatch)) 0,
+    var(--gutter-hatch-color, var(--hairline-hatch)) 1px,
+    transparent 1px,
+    transparent 6px
+  );
+}
+
+/*
+ * Full-area hatch fill — matches gutter-hatch 45° lines for inset canvases.
+ * Use .hatch-canvas-layer as an absolute sibling behind grid content so the
+ * pattern shares one viewport origin across columns (background-attachment: fixed).
+ */
+.hatch-canvas-fill {
+  position: relative;
+  background-color: var(--background);
+}
+
+.hatch-canvas-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-color: var(--background);
+  background-image: repeating-linear-gradient(
+    45deg,
+    var(--canvas-hatch-color, var(--hairline-hatch)) 0,
+    var(--canvas-hatch-color, var(--hairline-hatch)) 1px,
+    transparent 1px,
+    transparent 6px
+  );
+  background-attachment: fixed;
+}
+
+.hatch-canvas-fill > .hatch-canvas-layer + * {
+  position: relative;
+  z-index: 1;
+}
+
+.gutter-hatch-rule::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--gutter-line-color, var(--border));
+}
+
+/* Pin to section edges — top hairline on ::before, bottom on ::after. */
+.gutter-hatch-rule-edge {
+  position: absolute;
+  left: var(--page-hatch-width);
+  right: var(--page-hatch-width);
+  z-index: 2;
+  margin-inline: 0;
+  height: calc(var(--page-hatch-width) + 1px);
+}
+
+.gutter-hatch-rule-edge-top {
+  top: 0;
+}
+
+.gutter-hatch-rule-edge-bottom {
+  bottom: 0;
+}
+
+.gutter-hatch-rule-edge-bottom::before {
+  top: auto;
+  bottom: 0;
+}
+/* Light-on-dark hatch and rule for the dark bands. */
+.gutter-hatch-on-dark {
+  --gutter-hatch-color: rgba(244, 242, 237, 0.1);
+  --gutter-line-color: rgba(244, 242, 237, 0.12);
 }
