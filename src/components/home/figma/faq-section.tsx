@@ -3,14 +3,13 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 
-import { BlurReveal, BLUR_REVEAL_NORMAL_SPEED } from "@/components/blur-reveal";
 import {
-  AFTER_TITLE_BODY_DELAY,
   RevealCopy,
+  RevealHeading,
   RevealStagger,
   RevealStaggerItem,
-  useAfterTitleReveal,
-} from "@/components/home/figma/after-title-reveal";
+  SECTION_BODY_DELAY,
+} from "@/components/home/figma/section-reveal";
 import { HOME_FAQS } from "@/lib/home-faqs";
 import { cn } from "@/lib/utils";
 
@@ -35,22 +34,21 @@ function ToggleGlyph({ open }: { open: boolean }) {
 }
 
 export function FigmaFaqSection() {
-  const { revealed, onTitleComplete } = useAfterTitleReveal();
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="relative border-b border-border py-14 md:py-16">
+    <section
+      id="faq"
+      className="relative border-b border-border py-14 md:py-16"
+    >
       <span aria-hidden className="gutter-hatch" />
       <div className="section-layout">
         <div className="mb-12 max-w-2xl px-1 md:px-4 md:mb-16">
           <p className="mb-4 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
             FAQ
           </p>
-          <BlurReveal
+          <RevealHeading
             as="h2"
-            inView
-            speedReveal={BLUR_REVEAL_NORMAL_SPEED}
-            onAnimationComplete={onTitleComplete}
             className="text-2xl font-bold tracking-tight md:text-4xl"
             style={{ letterSpacing: "-0.03em" }}
             segments={[
@@ -59,16 +57,13 @@ export function FigmaFaqSection() {
               { text: "we start." },
             ]}
           />
-          <RevealCopy
-            revealed={revealed}
-            className="mt-4 text-sm leading-relaxed text-muted-foreground md:text-base"
-          >
+          <RevealCopy className="mt-4 text-sm leading-relaxed text-muted-foreground md:text-base">
             A few things that come up in most first conversations.
           </RevealCopy>
         </div>
       </div>
 
-      <RevealStagger revealed={revealed} delay={AFTER_TITLE_BODY_DELAY} className="w-full">
+      <RevealStagger delay={SECTION_BODY_DELAY} className="w-full">
         <div className="hatch-aligned-frame border-y border-border px-1 py-1 md:px-0 md:py-0">
           <div className="section-layout md:p-3">
             <div className="flat-frame">

@@ -1,8 +1,10 @@
 "use client";
 
-import { BlurReveal, BLUR_REVEAL_NORMAL_SPEED } from "@/components/blur-reveal";
 import { ForceField } from "@/components/canvasui/ForceField";
-import { RevealCopy, useAfterTitleReveal } from "@/components/home/figma/after-title-reveal";
+import {
+  RevealCopy,
+  RevealHeading,
+} from "@/components/home/figma/section-reveal";
 
 /** Warm orange lattice on charcoal — brand-aligned Force Field. */
 const FIELD_COLOR: [number, number, number] = [0.788, 0.392, 0.259];
@@ -13,9 +15,12 @@ const FIELD_EDGE: [number, number, number] = [0.95, 0.72, 0.55];
  * Charcoal + Force Field background; left-aligned ownership positioning.
  */
 export function FigmaPositioningBridgeSection() {
-  const { revealed, onTitleComplete } = useAfterTitleReveal();
   return (
-    <section id="positioning" className="relative overflow-hidden" aria-labelledby="positioning-heading">
+    <section
+      id="positioning"
+      className="relative overflow-hidden"
+      aria-labelledby="positioning-heading"
+    >
       <ForceField
         className="min-h-[280px] w-full md:min-h-[320px]"
         style={{ background: "#141414" }}
@@ -55,12 +60,9 @@ export function FigmaPositioningBridgeSection() {
             <p className="mb-4 text-xs font-semibold tracking-widest text-neutral-100/55 uppercase">
               Beyond the build
             </p>
-            <BlurReveal
+            <RevealHeading
               as="h2"
               id="positioning-heading"
-              inView
-              speedReveal={BLUR_REVEAL_NORMAL_SPEED}
-              onAnimationComplete={onTitleComplete}
               className="text-2xl font-bold tracking-tight text-neutral-100 md:text-4xl"
               style={{ letterSpacing: "-0.03em" }}
               segments={[
@@ -69,13 +71,10 @@ export function FigmaPositioningBridgeSection() {
                 { text: "when it works in production." },
               ]}
             />
-            <RevealCopy
-              revealed={revealed}
-              className="mt-5 text-sm leading-relaxed text-neutral-100/70 md:text-base"
-            >
-              Comlabs supports the applications, infrastructure and operational systems behind
-              growing businesses—from the first customer request to the production issue that cannot
-              wait until Monday.
+            <RevealCopy className="mt-5 text-sm leading-relaxed text-neutral-100/70 md:text-base">
+              Comlabs supports the applications, infrastructure and operational
+              systems behind growing businesses—from the first customer request
+              to the production issue that cannot wait until Monday.
             </RevealCopy>
           </div>
         </div>
