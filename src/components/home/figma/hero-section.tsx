@@ -40,7 +40,25 @@ export function FigmaHeroSection() {
   const isDark = theme?.resolvedTheme === "dark";
   const reduceMotion = useReducedMotion();
 
-  /** Settles down into place from slightly above. */
+  /**
+   * Moves into place without fading. For the headline, which competes with the
+   * photograph to be the LCP element: animating its opacity from 0 would make
+   * it uncountable until hydration, so only the transform runs.
+   */
+  const enterNoFade = (delay: number) => ({
+    initial: { y: reduceMotion ? 0 : -HERO_LIFT },
+    animate: { y: 0 },
+    transition: {
+      duration: reduceMotion ? 0 : 0.4,
+      delay: reduceMotion ? 0 : delay,
+      ease: HERO_EASE,
+    },
+  });
+
+  /**
+   * Fade and settle. Only for elements that are not LCP candidates — their
+   * opacity has no bearing on the metric.
+   */
   const enter = (delay: number) => ({
     initial: { opacity: 0, y: reduceMotion ? 0 : -HERO_LIFT },
     animate: { opacity: 1, y: 0 },
@@ -57,29 +75,28 @@ export function FigmaHeroSection() {
         <>
           {/* The photograph arrives on its own, slower curve so it feels like
               it settles in behind the copy rather than blinking on. */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: reduceMotion ? 0 : 0.9, ease: "easeOut" }}
-            className="pointer-events-none absolute inset-0 z-0"
-          >
-            <ChromaticImage
-              src={mediaUrl(HERO_BACKGROUND_PATH)}
-              alt={HERO_BACKGROUND_ALT}
-              width={HERO_BACKGROUND_SIZE.width}
-              height={HERO_BACKGROUND_SIZE.height}
-              trackParent
-              backgroundColor="#f7f7f4"
-              zoom={0.06}
-              displacement={0.03}
-              chromaticShift={0.008}
-              tilt={0}
-              focusX={0.36}
-              focusY={0.38}
-              objectPosition="36% 38%"
-              className="pointer-events-none absolute inset-0 size-full bg-background"
-            />
-          </motion.div>
+          {/* Deliberately not faded in. This photograph is the page's LCP
+              candidate, and Chrome does not count an element as contentful
+              while it sits at opacity 0 — wrapping it in an entrance animation
+              pushes LCP out to hydration time. It paints straight from the
+              server instead. ChromaticImage still cross-fades its canvas over
+              the image once WebGL is ready, which supplies the settle. */}
+          <ChromaticImage
+            src={mediaUrl(HERO_BACKGROUND_PATH)}
+            alt={HERO_BACKGROUND_ALT}
+            width={HERO_BACKGROUND_SIZE.width}
+            height={HERO_BACKGROUND_SIZE.height}
+            trackParent
+            backgroundColor="#f7f7f4"
+            zoom={0.06}
+            displacement={0.03}
+            chromaticShift={0.008}
+            tilt={0}
+            focusX={0.36}
+            focusY={0.38}
+            objectPosition="36% 38%"
+            className="pointer-events-none absolute inset-0 z-0 size-full bg-background"
+          />
           <div
             aria-hidden
             className="pointer-events-none absolute inset-0 z-[1] md:hidden"
@@ -121,7 +138,7 @@ export function FigmaHeroSection() {
           </motion.div>
 
           <motion.h1
-            {...enter(0.1)}
+            {...enterNoFade(0.1)}
             className="mb-7 text-3xl leading-[1.08] font-bold tracking-tight md:text-6xl"
             style={{ letterSpacing: "-0.03em" }}
           >
