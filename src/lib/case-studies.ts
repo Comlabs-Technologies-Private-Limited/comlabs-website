@@ -93,6 +93,41 @@ export const CASE_STUDY_ORDER: readonly CaseStudySlug[] = [
 
 export const RADIANT_LIVE_URL = "https://radiant.comlabstechnologies.com/";
 
+/** Live website URLs for CMS-authored studies that still store preview hosts. */
+export const CASE_STUDY_LIVE_SITES: Record<string, { value: string; href: string }> = {
+  "chiaki-premium-shopify-store": {
+    value: "houseofchiaki.com",
+    href: "https://houseofchiaki.com",
+  },
+  "human-made-logic": {
+    value: "humanmadelogic.fun",
+    href: "https://humanmadelogic.fun",
+  },
+};
+
+const LIVE_SITE_META_LABEL = /^(website|preview|live site|url)$/i;
+
+/** Swap the Website/Preview href only. Does not change the case-study slug. */
+export function withCanonicalLiveSite(content: CaseStudyContent): CaseStudyContent {
+  const live = CASE_STUDY_LIVE_SITES[content.slug];
+  if (!live) return content;
+
+  const index = content.meta.findIndex((item) => LIVE_SITE_META_LABEL.test(item.label));
+  if (index < 0) return content;
+
+  const meta = [...content.meta];
+  const current = meta[index];
+  if (!current) return content;
+
+  meta[index] = {
+    ...current,
+    value: live.value,
+    href: live.href,
+  };
+
+  return { ...content, meta };
+}
+
 export type CaseStudyServiceLink = {
   label: string;
   href: string;
