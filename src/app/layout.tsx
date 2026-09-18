@@ -60,6 +60,9 @@ export const metadata: Metadata = {
     images: [siteOgImage.url],
   },
   robots: indexFollowRobots,
+  alternates: {
+    types: { "application/rss+xml": "/feed.xml/" },
+  },
 };
 
 export default function RootLayout({
