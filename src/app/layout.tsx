@@ -3,6 +3,7 @@ import { JetBrains_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
+import { Clarity } from "@/components/analytics/clarity";
 import { GoogleTag } from "@/components/analytics/google-tag";
 import { RootShell } from "@/components/root-shell";
 import { indexFollowRobots } from "@/lib/metadata";
@@ -78,6 +79,7 @@ export default function RootLayout({
     >
       <head>
         <GoogleTag />
+        <Clarity />
       </head>
       <RootShell>
         {children}
