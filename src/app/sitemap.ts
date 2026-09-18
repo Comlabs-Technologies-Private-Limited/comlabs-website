@@ -28,17 +28,28 @@ function priorityFor(path: string): number {
   if (path === "/contact") return 0.9;
   if (path === "/services" || path === CASE_STUDIES_PATH) return 0.9;
 
-  // Service and case-study detail pages carry the commercial argument.
   if (path.startsWith("/services/")) return 0.8;
-  if (path.startsWith(`${CASE_STUDIES_PATH}/`)) return 0.8;
+  if (path.startsWith(`${CASE_STUDIES_PATH}/`)) return 0.85;
 
   if (path === "/digital-marketing" || path === "/about") return 0.7;
-  if (path === "/blog") return 0.7;
-  if (path.startsWith("/blog/")) return 0.6;
+  if (path === "/blog") return 0.8;
+  if (path.startsWith("/blog/")) return 0.75;
   if (path === "/careers") return 0.5;
 
-  // Legal pages must stay indexable but should never outrank the work.
   return 0.3;
+}
+
+function changeFrequencyFor(
+  path: string,
+): MetadataRoute.Sitemap[0]["changeFrequency"] {
+  if (path === "/") return "daily";
+  if (path === "/blog" || path.startsWith("/blog/")) return "daily";
+  if (
+    path === CASE_STUDIES_PATH ||
+    path.startsWith(`${CASE_STUDIES_PATH}/`)
+  )
+    return "daily";
+  return "weekly";
 }
 
 function entry(path: string, lastModified?: Date): MetadataRoute.Sitemap[0] {
@@ -46,6 +57,7 @@ function entry(path: string, lastModified?: Date): MetadataRoute.Sitemap[0] {
     url: canonicalUrl(path),
     lastModified,
     priority: priorityFor(path),
+    changeFrequency: changeFrequencyFor(path),
   };
 }
 
