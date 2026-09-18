@@ -6,7 +6,7 @@ import type {
   CaseStudyMetaItem,
   CaseStudySection,
 } from "@/lib/case-studies";
-import { CASE_STUDY_ORDER, withCanonicalLiveSite } from "@/lib/case-studies";
+import { CASE_STUDY_ORDER } from "@/lib/case-studies";
 import { formialLabsCaseStudy } from "@/lib/case-studies/formial-labs";
 import { globalServicesCaseStudy } from "@/lib/case-studies/global-services";
 import { radiantCaseStudy } from "@/lib/case-studies/radiant";
@@ -120,7 +120,7 @@ export async function getPublishedCaseStudyPage(slug: string): Promise<CaseStudy
     });
 
     return {
-      ...withCanonicalLiveSite(staticContent),
+      ...staticContent,
       metaTitle: seo.metaTitle,
       metaDescription: seo.metaDescription,
       absoluteTitle: true,
@@ -142,7 +142,7 @@ export async function getPublishedCaseStudyPage(slug: string): Promise<CaseStudy
         metaDescription: serialized.metaDescription,
       });
       return {
-        ...withCanonicalLiveSite(toCaseStudyContent(serialized)),
+        ...toCaseStudyContent(serialized),
         metaTitle: seo.metaTitle,
         metaDescription: seo.metaDescription,
         updatedAt: serialized.updatedAt,
