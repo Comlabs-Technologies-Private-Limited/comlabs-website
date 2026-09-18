@@ -1,5 +1,3 @@
-import { connection } from "next/server";
-
 import { listPosts } from "@/lib/admin/posts";
 import {
   canonicalUrl,
@@ -25,8 +23,6 @@ function toRfc2822(iso: string): string {
 }
 
 export async function GET(): Promise<Response> {
-  await connection();
-
   if (!isBlogEnabled()) {
     return new Response("Not Found", { status: 404 });
   }
