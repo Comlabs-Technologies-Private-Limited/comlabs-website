@@ -22,6 +22,11 @@ export const caseStudyMetaItemSchema = z.object({
   href: z.string().optional(),
 });
 
+export const faqItemSchema = z.object({
+  question: z.string().describe("FAQ question"),
+  answer: z.string().describe("FAQ answer"),
+});
+
 export const caseStudySectionSchema = z.object({
   number: z.string(),
   title: z.string(),
