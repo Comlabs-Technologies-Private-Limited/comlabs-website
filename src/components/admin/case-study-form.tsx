@@ -30,6 +30,7 @@ type FormState = {
   metaJson: string;
   leadImageJson: string;
   sectionsJson: string;
+  faqsJson: string;
 };
 
 function toFormState(caseStudy?: CaseStudyRecord): FormState {
@@ -51,6 +52,7 @@ function toFormState(caseStudy?: CaseStudyRecord): FormState {
       2,
     ),
     sectionsJson: JSON.stringify(caseStudy?.sections ?? [], null, 2),
+    faqsJson: JSON.stringify(caseStudy?.faqs ?? [], null, 2),
   };
 }
 
@@ -87,6 +89,7 @@ export function CaseStudyForm({ caseStudy }: CaseStudyFormProps) {
       const meta = parseJsonField<CaseStudyMetaItem[]>(form.metaJson, "Metadata");
       const leadImage = parseJsonField<CaseStudyMedia>(form.leadImageJson, "Lead image");
       const sections = parseJsonField<CaseStudySection[]>(form.sectionsJson, "Sections");
+      const faqs = parseJsonField<{ question: string; answer: string }[]>(form.faqsJson, "FAQs");
 
       const payload = {
         slug: form.slug.trim(),
@@ -97,6 +100,7 @@ export function CaseStudyForm({ caseStudy }: CaseStudyFormProps) {
         meta,
         leadImage,
         sections,
+        faqs,
         status: form.status,
         metaTitle: form.metaTitle,
         metaDescription: form.metaDescription,
@@ -242,6 +246,20 @@ export function CaseStudyForm({ caseStudy }: CaseStudyFormProps) {
               rows={18}
               value={form.sectionsJson}
               onChange={(event) => updateField("sectionsJson", event.target.value)}
+              className="w-full rounded-xl border border-border bg-background px-4 py-3 font-mono text-xs leading-relaxed outline-none"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="faqsJson" className="text-xs tracking-widest text-muted-foreground uppercase">
+              FAQs JSON
+            </label>
+            <textarea
+              id="faqsJson"
+              rows={8}
+              value={form.faqsJson}
+              onChange={(event) => updateField("faqsJson", event.target.value)}
+              placeholder={'[\n  { "question": "...", "answer": "..." }\n]'}
               className="w-full rounded-xl border border-border bg-background px-4 py-3 font-mono text-xs leading-relaxed outline-none"
             />
           </div>

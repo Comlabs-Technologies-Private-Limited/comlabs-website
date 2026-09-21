@@ -23,6 +23,7 @@ import {
   caseStudyMediaSchema,
   caseStudyMetaItemSchema,
   caseStudySectionSchema,
+  faqItemSchema,
   postStatusSchema,
 } from "@/lib/mcp/schemas";
 import {
@@ -100,6 +101,7 @@ export function registerComlabsMcpTools(server: McpServer): void {
         metaDescription: z.string().optional(),
         ogImage: z.string().optional(),
         canonicalUrl: z.string().optional(),
+        faqs: z.array(faqItemSchema).optional().describe("FAQ items shown in an accordion with structured data"),
       }),
     },
     async (input) => {
@@ -136,6 +138,7 @@ export function registerComlabsMcpTools(server: McpServer): void {
         metaDescription: z.string().optional(),
         ogImage: z.string().optional(),
         canonicalUrl: z.string().optional(),
+        faqs: z.array(faqItemSchema).optional().describe("FAQ items shown in an accordion with structured data"),
       }),
     },
     async ({ idOrSlug, content, ...fields }) => {
@@ -261,6 +264,7 @@ export function registerComlabsMcpTools(server: McpServer): void {
         meta: z.array(caseStudyMetaItemSchema),
         leadImage: caseStudyMediaSchema,
         sections: z.array(caseStudySectionSchema),
+        faqs: z.array(faqItemSchema).optional().describe("FAQ items shown in an accordion with structured data"),
         status: postStatusSchema.optional().describe("Defaults to draft"),
         metaTitle: z.string().optional(),
         metaDescription: z.string().optional(),
@@ -295,6 +299,7 @@ export function registerComlabsMcpTools(server: McpServer): void {
         meta: z.array(caseStudyMetaItemSchema).optional(),
         leadImage: caseStudyMediaSchema.optional(),
         sections: z.array(caseStudySectionSchema).optional(),
+        faqs: z.array(faqItemSchema).optional().describe("FAQ items shown in an accordion with structured data"),
         status: postStatusSchema.optional(),
         metaTitle: z.string().optional(),
         metaDescription: z.string().optional(),

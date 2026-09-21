@@ -12,6 +12,8 @@ type PostFormProps = {
   post?: Post;
 };
 
+type FaqItem = { question: string; answer: string };
+
 type FormState = {
   title: string;
   slug: string;
@@ -25,6 +27,7 @@ type FormState = {
   metaDescription: string;
   ogImage: string;
   canonicalUrl: string;
+  faqs: FaqItem[];
 };
 
 function toFormState(post?: Post): FormState {
@@ -41,6 +44,7 @@ function toFormState(post?: Post): FormState {
     metaDescription: post?.metaDescription ?? "",
     ogImage: post?.ogImage ?? "",
     canonicalUrl: post?.canonicalUrl ?? "",
+    faqs: post?.faqs ?? [],
   };
 }
 
@@ -74,6 +78,7 @@ export function PostForm({ post }: PostFormProps) {
       ...form,
       slug: form.slug.trim() || slugify(form.title),
       tags,
+      faqs: form.faqs.filter((f) => f.question.trim() && f.answer.trim()),
     };
 
     const response = await fetch(isEditing ? `/api/admin/posts/${post?._id}` : "/api/admin/posts", {
@@ -189,6 +194,63 @@ export function PostForm({ post }: PostFormProps) {
                 <PostBody html={form.content || "<p>Nothing to preview yet.</p>"} />
               </div>
             )}
+          </div>
+
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <label className="text-xs tracking-widest text-muted-foreground uppercase">
+                FAQs
+              </label>
+              <button
+                type="button"
+                onClick={() =>
+                  setForm((prev) => ({
+                    ...prev,
+                    faqs: [...prev.faqs, { question: "", answer: "" }],
+                  }))
+                }
+                className="rounded-full bg-secondary px-3 py-1 text-xs font-medium text-foreground transition-colors hover:bg-secondary/80"
+              >
+                + Add FAQ
+              </button>
+            </div>
+            {form.faqs.map((faq, index) => (
+              <div key={index} className="space-y-2 rounded-xl border border-border bg-card p-4">
+                <input
+                  value={faq.question}
+                  onChange={(event) => {
+                    const updated = [...form.faqs];
+                    updated[index] = { ...updated[index]!, question: event.target.value };
+                    setForm((prev) => ({ ...prev, faqs: updated }));
+                  }}
+                  placeholder="Question"
+                  className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-foreground/30"
+                />
+                <textarea
+                  rows={3}
+                  value={faq.answer}
+                  onChange={(event) => {
+                    const updated = [...form.faqs];
+                    updated[index] = { ...updated[index]!, answer: event.target.value };
+                    setForm((prev) => ({ ...prev, faqs: updated }));
+                  }}
+                  placeholder="Answer"
+                  className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm leading-relaxed outline-none focus:border-foreground/30"
+                />
+                <button
+                  type="button"
+                  onClick={() =>
+                    setForm((prev) => ({
+                      ...prev,
+                      faqs: prev.faqs.filter((_, i) => i !== index),
+                    }))
+                  }
+                  className="text-xs text-muted-foreground transition-colors hover:text-destructive"
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
           </div>
         </div>
 
