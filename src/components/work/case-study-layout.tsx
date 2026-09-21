@@ -12,6 +12,10 @@ import {
   RELATED_SERVICE_BY_SLUG,
 } from "@/lib/case-studies";
 
+import { FaqAccordion } from "@/components/faq-accordion";
+import { JsonLdScript } from "@/components/seo/json-ld-script";
+import { getFaqPageSchema } from "@/lib/schema";
+
 import { CaseStudyCta } from "./case-study/case-study-cta";
 import { CaseStudyHero } from "./case-study/case-study-hero";
 import { CaseStudyMedia } from "./case-study/case-study-media";
@@ -33,7 +37,7 @@ export function CaseStudyLayout({
   caseStudies,
   footerCaseStudies,
 }: CaseStudyLayoutProps) {
-  const { slug, client, year, headline, standfirst, meta, leadImage, sections } = content;
+  const { slug, client, year, headline, standfirst, meta, leadImage, sections, faqs } = content;
   const isKnownSlug = CASE_STUDY_ORDER.includes(slug as CaseStudySlug);
   const slugKey = slug as CaseStudySlug;
   const relatedService = isKnownSlug ? RELATED_SERVICE_BY_SLUG[slugKey] : undefined;
@@ -85,6 +89,16 @@ export function CaseStudyLayout({
             </div>
           </div>
         </div>
+
+        {faqs && faqs.length > 0 ? (
+          <div className="relative border-t border-border bg-background">
+            <span aria-hidden className="gutter-hatch" />
+            <div className="section-layout">
+              <FaqAccordion items={faqs} />
+              <JsonLdScript data={getFaqPageSchema(faqs)} />
+            </div>
+          </div>
+        ) : null}
 
         {relatedServices.length > 0 ? (
           <RelatedService services={relatedServices} />

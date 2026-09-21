@@ -94,6 +94,7 @@ export const aiAgentLoopingPost: Post = {
   metaDescription: EXCERPT,
   ogImage: COVER,
   canonicalUrl: "",
+  faqs: [],
   createdAt: PUBLISHED_AT,
   updatedAt: PUBLISHED_AT,
 };

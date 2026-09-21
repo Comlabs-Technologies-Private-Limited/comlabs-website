@@ -6,6 +6,7 @@ import { ArrowLeft } from "lucide-react";
 
 import { PostBody } from "@/components/blog/PostBody";
 import { PostJsonLd } from "@/components/blog/JsonLd";
+import { FaqAccordion } from "@/components/faq-accordion";
 import { FigmaFooter } from "@/components/layout/figma-footer";
 import { FigmaNavLoader } from "@/components/layout/figma-nav-loader";
 import { MarketingCtaSection } from "@/components/marketing/marketing-cta-section";
@@ -20,9 +21,11 @@ import {
   layeredBackgroundImage,
   absoluteMediaUrl,
 } from "@/lib/cloudinary";
+import { getFaqPageSchema } from "@/lib/schema";
 import { indexableCanonicalUrl } from "@/lib/seo/indexable-canonical";
 import { canonicalPath, isBlogEnabled, siteUrl } from "@/lib/site";
 import type { Post as PostType } from "@/types/post";
+import { JsonLdScript } from "@/components/seo/json-ld-script";
 
 const BLOG_RELATED_SERVICES: Record<string, { label: string; href: string }[]> =
   {
@@ -281,6 +284,16 @@ export default async function BlogPostPage({
             </div>
           </div>
         </article>
+
+        {post.faqs.length > 0 ? (
+          <div className="relative border-b border-border bg-background">
+            <span aria-hidden className="gutter-hatch" />
+            <div className="section-layout">
+              <FaqAccordion items={post.faqs} />
+              <JsonLdScript data={getFaqPageSchema(post.faqs)} />
+            </div>
+          </div>
+        ) : null}
 
         <MarketingCtaSection
           title="Have a looping workflow to untangle?"

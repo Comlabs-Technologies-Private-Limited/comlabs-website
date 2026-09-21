@@ -56,6 +56,7 @@ export type CaseStudyInput = {
   meta: CaseStudyMetaItem[];
   leadImage: CaseStudyMedia;
   sections: CaseStudySection[];
+  faqs?: { question: string; answer: string }[];
   status?: "draft" | "published";
   metaTitle?: string;
   metaDescription?: string;
@@ -89,6 +90,7 @@ function serializeCaseStudy(record: PrismaCaseStudy): CaseStudyRecord {
       alt: record.client,
     }),
     sections: parseJsonField<CaseStudySection[]>(record.sections, []),
+    faqs: parseJsonField<CaseStudyContent["faqs"]>(record.faqs, []),
     status: record.status as "draft" | "published",
     metaTitle: record.metaTitle,
     metaDescription: record.metaDescription,
@@ -282,6 +284,7 @@ export async function createCaseStudy(input: CaseStudyInput): Promise<CaseStudyR
       meta: input.meta as Prisma.InputJsonValue,
       leadImage: input.leadImage as Prisma.InputJsonValue,
       sections: input.sections as Prisma.InputJsonValue,
+      faqs: (input.faqs ?? []) as Prisma.InputJsonValue,
       status: input.status ?? "draft",
       metaTitle: seo.metaTitle,
       metaDescription: seo.metaDescription,
@@ -330,6 +333,9 @@ export async function updateCaseStudy(
         : {}),
       ...(input.sections !== undefined
         ? { sections: input.sections as Prisma.InputJsonValue }
+        : {}),
+      ...(input.faqs !== undefined
+        ? { faqs: input.faqs as Prisma.InputJsonValue }
         : {}),
       ...(input.status !== undefined ? { status: input.status } : {}),
       metaTitle: seo.metaTitle,

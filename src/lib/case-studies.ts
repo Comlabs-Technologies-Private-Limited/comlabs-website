@@ -61,6 +61,8 @@ export type CaseStudyHeadline = {
   after?: string;
 };
 
+export type CaseStudyFaqItem = { question: string; answer: string };
+
 export type CaseStudyContent = {
   slug: string;
   client: string;
@@ -70,6 +72,7 @@ export type CaseStudyContent = {
   meta: CaseStudyMetaItem[];
   leadImage: CaseStudyMedia;
   sections: CaseStudySection[];
+  faqs?: CaseStudyFaqItem[];
   /** Overrides the generated search title for this case study. */
   metaTitle?: string;
   /** Overrides the generated search description for this case study. */

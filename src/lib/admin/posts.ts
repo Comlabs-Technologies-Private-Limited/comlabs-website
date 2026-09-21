@@ -25,6 +25,7 @@ export type PostInput = {
   metaDescription?: string;
   ogImage?: string;
   canonicalUrl?: string;
+  faqs?: { question: string; answer: string }[];
 };
 
 function serializePost(record: PrismaPost): Post {
@@ -44,6 +45,7 @@ function serializePost(record: PrismaPost): Post {
     metaDescription: record.metaDescription,
     ogImage: record.ogImage,
     canonicalUrl: record.canonicalUrl,
+    faqs: Array.isArray(record.faqs) ? (record.faqs as Post["faqs"]) : [],
     createdAt: record.createdAt.toISOString(),
     updatedAt: record.updatedAt.toISOString(),
   };
@@ -180,6 +182,7 @@ export async function createPost(input: PostInput): Promise<Post> {
       metaDescription: seo.metaDescription,
       ogImage: input.ogImage ?? "",
       canonicalUrl: sanitizeCanonicalInput(input.canonicalUrl),
+      faqs: input.faqs ?? [],
       publishedAt: resolvePublishedAt(status, null),
     },
   });
@@ -223,6 +226,7 @@ export async function updatePost(id: string, input: PostInput): Promise<Post | n
       ...(input.canonicalUrl !== undefined
         ? { canonicalUrl: sanitizeCanonicalInput(input.canonicalUrl) }
         : {}),
+      ...(input.faqs !== undefined ? { faqs: input.faqs } : {}),
       readingTime: calcReadingTime(content),
       publishedAt: resolvePublishedAt(status, existing.publishedAt),
     },
