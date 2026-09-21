@@ -1,5 +1,7 @@
 export type PostStatus = "draft" | "published";
 
+export type FaqItem = { question: string; answer: string };
+
 export type Post = {
   _id: string;
   title: string;
@@ -16,6 +18,7 @@ export type Post = {
   metaDescription: string;
   ogImage: string;
   canonicalUrl: string;
+  faqs: FaqItem[];
   createdAt: string;
   updatedAt: string;
 };
